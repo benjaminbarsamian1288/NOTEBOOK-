@@ -354,6 +354,30 @@ const Storage = (() => {
         saveTrash([]);
     }
 
+    // ===== Move Page =====
+    function movePage(fromNotebookId, fromSectionId, pageId, toNotebookId, toSectionId) {
+        const data = getData();
+        const fromNb = data.notebooks.find(n => n.id === fromNotebookId);
+        if (!fromNb) return false;
+        const fromSec = fromNb.sections.find(s => s.id === fromSectionId);
+        if (!fromSec) return false;
+        const idx = fromSec.pages.findIndex(p => p.id === pageId);
+        if (idx === -1) return false;
+        const toNb = data.notebooks.find(n => n.id === toNotebookId);
+        if (!toNb) return false;
+        const toSec = toNb.sections.find(s => s.id === toSectionId);
+        if (!toSec) return false;
+        const [page] = fromSec.pages.splice(idx, 1);
+        page.updatedAt = now();
+        toSec.pages.push(page);
+        toSec.updatedAt = now();
+        toNb.updatedAt = now();
+        fromSec.updatedAt = now();
+        fromNb.updatedAt = now();
+        saveData(data);
+        return true;
+    }
+
     // ===== Export / Import =====
     function exportAll() {
         return {
@@ -415,7 +439,7 @@ const Storage = (() => {
         getSettings, saveSettings,
         createNotebook, getNotebooks, getNotebook, updateNotebook, deleteNotebook,
         createSection, getSections, getSection, updateSection, deleteSection,
-        createPage, getPages, getPage, updatePage, deletePage,
+        createPage, getPages, getPage, updatePage, deletePage, movePage,
         search, getFavorites, getRecent, getAllRecordings,
         getTrash, restoreFromTrash, emptyTrash,
         exportAll, importAll, initDefaults

@@ -842,8 +842,8 @@ const App = (() => {
 
     // ===== Context Menu Actions =====
     async function handleContextAction(action) {
-        UI.hideContextMenu();
         const info = UI.getContextMenuInfo();
+        UI.hideContextMenu();
         if (!info.target) return;
 
         switch (action) {
@@ -902,6 +902,42 @@ const App = (() => {
                         if (info.target.id === currentPageId) loadCurrentPage();
                         UI.showToast(page.favorite ? 'Favorit entfernt' : 'Als Favorit markiert', 'info');
                     }
+                }
+                break;
+            }
+            case 'move': {
+                if (info.type === 'page') {
+                    const notebooks = Storage.getNotebooks();
+                    const options = [];
+                    notebooks.forEach(nb => {
+                        const sections = Storage.getSections(nb.id);
+                        sections.forEach(sec => {
+                            if (nb.id !== currentNotebookId || sec.id !== currentSectionId) {
+                                options.push({ notebookId: nb.id, sectionId: sec.id, label: `${nb.name} → ${sec.name}` });
+                            }
+                        });
+                    });
+                    if (options.length === 0) {
+                        UI.showToast('Kein anderer Abschnitt zum Verschieben vorhanden', 'warning');
+                        break;
+                    }
+                    // Build a simple select dialog
+                    const select = options.map((o, i) => `${i + 1}. ${o.label}`).join('\n');
+                    const choice = prompt(`Seite "${info.target.title}" verschieben nach:\n\n${select}\n\nNummer eingeben:`);
+                    const idx = parseInt(choice) - 1;
+                    if (idx >= 0 && idx < options.length) {
+                        const dest = options[idx];
+                        Storage.movePage(currentNotebookId, currentSectionId, info.target.id, dest.notebookId, dest.sectionId);
+                        if (currentPageId === info.target.id) {
+                            const pages = Storage.getPages(currentNotebookId, currentSectionId);
+                            currentPageId = pages.length > 0 ? pages[0].id : null;
+                        }
+                        renderPages();
+                        loadCurrentPage();
+                        UI.showToast(`Seite verschoben nach "${dest.label}"`, 'success');
+                    }
+                } else {
+                    UI.showToast('Verschieben ist nur für Seiten verfügbar', 'info');
                 }
                 break;
             }
