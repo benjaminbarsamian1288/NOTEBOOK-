@@ -1,0 +1,158 @@
+/* ===== Editor-specific styles ===== */
+
+/* Heading styles */
+.editor h1 { font-size: 2rem; margin: 16px 0 8px; }
+.editor h2 { font-size: 1.5rem; margin: 14px 0 6px; }
+.editor h3 { font-size: 1.25rem; margin: 12px 0 4px; }
+
+/* Blockquote */
+.editor blockquote {
+    border-left: 4px solid var(--primary);
+    padding: 8px 16px;
+    margin: 12px 0;
+    background: var(--bg-toolbar);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    color: var(--text-secondary);
+}
+
+/* Code blocks */
+.editor code {
+    background: var(--bg-sidebar);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+}
+
+/* Selection */
+.editor ::selection {
+    background: var(--primary-light);
+    color: white;
+}
+
+/* Placeholder for empty paragraphs */
+.editor p:empty::before {
+    content: '\00a0';
+}
+
+/* Image resize handles */
+.editor img.selected {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* File attachment */
+.file-attachment {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-toolbar);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 6px 12px;
+    margin: 4px 0;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: background var(--transition);
+}
+
+.file-attachment:hover {
+    background: var(--bg-hover);
+}
+
+.file-attachment i {
+    color: var(--primary);
+}
+
+/* Highlight text */
+.editor mark, .editor .highlight {
+    background: #fff3a8;
+    padding: 1px 2px;
+    border-radius: 2px;
+}
+
+body.dark-mode .editor mark,
+body.dark-mode .editor .highlight {
+    background: #5c5a1e;
+    color: #fff;
+}
+
+/* Checklist styles */
+.checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 2px 0;
+    list-style: none;
+}
+
+.checklist-item input[type="checkbox"] {
+    margin-top: 4px;
+    width: 16px;
+    height: 16px;
+    accent-color: var(--primary);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.checklist-item.checked > span {
+    text-decoration: line-through;
+    color: var(--text-muted);
+}
+
+/* Inline note/tag */
+.inline-tag {
+    display: inline-block;
+    background: var(--primary);
+    color: white;
+    font-size: 0.7rem;
+    padding: 1px 6px;
+    border-radius: 10px;
+    vertical-align: middle;
+    font-weight: 500;
+}
+
+/* Text highlight colors */
+.highlight-yellow { background-color: #fff3a8; }
+.highlight-green { background-color: #b8f0b8; }
+.highlight-blue { background-color: #b8d4f0; }
+.highlight-pink { background-color: #f0b8d4; }
+.highlight-orange { background-color: #f0d4b8; }
+
+body.dark-mode .highlight-yellow { background-color: #5c5a1e; }
+body.dark-mode .highlight-green { background-color: #1e5c2a; }
+body.dark-mode .highlight-blue { background-color: #1e3a5c; }
+body.dark-mode .highlight-pink { background-color: #5c1e3a; }
+body.dark-mode .highlight-orange { background-color: #5c3a1e; }
+
+/* Drag & drop indicator */
+.editor.drag-over {
+    outline: 2px dashed var(--primary);
+    outline-offset: -4px;
+    background: rgba(74, 144, 217, 0.05);
+}
+
+/* Print styles */
+@media print {
+    .sidebar, .toolbar, .status-bar, .voice-recorder, .recordings-panel {
+        display: none !important;
+    }
+    .main-content {
+        margin: 0;
+        padding: 0;
+    }
+    .editor-wrapper {
+        padding: 0;
+    }
+    .editor {
+        font-size: 12pt;
+        line-height: 1.5;
+    }
+    .page-header {
+        padding: 0 0 16px;
+    }
+    .audio-attachment {
+        border: 1px solid #ccc;
+    }
+}

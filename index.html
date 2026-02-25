@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoiceNote - Dein Sprachnotizbuch</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/editor.css">
+    <link rel="stylesheet" href="css/drawing.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <!-- App Container -->
+    <div id="app" class="app-container">
+
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <div class="app-logo">
+                    <i class="fas fa-book-open"></i>
+                    <span>VoiceNote</span>
+                </div>
+                <button id="btn-toggle-sidebar" class="btn-icon" title="Seitenleiste umschalten">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <!-- Search -->
+            <div class="sidebar-search">
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="search-input" placeholder="Suchen..." />
+                </div>
+            </div>
+
+            <!-- Notebooks List -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-header">
+                    <span>Notizbücher</span>
+                    <button id="btn-add-notebook" class="btn-icon-sm" title="Neues Notizbuch">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <div id="notebooks-list" class="notebooks-list">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+
+            <!-- Sections -->
+            <div class="sidebar-section" id="sections-container">
+                <div class="sidebar-section-header">
+                    <span>Abschnitte</span>
+                    <button id="btn-add-section" class="btn-icon-sm" title="Neuer Abschnitt">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <div id="sections-list" class="sections-list">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+
+            <!-- Pages -->
+            <div class="sidebar-section" id="pages-container">
+                <div class="sidebar-section-header">
+                    <span>Seiten</span>
+                    <button id="btn-add-page" class="btn-icon-sm" title="Neue Seite">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <div id="pages-list" class="pages-list">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+
+            <!-- Quick Access -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-header">
+                    <span>Schnellzugriff</span>
+                </div>
+                <div class="quick-access">
+                    <button id="btn-favorites" class="sidebar-btn">
+                        <i class="fas fa-star"></i> Favoriten
+                    </button>
+                    <button id="btn-recent" class="sidebar-btn">
+                        <i class="fas fa-clock"></i> Zuletzt bearbeitet
+                    </button>
+                    <button id="btn-all-recordings" class="sidebar-btn">
+                        <i class="fas fa-microphone"></i> Alle Aufnahmen
+                    </button>
+                    <button id="btn-trash" class="sidebar-btn">
+                        <i class="fas fa-trash"></i> Papierkorb
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Toolbar -->
+            <div class="toolbar" id="toolbar">
+                <!-- Tab Navigation -->
+                <div class="toolbar-tabs">
+                    <button class="toolbar-tab active" data-tab="home">Start</button>
+                    <button class="toolbar-tab" data-tab="insert">Einfügen</button>
+                    <button class="toolbar-tab" data-tab="draw">Zeichnen</button>
+                    <button class="toolbar-tab" data-tab="view">Ansicht</button>
+                </div>
+
+                <!-- Home Tab -->
+                <div class="toolbar-panel active" id="tab-home">
+                    <div class="toolbar-group">
+                        <select id="font-family" class="toolbar-select" title="Schriftart">
+                            <option value="Arial">Arial</option>
+                            <option value="Times New Roman">Times New Roman</option>
+                            <option value="Courier New">Courier New</option>
+                            <option value="Georgia">Georgia</option>
+                            <option value="Verdana">Verdana</option>
+                            <option value="Helvetica">Helvetica</option>
+                        </select>
+                        <select id="font-size" class="toolbar-select" title="Schriftgröße">
+                            <option value="1">8</option>
+                            <option value="2">10</option>
+                            <option value="3" selected>12</option>
+                            <option value="4">14</option>
+                            <option value="5">18</option>
+                            <option value="6">24</option>
+                            <option value="7">36</option>
+                        </select>
+                    </div>
+                    <div class="toolbar-divider"></div>
+                    <div class="toolbar-group">
+                        <button class="btn-toolbar" data-command="bold" title="Fett (Strg+B)">
+                            <i class="fas fa-bold"></i>
+                        </button>
+                        <button class="btn-toolbar" data-command="italic" title="Kursiv (Strg+I)">
+                            <i class="fas fa-italic"></i>
+                        </button>
+                        <button class="btn-toolbar" data-command="underline" title="Unterstrichen (Strg+U)">
+                            <i class="fas fa-underline"></i>
+                        </button>
+                        <button class="btn-toolbar" data-command="strikeThrough" title="Durchgestrichen">
+                            <i class="fas fa-strikethrough"></i>
+                        </button>
+                    </div>
+                    <div class="toolbar-divider"></div>
+                    <div class="toolbar-group">
+                        <button class="btn-toolbar" data-command="highlight" title="Hervorheben">
+                            <i class="fas fa-highlighter"></i>
+                        </button>
+                        <input type="color" id="text-color" class="color-picker" value="#000000" title="Textfarbe">
+                        <input type="color" id="bg-color" class="color-picker" value="#ffff00" title="Hintergrundfarbe">
+                    </div>
+                    <div class="toolbar-divider"></div>
+                    <div class="toolbar-group">
+                        <button class="btn-toolbar" data-command="insertUnorderedList" title="Aufzählung">
+                            <i class="fas fa-list-ul"></i>
+                        </button>
+                        <button class="btn-toolbar" data-command="insertOrderedList" title="Nummerierung">
+                            <i class="fas fa-list-ol"></i>
+                        </button>
+                        <button class="btn-toolbar" data-command="insertCheckbox" title="Aufgabe / Checkbox">
+                            <i class="fas fa-check-square"></i>
+                        </button>
+                    </div>
+                    <div class="toolbar-divider"></div>
+                    <div class="toolbar-group">
+                        <button class="btn-toolbar" data-command="justifyLeft" title="Linksbündig">
+                            <i class="fas fa-align-left"></i>
+                        </button>
+                        <button class="btn-toolbar" data-command="justifyCenter" title="Zentriert">
+                            <i class="fas fa-align-center"></i>
+                        </button>
+                        <button class="btn-toolbar" data-command="justifyRight" title="Rechtsbündig">
+                            <i class="fas fa-align-right"></i>
+                        </button>
+                    </div>
+                    <div class="toolbar-divider"></div>
+                    <div class="toolbar-group">
+                        <button class="btn-toolbar" data-command="indent" title="Einzug vergrößern">
+                            <i class="fas fa-indent"></i>
+                        </button>
+                        <button class="btn-toolbar" data-command="outdent" title="Einzug verkleinern">
+                            <i class="fas fa-outdent"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Insert Tab -->
+                <div class="toolbar-panel" id="tab-insert">
+                    <div class="toolbar-group">
+                        <button class="btn-toolbar-lg" id="btn-record" title="Sprachaufnahme starten">
+                            <i class="fas fa-microphone"></i>
+                            <span>Aufnahme</span>
+                        </button>
+                        <button class="btn-toolbar-lg" id="btn-insert-table" title="Tabelle einfügen">
+                            <i class="fas fa-table"></i>
+                            <span>Tabelle</span>
+                        </button>
+                        <button class="btn-toolbar-lg" id="btn-insert-image" title="Bild einfügen">
+                            <i class="fas fa-image"></i>
+                            <span>Bild</span>
+                        </button>
+                        <button class="btn-toolbar-lg" id="btn-insert-link" title="Link einfügen">
+                            <i class="fas fa-link"></i>
+                            <span>Link</span>
+                        </button>
+                        <button class="btn-toolbar-lg" id="btn-insert-file" title="Datei anhängen">
+                            <i class="fas fa-paperclip"></i>
+                            <span>Datei</span>
+                        </button>
+                        <button class="btn-toolbar-lg" id="btn-insert-divider" title="Trennlinie einfügen">
+                            <i class="fas fa-minus"></i>
+                            <span>Trennlinie</span>
+                        </button>
+                        <button class="btn-toolbar-lg" id="btn-insert-code" title="Code-Block einfügen">
+                            <i class="fas fa-code"></i>
+                            <span>Code</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Draw Tab -->
+                <div class="toolbar-panel" id="tab-draw">
+                    <div class="toolbar-group">
+                        <button class="btn-toolbar draw-tool active" data-tool="pen" title="Stift">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        <button class="btn-toolbar draw-tool" data-tool="highlighter" title="Textmarker">
+                            <i class="fas fa-highlighter"></i>
+                        </button>
+                        <button class="btn-toolbar draw-tool" data-tool="eraser" title="Radierer">
+                            <i class="fas fa-eraser"></i>
+                        </button>
+                        <button class="btn-toolbar draw-tool" data-tool="select" title="Auswählen">
+                            <i class="fas fa-mouse-pointer"></i>
+                        </button>
+                    </div>
+                    <div class="toolbar-divider"></div>
+                    <div class="toolbar-group">
+                        <input type="color" id="draw-color" class="color-picker" value="#000000" title="Stiftfarbe">
+                        <select id="draw-size" class="toolbar-select" title="Stiftstärke">
+                            <option value="1">Dünn</option>
+                            <option value="3" selected>Mittel</option>
+                            <option value="5">Dick</option>
+                            <option value="8">Sehr Dick</option>
+                        </select>
+                    </div>
+                    <div class="toolbar-divider"></div>
+                    <div class="toolbar-group">
+                        <button class="btn-toolbar" id="btn-toggle-canvas" title="Zeichenfläche ein/aus">
+                            <i class="fas fa-draw-polygon"></i>
+                            <span>Zeichnen</span>
+                        </button>
+                        <button class="btn-toolbar" id="btn-clear-canvas" title="Zeichnung löschen">
+                            <i class="fas fa-trash"></i>
+                            <span>Löschen</span>
+                        </button>
+                        <button class="btn-toolbar" id="btn-save-drawing" title="Zeichnung als Bild speichern">
+                            <i class="fas fa-save"></i>
+                            <span>Speichern</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- View Tab -->
+                <div class="toolbar-panel" id="tab-view">
+                    <div class="toolbar-group">
+                        <button class="btn-toolbar-lg" id="btn-fullscreen" title="Vollbild">
+                            <i class="fas fa-expand"></i>
+                            <span>Vollbild</span>
+                        </button>
+                        <button class="btn-toolbar-lg" id="btn-dark-mode" title="Dunkelmodus">
+                            <i class="fas fa-moon"></i>
+                            <span>Dunkelmodus</span>
+                        </button>
+                        <button class="btn-toolbar-lg" id="btn-zoom-in" title="Vergrößern">
+                            <i class="fas fa-search-plus"></i>
+                            <span>Vergrößern</span>
+                        </button>
+                        <button class="btn-toolbar-lg" id="btn-zoom-out" title="Verkleinern">
+                            <i class="fas fa-search-minus"></i>
+                            <span>Verkleinern</span>
+                        </button>
+                        <button class="btn-toolbar-lg" id="btn-export" title="Exportieren">
+                            <i class="fas fa-file-export"></i>
+                            <span>Exportieren</span>
+                        </button>
+                        <button class="btn-toolbar-lg" id="btn-import" title="Importieren">
+                            <i class="fas fa-file-import"></i>
+                            <span>Importieren</span>
+                        </button>
+                        <button class="btn-toolbar-lg" id="btn-print" title="Drucken">
+                            <i class="fas fa-print"></i>
+                            <span>Drucken</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <input type="text" id="page-title" class="page-title-input" placeholder="Seitentitel eingeben..." />
+                <div class="page-meta">
+                    <span id="page-date"></span>
+                    <span id="page-tags-display"></span>
+                    <button id="btn-add-tag" class="btn-icon-sm" title="Tag hinzufügen">
+                        <i class="fas fa-tag"></i>
+                    </button>
+                    <button id="btn-toggle-favorite" class="btn-icon-sm" title="Als Favorit markieren">
+                        <i class="far fa-star"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Voice Recorder Bar -->
+            <div id="voice-recorder" class="voice-recorder hidden">
+                <div class="recorder-controls">
+                    <button id="btn-rec-start" class="btn-rec" title="Aufnahme starten">
+                        <i class="fas fa-circle"></i>
+                    </button>
+                    <button id="btn-rec-pause" class="btn-rec hidden" title="Pause">
+                        <i class="fas fa-pause"></i>
+                    </button>
+                    <button id="btn-rec-resume" class="btn-rec hidden" title="Fortsetzen">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button id="btn-rec-stop" class="btn-rec hidden" title="Stoppen">
+                        <i class="fas fa-stop"></i>
+                    </button>
+                </div>
+                <div class="recorder-info">
+                    <div class="recorder-waveform" id="waveform">
+                        <canvas id="waveform-canvas"></canvas>
+                    </div>
+                    <span id="rec-timer" class="rec-timer">00:00</span>
+                </div>
+                <div class="recorder-status" id="rec-status">Bereit</div>
+            </div>
+
+            <!-- Editor Area -->
+            <div class="editor-wrapper">
+                <div id="drawing-canvas-container" class="drawing-canvas-container hidden">
+                    <canvas id="drawing-canvas"></canvas>
+                </div>
+                <div id="editor" class="editor" contenteditable="true" spellcheck="true">
+                    <p>Beginne hier zu schreiben...</p>
+                </div>
+            </div>
+
+            <!-- Audio Recordings List -->
+            <div id="recordings-panel" class="recordings-panel hidden">
+                <div class="recordings-header">
+                    <h3><i class="fas fa-microphone"></i> Sprachaufnahmen</h3>
+                    <button id="btn-close-recordings" class="btn-icon-sm">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div id="recordings-list" class="recordings-list">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <span id="word-count">0 Wörter</span>
+                <span id="char-count">0 Zeichen</span>
+                <span id="save-status">Gespeichert</span>
+                <span id="zoom-level">100%</span>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Table Insert Modal -->
+    <div id="modal-table" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Tabelle einfügen</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Zeilen:</label>
+                    <input type="number" id="table-rows" value="3" min="1" max="20">
+                </div>
+                <div class="form-group">
+                    <label>Spalten:</label>
+                    <input type="number" id="table-cols" value="3" min="1" max="10">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-create-table" class="btn-primary">Erstellen</button>
+                <button class="btn-secondary modal-cancel">Abbrechen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Link Insert Modal -->
+    <div id="modal-link" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Link einfügen</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>URL:</label>
+                    <input type="url" id="link-url" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label>Text:</label>
+                    <input type="text" id="link-text" placeholder="Linktext">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-create-link" class="btn-primary">Einfügen</button>
+                <button class="btn-secondary modal-cancel">Abbrechen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tag Modal -->
+    <div id="modal-tag" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Tags verwalten</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Neuer Tag:</label>
+                    <div class="tag-input-wrapper">
+                        <input type="text" id="tag-input" placeholder="Tag eingeben...">
+                        <button id="btn-create-tag" class="btn-primary">Hinzufügen</button>
+                    </div>
+                </div>
+                <div id="tag-list" class="tag-list">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary modal-cancel">Schließen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div id="modal-export" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Exportieren</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <button class="export-option" data-format="html">
+                    <i class="fas fa-file-code"></i> Als HTML exportieren
+                </button>
+                <button class="export-option" data-format="text">
+                    <i class="fas fa-file-alt"></i> Als Text exportieren
+                </button>
+                <button class="export-option" data-format="json">
+                    <i class="fas fa-file-code"></i> Als JSON exportieren (Backup)
+                </button>
+                <button class="export-option" data-format="pdf">
+                    <i class="fas fa-file-pdf"></i> Als PDF drucken
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rename/Input Modal -->
+    <div id="modal-input" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="input-modal-title">Eingabe</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label id="input-modal-label">Name:</label>
+                    <input type="text" id="input-modal-value" placeholder="">
+                </div>
+                <div id="input-modal-color-group" class="form-group hidden">
+                    <label>Farbe:</label>
+                    <div class="color-options">
+                        <button class="color-option" data-color="#4a90d9" style="background:#4a90d9"></button>
+                        <button class="color-option" data-color="#e74c3c" style="background:#e74c3c"></button>
+                        <button class="color-option" data-color="#2ecc71" style="background:#2ecc71"></button>
+                        <button class="color-option" data-color="#f39c12" style="background:#f39c12"></button>
+                        <button class="color-option" data-color="#9b59b6" style="background:#9b59b6"></button>
+                        <button class="color-option" data-color="#1abc9c" style="background:#1abc9c"></button>
+                        <button class="color-option" data-color="#e91e63" style="background:#e91e63"></button>
+                        <button class="color-option" data-color="#607d8b" style="background:#607d8b"></button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-input-confirm" class="btn-primary">OK</button>
+                <button class="btn-secondary modal-cancel">Abbrechen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Context Menu -->
+    <div id="context-menu" class="context-menu hidden">
+        <div class="context-menu-item" data-action="rename">
+            <i class="fas fa-edit"></i> Umbenennen
+        </div>
+        <div class="context-menu-item" data-action="duplicate">
+            <i class="fas fa-copy"></i> Duplizieren
+        </div>
+        <div class="context-menu-item" data-action="move">
+            <i class="fas fa-arrows-alt"></i> Verschieben
+        </div>
+        <div class="context-menu-item" data-action="favorite">
+            <i class="fas fa-star"></i> Favorit
+        </div>
+        <div class="context-menu-divider"></div>
+        <div class="context-menu-item danger" data-action="delete">
+            <i class="fas fa-trash"></i> Löschen
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Hidden file inputs -->
+    <input type="file" id="file-input-image" accept="image/*" class="hidden-input">
+    <input type="file" id="file-input-file" class="hidden-input">
+    <input type="file" id="file-input-import" accept=".json" class="hidden-input">
+
+    <!-- Scripts -->
+    <script src="js/storage.js"></script>
+    <script src="js/recorder.js"></script>
+    <script src="js/editor.js"></script>
+    <script src="js/drawing.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
