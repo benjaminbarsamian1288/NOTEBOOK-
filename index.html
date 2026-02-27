@@ -4,52 +4,107 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mein Tagebuch</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128214;</text></svg>">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="app">
         <header>
+            <div class="header-top">
+                <button id="theme-toggle" class="icon-btn" title="Design wechseln">
+                    <span id="theme-icon">&#9790;</span>
+                </button>
+            </div>
             <h1>Mein Tagebuch</h1>
             <p class="subtitle">Deine Gedanken, sicher aufbewahrt</p>
+            <div class="header-stats" id="header-stats"></div>
         </header>
 
+        <nav class="tab-bar">
+            <button class="tab active" data-tab="write">Schreiben</button>
+            <button class="tab" data-tab="entries">Eintraege</button>
+            <button class="tab" data-tab="stats">Statistik</button>
+        </nav>
+
         <main>
-            <section class="editor">
-                <div class="editor-header">
-                    <input type="date" id="entry-date" />
-                    <select id="mood-select">
-                        <option value="">Stimmung...</option>
-                        <option value="gluecklich">Gluecklich</option>
-                        <option value="zufrieden">Zufrieden</option>
-                        <option value="nachdenklich">Nachdenklich</option>
-                        <option value="traurig">Traurig</option>
-                        <option value="wuetend">Wuetend</option>
-                        <option value="aufgeregt">Aufgeregt</option>
-                        <option value="muede">Muede</option>
-                        <option value="dankbar">Dankbar</option>
-                    </select>
-                </div>
-                <input type="text" id="entry-title" placeholder="Titel deines Eintrags..." />
-                <textarea id="entry-text" placeholder="Was bewegt dich heute?"></textarea>
-                <div class="editor-actions">
-                    <button id="save-btn">Speichern</button>
-                    <button id="cancel-btn" class="secondary">Abbrechen</button>
+            <!-- Write Tab -->
+            <section class="tab-content active" id="tab-write">
+                <div class="editor">
+                    <div class="editor-header">
+                        <input type="date" id="entry-date" />
+                        <select id="mood-select">
+                            <option value="">Stimmung...</option>
+                            <option value="gluecklich">Gluecklich</option>
+                            <option value="zufrieden">Zufrieden</option>
+                            <option value="nachdenklich">Nachdenklich</option>
+                            <option value="traurig">Traurig</option>
+                            <option value="wuetend">Wuetend</option>
+                            <option value="aufgeregt">Aufgeregt</option>
+                            <option value="muede">Muede</option>
+                            <option value="dankbar">Dankbar</option>
+                        </select>
+                    </div>
+                    <input type="text" id="entry-title" placeholder="Titel deines Eintrags..." />
+                    <textarea id="entry-text" placeholder="Was bewegt dich heute? (Ctrl+Enter zum Speichern)"></textarea>
+                    <div class="editor-footer">
+                        <span class="char-count" id="char-count">0 Zeichen</span>
+                        <div class="editor-actions">
+                            <button id="save-btn">Speichern</button>
+                            <button id="cancel-btn" class="secondary">Abbrechen</button>
+                        </div>
+                    </div>
                 </div>
             </section>
 
-            <section class="entries">
-                <div class="entries-header">
-                    <h2>Meine Eintraege</h2>
+            <!-- Entries Tab -->
+            <section class="tab-content" id="tab-entries">
+                <div class="entries-toolbar">
                     <div class="search-bar">
                         <input type="text" id="search-input" placeholder="Eintraege durchsuchen..." />
                     </div>
+                    <div class="filter-bar">
+                        <select id="mood-filter">
+                            <option value="">Alle Stimmungen</option>
+                            <option value="gluecklich">Gluecklich</option>
+                            <option value="zufrieden">Zufrieden</option>
+                            <option value="nachdenklich">Nachdenklich</option>
+                            <option value="traurig">Traurig</option>
+                            <option value="wuetend">Wuetend</option>
+                            <option value="aufgeregt">Aufgeregt</option>
+                            <option value="muede">Muede</option>
+                            <option value="dankbar">Dankbar</option>
+                        </select>
+                        <div class="toolbar-actions">
+                            <button id="export-btn" class="small-btn" title="Eintraege exportieren">Exportieren</button>
+                            <label class="small-btn import-label" title="Eintraege importieren">
+                                Importieren
+                                <input type="file" id="import-input" accept=".json" hidden />
+                            </label>
+                        </div>
+                    </div>
                 </div>
                 <div id="entries-list" class="entries-list">
-                    <p class="empty-state">Noch keine Eintraege. Schreib deinen ersten Eintrag!</p>
+                    <div class="empty-state">
+                        <div class="empty-icon">&#128221;</div>
+                        <p>Noch keine Eintraege.</p>
+                        <p>Wechsle zum Tab "Schreiben" und verfasse deinen ersten Eintrag!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Stats Tab -->
+            <section class="tab-content" id="tab-stats">
+                <div class="stats-container" id="stats-container">
+                    <div class="empty-state">
+                        <div class="empty-icon">&#128202;</div>
+                        <p>Noch keine Daten fuer Statistiken.</p>
+                        <p>Schreib ein paar Eintraege, um deine Stimmungsuebersicht zu sehen!</p>
+                    </div>
                 </div>
             </section>
         </main>
 
+        <!-- Modal -->
         <div id="modal" class="modal hidden">
             <div class="modal-content">
                 <span class="modal-close" id="modal-close">&times;</span>
@@ -62,6 +117,9 @@
                 </div>
             </div>
         </div>
+
+        <!-- Toast -->
+        <div id="toast" class="toast hidden"></div>
     </div>
 
     <script src="app.js"></script>
