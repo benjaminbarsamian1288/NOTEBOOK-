@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mein Tagebuch</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <header>
+            <h1>Mein Tagebuch</h1>
+            <p class="subtitle">Deine Gedanken, sicher aufbewahrt</p>
+        </header>
+
+        <main>
+            <section class="editor">
+                <div class="editor-header">
+                    <input type="date" id="entry-date" />
+                    <select id="mood-select">
+                        <option value="">Stimmung...</option>
+                        <option value="gluecklich">Gluecklich</option>
+                        <option value="zufrieden">Zufrieden</option>
+                        <option value="nachdenklich">Nachdenklich</option>
+                        <option value="traurig">Traurig</option>
+                        <option value="wuetend">Wuetend</option>
+                        <option value="aufgeregt">Aufgeregt</option>
+                        <option value="muede">Muede</option>
+                        <option value="dankbar">Dankbar</option>
+                    </select>
+                </div>
+                <input type="text" id="entry-title" placeholder="Titel deines Eintrags..." />
+                <textarea id="entry-text" placeholder="Was bewegt dich heute?"></textarea>
+                <div class="editor-actions">
+                    <button id="save-btn">Speichern</button>
+                    <button id="cancel-btn" class="secondary">Abbrechen</button>
+                </div>
+            </section>
+
+            <section class="entries">
+                <div class="entries-header">
+                    <h2>Meine Eintraege</h2>
+                    <div class="search-bar">
+                        <input type="text" id="search-input" placeholder="Eintraege durchsuchen..." />
+                    </div>
+                </div>
+                <div id="entries-list" class="entries-list">
+                    <p class="empty-state">Noch keine Eintraege. Schreib deinen ersten Eintrag!</p>
+                </div>
+            </section>
+        </main>
+
+        <div id="modal" class="modal hidden">
+            <div class="modal-content">
+                <span class="modal-close" id="modal-close">&times;</span>
+                <h2 id="modal-title"></h2>
+                <p class="modal-meta" id="modal-meta"></p>
+                <div id="modal-body"></div>
+                <div class="modal-actions">
+                    <button id="modal-edit-btn">Bearbeiten</button>
+                    <button id="modal-delete-btn" class="danger">Loeschen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
