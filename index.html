@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktive Weltkarte</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a2e;
+            color: #e0e0e0;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        #header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 56px;
+            background: rgba(16, 16, 40, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        #header h1 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fff;
+            letter-spacing: 0.5px;
+        }
+
+        #controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        #controls button {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #ccc;
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        #controls button:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+        }
+
+        #search-box {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            width: 200px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        #search-box::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        #search-box:focus {
+            border-color: rgba(100, 149, 237, 0.6);
+        }
+
+        #map-container {
+            width: 100%;
+            height: 100vh;
+            padding-top: 56px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #world-map {
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+        }
+
+        #world-map:active {
+            cursor: grabbing;
+        }
+
+        #world-map path {
+            stroke: rgba(255, 255, 255, 0.2);
+            stroke-width: 0.5;
+            transition: fill 0.2s, stroke-width 0.2s;
+            cursor: pointer;
+        }
+
+        #world-map path:hover {
+            stroke: #fff;
+            stroke-width: 1.2;
+            filter: brightness(1.3);
+        }
+
+        #world-map path.highlighted {
+            stroke: #ffd700;
+            stroke-width: 2;
+            filter: brightness(1.5);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { filter: brightness(1.5); }
+            50% { filter: brightness(1.8); }
+        }
+
+        #tooltip {
+            position: fixed;
+            background: rgba(10, 10, 30, 0.95);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.15s;
+            z-index: 200;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            max-width: 280px;
+        }
+
+        #tooltip .country-name {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        #tooltip .country-info {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.65);
+            line-height: 1.4;
+        }
+
+        #legend {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(16, 16, 40, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 14px 18px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            z-index: 100;
+            font-size: 0.78rem;
+        }
+
+        #legend h3 {
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 12px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+
+        #zoom-info {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(16, 16, 40, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            z-index: 100;
+            font-size: 0.78rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Graticule lines */
+        .graticule {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.04);
+            stroke-width: 0.5;
+        }
+
+        .ocean {
+            fill: #16213e;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <h1>Interaktive Weltkarte</h1>
+        <div id="controls">
+            <input type="text" id="search-box" placeholder="Land suchen...">
+            <button onclick="zoomIn()">+</button>
+            <button onclick="zoomOut()">&minus;</button>
+            <button onclick="resetView()">Reset</button>
+        </div>
+    </div>
+    <div id="map-container">
+        <svg id="world-map" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+    <div id="tooltip">
+        <div class="country-name"></div>
+        <div class="country-info"></div>
+    </div>
+    <div id="legend">
+        <h3>Kontinente</h3>
+        <div class="legend-item"><div class="legend-color" style="background:#4a90d9"></div>Europa</div>
+        <div class="legend-item"><div class="legend-color" style="background:#e6854a"></div>Asien</div>
+        <div class="legend-item"><div class="legend-color" style="background:#5cb85c"></div>Afrika</div>
+        <div class="legend-item"><div class="legend-color" style="background:#d94a4a"></div>Nordamerika</div>
+        <div class="legend-item"><div class="legend-color" style="background:#d9c74a"></div>S&uuml;damerika</div>
+        <div class="legend-item"><div class="legend-color" style="background:#9b59b6"></div>Ozeanien</div>
+        <div class="legend-item"><div class="legend-color" style="background:#7fb3d8"></div>Antarktis</div>
+    </div>
+    <div id="zoom-info">Mausrad zum Zoomen &middot; Ziehen zum Verschieben</div>
+
+    <script>
+    // ============================================================
+    // World map data – simplified country outlines (Natural Earth)
+    // Using an Equirectangular projection for clarity
+    // ============================================================
+
+    const SVG_NS = "http://www.w3.org/2000/svg";
+    const svg = document.getElementById("world-map");
+    const tooltip = document.getElementById("tooltip");
+    const searchBox = document.getElementById("search-box");
+
+    // Projection parameters
+    const mapWidth = 1600;
+    const mapHeight = 800;
+    const centerX = mapWidth / 2;
+    const centerY = mapHeight / 2;
+
+    // Convert lat/lng to x/y
+    function projectX(lng) { return centerX + (lng / 180) * (mapWidth / 2); }
+    function projectY(lat) { return centerY - (lat / 90) * (mapHeight / 2); }
+
+    // Country data: simplified polygon outlines
+    // Format: { id, name, nameDE, continent, capital, population, paths: [[[lng,lat], ...]] }
+    const countries = [
+        // ============ EUROPE ============
+        { id:"IS", name:"Iceland", nameDE:"Island", continent:"Europa", capital:"Reykjavik", population:"370.000",
+          paths:[[[-24,66.5],[-22,66],[-14,65],[-13,66],[-18,66.5],[-24,66.5]]]},
+        { id:"NO", name:"Norway", nameDE:"Norwegen", continent:"Europa", capital:"Oslo", population:"5,4 Mio.",
+          paths:[[[5,58],[5,62],[7,63],[12,65],[14,67],[16,69],[20,70],[25,71],[31,70],[30,69],[27,67],[20,65],[15,62],[12,58],[5,58]]]},
+        { id:"SE", name:"Sweden", nameDE:"Schweden", continent:"Europa", capital:"Stockholm", population:"10,4 Mio.",
+          paths:[[[12,56],[12,58],[15,62],[20,65],[24,67],[22,69],[18,69],[16,67],[14,65],[12,63],[11,61],[12,58],[12,56],[14,56],[18,56],[18,59],[17,62],[19,64],[20,65]]]},
+        { id:"FI", name:"Finland", nameDE:"Finnland", continent:"Europa", capital:"Helsinki", population:"5,5 Mio.",
+          paths:[[[22,60],[24,60],[25,61],[27,63],[29,65],[28,67],[26,69],[25,70],[22,69],[21,67],[23,65],[24,63],[23,61],[22,60]]]},
+        { id:"GB", name:"United Kingdom", nameDE:"Vereinigtes Königreich", continent:"Europa", capital:"London", population:"67 Mio.",
+          paths:[[[-6,50],[-5,51],[0,51],[2,53],[0,54],[-2,55],[-3,56],[-5,57],[-6,58],[-5,58],[-3,58],[-2,57],[0,57],[-1,55],[-3,54],[-5,52],[-6,50]]]},
+        { id:"IE", name:"Ireland", nameDE:"Irland", continent:"Europa", capital:"Dublin", population:"5 Mio.",
+          paths:[[[-10,52],[-10,54],[-8,55],[-6,55],[-6,53],[-8,52],[-10,52]]]},
+        { id:"FR", name:"France", nameDE:"Frankreich", continent:"Europa", capital:"Paris", population:"67 Mio.",
+          paths:[[[-2,43],[-1,43],[0,42],[3,43],[5,43],[7,44],[7,47],[8,48],[6,49],[2,51],[2,49],[0,48],[-1,47],[-2,47],[-4,48],[-5,48],[-3,47],[-2,46],[-1,44],[-2,43]]]},
+        { id:"ES", name:"Spain", nameDE:"Spanien", continent:"Europa", capital:"Madrid", population:"47 Mio.",
+          paths:[[[-9,36],[-7,37],[-6,37],[-5,36],[0,37],[2,39],[3,40],[3,42],[0,43],[-2,43],[-2,44],[-8,44],[-9,43],[-9,42],[-7,40],[-7,38],[-9,36]]]},
+        { id:"PT", name:"Portugal", nameDE:"Portugal", continent:"Europa", capital:"Lissabon", population:"10 Mio.",
+          paths:[[[-9,37],[-7,37],[-7,40],[-8,42],[-9,42],[-9,37]]]},
+        { id:"DE", name:"Germany", nameDE:"Deutschland", continent:"Europa", capital:"Berlin", population:"83 Mio.",
+          paths:[[[6,47],[6,49],[6,50],[6,51],[7,52],[7,54],[8,55],[10,55],[11,54],[14,54],[15,53],[15,51],[13,50],[12,49],[13,48],[13,47],[10,47],[8,48],[6,47]]]},
+        { id:"PL", name:"Poland", nameDE:"Polen", continent:"Europa", capital:"Warschau", population:"38 Mio.",
+          paths:[[[14,54],[15,51],[16,51],[18,50],[20,50],[24,51],[24,52],[23,53],[21,54],[19,54],[15,54],[14,54]]]},
+        { id:"IT", name:"Italy", nameDE:"Italien", continent:"Europa", capital:"Rom", population:"60 Mio.",
+          paths:[[[7,44],[8,44],[11,46],[13,47],[14,46],[13,44],[16,42],[16,39],[15,38],[16,38],[15,37],[13,38],[12,38],[12,41],[11,43],[9,44],[7,44]]]},
+        { id:"GR", name:"Greece", nameDE:"Griechenland", continent:"Europa", capital:"Athen", population:"10,7 Mio.",
+          paths:[[[20,36],[21,37],[20,38],[21,39],[21,40],[24,41],[26,41],[26,40],[24,38],[23,37],[22,37],[21,36],[20,36]]]},
+        { id:"TR", name:"Turkey", nameDE:"Türkei", continent:"Asien", capital:"Ankara", population:"84 Mio.",
+          paths:[[[26,41],[28,41],[29,41],[33,42],[36,42],[40,40],[44,40],[44,38],[42,37],[39,37],[36,37],[33,36],[30,36],[28,37],[26,38],[27,40],[26,41]]]},
+        { id:"UA", name:"Ukraine", nameDE:"Ukraine", continent:"Europa", capital:"Kiew", population:"44 Mio.",
+          paths:[[[22,48],[24,48],[24,51],[28,52],[32,52],[36,50],[40,50],[40,48],[38,47],[35,46],[33,46],[30,46],[28,46],[25,48],[22,48]]]},
+        { id:"RO", name:"Romania", nameDE:"Rumänien", continent:"Europa", capital:"Bukarest", population:"19 Mio.",
+          paths:[[[22,44],[23,44],[25,44],[27,44],[28,44],[30,46],[28,48],[26,48],[24,48],[22,48],[22,46],[22,44]]]},
+        { id:"AT", name:"Austria", nameDE:"Österreich", continent:"Europa", capital:"Wien", population:"9 Mio.",
+          paths:[[[10,47],[13,47],[13,48],[15,49],[17,49],[17,48],[16,47],[14,46],[12,47],[10,47]]]},
+        { id:"CH", name:"Switzerland", nameDE:"Schweiz", continent:"Europa", capital:"Bern", population:"8,7 Mio.",
+          paths:[[[6,46],[6,47],[8,48],[10,47],[10,46],[8,46],[6,46]]]},
+        { id:"NL", name:"Netherlands", nameDE:"Niederlande", continent:"Europa", capital:"Amsterdam", population:"17 Mio.",
+          paths:[[[4,51],[4,52],[5,53],[7,54],[7,52],[6,51],[4,51]]]},
+        { id:"BE", name:"Belgium", nameDE:"Belgien", continent:"Europa", capital:"Brüssel", population:"11,5 Mio.",
+          paths:[[[3,50],[3,51],[4,51],[6,51],[6,50],[5,49],[3,50]]]},
+        { id:"CZ", name:"Czech Republic", nameDE:"Tschechien", continent:"Europa", capital:"Prag", population:"10,7 Mio.",
+          paths:[[[13,48],[13,50],[15,51],[16,51],[18,50],[17,49],[15,49],[13,48]]]},
+        { id:"HU", name:"Hungary", nameDE:"Ungarn", continent:"Europa", capital:"Budapest", population:"9,7 Mio.",
+          paths:[[[16,46],[17,48],[18,48],[20,49],[22,48],[22,46],[20,46],[18,46],[16,46]]]},
+        { id:"DK", name:"Denmark", nameDE:"Dänemark", continent:"Europa", capital:"Kopenhagen", population:"5,8 Mio.",
+          paths:[[[8,55],[10,55],[10,57],[12,56],[12,55],[10,55],[8,55]]]},
+        { id:"BG", name:"Bulgaria", nameDE:"Bulgarien", continent:"Europa", capital:"Sofia", population:"7 Mio.",
+          paths:[[[22,42],[23,42],[25,42],[28,44],[27,44],[25,44],[22,44],[22,42]]]},
+        { id:"RS", name:"Serbia", nameDE:"Serbien", continent:"Europa", capital:"Belgrad", population:"6,9 Mio.",
+          paths:[[[19,43],[20,43],[22,44],[22,46],[20,46],[19,45],[19,43]]]},
+        { id:"HR", name:"Croatia", nameDE:"Kroatien", continent:"Europa", capital:"Zagreb", population:"4 Mio.",
+          paths:[[[14,43],[14,45],[16,46],[18,46],[19,45],[19,43],[16,43],[14,43]]]},
+        { id:"SK", name:"Slovakia", nameDE:"Slowakei", continent:"Europa", capital:"Bratislava", population:"5,5 Mio.",
+          paths:[[[17,48],[17,49],[18,49],[20,49],[22,49],[22,48],[20,48],[17,48]]]},
+        { id:"BY", name:"Belarus", nameDE:"Belarus", continent:"Europa", capital:"Minsk", population:"9,4 Mio.",
+          paths:[[[24,52],[24,54],[26,55],[28,56],[30,55],[32,54],[32,52],[28,52],[24,52]]]},
+        { id:"LT", name:"Lithuania", nameDE:"Litauen", continent:"Europa", capital:"Vilnius", population:"2,8 Mio.",
+          paths:[[[21,54],[22,55],[24,56],[26,55],[26,54],[24,54],[21,54]]]},
+        { id:"LV", name:"Latvia", nameDE:"Lettland", continent:"Europa", capital:"Riga", population:"1,9 Mio.",
+          paths:[[[21,56],[22,57],[24,58],[26,57],[28,56],[26,55],[24,56],[22,55],[21,56]]]},
+        { id:"EE", name:"Estonia", nameDE:"Estland", continent:"Europa", capital:"Tallinn", population:"1,3 Mio.",
+          paths:[[[22,58],[22,59],[24,60],[26,59],[28,58],[26,57],[24,58],[22,58]]]},
+        { id:"AL", name:"Albania", nameDE:"Albanien", continent:"Europa", capital:"Tirana", population:"2,9 Mio.",
+          paths:[[[19,40],[20,40],[21,41],[20,42],[19,42],[19,40]]]},
+        { id:"BA", name:"Bosnia", nameDE:"Bosnien-Herzegowina", continent:"Europa", capital:"Sarajevo", population:"3,3 Mio.",
+          paths:[[[16,43],[17,43],[19,43],[19,45],[18,45],[16,44],[16,43]]]},
+
+        // ============ ASIA ============
+        { id:"RU", name:"Russia", nameDE:"Russland", continent:"Europa", capital:"Moskau", population:"146 Mio.",
+          paths:[[[28,56],[30,55],[32,54],[36,54],[40,56],[50,55],[60,56],[70,58],[80,60],[90,62],[100,65],[110,68],[120,70],[140,72],[160,70],[175,68],[180,66],[190,64],[180,60],[170,56],[160,52],[150,48],[145,44],[140,44],[135,48],[130,48],[128,50],[130,54],[140,56],[145,58],[150,60],[155,58],[160,55],[170,58],[180,62],[180,66]],
+                 [[28,56],[30,58],[32,60],[36,62],[40,60],[50,58],[60,58],[70,60],[80,62],[90,64],[100,66],[110,70],[120,72],[130,72],[140,73],[150,72],[160,72],[170,70],[180,68]],
+                 [[30,42],[32,45],[35,46],[38,47],[40,48],[44,42],[46,42],[48,40],[50,42],[54,42],[56,45],[60,45],[60,50],[56,52],[50,55],[40,56],[36,54],[32,54],[30,52],[28,52],[28,48],[30,46],[30,42]]]},
+        { id:"CN", name:"China", nameDE:"China", continent:"Asien", capital:"Peking", population:"1,4 Mrd.",
+          paths:[[[75,40],[78,36],[80,32],[84,28],[90,28],[97,28],[100,22],[104,22],[108,18],[110,20],[115,22],[118,24],[120,30],[122,32],[124,40],[128,42],[128,50],[120,48],[115,46],[110,42],[100,40],[90,44],[82,42],[75,40]]]},
+        { id:"IN", name:"India", nameDE:"Indien", continent:"Asien", capital:"Neu-Delhi", population:"1,4 Mrd.",
+          paths:[[[68,8],[70,10],[72,14],[72,20],[73,24],[70,28],[72,32],[76,34],[78,32],[80,30],[84,28],[88,26],[90,22],[88,20],[85,16],[82,12],[80,8],[78,8],[76,10],[74,12],[72,10],[68,8]]]},
+        { id:"JP", name:"Japan", nameDE:"Japan", continent:"Asien", capital:"Tokio", population:"126 Mio.",
+          paths:[[[130,31],[132,33],[134,35],[136,36],[138,37],[140,38],[140,40],[142,42],[144,44],[142,45],[140,43],[138,38],[136,36],[134,34],[132,32],[130,31]]]},
+        { id:"KR", name:"South Korea", nameDE:"Südkorea", continent:"Asien", capital:"Seoul", population:"52 Mio.",
+          paths:[[[126,34],[127,35],[128,37],[130,38],[129,36],[128,35],[126,34]]]},
+        { id:"KP", name:"North Korea", nameDE:"Nordkorea", continent:"Asien", capital:"Pjöngjang", population:"26 Mio.",
+          paths:[[[125,38],[126,38],[128,40],[130,42],[128,42],[126,40],[125,38]]]},
+        { id:"MN", name:"Mongolia", nameDE:"Mongolei", continent:"Asien", capital:"Ulan Bator", population:"3,3 Mio.",
+          paths:[[[88,42],[92,46],[98,48],[104,48],[110,46],[116,48],[120,48],[118,44],[112,42],[104,42],[96,42],[88,42]]]},
+        { id:"KZ", name:"Kazakhstan", nameDE:"Kasachstan", continent:"Asien", capital:"Nur-Sultan", population:"19 Mio.",
+          paths:[[[50,42],[52,44],[56,45],[60,45],[64,46],[68,44],[72,44],[76,44],[80,44],[82,42],[80,40],[75,40],[70,42],[65,42],[60,40],[56,40],[54,42],[50,42]]]},
+        { id:"UZ", name:"Uzbekistan", nameDE:"Usbekistan", continent:"Asien", capital:"Taschkent", population:"34 Mio.",
+          paths:[[[56,38],[58,40],[60,40],[62,42],[66,42],[68,40],[68,38],[66,38],[62,38],[58,38],[56,38]]]},
+        { id:"SA", name:"Saudi Arabia", nameDE:"Saudi-Arabien", continent:"Asien", capital:"Riad", population:"35 Mio.",
+          paths:[[[36,16],[38,18],[40,20],[44,22],[46,24],[48,24],[50,24],[52,22],[54,24],[56,24],[56,22],[52,18],[50,16],[46,16],[42,18],[38,16],[36,16]]]},
+        { id:"IR", name:"Iran", nameDE:"Iran", continent:"Asien", capital:"Teheran", population:"84 Mio.",
+          paths:[[[44,26],[46,28],[48,30],[48,34],[50,36],[52,38],[54,38],[56,36],[60,36],[62,34],[60,32],[60,28],[56,26],[54,26],[50,26],[48,26],[44,26]]]},
+        { id:"IQ", name:"Iraq", nameDE:"Irak", continent:"Asien", capital:"Bagdad", population:"41 Mio.",
+          paths:[[[39,30],[40,32],[42,34],[44,36],[46,36],[48,34],[48,30],[46,30],[44,30],[42,30],[39,30]]]},
+        { id:"AF", name:"Afghanistan", nameDE:"Afghanistan", continent:"Asien", capital:"Kabul", population:"39 Mio.",
+          paths:[[[62,30],[64,32],[66,36],[68,38],[70,36],[72,36],[74,36],[74,34],[72,32],[68,30],[66,30],[62,30]]]},
+        { id:"PK", name:"Pakistan", nameDE:"Pakistan", continent:"Asien", capital:"Islamabad", population:"220 Mio.",
+          paths:[[[62,24],[62,28],[62,30],[66,30],[68,30],[72,32],[74,34],[76,34],[76,32],[72,28],[70,24],[68,24],[64,24],[62,24]]]},
+        { id:"TH", name:"Thailand", nameDE:"Thailand", continent:"Asien", capital:"Bangkok", population:"70 Mio.",
+          paths:[[[98,6],[99,8],[100,10],[100,14],[100,18],[102,20],[104,18],[104,16],[102,14],[100,12],[100,8],[99,6],[98,6]]]},
+        { id:"VN", name:"Vietnam", nameDE:"Vietnam", continent:"Asien", capital:"Hanoi", population:"97 Mio.",
+          paths:[[[104,8],[106,10],[108,12],[108,16],[106,18],[104,20],[106,22],[108,22],[108,20],[108,16],[108,12],[106,10],[104,8]]]},
+        { id:"MM", name:"Myanmar", nameDE:"Myanmar", continent:"Asien", capital:"Naypyidaw", population:"54 Mio.",
+          paths:[[[92,10],[94,12],[96,16],[98,20],[100,20],[100,18],[98,16],[98,12],[96,10],[92,10]]]},
+        { id:"ID", name:"Indonesia", nameDE:"Indonesien", continent:"Asien", capital:"Jakarta", population:"274 Mio.",
+          paths:[[[95,-8],[98,-7],[100,-5],[104,-6],[106,-6],[108,-7],[110,-8],[112,-8],[114,-8],[116,-8],[118,-8],[120,-8],[122,-7],[124,-6],[126,-4],[128,-4],[130,-3],[132,-4],[134,-4],[136,-6],[138,-7],[140,-8],[140,-6],[138,-4],[134,-2],[130,-1],[126,-2],[122,-4],[118,-5],[114,-6],[110,-7],[106,-5],[102,-3],[98,-4],[95,-8]]]},
+        { id:"PH", name:"Philippines", nameDE:"Philippinen", continent:"Asien", capital:"Manila", population:"110 Mio.",
+          paths:[[[118,6],[119,8],[120,10],[121,12],[122,14],[122,18],[121,18],[120,16],[119,14],[118,12],[117,10],[118,8],[118,6]]]},
+        { id:"MY", name:"Malaysia", nameDE:"Malaysia", continent:"Asien", capital:"Kuala Lumpur", population:"32 Mio.",
+          paths:[[[100,1],[102,2],[104,2],[104,1],[102,1],[100,1]],[[108,1],[110,2],[112,3],[114,4],[116,4],[118,5],[118,3],[116,2],[114,1],[112,1],[110,0],[108,1]]]},
+        { id:"BD", name:"Bangladesh", nameDE:"Bangladesch", continent:"Asien", capital:"Dhaka", population:"166 Mio.",
+          paths:[[[88,22],[90,22],[92,22],[92,24],[90,26],[88,24],[88,22]]]},
+        { id:"NP", name:"Nepal", nameDE:"Nepal", continent:"Asien", capital:"Kathmandu", population:"30 Mio.",
+          paths:[[[80,27],[82,28],[84,28],[86,28],[88,27],[86,26],[84,27],[82,27],[80,27]]]},
+        { id:"SY", name:"Syria", nameDE:"Syrien", continent:"Asien", capital:"Damaskus", population:"18 Mio.",
+          paths:[[[36,33],[37,34],[38,36],[40,37],[42,37],[42,35],[40,34],[38,33],[36,33]]]},
+        { id:"IL", name:"Israel", nameDE:"Israel", continent:"Asien", capital:"Jerusalem", population:"9,4 Mio.",
+          paths:[[[34,30],[35,31],[35,33],[36,33],[35,32],[35,30],[34,30]]]},
+        { id:"JO", name:"Jordan", nameDE:"Jordanien", continent:"Asien", capital:"Amman", population:"10 Mio.",
+          paths:[[[35,29],[35,31],[36,33],[38,33],[39,32],[39,30],[37,30],[36,29],[35,29]]]},
+        { id:"AE", name:"UAE", nameDE:"Ver. Arabische Emirate", continent:"Asien", capital:"Abu Dhabi", population:"10 Mio.",
+          paths:[[[52,22],[52,24],[54,24],[56,24],[56,23],[55,22],[52,22]]]},
+        { id:"GE", name:"Georgia", nameDE:"Georgien", continent:"Asien", capital:"Tiflis", population:"3,7 Mio.",
+          paths:[[[40,41],[42,42],[44,42],[46,42],[44,41],[42,41],[40,41]]]},
+        { id:"AZ", name:"Azerbaijan", nameDE:"Aserbaidschan", continent:"Asien", capital:"Baku", population:"10 Mio.",
+          paths:[[[46,38],[46,40],[48,40],[50,40],[50,38],[48,38],[46,38]]]},
+        { id:"TM", name:"Turkmenistan", nameDE:"Turkmenistan", continent:"Asien", capital:"Aschgabat", population:"6 Mio.",
+          paths:[[[52,36],[54,38],[56,38],[58,38],[60,38],[62,38],[60,36],[58,36],[54,36],[52,36]]]},
+        { id:"KG", name:"Kyrgyzstan", nameDE:"Kirgisistan", continent:"Asien", capital:"Bischkek", population:"6,6 Mio.",
+          paths:[[[70,40],[72,42],[74,42],[76,42],[78,40],[76,40],[74,40],[72,40],[70,40]]]},
+        { id:"TJ", name:"Tajikistan", nameDE:"Tadschikistan", continent:"Asien", capital:"Duschanbe", population:"9,5 Mio.",
+          paths:[[[68,36],[68,38],[70,40],[72,40],[72,38],[70,36],[68,36]]]},
+        { id:"LK", name:"Sri Lanka", nameDE:"Sri Lanka", continent:"Asien", capital:"Colombo", population:"22 Mio.",
+          paths:[[[80,6],[80,8],[81,10],[82,8],[82,6],[80,6]]]},
+        { id:"KH", name:"Cambodia", nameDE:"Kambodscha", continent:"Asien", capital:"Phnom Penh", population:"17 Mio.",
+          paths:[[[102,10],[104,12],[106,12],[106,10],[104,10],[102,10]]]},
+        { id:"LA", name:"Laos", nameDE:"Laos", continent:"Asien", capital:"Vientiane", population:"7,3 Mio.",
+          paths:[[[100,14],[102,16],[104,18],[106,18],[106,16],[104,14],[102,14],[100,14]]]},
+
+        // ============ AFRICA ============
+        { id:"EG", name:"Egypt", nameDE:"Ägypten", continent:"Afrika", capital:"Kairo", population:"102 Mio.",
+          paths:[[[25,22],[25,30],[28,31],[32,31],[35,30],[36,28],[34,24],[32,22],[25,22]]]},
+        { id:"LY", name:"Libya", nameDE:"Libyen", continent:"Afrika", capital:"Tripolis", population:"7 Mio.",
+          paths:[[[10,24],[10,30],[12,32],[14,33],[16,32],[20,32],[22,32],[25,30],[25,22],[24,20],[20,20],[16,22],[12,24],[10,24]]]},
+        { id:"DZ", name:"Algeria", nameDE:"Algerien", continent:"Afrika", capital:"Algier", population:"44 Mio.",
+          paths:[[[-2,20],[0,24],[2,30],[3,35],[4,37],[6,37],[8,36],[10,34],[10,30],[10,24],[8,20],[4,20],[0,20],[-2,20]]]},
+        { id:"MA", name:"Morocco", nameDE:"Marokko", continent:"Afrika", capital:"Rabat", population:"37 Mio.",
+          paths:[[[-12,28],[-8,28],[-2,28],[-2,32],[0,34],[2,36],[-2,36],[-5,36],[-6,35],[-8,34],[-10,32],[-12,30],[-12,28]]]},
+        { id:"TN", name:"Tunisia", nameDE:"Tunesien", continent:"Afrika", capital:"Tunis", population:"12 Mio.",
+          paths:[[[8,34],[8,36],[9,37],[10,37],[11,37],[11,34],[10,32],[8,34]]]},
+        { id:"NG", name:"Nigeria", nameDE:"Nigeria", continent:"Afrika", capital:"Abuja", population:"211 Mio.",
+          paths:[[[3,4],[4,6],[4,8],[3,10],[4,12],[6,14],[8,14],[10,14],[12,14],[14,13],[14,10],[12,8],[10,6],[8,4],[6,4],[3,4]]]},
+        { id:"ZA", name:"South Africa", nameDE:"Südafrika", continent:"Afrika", capital:"Pretoria", population:"60 Mio.",
+          paths:[[[17,-34],[18,-34],[20,-34],[22,-34],[26,-34],[28,-33],[30,-32],[32,-30],[32,-28],[30,-26],[30,-24],[28,-22],[26,-22],[24,-22],[20,-22],[18,-24],[16,-26],[16,-28],[18,-30],[18,-32],[17,-34]]]},
+        { id:"KE", name:"Kenya", nameDE:"Kenia", continent:"Afrika", capital:"Nairobi", population:"54 Mio.",
+          paths:[[[34,-1],[34,2],[36,4],[38,4],[40,2],[42,0],[42,-2],[40,-4],[38,-4],[36,-2],[34,-1]]]},
+        { id:"ET", name:"Ethiopia", nameDE:"Äthiopien", continent:"Afrika", capital:"Addis Abeba", population:"118 Mio.",
+          paths:[[[33,4],[34,6],[36,8],[38,10],[40,12],[42,12],[44,10],[46,8],[48,8],[46,6],[44,4],[42,4],[40,4],[38,4],[36,4],[33,4]]]},
+        { id:"TZ", name:"Tanzania", nameDE:"Tansania", continent:"Afrika", capital:"Dodoma", population:"62 Mio.",
+          paths:[[[30,-1],[30,-4],[30,-8],[32,-10],[34,-11],[36,-10],[38,-8],[40,-6],[40,-4],[38,-4],[36,-2],[34,-1],[30,-1]]]},
+        { id:"CD", name:"DR Congo", nameDE:"Dem. Rep. Kongo", continent:"Afrika", capital:"Kinshasa", population:"92 Mio.",
+          paths:[[[12,-6],[14,-6],[16,-4],[18,-2],[20,0],[22,2],[24,2],[26,2],[28,2],[30,2],[32,0],[30,-1],[30,-4],[30,-6],[30,-8],[28,-8],[26,-6],[24,-6],[22,-6],[20,-4],[18,-4],[16,-6],[14,-6],[12,-6]]]},
+        { id:"AO", name:"Angola", nameDE:"Angola", continent:"Afrika", capital:"Luanda", population:"33 Mio.",
+          paths:[[[12,-6],[12,-8],[12,-10],[14,-12],[16,-14],[18,-16],[18,-18],[20,-18],[22,-18],[24,-18],[24,-14],[24,-10],[22,-8],[20,-6],[18,-6],[16,-6],[14,-6],[12,-6]]]},
+        { id:"MZ", name:"Mozambique", nameDE:"Mosambik", continent:"Afrika", capital:"Maputo", population:"32 Mio.",
+          paths:[[[32,-10],[34,-12],[36,-14],[36,-18],[36,-22],[34,-24],[32,-26],[30,-26],[30,-22],[32,-18],[32,-14],[32,-10]]]},
+        { id:"GH", name:"Ghana", nameDE:"Ghana", continent:"Afrika", capital:"Accra", population:"31 Mio.",
+          paths:[[[-3,5],[-2,6],[-1,8],[0,10],[0,12],[-1,12],[-2,12],[-3,10],[-3,8],[-3,5]]]},
+        { id:"CM", name:"Cameroon", nameDE:"Kamerun", continent:"Afrika", capital:"Yaoundé", population:"27 Mio.",
+          paths:[[[8,2],[10,4],[12,6],[12,8],[14,10],[14,13],[16,12],[16,10],[14,8],[14,6],[12,4],[10,2],[8,2]]]},
+        { id:"CI", name:"Ivory Coast", nameDE:"Elfenbeinküste", continent:"Afrika", capital:"Yamoussoukro", population:"27 Mio.",
+          paths:[[[-8,5],[-6,5],[-4,6],[-3,8],[-3,10],[-5,10],[-7,10],[-8,8],[-8,5]]]},
+        { id:"NE", name:"Niger", nameDE:"Niger", continent:"Afrika", capital:"Niamey", population:"25 Mio.",
+          paths:[[[0,12],[2,14],[4,16],[8,18],[10,20],[12,22],[14,22],[16,20],[16,16],[14,14],[12,14],[10,14],[8,14],[6,14],[4,12],[2,12],[0,12]]]},
+        { id:"ML", name:"Mali", nameDE:"Mali", continent:"Afrika", capital:"Bamako", population:"21 Mio.",
+          paths:[[[-12,10],[-10,14],[-8,16],[-4,18],[-2,20],[0,20],[4,20],[4,16],[2,14],[0,12],[-2,12],[-4,12],[-6,10],[-8,10],[-12,10]]]},
+        { id:"SD", name:"Sudan", nameDE:"Sudan", continent:"Afrika", capital:"Khartum", population:"44 Mio.",
+          paths:[[[22,10],[24,12],[26,14],[28,16],[30,18],[32,20],[34,22],[36,22],[38,18],[36,16],[34,12],[32,10],[30,8],[28,8],[26,8],[24,10],[22,10]]]},
+        { id:"TD", name:"Chad", nameDE:"Tschad", continent:"Afrika", capital:"N'Djamena", population:"17 Mio.",
+          paths:[[[14,8],[14,10],[14,14],[16,16],[16,20],[18,22],[20,22],[22,22],[24,20],[24,16],[24,12],[22,10],[20,8],[18,8],[16,8],[14,8]]]},
+        { id:"MG", name:"Madagascar", nameDE:"Madagaskar", continent:"Afrika", capital:"Antananarivo", population:"28 Mio.",
+          paths:[[[44,-12],[46,-14],[48,-16],[50,-20],[50,-24],[48,-26],[46,-24],[44,-20],[44,-16],[44,-12]]]},
+        { id:"SN", name:"Senegal", nameDE:"Senegal", continent:"Afrika", capital:"Dakar", population:"17 Mio.",
+          paths:[[[-17,12],[-16,13],[-14,14],[-12,14],[-12,12],[-14,12],[-16,12],[-17,12]]]},
+        { id:"ZW", name:"Zimbabwe", nameDE:"Simbabwe", continent:"Afrika", capital:"Harare", population:"15 Mio.",
+          paths:[[[26,-16],[28,-16],[30,-16],[32,-18],[32,-22],[30,-22],[28,-22],[26,-22],[26,-18],[26,-16]]]},
+        { id:"ZM", name:"Zambia", nameDE:"Sambia", continent:"Afrika", capital:"Lusaka", population:"19 Mio.",
+          paths:[[[22,-8],[24,-10],[26,-12],[28,-12],[30,-12],[32,-14],[30,-16],[28,-16],[26,-16],[24,-16],[22,-16],[22,-12],[22,-8]]]},
+        { id:"UG", name:"Uganda", nameDE:"Uganda", continent:"Afrika", capital:"Kampala", population:"47 Mio.",
+          paths:[[[30,0],[30,2],[32,4],[34,4],[34,2],[34,0],[32,-1],[30,-1],[30,0]]]},
+        { id:"NA", name:"Namibia", nameDE:"Namibia", continent:"Afrika", capital:"Windhoek", population:"2,5 Mio.",
+          paths:[[[12,-18],[12,-22],[14,-26],[16,-28],[18,-28],[20,-28],[20,-24],[20,-22],[18,-18],[16,-18],[14,-18],[12,-18]]]},
+        { id:"BW", name:"Botswana", nameDE:"Botswana", continent:"Afrika", capital:"Gaborone", population:"2,4 Mio.",
+          paths:[[[20,-18],[20,-22],[22,-24],[24,-24],[26,-24],[28,-22],[26,-20],[24,-18],[22,-18],[20,-18]]]},
+        { id:"SO", name:"Somalia", nameDE:"Somalia", continent:"Afrika", capital:"Mogadischu", population:"16 Mio.",
+          paths:[[[42,0],[44,2],[46,4],[48,8],[50,10],[50,6],[48,4],[46,0],[44,-1],[42,0]]]},
+
+        // ============ NORTH AMERICA ============
+        { id:"CA", name:"Canada", nameDE:"Kanada", continent:"Nordamerika", capital:"Ottawa", population:"38 Mio.",
+          paths:[[[-140,60],[-135,58],[-130,55],[-125,50],[-120,49],[-110,49],[-100,49],[-95,49],[-90,48],[-85,46],[-82,44],[-80,44],[-78,44],[-76,44],[-74,45],[-70,47],[-66,48],[-64,46],[-60,47],[-56,48],[-54,47],[-52,48],[-56,50],[-58,52],[-60,53],[-65,54],[-60,56],[-64,58],[-68,60],[-72,62],[-78,64],[-84,66],[-90,68],[-96,70],[-100,72],[-110,74],[-120,72],[-130,70],[-136,68],[-140,70],[-140,60]]]},
+        { id:"US", name:"United States", nameDE:"Vereinigte Staaten", continent:"Nordamerika", capital:"Washington D.C.", population:"331 Mio.",
+          paths:[[[-125,48],[-124,42],[-120,35],[-118,34],[-114,32],[-110,32],[-108,32],[-104,32],[-100,30],[-98,26],[-96,26],[-94,29],[-90,29],[-88,30],[-86,30],[-84,30],[-82,30],[-82,32],[-80,32],[-78,34],[-76,36],[-76,38],[-74,40],[-72,42],[-70,44],[-68,46],[-66,48],[-70,47],[-74,45],[-76,44],[-78,44],[-80,44],[-82,44],[-84,46],[-86,46],[-88,46],[-90,48],[-92,48],[-95,49],[-100,49],[-110,49],[-120,49],[-125,48]],
+                 [[-170,52],[-168,54],[-164,56],[-160,58],[-155,60],[-150,62],[-148,64],[-148,66],[-150,68],[-155,70],[-160,71],[-165,70],[-168,68],[-170,66],[-165,62],[-162,58],[-166,56],[-170,52]]]},
+        { id:"MX", name:"Mexico", nameDE:"Mexiko", continent:"Nordamerika", capital:"Mexiko-Stadt", population:"130 Mio.",
+          paths:[[[-118,32],[-114,32],[-110,32],[-108,32],[-104,32],[-100,30],[-98,26],[-96,26],[-96,20],[-94,18],[-92,16],[-90,16],[-88,18],[-88,20],[-90,22],[-92,20],[-96,18],[-100,18],[-104,20],[-106,22],[-108,24],[-110,26],[-112,28],[-114,30],[-118,32]]]},
+        { id:"GT", name:"Guatemala", nameDE:"Guatemala", continent:"Nordamerika", capital:"Guatemala-Stadt", population:"18 Mio.",
+          paths:[[[-92,14],[-90,14],[-88,14],[-88,16],[-90,16],[-92,16],[-92,14]]]},
+        { id:"CU", name:"Cuba", nameDE:"Kuba", continent:"Nordamerika", capital:"Havanna", population:"11 Mio.",
+          paths:[[[-84,22],[-82,22],[-80,22],[-78,20],[-76,20],[-74,20],[-76,22],[-78,22],[-80,23],[-82,23],[-84,22]]]},
+        { id:"HN", name:"Honduras", nameDE:"Honduras", continent:"Nordamerika", capital:"Tegucigalpa", population:"10 Mio.",
+          paths:[[[-89,13],[-88,14],[-86,15],[-84,15],[-84,14],[-86,13],[-88,13],[-89,13]]]},
+        { id:"NI", name:"Nicaragua", nameDE:"Nicaragua", continent:"Nordamerika", capital:"Managua", population:"6,6 Mio.",
+          paths:[[[-87,11],[-86,12],[-84,14],[-84,12],[-84,11],[-86,11],[-87,11]]]},
+        { id:"CR", name:"Costa Rica", nameDE:"Costa Rica", continent:"Nordamerika", capital:"San José", population:"5,1 Mio.",
+          paths:[[[-86,8],[-84,10],[-82,10],[-82,8],[-84,8],[-86,8]]]},
+        { id:"PA", name:"Panama", nameDE:"Panama", continent:"Nordamerika", capital:"Panama-Stadt", population:"4,3 Mio.",
+          paths:[[[-82,8],[-80,9],[-78,9],[-77,8],[-78,7],[-80,7],[-82,8]]]},
+        { id:"HT", name:"Haiti", nameDE:"Haiti", continent:"Nordamerika", capital:"Port-au-Prince", population:"11 Mio.",
+          paths:[[[-74,18],[-73,19],[-72,20],[-72,18],[-74,18]]]},
+        { id:"DO", name:"Dominican Republic", nameDE:"Dominikanische Republik", continent:"Nordamerika", capital:"Santo Domingo", population:"11 Mio.",
+          paths:[[[-72,18],[-70,18],[-68,18],[-68,20],[-70,20],[-72,20],[-72,18]]]},
+        { id:"JM", name:"Jamaica", nameDE:"Jamaika", continent:"Nordamerika", capital:"Kingston", population:"3 Mio.",
+          paths:[[[-78,18],[-77,18],[-76,18],[-76,19],[-78,19],[-78,18]]]},
+        { id:"GL", name:"Greenland", nameDE:"Grönland", continent:"Nordamerika", capital:"Nuuk", population:"56.000",
+          paths:[[[-54,60],[-50,62],[-44,64],[-40,66],[-36,68],[-30,72],[-24,76],[-28,78],[-34,80],[-40,82],[-48,82],[-54,80],[-58,78],[-62,76],[-65,72],[-62,68],[-58,64],[-54,60]]]},
+
+        // ============ SOUTH AMERICA ============
+        { id:"BR", name:"Brazil", nameDE:"Brasilien", continent:"Südamerika", capital:"Brasília", population:"214 Mio.",
+          paths:[[[-60,5],[-56,4],[-52,4],[-48,2],[-44,0],[-40,-2],[-38,-4],[-36,-6],[-35,-8],[-35,-10],[-38,-14],[-40,-16],[-42,-20],[-44,-22],[-46,-24],[-48,-28],[-50,-30],[-52,-32],[-54,-34],[-56,-32],[-58,-30],[-58,-26],[-58,-22],[-60,-20],[-62,-18],[-64,-16],[-66,-14],[-68,-12],[-70,-10],[-72,-8],[-72,-4],[-70,-2],[-68,0],[-66,2],[-64,4],[-60,5]]]},
+        { id:"AR", name:"Argentina", nameDE:"Argentinien", continent:"Südamerika", capital:"Buenos Aires", population:"45 Mio.",
+          paths:[[[-70,-22],[-68,-24],[-66,-28],[-66,-32],[-68,-36],[-68,-40],[-68,-44],[-70,-46],[-72,-48],[-72,-50],[-70,-52],[-68,-54],[-66,-56],[-64,-56],[-62,-54],[-60,-52],[-58,-48],[-58,-44],[-58,-40],[-58,-36],[-58,-32],[-58,-30],[-58,-26],[-60,-24],[-62,-22],[-64,-22],[-66,-22],[-68,-22],[-70,-22]]]},
+        { id:"CO", name:"Colombia", nameDE:"Kolumbien", continent:"Südamerika", capital:"Bogotá", population:"51 Mio.",
+          paths:[[[-77,2],[-76,4],[-74,6],[-72,8],[-70,10],[-72,12],[-74,12],[-76,10],[-78,8],[-78,4],[-77,2]]]},
+        { id:"PE", name:"Peru", nameDE:"Peru", continent:"Südamerika", capital:"Lima", population:"33 Mio.",
+          paths:[[[-82,-4],[-80,-2],[-78,0],[-76,0],[-74,-2],[-72,-4],[-70,-6],[-70,-10],[-70,-14],[-70,-18],[-68,-18],[-68,-16],[-72,-14],[-76,-14],[-78,-10],[-80,-6],[-82,-4]]]},
+        { id:"VE", name:"Venezuela", nameDE:"Venezuela", continent:"Südamerika", capital:"Caracas", population:"28 Mio.",
+          paths:[[[-72,8],[-70,8],[-68,8],[-66,10],[-64,10],[-62,10],[-60,8],[-60,6],[-62,4],[-64,4],[-66,2],[-68,2],[-70,4],[-72,6],[-72,8]]]},
+        { id:"CL", name:"Chile", nameDE:"Chile", continent:"Südamerika", capital:"Santiago", population:"19 Mio.",
+          paths:[[[-70,-18],[-70,-22],[-70,-26],[-70,-30],[-72,-34],[-72,-38],[-72,-42],[-74,-46],[-74,-50],[-72,-52],[-70,-52],[-72,-48],[-72,-44],[-70,-40],[-68,-36],[-68,-32],[-68,-28],[-68,-24],[-70,-22],[-70,-18]]]},
+        { id:"EC", name:"Ecuador", nameDE:"Ecuador", continent:"Südamerika", capital:"Quito", population:"18 Mio.",
+          paths:[[[-82,-4],[-80,-2],[-78,0],[-76,0],[-76,2],[-78,2],[-80,0],[-82,-2],[-82,-4]]]},
+        { id:"BO", name:"Bolivia", nameDE:"Bolivien", continent:"Südamerika", capital:"Sucre", population:"12 Mio.",
+          paths:[[[-70,-10],[-68,-10],[-66,-10],[-64,-14],[-62,-16],[-60,-18],[-58,-22],[-60,-22],[-62,-22],[-64,-22],[-66,-22],[-68,-18],[-70,-18],[-70,-14],[-70,-10]]]},
+        { id:"PY", name:"Paraguay", nameDE:"Paraguay", continent:"Südamerika", capital:"Asunción", population:"7 Mio.",
+          paths:[[[-62,-20],[-60,-20],[-58,-22],[-58,-24],[-58,-26],[-60,-26],[-62,-24],[-62,-22],[-62,-20]]]},
+        { id:"UY", name:"Uruguay", nameDE:"Uruguay", continent:"Südamerika", capital:"Montevideo", population:"3,5 Mio.",
+          paths:[[[-58,-30],[-56,-30],[-54,-32],[-54,-34],[-56,-34],[-58,-34],[-58,-32],[-58,-30]]]},
+        { id:"GY", name:"Guyana", nameDE:"Guyana", continent:"Südamerika", capital:"Georgetown", population:"790.000",
+          paths:[[[-60,2],[-58,4],[-56,6],[-58,8],[-60,8],[-60,6],[-60,4],[-60,2]]]},
+        { id:"SR", name:"Suriname", nameDE:"Suriname", continent:"Südamerika", capital:"Paramaribo", population:"590.000",
+          paths:[[[-58,2],[-56,4],[-54,6],[-56,6],[-58,4],[-58,2]]]},
+
+        // ============ OCEANIA ============
+        { id:"AU", name:"Australia", nameDE:"Australien", continent:"Ozeanien", capital:"Canberra", population:"26 Mio.",
+          paths:[[[114,-10],[118,-12],[122,-14],[126,-14],[130,-12],[134,-12],[138,-14],[142,-14],[146,-16],[148,-18],[150,-22],[152,-26],[154,-28],[152,-32],[150,-34],[148,-38],[146,-40],[144,-38],[142,-36],[140,-36],[136,-34],[132,-34],[128,-32],[124,-34],[120,-34],[116,-32],[114,-30],[114,-26],[116,-22],[118,-20],[120,-18],[118,-16],[116,-14],[114,-10]]]},
+        { id:"NZ", name:"New Zealand", nameDE:"Neuseeland", continent:"Ozeanien", capital:"Wellington", population:"5 Mio.",
+          paths:[[[166,-34],[168,-36],[172,-38],[174,-40],[176,-42],[178,-44],[176,-46],[174,-46],[172,-44],[170,-42],[168,-40],[166,-38],[166,-34]]]},
+        { id:"PG", name:"Papua New Guinea", nameDE:"Papua-Neuguinea", continent:"Ozeanien", capital:"Port Moresby", population:"9 Mio.",
+          paths:[[[142,-2],[144,-4],[146,-6],[148,-6],[150,-6],[152,-4],[154,-4],[156,-6],[156,-8],[152,-8],[148,-8],[144,-8],[142,-6],[140,-6],[142,-4],[142,-2]]]},
+        { id:"FJ", name:"Fiji", nameDE:"Fidschi", continent:"Ozeanien", capital:"Suva", population:"900.000",
+          paths:[[[177,-16],[178,-17],[180,-18],[179,-19],[177,-18],[177,-16]]]},
+
+        // ============ ANTARCTICA (simplified) ============
+        { id:"AQ", name:"Antarctica", nameDE:"Antarktis", continent:"Antarktis", capital:"–", population:"~1.000 (Forscher)",
+          paths:[[[-180,-60],[-160,-64],[-140,-66],[-120,-68],[-100,-70],[-80,-72],[-60,-70],[-40,-68],[-20,-66],[0,-68],[20,-70],[40,-68],[60,-66],[80,-68],[100,-70],[120,-68],[140,-66],[160,-68],[180,-66],[180,-90],[-180,-90],[-180,-60]]]}
+    ];
+
+    // Continent colors
+    const continentColors = {
+        "Europa":      { fill: "#4a90d9", hover: "#5da3ec" },
+        "Asien":       { fill: "#e6854a", hover: "#f09860" },
+        "Afrika":      { fill: "#5cb85c", hover: "#72d172" },
+        "Nordamerika": { fill: "#d94a4a", hover: "#ec6060" },
+        "Südamerika":  { fill: "#d9c74a", hover: "#e8d860" },
+        "Ozeanien":    { fill: "#9b59b6", hover: "#b06ccc" },
+        "Antarktis":   { fill: "#7fb3d8", hover: "#94c8eb" }
+    };
+
+    // ============================================================
+    // Render the map
+    // ============================================================
+
+    // Set viewBox
+    svg.setAttribute("viewBox", `0 0 ${mapWidth} ${mapHeight}`);
+    svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+
+    // Ocean background
+    const ocean = document.createElementNS(SVG_NS, "rect");
+    ocean.setAttribute("x", 0);
+    ocean.setAttribute("y", 0);
+    ocean.setAttribute("width", mapWidth);
+    ocean.setAttribute("height", mapHeight);
+    ocean.setAttribute("class", "ocean");
+    svg.appendChild(ocean);
+
+    // Graticule (grid) lines
+    const graticuleGroup = document.createElementNS(SVG_NS, "g");
+    graticuleGroup.setAttribute("class", "graticule");
+    // Longitude lines
+    for (let lng = -180; lng <= 180; lng += 30) {
+        const line = document.createElementNS(SVG_NS, "line");
+        line.setAttribute("x1", projectX(lng));
+        line.setAttribute("y1", projectY(90));
+        line.setAttribute("x2", projectX(lng));
+        line.setAttribute("y2", projectY(-90));
+        graticuleGroup.appendChild(line);
+    }
+    // Latitude lines
+    for (let lat = -90; lat <= 90; lat += 30) {
+        const line = document.createElementNS(SVG_NS, "line");
+        line.setAttribute("x1", projectX(-180));
+        line.setAttribute("y1", projectY(lat));
+        line.setAttribute("x2", projectX(180));
+        line.setAttribute("y2", projectY(lat));
+        graticuleGroup.appendChild(line);
+    }
+    svg.appendChild(graticuleGroup);
+
+    // Render country paths
+    const countryPaths = {};
+
+    countries.forEach(country => {
+        const colors = continentColors[country.continent] || { fill: "#666", hover: "#888" };
+        country.paths.forEach((ring, i) => {
+            const d = ring.map((pt, idx) => {
+                const x = projectX(pt[0]);
+                const y = projectY(pt[1]);
+                return (idx === 0 ? "M" : "L") + x.toFixed(1) + "," + y.toFixed(1);
+            }).join(" ") + " Z";
+
+            const path = document.createElementNS(SVG_NS, "path");
+            path.setAttribute("d", d);
+            path.setAttribute("fill", colors.fill);
+            path.setAttribute("data-id", country.id);
+            path.setAttribute("data-name", country.nameDE);
+            path.setAttribute("data-name-en", country.name);
+            path.setAttribute("data-continent", country.continent);
+
+            path.addEventListener("mouseenter", (e) => {
+                path.setAttribute("fill", colors.hover);
+                showTooltip(e, country);
+            });
+            path.addEventListener("mousemove", (e) => {
+                moveTooltip(e);
+            });
+            path.addEventListener("mouseleave", () => {
+                path.setAttribute("fill", colors.fill);
+                hideTooltip();
+            });
+
+            svg.appendChild(path);
+
+            if (!countryPaths[country.id]) countryPaths[country.id] = [];
+            countryPaths[country.id].push(path);
+        });
+    });
+
+    // ============================================================
+    // Tooltip
+    // ============================================================
+    function showTooltip(e, country) {
+        tooltip.querySelector(".country-name").textContent = country.nameDE;
+        tooltip.querySelector(".country-info").innerHTML =
+            `<strong>${country.name}</strong><br>` +
+            `Kontinent: ${country.continent}<br>` +
+            `Hauptstadt: ${country.capital}<br>` +
+            `Bevölkerung: ${country.population}`;
+        tooltip.style.opacity = 1;
+        moveTooltip(e);
+    }
+
+    function moveTooltip(e) {
+        const offset = 16;
+        let x = e.clientX + offset;
+        let y = e.clientY + offset;
+        // Keep tooltip in viewport
+        const rect = tooltip.getBoundingClientRect();
+        if (x + 280 > window.innerWidth) x = e.clientX - 280 - offset;
+        if (y + 150 > window.innerHeight) y = e.clientY - 150 - offset;
+        tooltip.style.left = x + "px";
+        tooltip.style.top = y + "px";
+    }
+
+    function hideTooltip() {
+        tooltip.style.opacity = 0;
+    }
+
+    // ============================================================
+    // Zoom & Pan
+    // ============================================================
+    let viewBox = { x: 0, y: 0, w: mapWidth, h: mapHeight };
+    let isPanning = false;
+    let panStart = { x: 0, y: 0 };
+
+    function updateViewBox() {
+        svg.setAttribute("viewBox", `${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`);
+    }
+
+    svg.addEventListener("wheel", (e) => {
+        e.preventDefault();
+        const factor = e.deltaY > 0 ? 1.1 : 0.9;
+        const svgRect = svg.getBoundingClientRect();
+        const mx = ((e.clientX - svgRect.left) / svgRect.width) * viewBox.w + viewBox.x;
+        const my = ((e.clientY - svgRect.top) / svgRect.height) * viewBox.h + viewBox.y;
+
+        const newW = Math.max(200, Math.min(mapWidth * 2, viewBox.w * factor));
+        const newH = Math.max(100, Math.min(mapHeight * 2, viewBox.h * factor));
+
+        viewBox.x = mx - (mx - viewBox.x) * (newW / viewBox.w);
+        viewBox.y = my - (my - viewBox.y) * (newH / viewBox.h);
+        viewBox.w = newW;
+        viewBox.h = newH;
+        updateViewBox();
+    }, { passive: false });
+
+    svg.addEventListener("mousedown", (e) => {
+        isPanning = true;
+        panStart = { x: e.clientX, y: e.clientY };
+    });
+
+    svg.addEventListener("mousemove", (e) => {
+        if (!isPanning) return;
+        const svgRect = svg.getBoundingClientRect();
+        const dx = (e.clientX - panStart.x) / svgRect.width * viewBox.w;
+        const dy = (e.clientY - panStart.y) / svgRect.height * viewBox.h;
+        viewBox.x -= dx;
+        viewBox.y -= dy;
+        panStart = { x: e.clientX, y: e.clientY };
+        updateViewBox();
+    });
+
+    svg.addEventListener("mouseup", () => { isPanning = false; });
+    svg.addEventListener("mouseleave", () => { isPanning = false; });
+
+    // Touch support
+    let lastTouch = null;
+    svg.addEventListener("touchstart", (e) => {
+        if (e.touches.length === 1) {
+            isPanning = true;
+            lastTouch = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        }
+    }, { passive: true });
+
+    svg.addEventListener("touchmove", (e) => {
+        if (!isPanning || !lastTouch) return;
+        const touch = e.touches[0];
+        const svgRect = svg.getBoundingClientRect();
+        const dx = (touch.clientX - lastTouch.x) / svgRect.width * viewBox.w;
+        const dy = (touch.clientY - lastTouch.y) / svgRect.height * viewBox.h;
+        viewBox.x -= dx;
+        viewBox.y -= dy;
+        lastTouch = { x: touch.clientX, y: touch.clientY };
+        updateViewBox();
+    }, { passive: true });
+
+    svg.addEventListener("touchend", () => { isPanning = false; lastTouch = null; });
+
+    function zoomIn() {
+        viewBox.x += viewBox.w * 0.1;
+        viewBox.y += viewBox.h * 0.1;
+        viewBox.w *= 0.8;
+        viewBox.h *= 0.8;
+        updateViewBox();
+    }
+
+    function zoomOut() {
+        viewBox.w = Math.min(mapWidth * 2, viewBox.w * 1.25);
+        viewBox.h = Math.min(mapHeight * 2, viewBox.h * 1.25);
+        viewBox.x -= viewBox.w * 0.1;
+        viewBox.y -= viewBox.h * 0.1;
+        updateViewBox();
+    }
+
+    function resetView() {
+        viewBox = { x: 0, y: 0, w: mapWidth, h: mapHeight };
+        updateViewBox();
+        clearHighlights();
+        searchBox.value = "";
+    }
+
+    // ============================================================
+    // Search
+    // ============================================================
+    function clearHighlights() {
+        svg.querySelectorAll("path.highlighted").forEach(p => p.classList.remove("highlighted"));
+    }
+
+    searchBox.addEventListener("input", (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        clearHighlights();
+        if (!query) return;
+
+        countries.forEach(country => {
+            const matches = country.nameDE.toLowerCase().includes(query) ||
+                            country.name.toLowerCase().includes(query) ||
+                            country.id.toLowerCase() === query;
+            if (matches && countryPaths[country.id]) {
+                countryPaths[country.id].forEach(p => p.classList.add("highlighted"));
+            }
+        });
+    });
+
+    // Focus search box with Ctrl+F / Cmd+F
+    document.addEventListener("keydown", (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === "f") {
+            e.preventDefault();
+            searchBox.focus();
+        }
+        if (e.key === "Escape") {
+            searchBox.blur();
+            searchBox.value = "";
+            clearHighlights();
+        }
+    });
+    </script>
+</body>
+</html>
