@@ -19,7 +19,7 @@
         width: var(--sidebar-width);
         min-width: var(--sidebar-width);
         transform: translateX(0);
-        transition: transform var(--transition);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .sidebar.collapsed {
@@ -37,15 +37,18 @@
         height: 100%;
         background: rgba(0, 0, 0, 0.4);
         z-index: 199;
+        -webkit-backdrop-filter: blur(2px);
+        backdrop-filter: blur(2px);
     }
 
     .toolbar-group {
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
     }
 
     .toolbar-panel {
         overflow-x: auto;
         padding: 6px 12px;
+        -webkit-overflow-scrolling: touch;
     }
 
     .page-header {
@@ -74,6 +77,7 @@
         min-width: auto;
         width: 95%;
         margin: 16px;
+        border-radius: 16px;
     }
 
     .toast-container {
@@ -84,6 +88,7 @@
 
     .toast {
         max-width: 100%;
+        border-radius: 12px;
     }
 }
 

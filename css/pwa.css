@@ -1,0 +1,425 @@
+/* ===== PWA Mobile App Styles ===== */
+
+/* Safe area insets for notched phones */
+:root {
+    --safe-area-top: env(safe-area-inset-top, 0px);
+    --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-area-left: env(safe-area-inset-left, 0px);
+    --safe-area-right: env(safe-area-inset-right, 0px);
+    --mobile-nav-height: 64px;
+}
+
+/* Standalone mode adjustments (when installed as app) */
+@media (display-mode: standalone) {
+    body {
+        padding-top: var(--safe-area-top);
+    }
+
+    .sidebar-header {
+        padding-top: calc(16px + var(--safe-area-top));
+    }
+}
+
+/* ===== Mobile Bottom Navigation ===== */
+.mobile-bottom-nav {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--mobile-nav-height);
+    padding-bottom: var(--safe-area-bottom);
+    background: var(--bg-toolbar);
+    border-top: 1px solid var(--border);
+    z-index: 500;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0 -2px 10px var(--shadow);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    background: rgba(248, 249, 250, 0.92);
+}
+
+body.dark-mode .mobile-bottom-nav {
+    background: rgba(37, 37, 54, 0.92);
+}
+
+.mobile-nav-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.65rem;
+    font-family: var(--font-main);
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-nav-btn i {
+    font-size: 1.2rem;
+    transition: transform 0.2s ease;
+}
+
+.mobile-nav-btn.active {
+    color: var(--primary);
+}
+
+.mobile-nav-btn.active i {
+    transform: scale(1.1);
+}
+
+.mobile-nav-btn:active i {
+    transform: scale(0.9);
+}
+
+/* Center "Add" button with accent style */
+.mobile-nav-add-btn {
+    width: 44px;
+    height: 44px;
+    background: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.3rem;
+    box-shadow: 0 2px 8px rgba(74, 144, 217, 0.4);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-top: -12px;
+}
+
+.mobile-nav-btn:active .mobile-nav-add-btn {
+    transform: scale(0.9);
+    box-shadow: 0 1px 4px rgba(74, 144, 217, 0.3);
+}
+
+.mobile-nav-add-btn i {
+    color: white;
+    font-size: 1.3rem;
+}
+
+/* Recording indicator on nav */
+.mobile-nav-btn.recording i {
+    color: var(--accent);
+    animation: pulse 1s infinite;
+}
+
+/* ===== PWA Install Banner ===== */
+.pwa-install-banner {
+    position: fixed;
+    bottom: 80px;
+    left: 12px;
+    right: 12px;
+    z-index: 600;
+    animation: slideUp 0.4s ease;
+}
+
+.pwa-install-banner.hidden {
+    display: none;
+}
+
+.pwa-install-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--bg-main);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 16px;
+    box-shadow: 0 4px 24px var(--shadow-lg);
+}
+
+.pwa-install-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #4a90d9, #357abd);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.pwa-install-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.pwa-install-text strong {
+    display: block;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.pwa-install-text p {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.3;
+}
+
+.pwa-install-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.pwa-install-actions .btn-primary {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== Offline Indicator ===== */
+.offline-indicator {
+    position: fixed;
+    top: var(--safe-area-top, 0px);
+    left: 0;
+    right: 0;
+    background: var(--warning);
+    color: white;
+    text-align: center;
+    padding: 6px 16px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    animation: slideDown 0.3s ease;
+}
+
+.offline-indicator.hidden {
+    display: none;
+}
+
+/* ===== Mobile Specific ===== */
+@media (max-width: 768px) {
+    /* Show bottom navigation */
+    .mobile-bottom-nav {
+        display: flex;
+    }
+
+    /* Add padding at bottom for nav bar */
+    .main-content {
+        padding-bottom: calc(var(--mobile-nav-height) + var(--safe-area-bottom));
+    }
+
+    .status-bar {
+        margin-bottom: calc(var(--mobile-nav-height) + var(--safe-area-bottom));
+    }
+
+    /* Adjust toast position above nav */
+    .toast-container {
+        bottom: calc(var(--mobile-nav-height) + var(--safe-area-bottom) + 12px);
+    }
+
+    /* Adjust sidebar for mobile with safe areas */
+    .sidebar {
+        padding-top: var(--safe-area-top);
+        padding-bottom: calc(var(--mobile-nav-height) + var(--safe-area-bottom));
+    }
+
+    /* Mobile swipe handle */
+    .sidebar::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: -4px;
+        width: 4px;
+        height: 40px;
+        background: var(--border);
+        border-radius: 2px;
+        transform: translateY(-50%);
+    }
+
+    /* Better touch targets */
+    .notebook-item, .section-item, .page-item {
+        padding: 12px 16px;
+        min-height: 44px;
+    }
+
+    .btn-toolbar, .btn-toolbar-lg {
+        padding: 10px;
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    .sidebar-btn {
+        padding: 12px;
+        min-height: 44px;
+    }
+
+    /* Hide desktop sidebar toggle on mobile (use bottom nav instead) */
+    #btn-toggle-sidebar {
+        display: none;
+    }
+
+    /* Mobile toolbar adjustments */
+    .toolbar-panel {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .toolbar-panel::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Floating action area for voice recorder */
+    .voice-recorder {
+        position: fixed;
+        bottom: calc(var(--mobile-nav-height) + var(--safe-area-bottom) + 12px);
+        left: 12px;
+        right: 12px;
+        margin: 0;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px var(--shadow-lg);
+        z-index: 400;
+    }
+
+    /* Page title larger touch area */
+    .page-title-input {
+        padding: 8px 0;
+        min-height: 44px;
+    }
+
+    /* Pull-to-refresh visual indicator */
+    .pull-indicator {
+        position: fixed;
+        top: var(--safe-area-top, 0px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--primary);
+        color: white;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .pull-indicator.visible {
+        opacity: 1;
+    }
+
+    /* Install banner adjusted for mobile nav */
+    .pwa-install-banner {
+        bottom: calc(var(--mobile-nav-height) + var(--safe-area-bottom) + 12px);
+    }
+}
+
+/* ===== Touch Feedback ===== */
+@media (hover: none) and (pointer: coarse) {
+    .notebook-item:active,
+    .section-item:active,
+    .page-item:active {
+        background: var(--bg-active);
+        transition: none;
+    }
+
+    .btn-toolbar:active,
+    .btn-toolbar-lg:active {
+        background: var(--bg-active);
+        transform: scale(0.95);
+        transition: transform 0.1s;
+    }
+
+    .sidebar-btn:active {
+        background: var(--bg-active);
+        transition: none;
+    }
+}
+
+/* ===== Splash Screen / Loading ===== */
+.app-loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #4a90d9, #357abd);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    color: white;
+    transition: opacity 0.5s ease;
+}
+
+.app-loading.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.app-loading .loading-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    animation: bounceIn 0.6s ease;
+}
+
+.app-loading .loading-text {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.app-loading .loading-sub {
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+.app-loading .loading-spinner {
+    margin-top: 24px;
+    width: 32px;
+    height: 32px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0.3); opacity: 0; }
+    50% { transform: scale(1.1); }
+    70% { transform: scale(0.95); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* ===== Haptic-like visual feedback for important actions ===== */
+.haptic-feedback {
+    animation: hapticPulse 0.15s ease;
+}
+
+@keyframes hapticPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.97); }
+    100% { transform: scale(1); }
+}
