@@ -2,12 +2,38 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>VoiceNote - Dein Sprachnotizbuch</title>
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#4a90d9">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="VoiceNote">
+    <meta name="application-name" content="VoiceNote">
+    <meta name="msapplication-TileColor" content="#4a90d9">
+    <meta name="description" content="Dein persoenliches Sprachnotizbuch mit Texteditor, Sprachaufnahmen, Zeichnen und mehr.">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- App Icons -->
+    <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="icons/icon-144.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
+
+    <!-- Splash Screen for iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/editor.css">
     <link rel="stylesheet" href="css/drawing.css">
     <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/pwa.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
@@ -530,12 +556,63 @@
     <input type="file" id="file-input-file" class="hidden-input">
     <input type="file" id="file-input-import" accept=".json" class="hidden-input">
 
+    <!-- Mobile Bottom Navigation (visible only on mobile) -->
+    <nav id="mobile-nav" class="mobile-bottom-nav">
+        <button class="mobile-nav-btn active" data-nav="notes" id="mob-nav-notes">
+            <i class="fas fa-file-alt"></i>
+            <span>Notizen</span>
+        </button>
+        <button class="mobile-nav-btn" data-nav="record" id="mob-nav-record">
+            <i class="fas fa-microphone"></i>
+            <span>Aufnahme</span>
+        </button>
+        <button class="mobile-nav-btn" data-nav="add" id="mob-nav-add">
+            <div class="mobile-nav-add-btn">
+                <i class="fas fa-plus"></i>
+            </div>
+            <span>Neu</span>
+        </button>
+        <button class="mobile-nav-btn" data-nav="draw" id="mob-nav-draw">
+            <i class="fas fa-pen"></i>
+            <span>Zeichnen</span>
+        </button>
+        <button class="mobile-nav-btn" data-nav="menu" id="mob-nav-menu">
+            <i class="fas fa-bars"></i>
+            <span>Menu</span>
+        </button>
+    </nav>
+
+    <!-- PWA Install Banner -->
+    <div id="pwa-install-banner" class="pwa-install-banner hidden">
+        <div class="pwa-install-content">
+            <div class="pwa-install-icon">
+                <i class="fas fa-book-open"></i>
+            </div>
+            <div class="pwa-install-text">
+                <strong>VoiceNote installieren</strong>
+                <p>Installiere die App auf deinem Handy fuer schnellen Zugriff und Offline-Nutzung!</p>
+            </div>
+            <div class="pwa-install-actions">
+                <button id="pwa-install-btn" class="btn-primary">Installieren</button>
+                <button id="pwa-install-dismiss" class="btn-icon"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Offline Indicator -->
+    <div id="offline-indicator" class="offline-indicator hidden">
+        <i class="fas fa-wifi-slash"></i>
+        <span>Offline-Modus</span>
+    </div>
+
     <!-- Scripts -->
     <script src="js/storage.js"></script>
     <script src="js/recorder.js"></script>
     <script src="js/editor.js"></script>
     <script src="js/drawing.js"></script>
     <script src="js/ui.js"></script>
+    <script src="js/generate-icons.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/pwa.js"></script>
 </body>
 </html>
