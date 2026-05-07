@@ -34,6 +34,7 @@
     <link rel="stylesheet" href="css/drawing.css">
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="css/pwa.css">
+    <link rel="stylesheet" href="css/logbook.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
@@ -116,6 +117,9 @@
                     </button>
                     <button id="btn-trash" class="sidebar-btn">
                         <i class="fas fa-trash"></i> Papierkorb
+                    </button>
+                    <button id="btn-logbook" class="sidebar-btn logbook-btn">
+                        <i class="fas fa-shield-alt"></i> Wachbuch
                     </button>
                 </div>
             </div>
@@ -397,6 +401,97 @@
         </main>
     </div>
 
+    <!-- Wachbuch (Elektronisches Wachbuch mit KI-Erkennung) -->
+    <div id="logbook-panel" class="logbook-panel hidden">
+        <div class="logbook-header">
+            <div class="logbook-title">
+                <i class="fas fa-shield-alt"></i>
+                <h2>Elektronisches Wachbuch</h2>
+                <span class="logbook-badge" id="logbook-ai-badge" title="KI-Spracherkennung">
+                    <i class="fas fa-microchip"></i> KI
+                </span>
+            </div>
+            <div class="logbook-header-actions">
+                <input type="date" id="logbook-date" class="logbook-date" />
+                <button id="btn-logbook-export" class="btn-primary" title="Schicht als PDF exportieren">
+                    <i class="fas fa-file-pdf"></i> PDF
+                </button>
+                <button id="btn-logbook-close" class="btn-icon" title="Schliessen">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="logbook-body">
+            <!-- New Entry Form -->
+            <form id="logbook-form" class="logbook-form" autocomplete="off">
+                <div class="logbook-row">
+                    <div class="logbook-field">
+                        <label for="lb-guard">Wachperson <span class="req">*</span></label>
+                        <input type="text" id="lb-guard" required placeholder="Name" />
+                    </div>
+                    <div class="logbook-field">
+                        <label for="lb-location">Ort / Posten <span class="req">*</span></label>
+                        <input type="text" id="lb-location" required placeholder="z. B. Tor 1, Halle B" />
+                    </div>
+                    <div class="logbook-field">
+                        <label for="lb-type">Ereignistyp <span class="req">*</span></label>
+                        <select id="lb-type" required></select>
+                    </div>
+                    <div class="logbook-field">
+                        <label for="lb-time">Zeitstempel</label>
+                        <input type="datetime-local" id="lb-time" />
+                    </div>
+                </div>
+
+                <div class="logbook-field full">
+                    <label for="lb-description">
+                        Beschreibung <span class="req">*</span>
+                        <button type="button" id="btn-lb-mic" class="btn-mic" title="Diktat starten/stoppen">
+                            <i class="fas fa-microphone"></i> <span id="lb-mic-label">Diktat</span>
+                        </button>
+                        <span id="lb-mic-status" class="mic-status"></span>
+                    </label>
+                    <textarea id="lb-description" required rows="4"
+                        placeholder="Was ist passiert? Mit dem Mikrofon-Knopf kannst du diktieren."></textarea>
+                </div>
+
+                <div class="logbook-row">
+                    <div class="logbook-field">
+                        <label>Foto / Anhang</label>
+                        <div class="photo-controls">
+                            <input type="file" id="lb-photo-input" accept="image/*" capture="environment" class="hidden-input" />
+                            <button type="button" id="btn-lb-photo" class="btn-secondary">
+                                <i class="fas fa-camera"></i> Foto aufnehmen
+                            </button>
+                            <button type="button" id="btn-lb-photo-clear" class="btn-secondary hidden">
+                                <i class="fas fa-trash"></i> Entfernen
+                            </button>
+                        </div>
+                        <img id="lb-photo-preview" class="photo-preview hidden" alt="Foto-Vorschau" />
+                    </div>
+                </div>
+
+                <div class="logbook-actions">
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-plus"></i> Eintrag speichern
+                    </button>
+                    <button type="reset" class="btn-secondary">
+                        <i class="fas fa-undo"></i> Zuruecksetzen
+                    </button>
+                </div>
+            </form>
+
+            <!-- Entries List -->
+            <div class="logbook-entries">
+                <div class="logbook-entries-header">
+                    <h3><i class="fas fa-list"></i> Eintraege <span id="lb-count">0</span></h3>
+                </div>
+                <div id="logbook-entries-list" class="logbook-entries-list"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modals -->
     <!-- Table Insert Modal -->
     <div id="modal-table" class="modal hidden">
@@ -606,6 +701,7 @@
     </div>
 
     <!-- Scripts -->
+    <script src="js/logbook.js"></script>
     <script src="js/storage.js"></script>
     <script src="js/recorder.js"></script>
     <script src="js/editor.js"></script>
@@ -613,6 +709,7 @@
     <script src="js/ui.js"></script>
     <script src="js/generate-icons.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/logbook-ui.js"></script>
     <script src="js/pwa.js"></script>
 </body>
 </html>
