@@ -1,0 +1,383 @@
+/* Elektronisches Wachbuch — Panel + Form + Entries */
+
+.logbook-btn {
+    color: #1f6feb;
+}
+.logbook-btn i { color: #1f6feb; }
+body.dark-mode .logbook-btn { color: #6ea8fe; }
+body.dark-mode .logbook-btn i { color: #6ea8fe; }
+
+.logbook-panel {
+    position: fixed;
+    inset: 0;
+    background: #f5f7fa;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+body.dark-mode .logbook-panel {
+    background: #1a1d22;
+    color: #e6e6e6;
+}
+.logbook-panel.hidden { display: none; }
+
+.logbook-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-bottom: 1px solid #d8dde3;
+    background: linear-gradient(90deg, #1f4f8b, #2c6dc1);
+    color: #fff;
+    flex-shrink: 0;
+}
+body.dark-mode .logbook-header {
+    background: linear-gradient(90deg, #122847, #1d3e6f);
+    border-bottom-color: #2a2f37;
+}
+
+.logbook-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.logbook-title h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+.logbook-title i { font-size: 22px; }
+
+.logbook-badge {
+    background: rgba(255,255,255,0.18);
+    color: #fff;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+}
+.logbook-badge.disabled {
+    background: rgba(255,255,255,0.08);
+    color: #b9c2cc;
+}
+.logbook-badge i { margin-right: 4px; }
+
+.logbook-header-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+.logbook-header-actions .btn-icon {
+    color: #fff;
+    background: rgba(255,255,255,0.12);
+    border: none;
+    border-radius: 6px;
+    width: 34px;
+    height: 34px;
+    cursor: pointer;
+}
+.logbook-header-actions .btn-icon:hover {
+    background: rgba(255,255,255,0.22);
+}
+.logbook-date {
+    border: none;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 13px;
+    background: #fff;
+    color: #1f4f8b;
+}
+body.dark-mode .logbook-date {
+    background: #2a2f37;
+    color: #e6e6e6;
+}
+
+.logbook-body {
+    flex: 1;
+    overflow: auto;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+}
+@media (max-width: 900px) {
+    .logbook-body {
+        grid-template-columns: 1fr;
+    }
+}
+
+.logbook-form {
+    background: #fff;
+    border: 1px solid #e1e5ea;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+body.dark-mode .logbook-form {
+    background: #21252b;
+    border-color: #2a2f37;
+}
+
+.logbook-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+@media (max-width: 600px) {
+    .logbook-row { grid-template-columns: 1fr; }
+}
+
+.logbook-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.logbook-field.full { margin-bottom: 14px; }
+
+.logbook-field label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #3a4654;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+body.dark-mode .logbook-field label { color: #c0c8d2; }
+.logbook-field label .req { color: #e74c3c; }
+
+.logbook-field input,
+.logbook-field select,
+.logbook-field textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 9px 11px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    background: #fff;
+    color: #222;
+}
+body.dark-mode .logbook-field input,
+body.dark-mode .logbook-field select,
+body.dark-mode .logbook-field textarea {
+    background: #2a2f37;
+    border-color: #3a4150;
+    color: #e6e6e6;
+}
+.logbook-field textarea { resize: vertical; min-height: 90px; }
+.logbook-field input:focus,
+.logbook-field select:focus,
+.logbook-field textarea:focus {
+    outline: none;
+    border-color: #2c6dc1;
+    box-shadow: 0 0 0 3px rgba(44,109,193,0.18);
+}
+
+.btn-mic {
+    background: #f1f5fa;
+    border: 1px solid #cdd7e2;
+    color: #1f4f8b;
+    padding: 4px 10px;
+    border-radius: 14px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.18s ease;
+}
+.btn-mic:hover { background: #e3edf9; }
+.btn-mic:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-mic.active {
+    background: #e74c3c;
+    color: #fff;
+    border-color: #c0392b;
+    animation: lb-pulse 1.2s infinite;
+}
+@keyframes lb-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(231,76,60,0.5); }
+    50% { box-shadow: 0 0 0 6px rgba(231,76,60,0); }
+}
+body.dark-mode .btn-mic {
+    background: #2a2f37;
+    border-color: #3a4150;
+    color: #6ea8fe;
+}
+
+.mic-status {
+    font-size: 12px;
+    color: #e74c3c;
+    font-weight: 500;
+}
+
+.photo-controls {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.photo-controls button {
+    padding: 8px 12px;
+    font-size: 13px;
+    cursor: pointer;
+}
+.photo-preview {
+    margin-top: 10px;
+    max-width: 100%;
+    max-height: 220px;
+    border-radius: 8px;
+    border: 1px solid #d8dde3;
+    object-fit: contain;
+    background: #f8f9fb;
+}
+body.dark-mode .photo-preview {
+    border-color: #2a2f37;
+    background: #1a1d22;
+}
+
+.logbook-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 6px;
+}
+.logbook-actions .btn-primary,
+.logbook-actions .btn-secondary {
+    padding: 10px 16px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.logbook-entries {
+    background: #fff;
+    border: 1px solid #e1e5ea;
+    border-radius: 10px;
+    padding: 16px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    max-height: calc(100vh - 140px);
+    overflow: auto;
+}
+body.dark-mode .logbook-entries {
+    background: #21252b;
+    border-color: #2a2f37;
+}
+
+.logbook-entries-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eef1f4;
+}
+body.dark-mode .logbook-entries-header { border-bottom-color: #2a2f37; }
+.logbook-entries-header h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+body.dark-mode .logbook-entries-header h3 { color: #e6e6e6; }
+#lb-count {
+    background: #2c6dc1;
+    color: #fff;
+    border-radius: 10px;
+    padding: 1px 8px;
+    font-size: 12px;
+    margin-left: 6px;
+}
+
+.logbook-entries-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.logbook-empty {
+    text-align: center;
+    padding: 30px 12px;
+    color: #8a95a3;
+    font-style: italic;
+}
+
+.logbook-entry {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    background: #fafbfc;
+    transition: background 0.15s ease;
+}
+body.dark-mode .logbook-entry {
+    background: #1a1d22;
+    border-color: #2a2f37;
+}
+.logbook-entry:hover {
+    background: #f1f5fa;
+}
+body.dark-mode .logbook-entry:hover { background: #1f242c; }
+
+.entry-time {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1f4f8b;
+}
+body.dark-mode .entry-time { color: #6ea8fe; }
+
+.entry-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 12px;
+    color: #5a6573;
+    margin-bottom: 6px;
+}
+body.dark-mode .entry-meta { color: #9aa5b3; }
+
+.entry-type {
+    background: #2c6dc1;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.entry-desc {
+    font-size: 14px;
+    line-height: 1.45;
+    color: #2c3e50;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+body.dark-mode .entry-desc { color: #e6e6e6; }
+
+.entry-photo {
+    margin-top: 8px;
+    max-width: 240px;
+    max-height: 160px;
+    border-radius: 6px;
+    border: 1px solid #d8dde3;
+}
+
+.entry-actions .btn-icon-sm {
+    background: transparent;
+    border: none;
+    color: #b3b9c1;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 4px;
+}
+.entry-actions .btn-icon-sm:hover {
+    color: #e74c3c;
+    background: rgba(231,76,60,0.1);
+}
+
+.hidden-input { display: none; }
