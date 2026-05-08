@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Wachbuch &mdash; Elektronisches Wachbuch</title>
+
+    <meta name="theme-color" content="#1f4f8b">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Wachbuch">
+    <meta name="application-name" content="Wachbuch">
+    <meta name="description" content="Elektronisches Wachbuch mit Diktat, GPS, Foto und PDF-Export.">
+
+    <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+    <link rel="stylesheet" href="css/logbook.css">
+    <link rel="stylesheet" href="css/wachbuch.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="wb-body">
+
+    <header class="wb-header">
+        <div class="wb-header-left">
+            <i class="fas fa-shield-alt"></i>
+            <h1>Wachbuch</h1>
+            <span class="wb-badge" id="wb-ai-badge" title="KI-Spracherkennung">
+                <i class="fas fa-microchip"></i> KI
+            </span>
+        </div>
+        <nav class="wb-tabs">
+            <button class="wb-tab active" data-tab="entry"><i class="fas fa-pen"></i> <span>Eintrag</span></button>
+            <button class="wb-tab" data-tab="shift"><i class="fas fa-list"></i> <span>Schicht</span></button>
+            <button class="wb-tab" data-tab="search"><i class="fas fa-search"></i> <span>Suche</span></button>
+            <button class="wb-tab" data-tab="settings"><i class="fas fa-cog"></i> <span>Einstellungen</span></button>
+        </nav>
+    </header>
+
+    <main class="wb-main">
+
+        <!-- ENTRY TAB -->
+        <section class="wb-panel active" data-panel="entry">
+            <form id="wb-form" class="logbook-form" autocomplete="off">
+                <div class="logbook-row">
+                    <div class="logbook-field">
+                        <label for="wb-guard">Wachperson <span class="req">*</span></label>
+                        <input type="text" id="wb-guard" required placeholder="Name" />
+                    </div>
+                    <div class="logbook-field">
+                        <label for="wb-location">Ort / Posten <span class="req">*</span></label>
+                        <input type="text" id="wb-location" required placeholder="z. B. Tor 1, Halle B" />
+                    </div>
+                </div>
+
+                <div class="logbook-row">
+                    <div class="logbook-field">
+                        <label for="wb-type">Ereignistyp <span class="req">*</span></label>
+                        <select id="wb-type" required></select>
+                    </div>
+                    <div class="logbook-field">
+                        <label for="wb-severity">Schweregrad</label>
+                        <select id="wb-severity"></select>
+                    </div>
+                </div>
+
+                <div class="logbook-row">
+                    <div class="logbook-field">
+                        <label for="wb-time">Zeitstempel</label>
+                        <input type="datetime-local" id="wb-time" />
+                    </div>
+                    <div class="logbook-field">
+                        <label>
+                            GPS-Position
+                            <button type="button" id="btn-wb-gps" class="btn-mic">
+                                <i class="fas fa-location-crosshairs"></i> <span id="wb-gps-label">Erfassen</span>
+                            </button>
+                        </label>
+                        <div id="wb-gps-display" class="wb-gps-display">Keine Position erfasst</div>
+                    </div>
+                </div>
+
+                <div class="logbook-field full">
+                    <label for="wb-description">
+                        Beschreibung <span class="req">*</span>
+                        <button type="button" id="btn-wb-mic" class="btn-mic" title="Diktat starten/stoppen">
+                            <i class="fas fa-microphone"></i> <span id="wb-mic-label">Diktat</span>
+                        </button>
+                        <span id="wb-mic-status" class="mic-status"></span>
+                    </label>
+                    <textarea id="wb-description" required rows="5"
+                        placeholder="Was ist passiert? Mit dem Mikrofon-Knopf kannst du diktieren."></textarea>
+                </div>
+
+                <div class="logbook-field">
+                    <label>Foto / Anhang</label>
+                    <div class="photo-controls">
+                        <input type="file" id="wb-photo-input" accept="image/*" capture="environment" class="hidden-input" />
+                        <button type="button" id="btn-wb-photo" class="btn-secondary">
+                            <i class="fas fa-camera"></i> Foto aufnehmen
+                        </button>
+                        <button type="button" id="btn-wb-photo-clear" class="btn-secondary hidden">
+                            <i class="fas fa-trash"></i> Entfernen
+                        </button>
+                    </div>
+                    <img id="wb-photo-preview" class="photo-preview hidden" alt="Foto-Vorschau" />
+                </div>
+
+                <div class="logbook-actions">
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-plus"></i> Eintrag speichern
+                    </button>
+                    <button type="reset" class="btn-secondary">
+                        <i class="fas fa-undo"></i> Zuruecksetzen
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- SHIFT TAB -->
+        <section class="wb-panel" data-panel="shift">
+            <div class="wb-shift-toolbar">
+                <label class="wb-inline-label">
+                    <i class="fas fa-calendar"></i> Datum
+                    <input type="date" id="wb-shift-date" class="logbook-date" />
+                </label>
+                <button id="btn-wb-pdf" class="btn-primary">
+                    <i class="fas fa-file-pdf"></i> PDF exportieren
+                </button>
+            </div>
+            <div class="wb-stats" id="wb-stats"></div>
+            <div id="wb-shift-list" class="logbook-entries-list"></div>
+        </section>
+
+        <!-- SEARCH TAB -->
+        <section class="wb-panel" data-panel="search">
+            <div class="wb-search-toolbar">
+                <input type="search" id="wb-q" placeholder="Suchen in allen Eintraegen..." />
+                <select id="wb-q-type"><option value="">Alle Ereignistypen</option></select>
+                <select id="wb-q-severity"><option value="">Alle Schweregrade</option></select>
+                <input type="date" id="wb-q-from" />
+                <input type="date" id="wb-q-to" />
+                <button id="btn-wb-q-clear" class="btn-secondary"><i class="fas fa-times"></i> Leeren</button>
+            </div>
+            <div class="wb-search-meta" id="wb-search-meta"></div>
+            <div id="wb-search-list" class="logbook-entries-list"></div>
+        </section>
+
+        <!-- SETTINGS TAB -->
+        <section class="wb-panel" data-panel="settings">
+            <div class="logbook-form">
+                <h3 class="wb-section-title"><i class="fas fa-database"></i> Datensicherung</h3>
+                <p class="wb-help">
+                    Alle Eintraege werden lokal in deinem Browser gespeichert. Erstelle regelmaessig
+                    ein JSON-Backup zur Sicherheit.
+                </p>
+                <div class="logbook-actions">
+                    <button id="btn-wb-export-json" class="btn-primary">
+                        <i class="fas fa-download"></i> JSON-Backup herunterladen
+                    </button>
+                    <button id="btn-wb-import-json" class="btn-secondary">
+                        <i class="fas fa-upload"></i> JSON-Backup importieren
+                    </button>
+                    <input type="file" id="wb-import-file" accept=".json,application/json" class="hidden-input" />
+                </div>
+
+                <h3 class="wb-section-title"><i class="fas fa-user-shield"></i> Standardwerte</h3>
+                <p class="wb-help">
+                    Diese Werte werden bei neuen Eintraegen automatisch vorausgefuellt.
+                </p>
+                <div class="logbook-row">
+                    <div class="logbook-field">
+                        <label for="wb-default-guard">Standard-Wachperson</label>
+                        <input type="text" id="wb-default-guard" placeholder="Name" />
+                    </div>
+                    <div class="logbook-field">
+                        <label for="wb-default-location">Standard-Ort / -Posten</label>
+                        <input type="text" id="wb-default-location" placeholder="z. B. Tor 1" />
+                    </div>
+                </div>
+                <div class="logbook-actions">
+                    <button id="btn-wb-save-defaults" class="btn-primary">
+                        <i class="fas fa-save"></i> Speichern
+                    </button>
+                </div>
+
+                <h3 class="wb-section-title danger"><i class="fas fa-exclamation-triangle"></i> Gefahrenzone</h3>
+                <p class="wb-help">
+                    Loescht alle Eintraege unwiderruflich. Erstelle vorher ein Backup.
+                </p>
+                <div class="logbook-actions">
+                    <button id="btn-wb-clear-all" class="btn-danger">
+                        <i class="fas fa-trash"></i> Alle Eintraege loeschen
+                    </button>
+                </div>
+
+                <div class="wb-about">
+                    <strong>Wachbuch</strong> &middot; lokal &middot; offline-faehig &middot; <span id="wb-entry-total">0</span> Eintraege gespeichert
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="wb-toast" class="wb-toast hidden"></div>
+
+    <script src="js/logbook.js"></script>
+    <script src="js/wachbuch-app.js"></script>
+</body>
+</html>
