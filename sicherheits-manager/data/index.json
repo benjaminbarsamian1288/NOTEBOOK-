@@ -1,0 +1,10 @@
+{
+    "regelwerke": [
+        "dguv-v1.json",
+        "dguv-v23.json",
+        "bewachv.json",
+        "din-77200.json"
+    ],
+    "version": "1.0.0",
+    "letzteAktualisierung": "2026-05-12"
+}

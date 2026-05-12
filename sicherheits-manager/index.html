@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#1e293b">
+    <meta name="description" content="Interaktiver Sicherheits-Manager fuer DGUV, BewachV, DIN 77200">
+
+    <title>Sicherheits-Manager</title>
+
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<!-- ============== HEADER ============== -->
+<header class="top-bar">
+    <button id="btn-menu" class="icon-btn" aria-label="Menu">
+        <i class="fas fa-bars"></i>
+    </button>
+    <h1 class="app-title">
+        <i class="fas fa-shield-halved"></i>
+        <span>Sicherheits-Manager</span>
+    </h1>
+    <button id="btn-theme" class="icon-btn" aria-label="Theme">
+        <i class="fas fa-moon"></i>
+    </button>
+</header>
+
+<!-- ============== SIDEBAR ============== -->
+<aside id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+        <h2><i class="fas fa-book-open"></i> Regelwerke</h2>
+        <button id="btn-close-sidebar" class="icon-btn" aria-label="Schliessen">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <nav class="nav-list">
+        <button class="nav-item active" data-view="home">
+            <i class="fas fa-home"></i> Startseite
+        </button>
+        <button class="nav-item" data-view="search">
+            <i class="fas fa-search"></i> Suche
+        </button>
+        <button class="nav-item" data-view="favoriten">
+            <i class="fas fa-star"></i> Favoriten
+        </button>
+        <button class="nav-item" data-view="notizen">
+            <i class="fas fa-pen-to-square"></i> Meine Notizen
+        </button>
+        <button class="nav-item" data-view="verlauf">
+            <i class="fas fa-clock-rotate-left"></i> Verlauf
+        </button>
+    </nav>
+
+    <div class="sidebar-divider"></div>
+
+    <div id="regelwerke-list" class="regelwerke-list">
+        <!-- Wird per JS gefuellt -->
+    </div>
+
+    <div class="sidebar-footer">
+        <small>Version 1.0.0</small>
+    </div>
+</aside>
+
+<div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+<!-- ============== MAIN ============== -->
+<main class="main-content">
+
+    <!-- Suchleiste -->
+    <div class="search-bar">
+        <i class="fas fa-search search-icon"></i>
+        <input type="search" id="search-input" placeholder="Paragraph, Stichwort, Tag suchen..." autocomplete="off">
+        <button id="btn-clear-search" class="icon-btn" aria-label="Loeschen" style="display:none">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <!-- Filter-Chips -->
+    <div id="filter-chips" class="filter-chips"></div>
+
+    <!-- Inhaltsbereich -->
+    <div id="content-area" class="content-area">
+        <!-- Wird per JS gefuellt -->
+    </div>
+
+</main>
+
+<!-- ============== PARAGRAPH-DETAIL DIALOG ============== -->
+<div id="paragraph-dialog" class="dialog" hidden>
+    <div class="dialog-overlay" data-close></div>
+    <article class="dialog-content">
+        <header class="dialog-header">
+            <button class="icon-btn" data-close aria-label="Schliessen">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <span id="dialog-breadcrumb" class="breadcrumb"></span>
+            <button id="btn-favorite" class="icon-btn" aria-label="Favorit">
+                <i class="far fa-star"></i>
+            </button>
+        </header>
+
+        <div class="dialog-body" id="dialog-body">
+            <!-- Wird per JS gefuellt -->
+        </div>
+
+        <footer class="dialog-footer">
+            <button id="btn-edit-notes" class="primary-btn">
+                <i class="fas fa-pen"></i> Notiz bearbeiten
+            </button>
+            <button id="btn-share" class="secondary-btn">
+                <i class="fas fa-share-nodes"></i> Teilen
+            </button>
+        </footer>
+    </article>
+</div>
+
+<!-- ============== NOTIZ-EDITOR ============== -->
+<div id="notes-dialog" class="dialog" hidden>
+    <div class="dialog-overlay" data-close></div>
+    <article class="dialog-content dialog-small">
+        <header class="dialog-header">
+            <button class="icon-btn" data-close aria-label="Schliessen">
+                <i class="fas fa-times"></i>
+            </button>
+            <span class="breadcrumb">Meine Notiz</span>
+            <button id="btn-save-notes" class="icon-btn primary-icon" aria-label="Speichern">
+                <i class="fas fa-check"></i>
+            </button>
+        </header>
+
+        <div class="dialog-body">
+            <textarea id="notes-textarea" placeholder="Deine persoenliche Notiz zu diesem Paragraphen..."></textarea>
+        </div>
+    </article>
+</div>
+
+<!-- ============== TOAST ============== -->
+<div id="toast" class="toast"></div>
+
+<!-- ============== SCRIPTS ============== -->
+<script src="js/storage.js"></script>
+<script src="js/data.js"></script>
+<script src="js/search.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/app.js"></script>
+
+<script>
+// Service Worker registrieren
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+            .then(reg => console.log('SW registered:', reg.scope))
+            .catch(err => console.warn('SW registration failed:', err));
+    });
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,90 @@
+{
+    "id": "dguv-v23",
+    "kuerzel": "DGUV V23",
+    "title": "DGUV Vorschrift 23",
+    "untertitel": "Wach- und Sicherungsdienste",
+    "herausgeber": "Verwaltungs-Berufsgenossenschaft (VBG)",
+    "stand": "Stand: April 1990, aktualisiert",
+    "farbe": "#dc2626",
+    "beschreibung": "Unfallverhütungsvorschrift für Wach- und Sicherungsdienste. Regelt Sicherheits- und Gesundheitsschutz für Beschäftigte im privaten Sicherheitsgewerbe.",
+    "kapitel": [
+        {
+            "id": "kap-1",
+            "title": "Kapitel 1 - Allgemeine Bestimmungen",
+            "paragraphen": [
+                {
+                    "id": "v23-p1",
+                    "nummer": "§ 1",
+                    "titel": "Geltungsbereich",
+                    "kurz": "Gilt für Unternehmen, die Wach- und Sicherungsaufgaben übernehmen.",
+                    "text": "Diese Unfallverhütungsvorschrift gilt für Unternehmen, in denen Wach- und Sicherungsaufgaben durchgeführt werden, einschließlich Geld- und Werttransport, Personenschutz und Veranstaltungsschutz.",
+                    "tags": ["Geltungsbereich", "Wachdienst", "Sicherheitsdienst"],
+                    "bilder": [],
+                    "querverweise": ["v1-p1"]
+                },
+                {
+                    "id": "v23-p2",
+                    "nummer": "§ 2",
+                    "titel": "Begriffsbestimmungen",
+                    "kurz": "Definitionen wichtiger Begriffe im Wach- und Sicherungsdienst.",
+                    "text": "Im Sinne dieser Unfallverhütungsvorschrift gelten als Wach- und Sicherungsaufgaben insbesondere: Objektschutz, Werkschutz, Revierdienst, Veranstaltungsschutz, Personenschutz, Geld- und Werttransport, Empfangs- und Pförtnerdienst, Sicherheitsdienst im öffentlichen Personenverkehr.",
+                    "tags": ["Begriffe", "Definitionen", "Aufgaben"],
+                    "bilder": [],
+                    "querverweise": []
+                }
+            ]
+        },
+        {
+            "id": "kap-2",
+            "title": "Kapitel 2 - Persönliche Anforderungen",
+            "paragraphen": [
+                {
+                    "id": "v23-p3",
+                    "nummer": "§ 3",
+                    "titel": "Eignung der Wach- und Sicherungsposten",
+                    "kurz": "Nur körperlich und geistig geeignete Personen dürfen eingesetzt werden.",
+                    "text": "Der Unternehmer darf mit Wach- und Sicherungsaufgaben nur Personen beschäftigen, die nach ihren körperlichen und geistigen Fähigkeiten dafür geeignet sind. Der Unternehmer hat sich von der Eignung zu überzeugen.",
+                    "tags": ["Eignung", "Personal", "Auswahl"],
+                    "bilder": [],
+                    "querverweise": ["bewachv-p9"]
+                },
+                {
+                    "id": "v23-p4",
+                    "nummer": "§ 4",
+                    "titel": "Unterweisung",
+                    "kurz": "Spezifische Unterweisung für Wach- und Sicherungsposten.",
+                    "text": "Der Unternehmer hat die Wach- und Sicherungsposten vor Aufnahme ihrer Tätigkeit und in angemessenen Zeitabständen, mindestens jedoch einmal jährlich, über die bei ihrer Tätigkeit auftretenden Gefahren sowie über die Maßnahmen zu deren Abwehr zu unterweisen.",
+                    "tags": ["Unterweisung", "Schulung", "Jährlich"],
+                    "bilder": [],
+                    "querverweise": ["v1-p4"]
+                }
+            ]
+        },
+        {
+            "id": "kap-3",
+            "title": "Kapitel 3 - Ausrüstung und Schutzmittel",
+            "paragraphen": [
+                {
+                    "id": "v23-p18",
+                    "nummer": "§ 18",
+                    "titel": "Persönliche Schutzausrüstung",
+                    "kurz": "Spezielle PSA für Sicherheitspersonal (z.B. Schutzwesten, Funkgeräte).",
+                    "text": "Wach- und Sicherungsposten sind mit den für die jeweilige Tätigkeit erforderlichen persönlichen Schutzausrüstungen auszurüsten. Dazu können gehören: Schutzweste, Helm, Funkgerät, Taschenlampe, Diensthund mit entsprechender Ausstattung.",
+                    "tags": ["PSA", "Ausrüstung", "Schutzweste"],
+                    "bilder": [],
+                    "querverweise": ["v1-p29"]
+                },
+                {
+                    "id": "v23-p19",
+                    "nummer": "§ 19",
+                    "titel": "Schusswaffen",
+                    "kurz": "Regelungen zum Tragen und Aufbewahren von Schusswaffen.",
+                    "text": "Schusswaffen dürfen nur Personen tragen, die nach den waffenrechtlichen Bestimmungen dazu berechtigt sind und die im Umgang mit Schusswaffen unterwiesen und im Schießen geübt sind. Vor jedem Dienstantritt ist die Schusswaffe auf einwandfreien Zustand zu prüfen.",
+                    "tags": ["Schusswaffe", "Bewaffnung", "Waffenrecht"],
+                    "bilder": [],
+                    "querverweise": []
+                }
+            ]
+        }
+    ]
+}
