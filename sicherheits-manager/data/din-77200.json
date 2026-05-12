@@ -1,0 +1,69 @@
+{
+    "id": "din-77200",
+    "kuerzel": "DIN 77200",
+    "title": "DIN 77200",
+    "untertitel": "Anforderungen an Sicherungsdienstleistungen",
+    "herausgeber": "Deutsches Institut für Normung e.V. (DIN)",
+    "stand": "DIN 77200-1:2017 (Allgemeine Sicherungsdienstleistungen) / DIN 77200-2:2018 (Sicherungsdienstleistungen für kritische Infrastrukturen)",
+    "farbe": "#9333ea",
+    "hinweis": "⚠️ DIN 77200 ist urheberrechtlich geschützt. Originaltext darf nicht öffentlich veröffentlicht werden. Hier findest du nur eigene Zusammenfassungen und Strukturhinweise. Volltext kann beim Beuth-Verlag erworben werden.",
+    "beschreibung": "Norm für Anforderungen an Sicherungsdienstleistungen. Definiert Qualitätsstandards, Personalanforderungen, Organisation und Dokumentation im privaten Sicherheitsgewerbe.",
+    "kapitel": [
+        {
+            "id": "kap-1",
+            "title": "Teil 1 - Allgemeine Sicherungsdienstleistungen (DIN 77200-1)",
+            "paragraphen": [
+                {
+                    "id": "din-1-1",
+                    "nummer": "Abschnitt 1",
+                    "titel": "Anwendungsbereich",
+                    "kurz": "Was die Norm regelt - Platzhalter für eigene Zusammenfassung.",
+                    "text": "Hier eigene Zusammenfassung des Anwendungsbereichs einfügen. Die Norm gilt für Dienstleister, die Sicherungsdienstleistungen erbringen.",
+                    "tags": ["Anwendungsbereich", "Platzhalter"],
+                    "bilder": [],
+                    "querverweise": [],
+                    "platzhalter": true
+                },
+                {
+                    "id": "din-1-4",
+                    "nummer": "Abschnitt 4",
+                    "titel": "Anforderungen an das Sicherungsunternehmen",
+                    "kurz": "Anforderungen an die Organisation - eigene Zusammenfassung einfügen.",
+                    "text": "Platzhalter: Anforderungen an Personal, Organisation, Qualitätsmanagement. Hier eigene Notizen ergänzen.",
+                    "tags": ["Unternehmen", "Organisation", "Platzhalter"],
+                    "bilder": [],
+                    "querverweise": [],
+                    "platzhalter": true
+                },
+                {
+                    "id": "din-1-5",
+                    "nummer": "Abschnitt 5",
+                    "titel": "Anforderungen an das Personal",
+                    "kurz": "Qualifikation, Schulung und Eignung - eigene Zusammenfassung.",
+                    "text": "Platzhalter: Anforderungen an Auswahl, Qualifikation und Fortbildung des Sicherheitspersonals.",
+                    "tags": ["Personal", "Qualifikation", "Platzhalter"],
+                    "bilder": [],
+                    "querverweise": ["v23-p3", "bewachv-p9"],
+                    "platzhalter": true
+                }
+            ]
+        },
+        {
+            "id": "kap-2",
+            "title": "Teil 2 - Sicherungsdienstleistungen für kritische Infrastrukturen (DIN 77200-2)",
+            "paragraphen": [
+                {
+                    "id": "din-2-1",
+                    "nummer": "Abschnitt 1",
+                    "titel": "Anwendungsbereich KRITIS",
+                    "kurz": "Besondere Anforderungen bei kritischen Infrastrukturen.",
+                    "text": "Platzhalter: Erweiterte Anforderungen für KRITIS-Sektoren (Energie, Wasser, Verkehr, IT, Gesundheit, Finanzen, etc.).",
+                    "tags": ["KRITIS", "Kritische Infrastruktur", "Platzhalter"],
+                    "bilder": [],
+                    "querverweise": [],
+                    "platzhalter": true
+                }
+            ]
+        }
+    ]
+}

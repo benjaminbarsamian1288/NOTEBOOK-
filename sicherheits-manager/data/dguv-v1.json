@@ -1,0 +1,100 @@
+{
+    "id": "dguv-v1",
+    "kuerzel": "DGUV V1",
+    "title": "DGUV Vorschrift 1",
+    "untertitel": "Grundsätze der Prävention",
+    "herausgeber": "Deutsche Gesetzliche Unfallversicherung (DGUV)",
+    "stand": "Stand: November 2013, aktualisiert",
+    "farbe": "#2563eb",
+    "beschreibung": "Allgemeine Vorschriften zur Verhütung von Arbeitsunfällen, Berufskrankheiten und arbeitsbedingten Gesundheitsgefahren sowie für eine wirksame Erste Hilfe.",
+    "kapitel": [
+        {
+            "id": "kap-1",
+            "title": "Kapitel 1 - Allgemeine Vorschriften",
+            "paragraphen": [
+                {
+                    "id": "v1-p1",
+                    "nummer": "§ 1",
+                    "titel": "Geltungsbereich",
+                    "kurz": "Wer und was unter diese Vorschrift fällt.",
+                    "text": "Diese Unfallverhütungsvorschrift gilt für die Verhütung von Arbeitsunfällen, Berufskrankheiten und arbeitsbedingten Gesundheitsgefahren sowie für eine wirksame Erste Hilfe.",
+                    "tags": ["Geltungsbereich", "Grundlagen", "Allgemein"],
+                    "bilder": [],
+                    "querverweise": []
+                },
+                {
+                    "id": "v1-p2",
+                    "nummer": "§ 2",
+                    "titel": "Pflichten des Unternehmers (Grundpflichten)",
+                    "kurz": "Der Unternehmer trifft alle erforderlichen Maßnahmen zur Verhütung von Arbeitsunfällen.",
+                    "text": "Der Unternehmer hat die erforderlichen Maßnahmen zur Verhütung von Arbeitsunfällen, Berufskrankheiten und arbeitsbedingten Gesundheitsgefahren sowie für eine wirksame Erste Hilfe zu treffen. Er hat dabei die Vorschriften dieser Unfallverhütungsvorschrift, die für ihn als Träger der gesetzlichen Unfallversicherung geltenden sonstigen Unfallverhütungsvorschriften, die einschlägigen staatlichen Arbeitsschutzvorschriften sowie die allgemein anerkannten sicherheitstechnischen, arbeitsmedizinischen und hygienischen Regeln zu berücksichtigen.",
+                    "tags": ["Unternehmerpflichten", "Arbeitsschutz", "Verantwortung"],
+                    "bilder": [],
+                    "querverweise": ["v23-p2"]
+                },
+                {
+                    "id": "v1-p3",
+                    "nummer": "§ 3",
+                    "titel": "Beurteilung der Arbeitsbedingungen, Dokumentation",
+                    "kurz": "Gefährdungsbeurteilung als Grundlage des Arbeitsschutzes.",
+                    "text": "Der Unternehmer hat durch eine Beurteilung der für die Beschäftigten mit ihrer Arbeit verbundenen Gefährdungen zu ermitteln, welche Maßnahmen des Arbeitsschutzes erforderlich sind. Das Ergebnis der Gefährdungsbeurteilung, die festgelegten Maßnahmen und das Ergebnis ihrer Überprüfung sind zu dokumentieren.",
+                    "tags": ["Gefährdungsbeurteilung", "Dokumentation", "GBU"],
+                    "bilder": [],
+                    "querverweise": ["v1-p2"]
+                },
+                {
+                    "id": "v1-p4",
+                    "nummer": "§ 4",
+                    "titel": "Unterweisung der Versicherten",
+                    "kurz": "Versicherte müssen über Gefahren und Schutzmaßnahmen unterwiesen werden.",
+                    "text": "Der Unternehmer hat die Versicherten über Sicherheit und Gesundheitsschutz bei der Arbeit, insbesondere über die mit ihrer Arbeit verbundenen Gefährdungen und die Maßnahmen zu ihrer Verhütung, entsprechend § 12 Absatz 1 ArbSchG zu unterweisen. Die Unterweisung muss erforderlichenfalls wiederholt werden, mindestens aber einmal jährlich erfolgen.",
+                    "tags": ["Unterweisung", "Schulung", "Jährlich"],
+                    "bilder": [],
+                    "querverweise": ["v23-p4"]
+                }
+            ]
+        },
+        {
+            "id": "kap-2",
+            "title": "Kapitel 2 - Organisation des betrieblichen Arbeitsschutzes",
+            "paragraphen": [
+                {
+                    "id": "v1-p13",
+                    "nummer": "§ 13",
+                    "titel": "Übertragung von Unternehmerpflichten",
+                    "kurz": "Der Unternehmer kann Pflichten schriftlich übertragen.",
+                    "text": "Der Unternehmer kann zuverlässige und fachkundige Personen schriftlich beauftragen, ihm obliegende Aufgaben nach dieser Unfallverhütungsvorschrift in eigener Verantwortung wahrzunehmen. Das Schriftstück muss den Verantwortungsbereich und die Befugnisse festlegen und ist von dem Beauftragten zu unterzeichnen.",
+                    "tags": ["Pflichtenübertragung", "Verantwortung", "Schriftform"],
+                    "bilder": [],
+                    "querverweise": []
+                }
+            ]
+        },
+        {
+            "id": "kap-3",
+            "title": "Kapitel 3 - Persönliche Schutzausrüstung (PSA)",
+            "paragraphen": [
+                {
+                    "id": "v1-p29",
+                    "nummer": "§ 29",
+                    "titel": "Bereitstellung",
+                    "kurz": "PSA muss kostenlos bereitgestellt werden.",
+                    "text": "Der Unternehmer hat die persönlichen Schutzausrüstungen den Versicherten zur Verfügung zu stellen. Die persönlichen Schutzausrüstungen müssen den Bestimmungen der PSA-Benutzungsverordnung entsprechen.",
+                    "tags": ["PSA", "Schutzausrüstung", "Bereitstellung"],
+                    "bilder": [],
+                    "querverweise": ["v23-p18"]
+                },
+                {
+                    "id": "v1-p30",
+                    "nummer": "§ 30",
+                    "titel": "Benutzung",
+                    "kurz": "Versicherte müssen die PSA benutzen.",
+                    "text": "Die Versicherten haben die persönlichen Schutzausrüstungen bestimmungsgemäß zu benutzen, regelmäßig auf ihren ordnungsgemäßen Zustand zu prüfen und festgestellte Mängel dem Unternehmer zu melden.",
+                    "tags": ["PSA", "Benutzung", "Pflicht"],
+                    "bilder": [],
+                    "querverweise": ["v1-p29"]
+                }
+            ]
+        }
+    ]
+}

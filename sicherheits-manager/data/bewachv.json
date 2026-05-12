@@ -1,0 +1,106 @@
+{
+    "id": "bewachv",
+    "kuerzel": "BewachV",
+    "title": "Bewachungsverordnung",
+    "untertitel": "Verordnung über das Bewachungsgewerbe",
+    "herausgeber": "Bundesministerium für Wirtschaft und Energie (BMWi)",
+    "stand": "Stand: 4. Mai 2019, BGBl. I S. 692",
+    "farbe": "#059669",
+    "beschreibung": "Verordnung zur Durchführung des § 34a Gewerbeordnung. Regelt Anforderungen an Bewachungsunternehmen, Sachkunde, Unterrichtung und Bewachungsregister.",
+    "kapitel": [
+        {
+            "id": "kap-1",
+            "title": "Abschnitt 1 - Anwendungsbereich und Zuverlässigkeit",
+            "paragraphen": [
+                {
+                    "id": "bewachv-p1",
+                    "nummer": "§ 1",
+                    "titel": "Anwendungsbereich",
+                    "kurz": "Gilt für gewerbliche Bewachungstätigkeiten nach § 34a GewO.",
+                    "text": "Diese Verordnung gilt für die Ausübung des Gewerbes nach § 34a Absatz 1 Satz 1 der Gewerbeordnung (Bewachungsgewerbe). Sie regelt insbesondere die Voraussetzungen für die Erlaubniserteilung, die Sachkunde- und Unterrichtungspflichten sowie das Bewachungsregister.",
+                    "tags": ["Anwendungsbereich", "§34a", "GewO"],
+                    "bilder": [],
+                    "querverweise": []
+                }
+            ]
+        },
+        {
+            "id": "kap-2",
+            "title": "Abschnitt 2 - Unterrichtung und Sachkundeprüfung",
+            "paragraphen": [
+                {
+                    "id": "bewachv-p4",
+                    "nummer": "§ 4",
+                    "titel": "Unterrichtungsverfahren",
+                    "kurz": "40-stündige Unterrichtung bei der IHK für einfache Wachtätigkeiten.",
+                    "text": "Die Unterrichtung im Bewachungsgewerbe nach § 34a Absatz 1a Satz 1 der Gewerbeordnung wird von der Industrie- und Handelskammer durchgeführt. Sie umfasst 40 Unterrichtsstunden zu je 45 Minuten. Inhalt sind: Recht der öffentlichen Sicherheit und Ordnung, Bürgerliches Gesetzbuch, Straf- und Verfahrensrecht, Umgang mit Menschen, Grundzüge der Sicherheitstechnik.",
+                    "tags": ["Unterrichtung", "IHK", "40 Stunden"],
+                    "bilder": [],
+                    "querverweise": ["bewachv-p7"]
+                },
+                {
+                    "id": "bewachv-p7",
+                    "nummer": "§ 7",
+                    "titel": "Sachkundeprüfung",
+                    "kurz": "Sachkundeprüfung bei der IHK für qualifizierte Tätigkeiten.",
+                    "text": "Die Sachkundeprüfung nach § 34a Absatz 1a Satz 2 der Gewerbeordnung wird von der Industrie- und Handelskammer abgenommen. Die Prüfung besteht aus einem schriftlichen und einem mündlichen Teil. Geprüft werden Kenntnisse in den Sachgebieten nach Anlage 2.",
+                    "tags": ["Sachkundeprüfung", "IHK", "34a"],
+                    "bilder": [],
+                    "querverweise": ["bewachv-p4"]
+                }
+            ]
+        },
+        {
+            "id": "kap-3",
+            "title": "Abschnitt 3 - Pflichten des Gewerbetreibenden",
+            "paragraphen": [
+                {
+                    "id": "bewachv-p9",
+                    "nummer": "§ 9",
+                    "titel": "Beschäftigung von Wachpersonen",
+                    "kurz": "Anforderungen an die Beschäftigung von Wachpersonal.",
+                    "text": "Der Gewerbetreibende darf mit Bewachungsaufgaben nur Personen beschäftigen, die die erforderliche Zuverlässigkeit besitzen und über den nach § 34a Absatz 1a der Gewerbeordnung erforderlichen Nachweis (Unterrichtung oder Sachkundeprüfung) verfügen.",
+                    "tags": ["Wachpersonal", "Zuverlässigkeit", "Nachweis"],
+                    "bilder": [],
+                    "querverweise": ["v23-p3"]
+                },
+                {
+                    "id": "bewachv-p14",
+                    "nummer": "§ 14",
+                    "titel": "Dienstanweisung",
+                    "kurz": "Schriftliche Dienstanweisung für jedes Wachobjekt erforderlich.",
+                    "text": "Der Gewerbetreibende hat für jede Bewachungstätigkeit eine Dienstanweisung zu erstellen, die insbesondere folgende Angaben enthält: Auftraggeber, Objekt, Aufgaben der Wachperson, Verhalten in besonderen Situationen, Meldewege, Notfallnummern.",
+                    "tags": ["Dienstanweisung", "Objektschutz", "Schriftform"],
+                    "bilder": [],
+                    "querverweise": []
+                },
+                {
+                    "id": "bewachv-p16",
+                    "nummer": "§ 16",
+                    "titel": "Dienstkleidung und Dienstausweis",
+                    "kurz": "Pflicht zur Kennzeichnung und Ausweispflicht im Dienst.",
+                    "text": "Wachpersonen haben bei Ausübung ihrer Tätigkeit einen Dienstausweis mitzuführen und auf Verlangen vorzuzeigen. Der Dienstausweis muss enthalten: Name der Wachperson, Name und Anschrift des Gewerbetreibenden, Lichtbild, Unterschrift.",
+                    "tags": ["Dienstausweis", "Dienstkleidung", "Identifikation"],
+                    "bilder": [],
+                    "querverweise": []
+                }
+            ]
+        },
+        {
+            "id": "kap-4",
+            "title": "Abschnitt 4 - Bewachungsregister",
+            "paragraphen": [
+                {
+                    "id": "bewachv-p21",
+                    "nummer": "§ 21",
+                    "titel": "Bewachungsregister",
+                    "kurz": "Zentrales Register beim BAFA für alle Wachpersonen.",
+                    "text": "Beim Bundesamt für Wirtschaft und Ausfuhrkontrolle (BAFA) wird ein zentrales Bewachungsregister geführt. Es enthält Daten zu Gewerbetreibenden und Wachpersonen, einschließlich Zuverlässigkeitsprüfungen und Qualifikationsnachweisen.",
+                    "tags": ["Bewachungsregister", "BAFA", "Register"],
+                    "bilder": [],
+                    "querverweise": []
+                }
+            ]
+        }
+    ]
+}

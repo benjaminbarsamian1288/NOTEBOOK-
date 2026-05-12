@@ -1,0 +1,7 @@
+# Schaubilder hier hochladen
+#
+# Anleitung:
+# 1. Lade deine Schaubilder (PNG, JPG, SVG) in diesen Ordner hoch
+# 2. In der jeweiligen JSON-Datei (data/dguv-v1.json etc.) den Dateinamen in "bilder" eintragen:
+#    "bilder": ["mein-schaubild.png", "anderes-diagramm.jpg"]
+# 3. Push - dann erscheinen die Bilder automatisch in der App
