@@ -1,11 +1,14 @@
-const CACHE = 'st-katalog-v1';
+const CACHE = 'st-katalog-v2';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './css/style.css',
+  './css/visuals.css',
   './js/data.js',
   './js/util.js',
+  './js/illustrations.js',
+  './js/visuals.js',
   './js/views.js',
   './js/konfigurator.js',
   './js/charts.js',

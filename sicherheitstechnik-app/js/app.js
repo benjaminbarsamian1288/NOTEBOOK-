@@ -12,6 +12,8 @@
     ema: V.ema,
     preisliste: V.preisliste,
     konfigurator: V.konfigurator,
+    simulator: V.simulator,
+    vergleich: V.vergleich,
     diagramme: V.diagramme,
     dokumente: V.dokumente,
   };

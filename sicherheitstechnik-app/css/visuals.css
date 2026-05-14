@@ -1,0 +1,391 @@
+/* ============================================================
+   Erweiterte Visuals: Animationen, SVG-Illustrationen, Hero
+   ============================================================ */
+
+/* ----- SVG illustration wrapper ----- */
+.ill-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(11,20,36,.6), rgba(22,37,66,.4));
+  border: 1px solid var(--border-soft);
+}
+.ill-wrap { margin: 8px 0 12px; }
+
+/* ----- PIR walker bounce ----- */
+.ill-walker { animation: walk 3.5s ease-in-out infinite; }
+@keyframes walk {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(80px); }
+}
+
+/* ----- Mikrowelle pulsing waves ----- */
+.ill-wave {
+  stroke-dasharray: 180;
+  stroke-dashoffset: 180;
+  animation: wave 1.6s linear infinite;
+}
+.ill-wave.w2 { animation-delay: .3s; }
+.ill-wave.w3 { animation-delay: .6s; }
+@keyframes wave {
+  to { stroke-dashoffset: -180; }
+}
+.ill-target {
+  animation: floatAway 4s ease-in-out infinite alternate;
+}
+@keyframes floatAway {
+  from { transform: translateX(0); }
+  to   { transform: translateX(40px); }
+}
+
+/* ----- Door swinging open ----- */
+.ill-door {
+  transform-origin: 170px 120px;
+  animation: doorSwing 4.5s ease-in-out infinite;
+}
+@keyframes doorSwing {
+  0%, 30%   { transform: rotateY(0deg); }
+  60%, 70%  { transform: rotateY(-30deg) translateX(-20px); }
+  100%      { transform: rotateY(0deg); }
+}
+.ill-status rect, .ill-status circle, .ill-status text {
+  animation: statusFlip 4.5s ease-in-out infinite;
+}
+@keyframes statusFlip {
+  0%, 50% { fill: currentColor; }
+  55%, 95% { fill: #ef4444; }
+}
+
+/* ----- Crack drawing on glass ----- */
+.ill-crack path {
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
+  animation: crack 4s ease-out infinite;
+}
+@keyframes crack {
+  0%   { stroke-dashoffset: 200; }
+  40%  { stroke-dashoffset: 0; }
+  85%  { stroke-dashoffset: 0; opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+
+/* ----- Drill movement + shake waves ----- */
+.ill-drill {
+  animation: drill 2s ease-in-out infinite alternate;
+  transform-origin: center;
+}
+@keyframes drill {
+  from { transform: translate(20px, 110px); }
+  to   { transform: translate(150px, 110px); }
+}
+.ill-shake path {
+  stroke-dasharray: 80;
+  stroke-dashoffset: 80;
+  animation: shake 2s ease-in infinite;
+}
+@keyframes shake {
+  to { stroke-dashoffset: 0; }
+}
+
+/* ----- IR beams pulsing ----- */
+.ill-beams line {
+  stroke-dasharray: 6 4;
+  animation: irPulse 1.2s linear infinite;
+}
+@keyframes irPulse {
+  to { stroke-dashoffset: -20; }
+}
+
+/* ----- Smoke rising ----- */
+.ill-smoke {
+  animation: smokeRise 4s ease-in-out infinite alternate;
+  transform-origin: center bottom;
+}
+@keyframes smokeRise {
+  from { transform: translateY(0) scale(1); opacity: .5; }
+  to   { transform: translateY(-30px) scale(1.15); opacity: .25; }
+}
+.ill-flame {
+  animation: flicker 0.45s ease-in-out infinite alternate;
+  transform-origin: center bottom;
+}
+@keyframes flicker {
+  from { transform: scaleY(1) scaleX(1); }
+  to   { transform: scaleY(1.08) scaleX(.95); }
+}
+
+/* ----- Fence intruder + vibration burst ----- */
+.ill-intruder { animation: climb 3s ease-in-out infinite alternate; }
+@keyframes climb {
+  from { transform: translate(180px, 110px); }
+  to   { transform: translate(180px, 80px); }
+}
+.ill-vib circle {
+  transform-origin: 200px 70px;
+  animation: vibBurst 1.5s ease-out infinite;
+  opacity: 0;
+}
+.ill-vib circle:nth-child(1) { animation-delay: 0s; }
+.ill-vib circle:nth-child(2) { animation-delay: .3s; }
+.ill-vib circle:nth-child(3) { animation-delay: .6s; }
+@keyframes vibBurst {
+  0%   { transform: scale(.3); opacity: .9; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+
+/* ----- Capacitive field rings ----- */
+.ill-cap-field ellipse {
+  animation: capPulse 2.5s ease-in-out infinite;
+  transform-origin: 200px 140px;
+}
+.ill-cap-field ellipse:nth-child(2) { animation-delay: .3s; }
+.ill-cap-field ellipse:nth-child(3) { animation-delay: .6s; }
+@keyframes capPulse {
+  0%, 100% { opacity: .2; }
+  50%      { opacity: .7; }
+}
+
+/* ----- Onion pulse ----- */
+.onion-pulse circle {
+  transform-origin: 200px 200px;
+  animation: onionPulse 3s ease-in-out infinite;
+}
+.onion-pulse circle:nth-child(2) { animation-delay: .15s; }
+.onion-pulse circle:nth-child(3) { animation-delay: .3s; }
+.onion-pulse circle:nth-child(4) { animation-delay: .45s; }
+@keyframes onionPulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.04); }
+}
+
+/* ----- House map sensors ----- */
+.ill-house-sensors path {
+  animation: sensorBlink 1.6s ease-in-out infinite;
+}
+.ill-house-sensors path:nth-child(4) { animation-delay: .4s; }
+@keyframes sensorBlink {
+  0%, 100% { opacity: .25; }
+  50%      { opacity: .55; }
+}
+
+.z-clk { cursor: pointer; transition: filter .2s; }
+.z-clk:hover { filter: brightness(1.4) drop-shadow(0 0 10px currentColor); }
+
+/* ----- Hero section ----- */
+.hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  background:
+    radial-gradient(800px 400px at 80% 0%, rgba(56,189,248,.18), transparent 60%),
+    radial-gradient(700px 400px at 10% 100%, rgba(192,132,252,.18), transparent 60%),
+    linear-gradient(135deg, #0b1424 0%, #162542 100%);
+  padding: clamp(20px, 4vw, 40px);
+  margin-bottom: 24px;
+  border: 1px solid var(--border-soft);
+}
+.hero::before, .hero::after {
+  content: ''; position: absolute; border-radius: 50%;
+  filter: blur(60px); opacity: .35; pointer-events: none;
+}
+.hero::before { width: 300px; height: 300px; background: #38bdf8; top: -100px; right: -50px; animation: float1 8s ease-in-out infinite alternate; }
+.hero::after  { width: 240px; height: 240px; background: #c084fc; bottom: -80px; left: -40px;  animation: float2 9s ease-in-out infinite alternate; }
+@keyframes float1 { to { transform: translate(-40px, 50px) scale(1.1); } }
+@keyframes float2 { to { transform: translate(50px, -30px) scale(1.15); } }
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 24px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+.hero-grid h1 {
+  font-size: clamp(28px, 5vw, 48px);
+  margin: 0 0 8px;
+  font-weight: 900;
+  letter-spacing: -.5px;
+  line-height: 1.05;
+  background: var(--grad-1);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero-grid .tag {
+  display: inline-block; font-size: 11px; letter-spacing: 1.5px;
+  padding: 4px 10px; border-radius: 999px;
+  background: rgba(56,189,248,.18); color: #38bdf8;
+  border: 1px solid rgba(56,189,248,.4);
+  margin-bottom: 12px; text-transform: uppercase;
+}
+.hero-grid .lead {
+  color: var(--text-dim);
+  font-size: clamp(15px, 1.6vw, 17px);
+  max-width: 56ch;
+  line-height: 1.55;
+  margin: 0 0 18px;
+}
+.hero-cta { display: flex; gap: 10px; flex-wrap: wrap; }
+
+@media (max-width: 760px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-grid .onion-side { max-width: 320px; margin: 0 auto; }
+}
+
+/* ----- Counter stats animated ----- */
+.bigstats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+  margin: 20px 0 28px;
+}
+.bigstat {
+  position: relative;
+  padding: 18px 18px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  transition: transform .15s, border-color .15s;
+}
+.bigstat:hover { transform: translateY(-3px); border-color: var(--accent); }
+.bigstat::after {
+  content: ''; position: absolute; right: -20px; bottom: -20px;
+  width: 80px; height: 80px;
+  background: var(--grad-1); opacity: .12;
+  border-radius: 50%; filter: blur(15px);
+}
+.bigstat .icon {
+  width: 36px; height: 36px;
+  display: grid; place-items: center;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--accent);
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+.bigstat .num {
+  font-size: clamp(28px, 4vw, 36px);
+  font-weight: 800; line-height: 1;
+  font-variant-numeric: tabular-nums;
+  background: var(--grad-1);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.bigstat .lbl {
+  font-size: 12px; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: .6px;
+  margin-top: 4px;
+}
+
+/* ----- Detector cards (rich) ----- */
+.det-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.det-card {
+  position: relative; overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-md);
+  padding: 16px;
+  cursor: pointer;
+  transition: transform .15s, border-color .15s, box-shadow .15s;
+}
+.det-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: 0 12px 32px rgba(0,0,0,.3), 0 0 24px var(--accent-glow);
+}
+.det-card .head {
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.det-card .icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: grid; place-items: center;
+  font-size: 18px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 30%, transparent), color-mix(in srgb, var(--accent) 8%, transparent));
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.det-card h3 { margin: 0; font-size: 16px; line-height: 1.2; }
+.det-card .sub { color: var(--text-dim); font-size: 12px; margin-top: 2px; }
+.det-card .desc { color: var(--text-dim); font-size: 13px; margin: 12px 0 8px; line-height: 1.5; }
+.det-card .specs { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.det-card .specs .pill { font-size: 11px; }
+.det-card .price-tag {
+  position: absolute; top: 14px; right: 14px;
+  background: var(--grad-1);
+  color: white; padding: 4px 10px;
+  border-radius: 999px; font-size: 11px; font-weight: 700;
+}
+.det-card .mini-svg { margin: 12px -16px -2px; }
+.det-card .mini-svg .ill-svg { border-radius: 0; border: none; background: transparent; }
+
+/* ----- Coverage viz ----- */
+.viz-canvas {
+  display: block; max-width: 100%;
+  border-radius: var(--r-md);
+  background: linear-gradient(135deg, rgba(56,189,248,.04), rgba(192,132,252,.03));
+}
+
+/* ----- Zone cards w/ depth ----- */
+.zone-card {
+  background: var(--surface);
+  position: relative;
+  overflow: hidden;
+}
+.zone-card::before {
+  content: ''; position: absolute; inset: 0; opacity: .15; pointer-events: none;
+  background: radial-gradient(120% 100% at 100% 0%, var(--zone-col, var(--accent)), transparent 60%);
+}
+.zone-card[data-zone="1"] { --zone-col: #38bdf8; }
+.zone-card[data-zone="2"] { --zone-col: #818cf8; }
+.zone-card[data-zone="3"] { --zone-col: #c084fc; }
+.zone-card[data-zone="4"] { --zone-col: #f472b6; }
+
+/* ----- Tabs / segmented control ----- */
+.seg {
+  display: inline-flex;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 3px;
+  gap: 2px;
+}
+.seg button {
+  border: none;
+  background: transparent;
+  color: var(--text-dim);
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background .12s, color .12s;
+}
+.seg button.active {
+  background: var(--grad-1);
+  color: white;
+}
+
+/* ----- Bigger drawer for illustrations ----- */
+.drawer-panel { width: min(820px, 100%); }
+.det-section { background: var(--bg-2); }
+
+/* ----- mobile tweaks for hero ----- */
+@media (max-width: 600px) {
+  .hero { padding: 18px; }
+  .bigstats { grid-template-columns: repeat(2, 1fr); }
+  .bigstat .num { font-size: 24px; }
+}
+
+/* ----- RC progression bar ----- */
+.rcbar-row { display: grid; grid-template-columns: 80px 1fr 60px; gap: 10px; align-items: center; padding: 6px 0; }
+.rcbar-row .rclbl { font-weight: 700; }
+.rcbar { height: 14px; border-radius: 999px; background: var(--bg-2); position: relative; overflow: hidden; }
+.rcbar .fill {
+  height: 100%; border-radius: 999px;
+  background: var(--grad-1);
+  transition: width .8s ease-out;
+}
+.rcbar-row .rcval { text-align: right; font-variant-numeric: tabular-nums; color: var(--text-dim); }

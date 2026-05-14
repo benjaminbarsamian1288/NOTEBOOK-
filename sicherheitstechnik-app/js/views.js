@@ -6,25 +6,80 @@ window.V = (() => {
   // ---------- HOME -----------
   function home(d) {
     const root = el('div');
-    root.appendChild(el('div', { class: 'view-head' }, [
-      el('span', { class: 'crumb', text: 'Sicherheitstechnik · Komplett · V4' }),
-      el('h1', { text: 'Zwiebelprinzip – 4 Schutzzonen' }),
-      el('p', { text: 'Mechanik + Elektronik + Organisation auf vier ineinander liegenden Verteidigungslinien. Jede Zone hat eigene Normen, Maßnahmen und Sicherungsklassen.' })
-    ]));
 
-    // Stat row
+    // --- HERO ---
+    const hero = el('div', { class: 'hero' });
+    const heroGrid = el('div', { class: 'hero-grid' });
+    const heroLeft = el('div');
+    heroLeft.innerHTML = `
+      <span class="tag">Sicherheitstechnik · Komplett · V4</span>
+      <h1>Zwiebelprinzip – 4 Schutzzonen</h1>
+      <p class="lead">Mechanik · Elektronik · Organisation – ineinander geschachtelt nach VdS 2333, DIN EN 50131-1 und DIN EN 1627. Vom Zaun bis zum Tresor.</p>
+    `;
+    const cta = el('div', { class: 'hero-cta' });
+    const ctaA = el('button', { class:'btn primary', html:'<i class="fas fa-sliders"></i> Konfigurator starten' });
+    ctaA.addEventListener('click', () => location.hash = '#konfigurator');
+    const ctaB = el('button', { class:'btn', html:'<i class="fas fa-vector-square"></i> Floor-Plan Simulator' });
+    ctaB.addEventListener('click', () => location.hash = '#simulator');
+    const ctaC = el('button', { class:'btn ghost', html:'<i class="fas fa-table-cells-large"></i> Melder vergleichen' });
+    ctaC.addEventListener('click', () => location.hash = '#vergleich');
+    cta.appendChild(ctaA); cta.appendChild(ctaB); cta.appendChild(ctaC);
+    heroLeft.appendChild(cta);
+    heroGrid.appendChild(heroLeft);
+
+    const heroRight = el('div', { class: 'onion-side', html: ILL.onionAnim() });
+    heroGrid.appendChild(heroRight);
+    hero.appendChild(heroGrid);
+    root.appendChild(hero);
+
+    // --- BIG STATS (animated) ---
     const total = d.preisliste.rows.length;
     const meldVar = d.melder.tables.reduce((s,t)=>s+t.rows.length, 0);
     const docs = d.dokumente.length;
-    root.appendChild(el('div', { class: 'stats' }, [
-      stat('4', 'Schutzzonen'),
-      stat('6', 'Sicherungsklassen SÜ'),
-      stat('4', 'EMA-Grade · EN 50131'),
-      stat('6', 'Widerstandsklassen RC'),
-      stat(String(meldVar), 'Meldervarianten'),
-      stat(String(total), 'Produkte mit Preis'),
-      stat(String(docs), 'Normen & Dokumente')
+    const bigstats = el('div', { class:'bigstats' });
+    [
+      { icon:'fa-layer-group', n: 4,       l:'Schutzzonen' },
+      { icon:'fa-medal',       n: 6,       l:'Sicherungsklassen SÜ' },
+      { icon:'fa-bell',        n: 4,       l:'EMA-Grade · EN 50131' },
+      { icon:'fa-shield-halved',n:6,       l:'RC-Klassen' },
+      { icon:'fa-wave-square', n: meldVar, l:'Meldervarianten' },
+      { icon:'fa-euro-sign',   n: total,   l:'Produkte mit Preis' },
+      { icon:'fa-folder-open', n: docs,    l:'Normen & Dokumente' },
+    ].forEach(s => {
+      const c = el('div', { class:'bigstat' });
+      c.appendChild(el('div', { class:'icon', html:`<i class="fas ${s.icon}"></i>` }));
+      const n = el('div', { class:'num', text:'0' });
+      c.appendChild(n);
+      c.appendChild(el('div', { class:'lbl', text:s.l }));
+      bigstats.appendChild(c);
+      // animate when in viewport
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) { VIZ.animateCounter(n, s.n); obs.disconnect(); }
+        });
+      });
+      obs.observe(c);
+    });
+    root.appendChild(bigstats);
+
+    // --- Quick interactive house map ---
+    const mapCard = el('div', { class:'card' });
+    mapCard.appendChild(el('div', { class:'card-h' }, [
+      el('div', { class:'ico', html:'<i class="fas fa-house-chimney"></i>' }),
+      el('h3', { text: 'Sicherheitszonen am Objekt – Klick auf eine Zone' })
     ]));
+    const mapWrap = el('div', { html: ILL.houseMap() });
+    mapCard.appendChild(mapWrap);
+    setTimeout(() => {
+      mapWrap.querySelectorAll('.z-clk').forEach(g => {
+        g.addEventListener('click', () => {
+          const zn = +g.dataset.zone;
+          const zone = d.sicherheitskonzept.zones[zn-1];
+          if (zone) zoneDrawer(zone);
+        });
+      });
+    }, 50);
+    root.appendChild(mapCard);
 
     // Onion + zone cards
     const wrap = el('div', { class: 'grid', style: 'grid-template-columns: minmax(0, 1fr); gap: 16px;' });
@@ -137,6 +192,30 @@ window.V = (() => {
       el('h1', { text: 'SÜ · EMA-Grad · RC-Klasse' }),
       el('p', { text: 'Klassen-Matrix nach VdS 2333, DIN EN 50131-1 und DIN EN 1627-1630. Klicke eine Klasse für Details.' })
     ]));
+
+    // Visual RC progression bar (resistance time)
+    const rcTable = d.sicherungsklassen.tables.find(t => /RC|Widerstand/i.test(t.title));
+    if (rcTable) {
+      const rcCard = el('div', { class:'card', style:'padding:18px; margin-bottom:18px' });
+      rcCard.appendChild(el('div', { class:'card-h' }, [
+        el('div', { class:'ico', html:'<i class="fas fa-stopwatch"></i>' }),
+        el('h3', { text:'RC-Widerstandszeit visuell' })
+      ]));
+      const maxMin = 20; // RC 6 = 20 min
+      rcTable.rows.forEach(r => {
+        const t = (r['Widerstandszeit'] || '').match(/\d+/);
+        const mins = t ? +t[0] : 0;
+        const row = el('div', { class:'rcbar-row' });
+        row.appendChild(el('div', { class:'rclbl', text: r['RC-Klasse'] }));
+        const bar = el('div', { class:'rcbar' });
+        const fill = el('div', { class:'fill', style:`width:${(mins/maxMin*100).toFixed(0)}%` });
+        bar.appendChild(fill);
+        row.appendChild(bar);
+        row.appendChild(el('div', { class:'rcval', text: r['Widerstandszeit'] || '—' }));
+        rcCard.appendChild(row);
+      });
+      root.appendChild(rcCard);
+    }
 
     d.sicherungsklassen.tables.forEach(t => {
       const wrap = el('div', { class: 'table-wrap' });
@@ -281,6 +360,19 @@ window.V = (() => {
       el('p', { text: 'Bewegungs-, Öffnungs-, Glasbruch-, Erschütterungs-, Spezial- und Brandmelder mit VdS-Norm und Detektionsprinzip.' })
     ]));
 
+    // Detector-card grid above the tables (links into the detail drawers)
+    if (d.details) {
+      const featured = el('div', { class:'card', style:'padding:18px; margin-bottom:18px' });
+      featured.appendChild(el('div', { class:'card-h' }, [
+        el('div', { class:'ico', html:'<i class="fas fa-microscope"></i>' }),
+        el('h3', { text: 'Funktionsprinzipien (Klick für Detail-Illustration)' })
+      ]));
+      const grid = el('div', { class:'det-grid' });
+      d.details.forEach(det => grid.appendChild(detCard(det)));
+      featured.appendChild(grid);
+      root.appendChild(featured);
+    }
+
     // Detail cards for D1-D10
     const detailMap = {};
     (d.details || []).forEach(det => detailMap[det.key] = det);
@@ -421,9 +513,23 @@ window.V = (() => {
 
   function showDetector(det) {
     const body = el('div');
+    const ILLMAP = {
+      'd1_pir_melder': ILL.pir,
+      'd2_dualmelder': ILL.dual,
+      'd3_magnetkontakt': ILL.mag,
+      'd4_glasbruchmelder': ILL.glass,
+      'd5_erschuetterung': ILL.shake,
+      'd6_mikrowelle': ILL.mw,
+      'd7_ir_lichtschranke': ILL.irBeam,
+      'd8_brandmelder': ILL.fire,
+      'd9_spezialmelder': ILL.press,
+      'd10_schliessblechkontakt': ILL.mag,
+    };
+    const heroSvg = ILLMAP[det.key] ? ILLMAP[det.key]() : '';
     body.appendChild(el('div', { class: 'det-hero' }, [
       el('h2', { text: det.title }),
-      el('div', { class: 'sub', text: det.subtitle || '' })
+      el('div', { class: 'sub', text: det.subtitle || '' }),
+      heroSvg ? el('div', { class:'mt-12', html: heroSvg }) : null
     ]));
     det.sections.forEach(sec => {
       const w = el('div', { class: 'det-section' });
@@ -440,6 +546,72 @@ window.V = (() => {
       body.appendChild(w);
     });
     drawer(det.name, body);
+  }
+
+  // ---------- SIMULATOR ----------
+  function simulator(d) {
+    const root = el('div');
+    root.appendChild(el('div', { class:'view-head' }, [
+      el('span', { class:'crumb', text:'Interaktiv' }),
+      el('h1', { text:'Floor-Plan Simulator' }),
+      el('p', { text:'Platziere virtuelle Sensoren auf einem Grundriss und sieh, welche Bereiche abgedeckt sind. Plus: Coverage-Vergleich verschiedener Melder im selben Raum.' })
+    ]));
+    root.appendChild(VIZ.floorPlan());
+    const cov = VIZ.coverageView();
+    root.appendChild(cov.root);
+    return root;
+  }
+
+  // ---------- VERGLEICH ----------
+  function vergleich(d) {
+    const root = el('div');
+    root.appendChild(el('div', { class:'view-head' }, [
+      el('span', { class:'crumb', text:'Side-by-Side' }),
+      el('h1', { text:'Melder-Vergleich' }),
+      el('p', { text:'Vier Detektionsprinzipien im direkten Vergleich: Funktionsweise, Stärken, Schwächen.' })
+    ]));
+    root.appendChild(VIZ.compareView());
+    // Plus full detector grid
+    const grid = el('div', { class:'det-grid mt-24' });
+    (d.details || []).forEach(det => grid.appendChild(detCard(det)));
+    const wrap = el('div', { class:'card', style:'padding:18px; margin-top:24px' });
+    wrap.appendChild(el('div', { class:'card-h' }, [
+      el('div', { class:'ico', html:'<i class="fas fa-microscope"></i>' }),
+      el('h3', { text:'Alle Funktionsprinzipien' })
+    ]));
+    wrap.appendChild(grid);
+    root.appendChild(wrap);
+    return root;
+  }
+
+  function detCard(det) {
+    const ILLMAP = {
+      'd1_pir_melder':  { fn: ILL.pir,  icon:'fa-eye',           sub:'Passiv-Infrarot' },
+      'd2_dualmelder':  { fn: ILL.dual, icon:'fa-shield-halved', sub:'PIR + Mikrowelle' },
+      'd3_magnetkontakt':{ fn: ILL.mag, icon:'fa-magnet',         sub:'Reed-Kontakt' },
+      'd4_glasbruchmelder':{ fn: ILL.glass, icon:'fa-window-maximize', sub:'Akustisch · Piezo' },
+      'd5_erschuetterung':{ fn: ILL.shake, icon:'fa-bolt',        sub:'Piezo · Körperschall' },
+      'd6_mikrowelle':  { fn: ILL.mw,   icon:'fa-tower-broadcast', sub:'Doppler-Radar' },
+      'd7_ir_lichtschranke':{ fn: ILL.irBeam, icon:'fa-arrows-left-right', sub:'IR-Strahl 940nm' },
+      'd8_brandmelder': { fn: ILL.fire, icon:'fa-fire',           sub:'Rauch · Wärme · Flamme' },
+      'd9_spezialmelder':{ fn: ILL.press, icon:'fa-star',         sub:'Druckmatte · Kapazitiv' },
+      'd10_schliessblechkontakt':{ fn: ILL.mag, icon:'fa-lock',   sub:'Verriegelungskontakt' },
+    };
+    const m = ILLMAP[det.key] || {fn: ()=> '', icon:'fa-wave-square', sub:''};
+    const card = el('div', { class:'det-card' });
+    card.appendChild(el('div', { class:'head' }, [
+      el('div', { class:'icon', html: `<i class="fas ${m.icon}"></i>` }),
+      el('div', {}, [
+        el('h3', { text: det.name }),
+        el('div', { class:'sub', text: m.sub })
+      ])
+    ]));
+    // pick first sub-headline line if exists
+    const firstLines = (det.sections[0]?.lines || []).slice(0, 2).join(' ');
+    if (firstLines) card.appendChild(el('div', { class:'desc', text: firstLines }));
+    card.appendChild(el('div', { class:'mini-svg', html: m.fn() }));
+    card.addEventListener('click', () => showDetector(det));
+    return card;
   }
 
   // ---------- PREISLISTE ----------
@@ -681,5 +853,5 @@ window.V = (() => {
     return root;
   }
 
-  return { home, klassen, perimeter, aussenhaut, melder, ema, preisliste, dokumente, diagramme, konfigurator, konzept, showDetector };
+  return { home, klassen, perimeter, aussenhaut, melder, ema, preisliste, dokumente, diagramme, konfigurator, konzept, simulator, vergleich, showDetector };
 })();
