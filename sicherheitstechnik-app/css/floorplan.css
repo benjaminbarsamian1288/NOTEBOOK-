@@ -1,0 +1,122 @@
+/* ============================================================
+   Floor-Plan Simulator – Selection-Panel, Sliders, Stats
+   ============================================================ */
+
+.fp-canvas {
+  display: block;
+  max-width: 100%;
+  border-radius: var(--r-md);
+  background: linear-gradient(135deg, rgba(56,189,248,.04), rgba(192,132,252,.03));
+  border: 1px solid var(--border-soft);
+  cursor: crosshair;
+  margin-top: 12px;
+}
+
+.fp-stat {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: 999px;
+}
+.fp-stat-num {
+  font-size: 18px;
+  font-weight: 800;
+  background: var(--grad-1);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+}
+.fp-stat-lbl {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  margin-right: 6px;
+}
+
+.fp-selpanel {
+  background: linear-gradient(135deg, rgba(56,189,248,.08), rgba(34,211,238,.04)), var(--surface);
+  border: 1px solid var(--accent);
+  border-radius: var(--r-md);
+  padding: 12px 14px;
+  margin-top: 12px;
+  animation: fpSelIn .25s ease-out;
+}
+@keyframes fpSelIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.fp-selhead {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+}
+.fp-selicon {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  display: grid; place-items: center;
+  font-size: 17px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.fp-seltitle { flex: 1; min-width: 180px; }
+.fp-seltitle strong { font-size: 14px; }
+
+.fp-control {
+  display: flex; align-items: center; gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.fp-control label {
+  width: 90px;
+  font-size: 12px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  font-weight: 600;
+}
+.fp-slider {
+  flex: 1; min-width: 180px;
+  height: 6px;
+  -webkit-appearance: none; appearance: none;
+  background: var(--bg-2);
+  border-radius: 999px;
+  outline: none;
+}
+.fp-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: linear-gradient(135deg, #38bdf8, #818cf8);
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(56,189,248,.4);
+}
+.fp-slider::-moz-range-thumb {
+  width: 20px; height: 20px; border-radius: 50%;
+  background: linear-gradient(135deg, #38bdf8, #818cf8);
+  cursor: pointer; border: none;
+}
+.fp-out {
+  min-width: 60px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* Smoother chip behaviour for the sensor toolbar */
+.filterbar .chip {
+  transition: transform .12s, border-color .12s, background .12s, box-shadow .12s;
+}
+.filterbar .chip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+
+@media (max-width: 600px) {
+  .fp-stat { margin-left: 0; padding: 4px 10px; }
+  .fp-stat-num { font-size: 15px; }
+  .fp-control label { width: 70px; font-size: 11px; }
+}

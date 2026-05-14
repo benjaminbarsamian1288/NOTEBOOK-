@@ -172,44 +172,65 @@ window.VIZ = (() => {
   }
 
   // ---------- Floor plan simulator ----------
-  // Drag sensor icons onto a floor plan, see coverage
+  // Drag sensor icons onto a floor plan, see coverage. Sensors are selectable,
+  // draggable, rotatable. Range adjustable. Save/Load floor plans.
   function floorPlan() {
     const root = el('div', { class: 'card', style: 'padding:18px' });
     root.appendChild(el('div', { class: 'card-h' }, [
       el('div', { class: 'ico', html: '<i class="fas fa-vector-square"></i>' }),
-      el('h3', { text: 'Floor-Plan-Simulator – Sensoren platzieren' })
+      el('h3', { text: 'Floor-Plan-Simulator – Sensoren platzieren · drehen · verschieben' })
     ]));
-    root.appendChild(el('p', { class: 'muted small', text: 'Klick auf ein Sensor-Icon, dann auf den Grundriss zum Platzieren. Rechtsklick zum Entfernen.' }));
+    root.appendChild(el('p', { class: 'muted small', text: 'Sensor wählen → auf Grundriss tippen zum Platzieren. Platzierten Sensor antippen zum Auswählen → verschieben mit Drag, drehen mit dem Griff, Reichweite per Slider, Löschen mit Delete-Button.' }));
 
     const SENSORS = [
       { id:'pir',  label:'PIR',         color:'#fbbf24', range:6,  angle:90,  type:'cone',   icon:'fa-eye' },
       { id:'dual', label:'Dual',        color:'#22c55e', range:7,  angle:90,  type:'cone',   icon:'fa-shield-halved' },
-      { id:'mag',  label:'Magnet',      color:'#c084fc', range:0.5, type:'circle', icon:'fa-magnet' },
+      { id:'mw',   label:'Mikrowelle',  color:'#22d3ee', range:10, angle:110, type:'cone',   icon:'fa-tower-broadcast' },
+      { id:'us',   label:'Ultraschall', color:'#a78bfa', range:5,  type:'circle', icon:'fa-volume-high' },
+      { id:'mag',  label:'Magnet',      color:'#c084fc', range:0.5,type:'circle', icon:'fa-magnet' },
       { id:'glass',label:'Glasbruch',   color:'#38bdf8', range:6,  type:'circle', icon:'fa-window-maximize' },
       { id:'fire', label:'Rauch',       color:'#ef4444', range:5,  type:'circle', icon:'fa-fire' },
       { id:'cam',  label:'Kamera',      color:'#a3e635', range:10, angle:70,  type:'cone',   icon:'fa-video' },
+      { id:'ir',   label:'IR-Schranke', color:'#0ea5e9', range:8,  type:'beam',   icon:'fa-arrows-left-right' },
     ];
 
     const toolbar = el('div', { class: 'filterbar' });
-    let selected = SENSORS[0];
+    let selectedSensor = SENSORS[0];   // sensor type to place
+    let selectedIdx = -1;              // index of currently selected placed sensor
+
     SENSORS.forEach(s => {
-      const c = el('button', { class: 'chip'+(s.id===selected.id?' active':''), html: `<i class="fas ${s.icon}"></i> ${s.label}` });
+      const c = el('button', { class: 'chip'+(s.id===selectedSensor.id?' active':''), html: `<i class="fas ${s.icon}"></i> ${s.label}` });
       c.style.color = s.color;
+      c.dataset.id = s.id;
       c.addEventListener('click', () => {
-        selected = s;
-        toolbar.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
-        c.classList.add('active');
+        selectedSensor = s;
+        toolbar.querySelectorAll('.chip').forEach(x => x.classList.toggle('active', x.dataset.id === s.id));
+        selectedIdx = -1;
+        renderSelectionPanel();
+        draw();
       });
       toolbar.appendChild(c);
     });
-    const clearBtn = el('button', { class: 'btn ghost', html: '<i class="fas fa-trash"></i> Alles löschen' });
-    toolbar.appendChild(clearBtn);
     root.appendChild(toolbar);
 
-    const cv = el('canvas', { width: '900', height: '480', style: 'cursor:crosshair; max-width:100%;' });
+    // Action toolbar (save/load/clear)
+    const actBar = el('div', { class: 'filterbar' });
+    const saveBtn = el('button', { class: 'btn ghost', html:'<i class="fas fa-floppy-disk"></i> Speichern' });
+    const loadBtn = el('button', { class: 'btn ghost', html:'<i class="fas fa-folder-open"></i> Laden' });
+    const clearBtn = el('button', { class: 'btn ghost', html:'<i class="fas fa-trash"></i> Alle löschen' });
+    actBar.appendChild(saveBtn); actBar.appendChild(loadBtn); actBar.appendChild(clearBtn);
+    const statBox = el('div', { class: 'fp-stat' });
+    actBar.appendChild(statBox);
+    root.appendChild(actBar);
+
+    // Selection panel (only visible when something is selected)
+    const selPanel = el('div', { class: 'fp-selpanel', style:'display:none' });
+    root.appendChild(selPanel);
+
+    const cv = el('canvas', { class: 'fp-canvas', width: '900', height: '480' });
     root.appendChild(cv);
 
-    // Floor plan rooms (rough house plan in 16x10 meters)
+    // Floor plan rooms (16x10 meters)
     const ROOMS = [
       { x: 0,    y: 0,    w: 6,  h: 5,  name: 'Wohnen' },
       { x: 6,    y: 0,    w: 5,  h: 5,  name: 'Küche' },
@@ -219,7 +240,6 @@ window.VIZ = (() => {
       { x: 8,    y: 5,    w: 4,  h: 5,  name: 'Kind' },
       { x: 12,   y: 5,    w: 4,  h: 5,  name: 'Büro' },
     ];
-    // Doors / Windows
     const OPENINGS = [
       { type:'door',   x: 4,   y: 5,   d:'h', length: .8 },
       { type:'door',   x: 8,   y: 5,   d:'h', length: .8 },
@@ -232,9 +252,21 @@ window.VIZ = (() => {
       { type:'window', x: 12,  y: 0,   d:'h', length: 1.5 },
     ];
 
-    let placed = []; // {x,y, sensor, dir}
+    let placed = [];   // {x, y, sensor, dir, range}
     let hover = null;
     let scale, ox, oy;
+    let drag = null;   // {mode:'move'|'rotate', idx, offsetX, offsetY}
+
+    // Load from localStorage if present
+    try {
+      const saved = JSON.parse(localStorage.getItem('st-floorplan-last') || 'null');
+      if (saved && Array.isArray(saved)) {
+        placed = saved.map(p => ({
+          x: p.x, y: p.y, dir: p.dir, range: p.range,
+          sensor: SENSORS.find(s => s.id === p.sid) || SENSORS[0]
+        }));
+      }
+    } catch {}
 
     function fit() {
       const W = cv.parentElement.clientWidth - 36;
@@ -248,109 +280,378 @@ window.VIZ = (() => {
       ctx.setTransform(dpr,0,0,dpr,0,0);
       return ctx;
     }
+    function getCss(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
 
     function draw() {
       const ctx = fit();
       const W = cv.parentElement.clientWidth - 36;
       ctx.clearRect(0, 0, W, 480);
       // Rooms
-      ctx.lineJoin = 'round';
       ROOMS.forEach(r => {
         const x = ox + r.x*scale, y = oy + r.y*scale, w = r.w*scale, h = r.h*scale;
         ctx.fillStyle = 'rgba(56,189,248,.04)';
         ctx.fillRect(x,y,w,h);
-        ctx.strokeStyle = getCss('--border');
-        ctx.lineWidth = 2;
+        ctx.strokeStyle = getCss('--border'); ctx.lineWidth = 2;
         ctx.strokeRect(x,y,w,h);
-        ctx.fillStyle = getCss('--text-dim');
-        ctx.font = '11px system-ui';
+        ctx.fillStyle = getCss('--text-dim'); ctx.font = '11px system-ui';
         ctx.fillText(r.name, x+4, y+14);
       });
       // Openings
       OPENINGS.forEach(o => {
         const x = ox + o.x*scale, y = oy + o.y*scale;
         ctx.strokeStyle = o.type==='door' ? '#fbbf24' : '#38bdf8';
-        ctx.lineWidth = 4;
+        ctx.lineWidth = 5; ctx.lineCap = 'round';
         ctx.beginPath();
         if (o.d==='h') { ctx.moveTo(x,y); ctx.lineTo(x+o.length*scale, y); }
-        else { ctx.moveTo(x,y); ctx.lineTo(x, y+o.length*scale); }
+        else           { ctx.moveTo(x,y); ctx.lineTo(x, y+o.length*scale); }
         ctx.stroke();
       });
-      // Placed sensors coverage
-      placed.forEach(p => drawCoverage(ctx, p));
+      // Coverage of placed sensors
+      placed.forEach((p, i) => drawCoverage(ctx, p, i === selectedIdx));
       // Hover preview
-      if (hover) drawCoverage(ctx, { x: hover.x, y: hover.y, sensor: selected, dir: 0 }, true);
+      if (hover && selectedIdx < 0) drawCoverage(ctx, { x: hover.x, y: hover.y, sensor: selectedSensor, dir: -Math.PI/2, range: selectedSensor.range }, false, true);
 
-      // Stats
-      const total = placed.length;
-      const byType = {};
-      placed.forEach(p => byType[p.sensor.id] = (byType[p.sensor.id]||0)+1);
-      ctx.fillStyle = getCss('--text');
-      ctx.font = 'bold 12px system-ui';
-      ctx.fillText(`${total} Sensoren platziert`, 14, 470);
+      // Update stat box
+      updateStats();
     }
 
-    function drawCoverage(ctx, p, isPreview) {
+    function drawCoverage(ctx, p, isSelected=false, isPreview=false) {
       const x = ox + p.x*scale, y = oy + p.y*scale;
       const s = p.sensor;
+      const range = (p.range != null ? p.range : s.range);
       ctx.save();
-      ctx.globalAlpha = isPreview ? .25 : .35;
+      ctx.globalAlpha = isPreview ? .22 : (isSelected ? .5 : .35);
       ctx.fillStyle = s.color;
       if (s.type==='cone') {
         const half = (s.angle/2) * Math.PI/180;
-        const dir = p.dir || -Math.PI/2;
+        const dir = p.dir != null ? p.dir : -Math.PI/2;
         ctx.beginPath();
         ctx.moveTo(x,y);
-        ctx.arc(x, y, s.range*scale, dir-half, dir+half);
+        ctx.arc(x, y, range*scale, dir-half, dir+half);
         ctx.closePath();
         ctx.fill();
+        if (isSelected) {
+          ctx.strokeStyle = s.color;
+          ctx.lineWidth = 1.5; ctx.globalAlpha = .9;
+          ctx.stroke();
+        }
+      } else if (s.type==='beam') {
+        const dir = p.dir != null ? p.dir : 0;
+        ctx.translate(x, y); ctx.rotate(dir);
+        ctx.fillRect(0, -3, range*scale, 6);
+        if (isSelected) {
+          ctx.strokeStyle = s.color; ctx.lineWidth = 1.5; ctx.globalAlpha = .9;
+          ctx.strokeRect(0, -3, range*scale, 6);
+        }
       } else {
         ctx.beginPath();
-        ctx.arc(x, y, s.range*scale, 0, Math.PI*2);
+        ctx.arc(x, y, range*scale, 0, Math.PI*2);
         ctx.fill();
+        if (isSelected) {
+          ctx.strokeStyle = s.color; ctx.lineWidth = 1.5; ctx.globalAlpha = .9;
+          ctx.stroke();
+        }
       }
       ctx.restore();
-      // dot
+      // Sensor body
       ctx.fillStyle = s.color;
-      ctx.beginPath(); ctx.arc(x, y, 7, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(x, y, isSelected ? 9 : 7, 0, Math.PI*2); ctx.fill();
       ctx.fillStyle = '#0b1424';
-      ctx.beginPath(); ctx.arc(x, y, 3.5, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(x, y, isSelected ? 4 : 3.5, 0, Math.PI*2); ctx.fill();
+      // Selection ring + rotate handle
+      if (isSelected) {
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath(); ctx.arc(x, y, 16, 0, Math.PI*2); ctx.stroke();
+        ctx.setLineDash([]);
+        // Rotate handle for directional sensors
+        if (s.type === 'cone' || s.type === 'beam') {
+          const dir = p.dir != null ? p.dir : -Math.PI/2;
+          const hx = x + Math.cos(dir) * 28;
+          const hy = y + Math.sin(dir) * 28;
+          ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(hx, hy); ctx.stroke();
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath(); ctx.arc(hx, hy, 7, 0, Math.PI*2); ctx.fill();
+          ctx.fillStyle = '#0b1424'; ctx.font = 'bold 11px system-ui';
+          ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillText('↻', hx, hy+1);
+        }
+      }
     }
 
     function getMouse(e) {
       const r = cv.getBoundingClientRect();
       const cx = (e.clientX - r.left), cy = (e.clientY - r.top);
-      return { x: (cx - ox)/scale, y: (cy - oy)/scale };
+      return { x: (cx - ox)/scale, y: (cy - oy)/scale, px: cx, py: cy };
     }
 
-    cv.addEventListener('mousemove', e => {
-      hover = getMouse(e);
-      draw();
-    });
-    cv.addEventListener('mouseleave', () => { hover = null; draw(); });
-    cv.addEventListener('click', e => {
+    function findSensorAt(m) {
+      // Returns idx where mouse is on sensor body
+      for (let i = placed.length - 1; i >= 0; i--) {
+        const p = placed[i];
+        const x = ox + p.x*scale, y = oy + p.y*scale;
+        const d = Math.hypot(p.x*scale + ox - m.px, p.y*scale + oy - m.py);
+        if (d < 18) return { idx: i, mode: 'move' };
+      }
+      return null;
+    }
+
+    function findRotateHandleAt(m) {
+      if (selectedIdx < 0) return false;
+      const p = placed[selectedIdx];
+      if (p.sensor.type !== 'cone' && p.sensor.type !== 'beam') return false;
+      const x = ox + p.x*scale, y = oy + p.y*scale;
+      const dir = p.dir != null ? p.dir : -Math.PI/2;
+      const hx = x + Math.cos(dir) * 28;
+      const hy = y + Math.sin(dir) * 28;
+      const d = Math.hypot(m.px - hx, m.py - hy);
+      return d < 12;
+    }
+
+    cv.addEventListener('mousedown', e => {
       const m = getMouse(e);
-      if (m.x<0||m.y<0||m.x>16||m.y>10) return;
-      placed.push({ x: m.x, y: m.y, sensor: selected, dir: -Math.PI/2 });
-      draw();
+      if (findRotateHandleAt(m)) {
+        drag = { mode: 'rotate', idx: selectedIdx };
+        return;
+      }
+      const hit = findSensorAt(m);
+      if (hit) {
+        selectedIdx = hit.idx;
+        drag = { mode: 'move', idx: hit.idx };
+        renderSelectionPanel();
+        draw();
+      } else {
+        // Empty area click → place new (only if no rotate-grip click)
+        if (m.x<0||m.y<0||m.x>16||m.y>10) return;
+        const sCopy = selectedSensor;
+        placed.push({ x: m.x, y: m.y, sensor: sCopy, dir: -Math.PI/2, range: sCopy.range });
+        selectedIdx = placed.length - 1;
+        renderSelectionPanel();
+        autoSave();
+        draw();
+      }
     });
+
+    cv.addEventListener('mousemove', e => {
+      const m = getMouse(e);
+      hover = m;
+      if (drag) {
+        const p = placed[drag.idx];
+        if (drag.mode === 'move') {
+          p.x = Math.max(0, Math.min(16, m.x));
+          p.y = Math.max(0, Math.min(10, m.y));
+        } else if (drag.mode === 'rotate') {
+          const cx = ox + p.x*scale, cy = oy + p.y*scale;
+          p.dir = Math.atan2(m.py - cy, m.px - cx);
+        }
+        draw();
+      } else {
+        draw();
+      }
+    });
+
+    cv.addEventListener('mouseup', () => {
+      if (drag) {
+        autoSave();
+        drag = null;
+      }
+    });
+
+    cv.addEventListener('mouseleave', () => { hover = null; drag = null; draw(); });
+
     cv.addEventListener('contextmenu', e => {
       e.preventDefault();
       const m = getMouse(e);
-      let bestI=-1, bestD=999;
-      placed.forEach((p,i) => {
-        const d = Math.hypot(p.x-m.x, p.y-m.y);
-        if (d<bestD) { bestD=d; bestI=i; }
-      });
-      if (bestI>=0 && bestD<1.0) { placed.splice(bestI, 1); draw(); }
+      const hit = findSensorAt(m);
+      if (hit) {
+        placed.splice(hit.idx, 1);
+        selectedIdx = -1;
+        renderSelectionPanel();
+        autoSave();
+        draw();
+      }
     });
-    clearBtn.addEventListener('click', () => { placed = []; draw(); });
+
+    // Touch support (basic)
+    cv.addEventListener('touchstart', e => {
+      const t = e.touches[0];
+      cv.dispatchEvent(new MouseEvent('mousedown', { clientX: t.clientX, clientY: t.clientY, bubbles:true }));
+      e.preventDefault();
+    }, { passive: false });
+    cv.addEventListener('touchmove', e => {
+      const t = e.touches[0];
+      cv.dispatchEvent(new MouseEvent('mousemove', { clientX: t.clientX, clientY: t.clientY, bubbles:true }));
+      e.preventDefault();
+    }, { passive: false });
+    cv.addEventListener('touchend', e => {
+      cv.dispatchEvent(new MouseEvent('mouseup', { bubbles:true }));
+    });
+
+    clearBtn.addEventListener('click', () => {
+      if (!placed.length) return;
+      if (!confirm('Alle '+placed.length+' Sensoren entfernen?')) return;
+      placed = []; selectedIdx = -1;
+      renderSelectionPanel();
+      autoSave();
+      draw();
+    });
+
+    saveBtn.addEventListener('click', () => {
+      const name = prompt('Plan-Name?', `Plan · ${new Date().toLocaleDateString('de-DE')}`);
+      if (!name) return;
+      let plans = [];
+      try { plans = JSON.parse(localStorage.getItem('st-floorplans')||'[]'); } catch {}
+      plans.push({ name, ts: Date.now(), data: placed.map(p => ({ x:p.x, y:p.y, dir:p.dir, range:p.range, sid: p.sensor.id })) });
+      localStorage.setItem('st-floorplans', JSON.stringify(plans));
+      U.toast(`„${name}" gespeichert`);
+    });
+
+    loadBtn.addEventListener('click', () => {
+      let plans = [];
+      try { plans = JSON.parse(localStorage.getItem('st-floorplans')||'[]'); } catch {}
+      if (!plans.length) { U.toast('Keine gespeicherten Pläne'); return; }
+      const choices = plans.map((p,i) => `${i+1}. ${p.name} (${new Date(p.ts).toLocaleDateString('de-DE')})`).join('\n');
+      const sel = prompt('Welcher Plan?\n\n'+choices, '1');
+      const idx = +sel - 1;
+      if (idx<0 || idx>=plans.length) return;
+      const p = plans[idx];
+      placed = p.data.map(it => ({
+        x: it.x, y: it.y, dir: it.dir, range: it.range,
+        sensor: SENSORS.find(s => s.id === it.sid) || SENSORS[0]
+      }));
+      selectedIdx = -1;
+      renderSelectionPanel();
+      autoSave();
+      draw();
+      U.toast(`„${p.name}" geladen`);
+    });
+
+    function autoSave() {
+      localStorage.setItem('st-floorplan-last', JSON.stringify(
+        placed.map(p => ({ x:p.x, y:p.y, dir:p.dir, range:p.range, sid: p.sensor.id }))
+      ));
+    }
+
+    function renderSelectionPanel() {
+      selPanel.innerHTML = '';
+      if (selectedIdx < 0) { selPanel.style.display = 'none'; return; }
+      const p = placed[selectedIdx];
+      selPanel.style.display = '';
+      // Header
+      const head = el('div', { class:'fp-selhead' }, [
+        el('div', { class:'fp-selicon', html:`<i class="fas ${p.sensor.icon}"></i>`, style:`background:${p.sensor.color}; color:#0b1424;` }),
+        el('div', { class:'fp-seltitle' }, [
+          el('strong', { text: p.sensor.label + ' · Sensor #' + (selectedIdx+1) }),
+          el('div', { class:'small muted', text: `Position: x=${p.x.toFixed(1)}m, y=${p.y.toFixed(1)}m · Reichweite: ${(p.range||p.sensor.range).toFixed(1)}m` })
+        ]),
+        el('button', { class:'btn ghost', html:'<i class="fas fa-xmark"></i> Auswahl aufheben', onClick: () => { selectedIdx = -1; renderSelectionPanel(); draw(); } }),
+        el('button', { class:'btn', style:'border-color:var(--bad); color:var(--bad)', html:'<i class="fas fa-trash"></i> Löschen', onClick: () => {
+          placed.splice(selectedIdx, 1);
+          selectedIdx = -1;
+          renderSelectionPanel();
+          autoSave(); draw();
+        }})
+      ]);
+      selPanel.appendChild(head);
+      // Range slider
+      const rRow = el('div', { class:'fp-control' });
+      rRow.appendChild(el('label', { text: 'Reichweite' }));
+      const rSlider = el('input', { type:'range', min:'1', max:'20', step:'0.5', value: String(p.range || p.sensor.range), class:'fp-slider' });
+      const rOut = el('span', { class:'fp-out', text: (p.range||p.sensor.range).toFixed(1)+' m' });
+      rSlider.addEventListener('input', () => {
+        p.range = +rSlider.value;
+        rOut.textContent = p.range.toFixed(1) + ' m';
+        autoSave(); draw();
+      });
+      rRow.appendChild(rSlider); rRow.appendChild(rOut);
+      selPanel.appendChild(rRow);
+      // Rotation slider (only for cone/beam)
+      if (p.sensor.type === 'cone' || p.sensor.type === 'beam') {
+        const aRow = el('div', { class:'fp-control' });
+        aRow.appendChild(el('label', { text: 'Winkel' }));
+        const aSlider = el('input', { type:'range', min:'-180', max:'180', step:'5', value: String(Math.round((p.dir || -Math.PI/2) * 180 / Math.PI)), class:'fp-slider' });
+        const aOut = el('span', { class:'fp-out', text: Math.round((p.dir || -Math.PI/2) * 180 / Math.PI)+'°' });
+        aSlider.addEventListener('input', () => {
+          p.dir = +aSlider.value * Math.PI / 180;
+          aOut.textContent = aSlider.value + '°';
+          autoSave(); draw();
+        });
+        aRow.appendChild(aSlider); aRow.appendChild(aOut);
+        selPanel.appendChild(aRow);
+      }
+      // Quick rotation buttons
+      if (p.sensor.type === 'cone' || p.sensor.type === 'beam') {
+        const qb = el('div', { class:'fp-control' });
+        qb.appendChild(el('label', { text: 'Schnell' }));
+        ['↑',-90, '→',0, '↓',90, '←',180].reduce((acc,v,i)=>{
+          if (typeof v === 'string') acc.push({ label: v, deg: null });
+          else acc[acc.length-1].deg = v;
+          return acc;
+        }, []).forEach(it => {
+          const b = el('button', { class:'chip', text: it.label, onClick: () => {
+            p.dir = it.deg * Math.PI / 180;
+            autoSave(); draw();
+            renderSelectionPanel();
+          }});
+          qb.appendChild(b);
+        });
+        selPanel.appendChild(qb);
+      }
+    }
+
+    function updateStats() {
+      // Calculate approximate coverage % by sampling
+      const samplesX = 32, samplesY = 20;
+      let covered = 0, total = 0;
+      for (let i = 0; i < samplesX; i++) {
+        for (let j = 0; j < samplesY; j++) {
+          const x = (i + .5) * 16 / samplesX;
+          const y = (j + .5) * 10 / samplesY;
+          // Inside any room?
+          if (!ROOMS.some(r => x>=r.x && x<=r.x+r.w && y>=r.y && y<=r.y+r.h)) continue;
+          total++;
+          // Covered by any sensor?
+          if (placed.some(p => isCovered(x, y, p))) covered++;
+        }
+      }
+      const pct = total ? Math.round(covered/total*100) : 0;
+      statBox.innerHTML = `
+        <div class="fp-stat-num">${placed.length}</div>
+        <div class="fp-stat-lbl">Sensoren</div>
+        <div class="fp-stat-num" style="background: linear-gradient(135deg, #22c55e, #34d399); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">${pct}%</div>
+        <div class="fp-stat-lbl">Abdeckung</div>
+      `;
+    }
+
+    function isCovered(x, y, p) {
+      const dx = x - p.x, dy = y - p.y;
+      const dist = Math.hypot(dx, dy);
+      const range = p.range != null ? p.range : p.sensor.range;
+      if (dist > range) return false;
+      if (p.sensor.type === 'cone') {
+        const dir = p.dir != null ? p.dir : -Math.PI/2;
+        const half = (p.sensor.angle/2) * Math.PI/180;
+        const a = Math.atan2(dy, dx);
+        let diff = Math.abs(a - dir);
+        if (diff > Math.PI) diff = 2*Math.PI - diff;
+        return diff <= half;
+      }
+      if (p.sensor.type === 'beam') {
+        const dir = p.dir || 0;
+        // Inside a thin rectangle along direction
+        const rotX = dx * Math.cos(-dir) - dy * Math.sin(-dir);
+        const rotY = dx * Math.sin(-dir) + dy * Math.cos(-dir);
+        return rotX >= 0 && rotX <= range && Math.abs(rotY) < 0.3;
+      }
+      // circle
+      return true;
+    }
+
     window.addEventListener('resize', draw);
     requestAnimationFrame(draw);
-
-    function getCss(v) {
-      return getComputedStyle(document.documentElement).getPropertyValue(v).trim();
-    }
+    renderSelectionPanel();
     return root;
   }
 

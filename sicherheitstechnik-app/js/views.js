@@ -86,41 +86,36 @@ window.V = (() => {
     }, 50);
     root.appendChild(mapCard);
 
-    // Isometric 3D house
-    if (window.ENCYVIEW && ENCYVIEW.isometricHouse) {
-      const iso = el('div', { class:'card' });
-      iso.appendChild(el('div', { class:'card-h' }, [
-        el('div', { class:'ico', html:'<i class="fas fa-cube"></i>' }),
-        el('h3', { text:'Isometrische 3D-Ansicht der Schutzschichten' })
-      ]));
-      iso.appendChild(el('p', { class:'muted small', text:'Zaun → Fassade → Räume → Tresor. Bewege das Handy oder klick die Animation – jede Schicht hat eigene Sensoren und Normen.' }));
-      iso.appendChild(ENCYVIEW.isometricHouse());
-      root.appendChild(iso);
-    }
-
-    // Onion + zone cards
-    const wrap = el('div', { class: 'grid', style: 'grid-template-columns: minmax(0, 1fr); gap: 16px;' });
-    const oncard = el('div', { class: 'card' });
-    oncard.appendChild(el('div', { class: 'card-h' }, [
-      el('div', { class: 'ico', html: '<i class="fas fa-bullseye"></i>' }),
-      el('h3', { text: 'Zwiebelprinzip – Schutzzonen 1→4' })
-    ]));
-    const onion = el('div', { class: 'onion' });
-    [1,2,3,4].forEach(n => {
-      const z = d.sicherheitskonzept.zones[n-1];
-      const ring = el('div', { class: 'ring r'+n, title: z['Bezeichnung'] || '' });
-      ring.textContent = `Zone ${n} · ${z['Bezeichnung'] || ''}`;
-      ring.addEventListener('click', () => zoneDrawer(z));
-      onion.appendChild(ring);
+    // --- Quick-Action Tiles (kompaktes Feature-Grid) ---
+    const qa = el('div', { class:'quick-actions' });
+    [
+      { v:'wizard',       icon:'fa-wand-magic-sparkles', t:'Sicherheits-Assistent', d:'7-Schritte-Analyse → SÜ-Empfehlung' },
+      { v:'simulator',    icon:'fa-vector-square',       t:'Floor-Plan Simulator',  d:'Sensoren drehen, verschieben, planen' },
+      { v:'enzyklopaedie',icon:'fa-flask',               t:'Melder-Enzyklopädie',   d:'30 Detektoren · Aktiv/Passiv · Videos' },
+      { v:'konfigurator', icon:'fa-sliders',             t:'Konfigurator',          d:'Komplette Stack-Empfehlung mit Preis' },
+      { v:'vergleich',    icon:'fa-table-cells-large',   t:'Melder-Vergleich',      d:'PIR vs MW vs Dual vs Schranke' },
+      { v:'calculators',  icon:'fa-calculator',          t:'Calculator-Suite',      d:'8 Live-Rechner für Mengen + Preis' },
+      { v:'quiz',         icon:'fa-graduation-cap',      t:'Quiz',                  d:'15 Fragen · teste dein Wissen' },
+      { v:'glossar',      icon:'fa-book',                t:'Glossar',               d:'37 Fachbegriffe erklärt' },
+    ].forEach(a => {
+      const t = el('button', { class:'qa-tile' });
+      t.innerHTML = `<div class="qa-i"><i class="fas ${a.icon}"></i></div>
+                     <div class="qa-t">${a.t}</div>
+                     <div class="qa-d">${a.d}</div>`;
+      t.addEventListener('click', () => location.hash = '#'+a.v);
+      qa.appendChild(t);
     });
-    onion.appendChild(el('div', { class: 'core', text: 'OBJEKT' }));
-    oncard.appendChild(onion);
-    wrap.appendChild(oncard);
+    root.appendChild(qa);
 
-    // Zones grid
+    // --- Zonen-Karten (Inline-Grid, kompakt) ---
+    const zoneCard = el('div', { class:'card' });
+    zoneCard.appendChild(el('div', { class:'card-h' }, [
+      el('div', { class:'ico', html:'<i class="fas fa-layer-group"></i>' }),
+      el('h3', { text:'Schutzzonen 1 → 4 · Klick für Details' })
+    ]));
     const zg = el('div', { class: 'zone-grid' });
     d.sicherheitskonzept.zones.forEach((z, i) => {
-      const c = el('div', { class: 'zone-card' });
+      const c = el('div', { class: 'zone-card', dataset:{ zone: String(i+1) } });
       c.appendChild(el('span', { class: 'glyph', html: ['<i class="fas fa-tower-broadcast"></i>','<i class="fas fa-door-closed"></i>','<i class="fas fa-people-roof"></i>','<i class="fas fa-vault"></i>'][i] }));
       c.appendChild(el('div', { class: 'num', text: String(i+1) }));
       c.appendChild(el('h3', { text: z['Bezeichnung'] || '' }));
@@ -131,7 +126,10 @@ window.V = (() => {
       c.addEventListener('click', () => zoneDrawer(z));
       zg.appendChild(c);
     });
-    wrap.appendChild(zg);
+    zoneCard.appendChild(zg);
+    root.appendChild(zoneCard);
+
+    const wrap = el('div', { class: 'grid', style: 'grid-template-columns: minmax(0, 1fr); gap: 16px;' });
 
     // Übergeordnete Systeme
     const sysCard = el('div', { class: 'card' });
