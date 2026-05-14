@@ -17,13 +17,15 @@ window.V = (() => {
       <p class="lead">Mechanik · Elektronik · Organisation – ineinander geschachtelt nach VdS 2333, DIN EN 50131-1 und DIN EN 1627. Vom Zaun bis zum Tresor.</p>
     `;
     const cta = el('div', { class: 'hero-cta' });
-    const ctaA = el('button', { class:'btn primary', html:'<i class="fas fa-sliders"></i> Konfigurator starten' });
-    ctaA.addEventListener('click', () => location.hash = '#konfigurator');
-    const ctaB = el('button', { class:'btn', html:'<i class="fas fa-vector-square"></i> Floor-Plan Simulator' });
-    ctaB.addEventListener('click', () => location.hash = '#simulator');
-    const ctaC = el('button', { class:'btn ghost', html:'<i class="fas fa-table-cells-large"></i> Melder vergleichen' });
-    ctaC.addEventListener('click', () => location.hash = '#vergleich');
-    cta.appendChild(ctaA); cta.appendChild(ctaB); cta.appendChild(ctaC);
+    const ctaA = el('button', { class:'btn primary', html:'<i class="fas fa-wand-magic-sparkles"></i> Sicherheitsassistent' });
+    ctaA.addEventListener('click', () => location.hash = '#wizard');
+    const ctaB = el('button', { class:'btn', html:'<i class="fas fa-sliders"></i> Konfigurator' });
+    ctaB.addEventListener('click', () => location.hash = '#konfigurator');
+    const ctaC = el('button', { class:'btn', html:'<i class="fas fa-vector-square"></i> Simulator' });
+    ctaC.addEventListener('click', () => location.hash = '#simulator');
+    const ctaD = el('button', { class:'btn', html:'<i class="fas fa-calculator"></i> Rechner' });
+    ctaD.addEventListener('click', () => location.hash = '#calculators');
+    cta.appendChild(ctaA); cta.appendChild(ctaB); cta.appendChild(ctaC); cta.appendChild(ctaD);
     heroLeft.appendChild(cta);
     heroGrid.appendChild(heroLeft);
 

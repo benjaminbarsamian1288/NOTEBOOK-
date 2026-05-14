@@ -11,9 +11,14 @@
     melder: V.melder,
     ema: V.ema,
     preisliste: V.preisliste,
+    wizard: (d) => WIZARD.render(d),
     konfigurator: V.konfigurator,
+    calculators: (d) => TOOLS.calculators(d),
     simulator: V.simulator,
     vergleich: V.vergleich,
+    quiz: () => TOOLS.quiz(),
+    glossar: () => TOOLS.glossar(),
+    projects: () => TOOLS.projects(),
     diagramme: V.diagramme,
     dokumente: V.dokumente,
   };
@@ -107,6 +112,12 @@
   }
   searchInput.addEventListener('input', runSearch);
   searchInput.addEventListener('keydown', e => { if (e.key==='Escape') { searchInput.value=''; closeOverlay(); }});
+
+  // React to hash changes (e.g. hero buttons setting location.hash, shortcuts)
+  window.addEventListener('hashchange', () => {
+    const v = (location.hash || '#home').replace(/^#/, '');
+    if (v !== currentView) navigate(v);
+  });
 
   // Boot
   ST.load().then(d => {

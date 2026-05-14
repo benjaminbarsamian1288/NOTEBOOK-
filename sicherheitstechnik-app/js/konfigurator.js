@@ -113,6 +113,60 @@ window.KFG = (() => {
     },
   };
 
+  function exportPDF(d, sue, factor, recipe, totLo, totHi) {
+    // Simple printable HTML window – no jsPDF needed
+    const items = recipe.items.map(([b,name,q]) => {
+      const product = findProduct(d, b, name);
+      if (!product) return null;
+      const qty = Math.max(1, Math.round(q * factor));
+      const lo = +product['Preis von (€)']||0, hi = +product['Preis bis (€)']||lo;
+      return { product, qty, lo, hi };
+    }).filter(Boolean);
+    const win = window.open('', '_blank');
+    if (!win) { U.toast('Popup-Blocker aktiv – bitte erlauben'); return; }
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>ST-Katalog Konfiguration SÜ ${sue}</title>
+      <style>
+        body { font-family: -apple-system, system-ui, Arial; padding: 24px; color: #111; }
+        h1 { margin: 0 0 4px; color: #0284c7; }
+        .meta { color: #555; font-size: 13px; margin-bottom: 18px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13px; }
+        th, td { border-bottom: 1px solid #ddd; padding: 7px 10px; text-align: left; }
+        th { background: #f1f5fb; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; }
+        tfoot td { font-weight: 700; }
+        .num { text-align: right; font-variant-numeric: tabular-nums; }
+      </style></head><body>
+      <h1>Sicherheitskonzept · SÜ ${sue}</h1>
+      <div class="meta">Skalierung ${factor.toFixed(1)}× · ${new Date().toLocaleDateString('de-DE')} · ${items.length} Positionen</div>
+      <table>
+        <thead><tr><th>Bereich</th><th>Produkt</th><th class="num">Menge</th><th class="num">Stück (€)</th><th class="num">Summe (€)</th></tr></thead>
+        <tbody>
+        ${items.map(i => `<tr>
+          <td>${i.product['Bereich']}</td>
+          <td>${i.product['Produkt']}</td>
+          <td class="num">${i.qty} ${i.product['Einheit']||''}</td>
+          <td class="num">${i.lo.toLocaleString('de-DE')}–${i.hi.toLocaleString('de-DE')}</td>
+          <td class="num">${(i.qty*i.lo).toLocaleString('de-DE')}–${(i.qty*i.hi).toLocaleString('de-DE')}</td>
+        </tr>`).join('')}
+        </tbody>
+        <tfoot><tr><td colspan="4">Investitionsrahmen gesamt</td><td class="num">${totLo.toLocaleString('de-DE')}–${totHi.toLocaleString('de-DE')} €</td></tr></tfoot>
+      </table>
+      <p style="margin-top:24px; color:#888; font-size:11px;">ST-Katalog · Sicherheitstechnik V4 · Investitionsrahmen, kein Festpreisangebot · ${new Date().toISOString()}</p>
+      <script>setTimeout(()=>window.print(), 500);</script>
+      </body></html>`;
+    win.document.write(html);
+    win.document.close();
+  }
+
+  function saveProject(sue, factor, lo, hi) {
+    let projects = [];
+    try { projects = JSON.parse(localStorage.getItem('st-projects') || '[]'); } catch {}
+    const name = prompt('Projekt-Name?', `Projekt SÜ ${sue} · ${new Date().toLocaleDateString('de-DE')}`);
+    if (!name) return;
+    projects.push({ name, sue, factor, lo, hi, ts: Date.now() });
+    localStorage.setItem('st-projects', JSON.stringify(projects));
+    U.toast(`„${name}" gespeichert`);
+  }
+
   function findProduct(d, bereich, name) {
     return d.preisliste.rows.find(r => r['Bereich']===bereich && r['Produkt'].toLowerCase().includes(name.toLowerCase()))
         || d.preisliste.rows.find(r => r['Produkt'].toLowerCase().includes(name.toLowerCase()));
@@ -120,6 +174,12 @@ window.KFG = (() => {
 
   let activeSue = 3;
   let sizeFactor = 1.0;
+  let lastResult = null;
+
+  function setSue(n, factor) {
+    activeSue = +n || 3;
+    if (factor) sizeFactor = factor;
+  }
 
   function render(d) {
     const root = el('div');
@@ -200,6 +260,15 @@ window.KFG = (() => {
       totalEl.appendChild(el('span', { class:'price', text: `${fmtEUR(totLo)} – ${fmtEUR(totHi)}` }));
       totalEl.appendChild(el('span', { class:'range', text:`Investitionsrahmen · ${n} Komponenten · Ø ${fmtEUR((totLo+totHi)/2)}` }));
 
+      // Action buttons (export, save)
+      const acts = el('div', { class: 'row mt-12' });
+      const expBtn = el('button', { class:'btn', html:'<i class="fas fa-file-pdf"></i> Als PDF exportieren' });
+      expBtn.addEventListener('click', () => exportPDF(d, activeSue, sizeFactor, recipe, totLo, totHi));
+      const saveBtn = el('button', { class:'btn ghost', html:'<i class="fas fa-floppy-disk"></i> Projekt speichern' });
+      saveBtn.addEventListener('click', () => saveProject(activeSue, sizeFactor, totLo, totHi));
+      acts.appendChild(expBtn); acts.appendChild(saveBtn);
+      result.appendChild(acts);
+
       // Add NSL recommendation
       const sueRow = d.sicherungsklassen.tables[0].rows.find(r => r['Sicherungsklasse'].includes('SÜ '+activeSue));
       if (sueRow) {
@@ -223,5 +292,5 @@ window.KFG = (() => {
     return root;
   }
 
-  return { render };
+  return { render, setSue, getLastResult: () => lastResult };
 })();
