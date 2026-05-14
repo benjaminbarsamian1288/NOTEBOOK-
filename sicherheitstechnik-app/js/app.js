@@ -9,6 +9,7 @@
     perimeter: V.perimeter,
     aussenhaut: V.aussenhaut,
     melder: V.melder,
+    enzyklopaedie: (d) => ENCYVIEW.view(d),
     ema: V.ema,
     preisliste: V.preisliste,
     wizard: (d) => WIZARD.render(d),

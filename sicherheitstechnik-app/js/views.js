@@ -29,7 +29,10 @@ window.V = (() => {
     heroLeft.appendChild(cta);
     heroGrid.appendChild(heroLeft);
 
-    const heroRight = el('div', { class: 'onion-side', html: ILL.onionAnim() });
+    const heroRight = el('div', { class: 'onion-side' });
+    // 3D-Onion when available, fallback to SVG
+    if (window.ENCYVIEW && ENCYVIEW.onion3d) heroRight.appendChild(ENCYVIEW.onion3d());
+    else heroRight.innerHTML = ILL.onionAnim();
     heroGrid.appendChild(heroRight);
     hero.appendChild(heroGrid);
     root.appendChild(hero);
@@ -82,6 +85,18 @@ window.V = (() => {
       });
     }, 50);
     root.appendChild(mapCard);
+
+    // Isometric 3D house
+    if (window.ENCYVIEW && ENCYVIEW.isometricHouse) {
+      const iso = el('div', { class:'card' });
+      iso.appendChild(el('div', { class:'card-h' }, [
+        el('div', { class:'ico', html:'<i class="fas fa-cube"></i>' }),
+        el('h3', { text:'Isometrische 3D-Ansicht der Schutzschichten' })
+      ]));
+      iso.appendChild(el('p', { class:'muted small', text:'Zaun → Fassade → Räume → Tresor. Bewege das Handy oder klick die Animation – jede Schicht hat eigene Sensoren und Normen.' }));
+      iso.appendChild(ENCYVIEW.isometricHouse());
+      root.appendChild(iso);
+    }
 
     // Onion + zone cards
     const wrap = el('div', { class: 'grid', style: 'grid-template-columns: minmax(0, 1fr); gap: 16px;' });
