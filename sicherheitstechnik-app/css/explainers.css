@@ -1,0 +1,146 @@
+/* ============================================================
+   Explainer-Player – "Video"-Erklärer mit Step-Narration
+   ============================================================ */
+
+.expl-wrap {
+  background: linear-gradient(135deg, #0b1424 0%, #162542 100%);
+  border-radius: var(--r-lg);
+  padding: 18px;
+  border: 1px solid var(--border);
+  margin: 0 0 18px;
+  color: #e8edf7;
+  overflow: hidden;
+}
+.expl-head { margin-bottom: 12px; }
+.expl-head h3 {
+  margin: 0 0 2px;
+  font-size: 18px;
+  background: var(--grad-1);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.expl-sub {
+  color: rgba(232,237,247,.7);
+  font-size: 12.5px;
+}
+
+.expl-stage {
+  background: rgba(0,0,0,.25);
+  border-radius: var(--r-md);
+  padding: 8px;
+  border: 1px solid rgba(255,255,255,.05);
+  position: relative;
+}
+.expl-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  max-height: 360px;
+}
+.expl-svg g[id] { will-change: opacity; }
+
+.expl-narration {
+  margin-top: 12px;
+  background: rgba(0,0,0,.25);
+  border-left: 3px solid var(--accent);
+  padding: 12px 14px;
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  min-height: 60px;
+}
+.expl-text {
+  color: #e8edf7;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 8px;
+  transition: opacity .3s;
+}
+.expl-bar {
+  height: 3px;
+  background: rgba(255,255,255,.1);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.expl-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc);
+  width: 0%;
+  transition: width .1s linear;
+}
+
+.expl-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+.expl-controls .btn {
+  background: rgba(255,255,255,.08);
+  border-color: rgba(255,255,255,.15);
+  color: #e8edf7;
+}
+.expl-controls .btn:hover {
+  background: rgba(255,255,255,.16);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.expl-controls .btn[data-state="pause"] {
+  background: var(--grad-1);
+  border: none;
+}
+.expl-step-counter {
+  margin-left: auto;
+  color: rgba(232,237,247,.5);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Highlight active elements with a pulsing glow */
+.expl-svg g[id][style*="opacity: 1"] {
+  filter: drop-shadow(0 0 4px currentColor);
+}
+
+/* Featured "play video" button in encyclopedia cards */
+.expl-cta {
+  background: linear-gradient(135deg, #ef4444, #f97316);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0;
+  box-shadow: 0 6px 20px rgba(239,68,68,.3);
+  transition: transform .12s;
+}
+.expl-cta:hover { transform: translateY(-2px); }
+.expl-cta i { font-size: 14px; }
+
+/* "Hat Video"-Badge auf der Karte */
+.ency-card .video-badge {
+  position: absolute;
+  bottom: 14px; right: 14px;
+  background: linear-gradient(135deg, #ef4444, #f97316);
+  color: white;
+  font-size: 10px; font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  display: flex; align-items: center; gap: 4px;
+  box-shadow: 0 4px 12px rgba(239,68,68,.4);
+  animation: badgePulse 2s ease-in-out infinite;
+}
+.ency-card .video-badge i { font-size: 9px; }
+@keyframes badgePulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.05); }
+}
+
+@media (max-width: 600px) {
+  .expl-wrap { padding: 12px; }
+  .expl-text { font-size: 13px; }
+}

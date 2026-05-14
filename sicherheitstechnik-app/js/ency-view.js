@@ -127,14 +127,23 @@ window.ENCYVIEW = (() => {
     if (m.sue)   specs.appendChild(el('span', { class:'pill', text:'SÜ '+m.sue }));
     if (m.preis) specs.appendChild(el('span', { class:'pill g', text: m.preis }));
     c.appendChild(specs);
+    // Video badge if explainer exists
+    if (window.EXPL && EXPL.hasExplainer(m.key)) {
+      const v = el('div', { class:'video-badge', html:'<i class="fas fa-circle-play"></i> Video' });
+      c.appendChild(v);
+    }
     c.addEventListener('click', () => openDetail(m));
     return c;
   }
 
   function openDetail(m) {
     const body = el('div', { class:'ency-detail' });
-    // Illustration if available
-    if (m.ill && window.ILL && ILL[m.ill]) {
+
+    // Explainer video at the very top (the krasse Animation!)
+    if (window.EXPL && EXPL.hasExplainer(m.key)) {
+      EXPL.player(m.key, body);
+    } else if (m.ill && window.ILL && ILL[m.ill]) {
+      // Fallback: static illustration
       body.appendChild(el('div', { class:'hero-ill', html: ILL[m.ill]() }));
     }
     const typeKey = m.type.toLowerCase().startsWith('passiv') ? 'passiv'

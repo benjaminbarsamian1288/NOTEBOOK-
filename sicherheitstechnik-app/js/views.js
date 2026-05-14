@@ -530,23 +530,41 @@ window.V = (() => {
 
   function showDetector(det) {
     const body = el('div');
-    const ILLMAP = {
-      'd1_pir_melder': ILL.pir,
-      'd2_dualmelder': ILL.dual,
-      'd3_magnetkontakt': ILL.mag,
-      'd4_glasbruchmelder': ILL.glass,
-      'd5_erschuetterung': ILL.shake,
-      'd6_mikrowelle': ILL.mw,
-      'd7_ir_lichtschranke': ILL.irBeam,
-      'd8_brandmelder': ILL.fire,
-      'd9_spezialmelder': ILL.press,
-      'd10_schliessblechkontakt': ILL.mag,
+    // Map D1..D10 to encyclopedia keys with explainers
+    const EXPL_KEY = {
+      'd1_pir_melder': 'pir-standard',
+      'd2_dualmelder': 'dualmelder',
+      'd3_magnetkontakt': 'magnetkontakt',
+      'd4_glasbruchmelder': 'glas-passiv',
+      'd5_erschuetterung': 'piezo-erschuetterung',
+      'd6_mikrowelle': 'mikrowelle',
+      'd7_ir_lichtschranke': 'ir-schranke',
+      'd8_brandmelder': 'rauch-streulicht',
+      'd9_spezialmelder': 'kapazitiv',
+      'd10_schliessblechkontakt': 'magnetkontakt',
     };
-    const heroSvg = ILLMAP[det.key] ? ILLMAP[det.key]() : '';
+    const ek = EXPL_KEY[det.key];
+    if (ek && window.EXPL && EXPL.hasExplainer(ek)) {
+      EXPL.player(ek, body);
+    } else {
+      const ILLMAP = {
+        'd1_pir_melder': ILL.pir,
+        'd2_dualmelder': ILL.dual,
+        'd3_magnetkontakt': ILL.mag,
+        'd4_glasbruchmelder': ILL.glass,
+        'd5_erschuetterung': ILL.shake,
+        'd6_mikrowelle': ILL.mw,
+        'd7_ir_lichtschranke': ILL.irBeam,
+        'd8_brandmelder': ILL.fire,
+        'd9_spezialmelder': ILL.press,
+        'd10_schliessblechkontakt': ILL.mag,
+      };
+      const heroSvg = ILLMAP[det.key] ? ILLMAP[det.key]() : '';
+      if (heroSvg) body.appendChild(el('div', { class:'mt-12', html: heroSvg }));
+    }
     body.appendChild(el('div', { class: 'det-hero' }, [
       el('h2', { text: det.title }),
       el('div', { class: 'sub', text: det.subtitle || '' }),
-      heroSvg ? el('div', { class:'mt-12', html: heroSvg }) : null
     ]));
     det.sections.forEach(sec => {
       const w = el('div', { class: 'det-section' });
