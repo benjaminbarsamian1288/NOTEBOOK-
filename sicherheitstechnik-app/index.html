@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1424">
+<meta name="description" content="Sicherheitstechnik Katalog – DIN, VdS, RC-Klassen, Melder, EMA, Perimeter, Preise">
+<title>Sicherheitstechnik · Katalog</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ST-Katalog">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<!-- ============== TOP BAR ============== -->
+<header class="topbar">
+  <button id="btn-menu" class="iconbtn" aria-label="Menü"><i class="fas fa-bars"></i></button>
+  <div class="brand">
+    <span class="brand-mark"><i class="fas fa-shield-halved"></i></span>
+    <div class="brand-text">
+      <span class="brand-title">Sicherheitstechnik</span>
+      <span class="brand-sub">Katalog · DIN · VdS · RC</span>
+    </div>
+  </div>
+  <div class="topbar-spacer"></div>
+  <div class="search-wrap">
+    <i class="fas fa-search"></i>
+    <input id="global-search" type="search" placeholder="Suche: PIR, RC 3, VdS 2312, Tresor..." autocomplete="off">
+    <kbd>/</kbd>
+  </div>
+  <button id="btn-theme" class="iconbtn" aria-label="Theme"><i class="fas fa-moon"></i></button>
+  <button id="btn-install" class="iconbtn hidden" aria-label="Installieren" title="App installieren"><i class="fas fa-download"></i></button>
+</header>
+
+<!-- ============== SIDEBAR ============== -->
+<aside id="sidebar" class="sidebar">
+  <nav class="navlist">
+    <button class="navitem active" data-view="home"><i class="fas fa-house"></i><span>Übersicht</span></button>
+    <button class="navitem" data-view="konzept"><i class="fas fa-layer-group"></i><span>Schutzkonzept</span></button>
+    <button class="navitem" data-view="klassen"><i class="fas fa-medal"></i><span>SÜ · Grade · RC</span></button>
+    <button class="navitem" data-view="perimeter"><i class="fas fa-tower-broadcast"></i><span>Perimeter · Zone 1</span></button>
+    <button class="navitem" data-view="aussenhaut"><i class="fas fa-door-open"></i><span>Außenhaut · Zone 2</span></button>
+    <button class="navitem" data-view="melder"><i class="fas fa-wave-square"></i><span>Melder · Zone 2–4</span></button>
+    <button class="navitem" data-view="ema"><i class="fas fa-broadcast-tower"></i><span>EMA · ZKA · NSL</span></button>
+    <button class="navitem" data-view="preisliste"><i class="fas fa-euro-sign"></i><span>Preisliste</span></button>
+    <button class="navitem" data-view="konfigurator"><i class="fas fa-sliders"></i><span>Konfigurator</span></button>
+    <button class="navitem" data-view="diagramme"><i class="fas fa-chart-column"></i><span>Diagramme</span></button>
+    <button class="navitem" data-view="dokumente"><i class="fas fa-folder-open"></i><span>Dokumente · Normen</span></button>
+  </nav>
+  <div class="sidebar-foot">
+    <div class="meta">
+      <span>Sicherheitstechnik V4</span>
+      <span>4 Zonen · 6 SÜ · 4 EMA · 6 RC</span>
+    </div>
+  </div>
+</aside>
+
+<!-- ============== MAIN ============== -->
+<main id="main" class="main">
+  <div id="view-host"></div>
+</main>
+
+<!-- ============== DETAIL DRAWER ============== -->
+<div id="drawer" class="drawer hidden" aria-hidden="true">
+  <div class="drawer-backdrop" data-close="drawer"></div>
+  <section class="drawer-panel">
+    <header class="drawer-head">
+      <h2 id="drawer-title">Detail</h2>
+      <button class="iconbtn" data-close="drawer" aria-label="Schließen"><i class="fas fa-xmark"></i></button>
+    </header>
+    <div id="drawer-body" class="drawer-body"></div>
+  </section>
+</div>
+
+<!-- ============== TOAST ============== -->
+<div id="toast" class="toast hidden"></div>
+
+<script src="js/data.js"></script>
+<script src="js/util.js"></script>
+<script src="js/views.js"></script>
+<script src="js/konfigurator.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/search.js"></script>
+<script src="js/app.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(()=>{}));
+}
+</script>
+</body>
+</html>
