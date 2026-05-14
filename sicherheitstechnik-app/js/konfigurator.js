@@ -1,0 +1,227 @@
+/* SÜ-Konfigurator – pick Sicherungsklasse + Objekttyp -> recommended stack with price range
+   Built from data/data.json: maps SÜ -> recommended components from preisliste + EMA + perimeter. */
+
+window.KFG = (() => {
+
+  const { el, fmtEUR, pillFor } = U;
+
+  // Recipes per SÜ level (1..6) - what components and quantities (factors per Objekttyp)
+  // Factor uses base counts that scale with size hint.
+  const RECIPES = {
+    1: {
+      label: 'SÜ 1 · Geringes Risiko',
+      desc: 'Basisschutz für Privatobjekte mit normalem Risiko (Wohnung, Reihenhaus).',
+      items: [
+        ['EMA', 'Funk-Alarmzentrale', 1],
+        ['Melder', 'PIR-Melder Standard', 3],
+        ['Melder', 'Magnetkontakt AP', 4],
+        ['Brand', 'Optischer Rauchmelder', 3],
+        ['EMA', 'Innensirene', 1],
+        ['Mech.', 'Sicherheitstür RC 2', 1],
+      ]
+    },
+    2: {
+      label: 'SÜ 2 · Mittleres Risiko',
+      desc: 'Standardschutz EFH / Büro / kleiner Einzelhandel.',
+      items: [
+        ['EMA', 'Kleine EMA 8 Zonen', 1],
+        ['Melder', 'PIR-Melder Standard', 4],
+        ['Melder', 'Magnetkontakt AP', 6],
+        ['Melder', 'Passiv akustisch', 2],
+        ['Brand', 'Optischer Rauchmelder', 4],
+        ['EMA', 'Außensirene + Blitz', 1],
+        ['EMA', 'IP-Übertragung', 1],
+        ['Mech.', 'Sicherheitstür RC 2', 1],
+        ['Mech.', 'Fenster RC 2 + P4A', 4],
+      ]
+    },
+    3: {
+      label: 'SÜ 3 · Erhöhtes Risiko',
+      desc: 'Erhöhter Schutz für Juwelier, Apotheke, Pelzgeschäft, Waffenhandel.',
+      items: [
+        ['EMA', 'Mittlere EMA 32 Zonen', 1],
+        ['Melder', 'Dualmelder PIR+MW', 5],
+        ['Melder', 'Magnetkontakt UP', 6],
+        ['Melder', 'Schließblechkontakt', 3],
+        ['Melder', 'Aktiv Folie', 6],
+        ['Brand', 'Multisensormelder', 5],
+        ['EMA', 'Außensirene + Blitz', 1],
+        ['EMA', 'IP-Übertragung', 1],
+        ['EMA', 'GSM/LTE-Übertragung', 1],
+        ['Mech.', 'Sicherheitstür RC 3', 1],
+        ['Mech.', 'Fenster RC 3 + P5A', 4],
+      ]
+    },
+    4: {
+      label: 'SÜ 4 · Hohes Risiko',
+      desc: 'Banken, Spielhallen, Edel-Juweliere – Dual-Path Pflicht.',
+      items: [
+        ['EMA', 'Große EMA 128+ Zonen', 1],
+        ['Melder', 'Dualmelder PIR+MW', 8],
+        ['Melder', 'Außen-Dual IP65', 4],
+        ['Melder', 'Magnetkontakt UP', 10],
+        ['Melder', 'Schließblechkontakt', 5],
+        ['Melder', 'Piezo-Melder', 5],
+        ['Brand', 'Multisensormelder', 8],
+        ['EMA', 'Dual-Path IP+GSM', 1],
+        ['EMA', 'Außensirene + Blitz', 2],
+        ['Mech.', 'Sicherheitstür RC 4', 2],
+        ['Perimeter', 'IR-Lichtschranke außen', 3],
+      ]
+    },
+    5: {
+      label: 'SÜ 5 · Sehr hohes Risiko',
+      desc: 'KRITIS, Tresorräume, Edelmetallhandel, Rechenzentren.',
+      items: [
+        ['EMA', 'Große EMA 128+ Zonen', 1],
+        ['Melder', 'Dualmelder PIR+MW', 12],
+        ['Melder', 'Außen-Dual IP65', 6],
+        ['Melder', 'Magnetkontakt UP', 14],
+        ['Melder', 'Schließblechkontakt', 8],
+        ['Melder', 'Körperschallmelder', 4],
+        ['Melder', 'Kapazitiver Feldmelder', 3],
+        ['Melder', 'Druckmatte', 2],
+        ['Brand', 'Ansaugrauchmelder', 1],
+        ['EMA', 'Dual-Path IP+GSM', 1],
+        ['Perimeter', 'Thermalkamera + KI', 2],
+        ['Perimeter', 'Zaunsensorik mikrophon.', 100],
+        ['Mech.', 'Sicherheitstür RC 5', 2],
+      ]
+    },
+    6: {
+      label: 'SÜ 6 · Höchstes Risiko',
+      desc: 'Militär, KKW, Botschaften, Bunker – staatlicher Schutz.',
+      items: [
+        ['EMA', 'Große EMA 128+ Zonen', 2],
+        ['Melder', 'Dualmelder PIR+MW', 20],
+        ['Melder', 'Außen-Dual IP65', 10],
+        ['Melder', 'Magnetkontakt UP', 24],
+        ['Melder', 'Schließblechkontakt', 14],
+        ['Melder', 'Körperschallmelder', 6],
+        ['Melder', 'Kapazitiver Feldmelder', 6],
+        ['Melder', 'Druckmatte', 4],
+        ['Brand', 'Ansaugrauchmelder', 2],
+        ['Brand', 'Flammenmelder IR/UV', 2],
+        ['EMA', 'Dual-Path IP+GSM', 2],
+        ['Perimeter', 'Thermalkamera + KI', 4],
+        ['Perimeter', 'Radar', 2],
+        ['Perimeter', 'Zaun', 200],
+        ['Perimeter', '358 Mesh Anti-Climb', 200],
+        ['Perimeter', 'Versenkbare Poller HVM', 4],
+        ['Mech.', 'Sicherheitstür RC 6', 4],
+      ]
+    },
+  };
+
+  function findProduct(d, bereich, name) {
+    return d.preisliste.rows.find(r => r['Bereich']===bereich && r['Produkt'].toLowerCase().includes(name.toLowerCase()))
+        || d.preisliste.rows.find(r => r['Produkt'].toLowerCase().includes(name.toLowerCase()));
+  }
+
+  let activeSue = 3;
+  let sizeFactor = 1.0;
+
+  function render(d) {
+    const root = el('div');
+    root.appendChild(el('div', { class:'view-head' }, [
+      el('span', { class:'crumb', text:'Empfehlungs-Engine' }),
+      el('h1', { text:'Konfigurator – SÜ-basiertes Sicherheitskonzept' }),
+      el('p', { text:'Wähle Sicherungsklasse und Objektgröße. Die Engine schlägt eine vollständige Komponentenliste mit Investitionsrahmen vor.' })
+    ]));
+
+    const matrix = el('div', { class: 'matrix' });
+    [1,2,3,4,5,6].forEach(n => {
+      const c = el('div', { class:'sue'+(n===activeSue?' active':''), dataset: {n} });
+      c.appendChild(el('div',{class:'lvl',text:'SÜ '+n}));
+      c.appendChild(el('div',{class:'lbl',text:({1:'Wohnen',2:'Standard',3:'Erhöht',4:'Hoch',5:'KRITIS',6:'Staat'})[n]}));
+      c.addEventListener('click', () => {
+        activeSue = n;
+        matrix.querySelectorAll('.sue').forEach(x => x.classList.toggle('active', +x.dataset.n===n));
+        update();
+      });
+      matrix.appendChild(c);
+    });
+    root.appendChild(matrix);
+
+    // Objektgröße slider
+    const sizeRow = el('div', { class: 'card' });
+    sizeRow.appendChild(el('div', { class:'card-h' }, [
+      el('div', { class:'ico', html:'<i class="fas fa-ruler-combined"></i>' }),
+      el('h3', { text:'Objektgröße & Skalierung' })
+    ]));
+    const slider = el('input', { type:'range', min:'0.5', max:'3', step:'0.1', value:String(sizeFactor), style:'width:100%' });
+    const sizeLabel = el('span', { class:'pill b', text:`Faktor ${sizeFactor.toFixed(1)}x` });
+    slider.addEventListener('input', () => {
+      sizeFactor = +slider.value;
+      sizeLabel.textContent = `Faktor ${sizeFactor.toFixed(1)}x`;
+      update();
+    });
+    sizeRow.appendChild(el('div', { class:'row' }, [
+      el('span',{class:'muted small',text:'Klein'}),
+      slider,
+      el('span',{class:'muted small',text:'Groß'}),
+      sizeLabel
+    ]));
+    root.appendChild(sizeRow);
+
+    const result = el('div', { class:'kfg-result' });
+    root.appendChild(result);
+
+    function update() {
+      result.innerHTML = '';
+      const recipe = RECIPES[activeSue];
+      const totalEl = el('div', { class:'kfg-total' });
+      result.appendChild(el('h2', { text: recipe.label, style:'margin:0 0 4px' }));
+      result.appendChild(el('p', { class:'muted', text: recipe.desc, style:'margin:0 0 8px' }));
+      result.appendChild(totalEl);
+      const list = el('div', { class:'kfg-list' });
+      let totLo = 0, totHi = 0, n = 0;
+      const skipped = [];
+
+      recipe.items.forEach(([bereich, productName, baseQty]) => {
+        const qty = Math.max(1, Math.round(baseQty * sizeFactor));
+        const product = findProduct(d, bereich, productName);
+        if (!product) { skipped.push(productName); return; }
+        const lo = +product['Preis von (€)']||0;
+        const hi = +product['Preis bis (€)']||lo;
+        totLo += lo*qty;
+        totHi += hi*qty;
+        n += qty;
+        const row = el('div', { class:'kfg-row' });
+        row.appendChild(el('div', { class:'label' }, [
+          el('div', { text: product['Produkt'] }),
+          el('div', { class:'small muted', text: `${product['Bereich']} · ${product['Einheit']||''}` })
+        ]));
+        row.appendChild(el('div', { class:'qty', text:`× ${qty}` }));
+        row.appendChild(el('div', { class:'unit-price', text: `${fmtEUR(lo)}–${fmtEUR(hi)}` }));
+        row.appendChild(el('div', { class:'sub-price', text: `${fmtEUR(qty*lo)}–${fmtEUR(qty*hi)}` }));
+        list.appendChild(row);
+      });
+      totalEl.appendChild(el('span', { class:'price', text: `${fmtEUR(totLo)} – ${fmtEUR(totHi)}` }));
+      totalEl.appendChild(el('span', { class:'range', text:`Investitionsrahmen · ${n} Komponenten · Ø ${fmtEUR((totLo+totHi)/2)}` }));
+
+      // Add NSL recommendation
+      const sueRow = d.sicherungsklassen.tables[0].rows.find(r => r['Sicherungsklasse'].includes('SÜ '+activeSue));
+      if (sueRow) {
+        const meta = el('div', { class:'row mt-12', style:'gap:8px;flex-wrap:wrap;' }, [
+          pillFor(sueRow['EMA-Grad (EN 50131)']),
+          pillFor(sueRow['Min. RC-Tür']),
+          pillFor(sueRow['Min. Verglasung']),
+          el('span', {class:'pill b', text: 'NSL: '+sueRow['NSL-Aufschaltung']}),
+          el('span', {class:'pill', text: 'Intervention: '+sueRow['Empf. Intervention']}),
+          el('span', {class:'pill p', text: sueRow['Versicherung']||''}),
+        ]);
+        result.appendChild(meta);
+      }
+      result.appendChild(list);
+
+      if (skipped.length) {
+        result.appendChild(el('p', { class:'muted small mt-12', text:`Hinweis: ${skipped.length} Position(en) nicht in Preisliste hinterlegt (${skipped.join(', ')}).`}));
+      }
+    }
+    update();
+    return root;
+  }
+
+  return { render };
+})();

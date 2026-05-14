@@ -1,0 +1,3803 @@
+{
+  "sicherheitskonzept": {
+    "intro": [
+      "SICHERHEITSKONZEPT – Gesamtübersicht Sicherheitstechnik",
+      "Zwiebelprinzip: 4 Schutzzonen | Mechanik + Elektronik + Organisation"
+    ],
+    "zones": [
+      {
+        "Zone": "Zone 1",
+        "Bezeichnung": "PERIMETER",
+        "Schutzbereich": "Grundstücksgrenze, Freigelände",
+        "Mechanische Maßnahmen": "Zäune (Doppelstab, 358 Mesh, NATO-Draht), Tore, Poller, Road Blocker, Schranken",
+        "Elektronische Maßnahmen": "Zaunmeldesysteme, IR-Schranken, MW-Barrieren, Radar, LiDAR, Thermalkameras, Videosensorik",
+        "Organisatorische Maßnahmen": "Streifengänge, Zufahrtskontrolle, Wachdienst, Empfangsregelung",
+        "Relevante Normen": "DIN EN 13241, DIN EN 50131-2-5/-2-6, IWA 14-1, PAS 68",
+        "VdS-Richtlinien": "VdS 2358, VdS 2333",
+        "Tabellenblatt": "2_Perimeterschutz",
+        "Risikobewertung": "Erste Verteidigungslinie"
+      },
+      {
+        "Zone": "Zone 2",
+        "Bezeichnung": "AUSSENHAUT",
+        "Schutzbereich": "Türen, Fenster, Fassade, Dach",
+        "Mechanische Maßnahmen": "Sicherheitstüren RC 2-6, Fenster RC 2-4, Verglasung P1A-P8B, Rollläden, Gitter, Schlösser, Beschläge",
+        "Elektronische Maßnahmen": "Magnetkontakte, Schließblechkontakte, Glasbruchmelder (passiv/aktiv), Erschütterungsmelder",
+        "Organisatorische Maßnahmen": "Schlüsselmanagement, Schließanlage, Zutrittskontrolle, Besucherregelung",
+        "Relevante Normen": "DIN EN 1627-1630, DIN EN 356, DIN EN 1063, DIN 18251/52/57",
+        "VdS-Richtlinien": "VdS 2120, VdS 2163, VdS 2269, VdS 2332",
+        "Tabellenblatt": "3_Außenhaut + 4_Verglasung",
+        "Risikobewertung": "Physische Barriere"
+      },
+      {
+        "Zone": "Zone 3",
+        "Bezeichnung": "INNENRAUM",
+        "Schutzbereich": "Räume, Flure, Treppenhäuser",
+        "Mechanische Maßnahmen": "Innentüren, Raumtrennung, Zugangsbarrieren",
+        "Elektronische Maßnahmen": "PIR-Bewegungsmelder, Dualmelder, Deckenbewegungsmelder, IR-Lichtschranken, Ultraschall, Druckmatten, Videoüberwachung",
+        "Organisatorische Maßnahmen": "Begehungspläne, Alarmorganisation, Interventionsdienst, Räumungsplanung",
+        "Relevante Normen": "DIN EN 50131-2-2/-2-3/-2-4/-2-5, DIN EN 62676-4",
+        "VdS-Richtlinien": "VdS 2312, VdS 2311",
+        "Tabellenblatt": "5_Melder_Komplett",
+        "Risikobewertung": "Raumüberwachung"
+      },
+      {
+        "Zone": "Zone 4",
+        "Bezeichnung": "OBJEKT / WERT",
+        "Schutzbereich": "Tresore, Safes, Server, Kunstobjekte",
+        "Mechanische Maßnahmen": "Wertbehältnisse EN 1143-1 Grad 0-XIII, Panzerschränke, Tresorräume",
+        "Elektronische Maßnahmen": "Erschütterungsmelder, Körperschallmelder, Kapazitive Feldmelder, Seismische Sensoren, Neigungssensoren",
+        "Organisatorische Maßnahmen": "Vier-Augen-Prinzip, Zugangsbeschränkung, Protokollierung, Versicherungsvorgaben",
+        "Relevante Normen": "EN 1143-1, DIN EN 50131-2-8/-2-9",
+        "VdS-Richtlinien": "VdS 2450, VdS 2480",
+        "Tabellenblatt": "5_Melder (Spezial)",
+        "Risikobewertung": "Höchster Schutz"
+      }
+    ],
+    "systems": [
+      {
+        "system": "EINBRUCHMELDEANLAGE (EMA)",
+        "bereich": "Alle Zonen",
+        "mechanisch": "EMA-Zentrale, Bedienteile, Blockschlösser",
+        "elektronisch": "Alarmzentrale Grad 1-4, IP/GSM Übertragung, NSL-Aufschaltung",
+        "organisatorisch": "Wartungsvertrag, Scharf-/Unscharfschaltung, Alarmplan, Interventionsvertrag",
+        "normen": "DIN VDE 0833-1/-3, DIN EN 50131-1",
+        "vds": "VdS 2311, VdS 2227, VdS 3138",
+        "sheet": "6_EMA_Systeme",
+        "risiko": "Alarmierung & Weiterleitung"
+      },
+      {
+        "system": "BRANDMELDEANLAGE (BMA)",
+        "bereich": "Alle Zonen",
+        "mechanisch": "Brandschutztüren T30/T60/T90",
+        "elektronisch": "Rauchmelder, Wärmemelder, Flammenmelder, ASD, Handfeuermelder, BMA-Zentrale",
+        "organisatorisch": "Brandschutzordnung, Feuerwehr-Aufschaltung, Wartung, Räumungsübungen",
+        "normen": "DIN 14675, DIN EN 54, DIN VDE 0833-2",
+        "vds": "—",
+        "sheet": "5_Melder (Brand)",
+        "risiko": "Personenschutz & Sachschutz"
+      },
+      {
+        "system": "ZUTRITTSKONTROLLE (ZKA)",
+        "bereich": "Zone 1-4",
+        "mechanisch": "Türterminals, Vereinzelungsanlagen, Drehkreuze",
+        "elektronisch": "RFID-Leser, PIN-Keypads, Biometrie (Finger/Iris/Gesicht), ZK-Zentrale",
+        "organisatorisch": "Berechtigungsmanagement, Zeitprofile, Besuchermanagement, Audit-Trail",
+        "normen": "DIN EN 60839-11-1",
+        "vds": "—",
+        "sheet": "—",
+        "risiko": "Zutrittssteuerung"
+      },
+      {
+        "system": "VIDEOÜBERWACHUNG (VSS)",
+        "bereich": "Zone 1-4",
+        "mechanisch": "Kameragehäuse, Masten, Verkabelung",
+        "elektronisch": "Dome/Bullet/PTZ-Kameras, Thermalkameras, NVR/VMS, KI-Videoanalyse",
+        "organisatorisch": "Datenschutz (DSGVO), Aufbewahrungsfristen, Einsichtnahme-Protokoll",
+        "normen": "DIN EN 62676-1-4",
+        "vds": "—",
+        "sheet": "2_Perimeter (Video)",
+        "risiko": "Verifikation & Abschreckung"
+      }
+    ]
+  },
+  "sicherungsklassen": {
+    "intro": [
+      "SICHERUNGSKLASSEN – VdS 2333, EMA-Grade & RC-Klassen"
+    ],
+    "tables": [
+      {
+        "title": "VdS-SICHERUNGSKLASSEN (SÜ) nach VdS 2333",
+        "header": [
+          "Nr.",
+          "Sicherungsklasse",
+          "Risikograd",
+          "Beschreibung",
+          "Beispiel-Objekte",
+          "EMA-Grad (EN 50131)",
+          "VdS-Klasse",
+          "Min. RC-Tür",
+          "Min. Verglasung",
+          "NSL-Aufschaltung",
+          "Empf. Intervention",
+          "Versicherung"
+        ],
+        "rows": [
+          {
+            "Nr.": "1",
+            "Sicherungsklasse": "SÜ 1 / SG 1",
+            "Risikograd": "Geringes Risiko",
+            "Beschreibung": "Basisschutz für Privatobjekte mit normalem Risiko",
+            "Beispiel-Objekte": "Wohnungen, Reihenhäuser, Mietwohnungen",
+            "EMA-Grad (EN 50131)": "Grad 1",
+            "VdS-Klasse": "Keine",
+            "Min. RC-Tür": "RC 1 N",
+            "Min. Verglasung": "P1A",
+            "NSL-Aufschaltung": "Optional",
+            "Empf. Intervention": "Nein",
+            "Versicherung": "Hausrat Standard"
+          },
+          {
+            "Nr.": "2",
+            "Sicherungsklasse": "SÜ 2 / SG 2",
+            "Risikograd": "Mittleres Risiko",
+            "Beschreibung": "Standardschutz für private und gewerbliche Objekte",
+            "Beispiel-Objekte": "EFH, Arztpraxen, Büros, Einzelhandel",
+            "EMA-Grad (EN 50131)": "Grad 2",
+            "VdS-Klasse": "Klasse A",
+            "Min. RC-Tür": "RC 2",
+            "Min. Verglasung": "P4A",
+            "NSL-Aufschaltung": "Empfohlen",
+            "Empf. Intervention": "Optional",
+            "Versicherung": "Hausrat/Gewerbe"
+          },
+          {
+            "Nr.": "3",
+            "Sicherungsklasse": "SÜ 3 / SG 3",
+            "Risikograd": "Erhöhtes Risiko",
+            "Beschreibung": "Erhöhter Schutz für gewerbliche Objekte mit Wertkonzentration",
+            "Beispiel-Objekte": "Juweliere, Apotheken, Pelzgeschäfte, Waffenhandel",
+            "EMA-Grad (EN 50131)": "Grad 2-3",
+            "VdS-Klasse": "Klasse B",
+            "Min. RC-Tür": "RC 3",
+            "Min. Verglasung": "P5A-P6B",
+            "NSL-Aufschaltung": "Pflicht",
+            "Empf. Intervention": "Empfohlen",
+            "Versicherung": "Gewerbe erhöht"
+          },
+          {
+            "Nr.": "4",
+            "Sicherungsklasse": "SÜ 4 / SG 4",
+            "Risikograd": "Hohes Risiko",
+            "Beschreibung": "Hoher Schutz für Objekte mit hohem Schadenspotenzial",
+            "Beispiel-Objekte": "Banken, Spielhallen, Edel-Juweliere, Warenhandel",
+            "EMA-Grad (EN 50131)": "Grad 3",
+            "VdS-Klasse": "Klasse B-C",
+            "Min. RC-Tür": "RC 4",
+            "Min. Verglasung": "P6B-P7B",
+            "NSL-Aufschaltung": "Pflicht (Dual-Path)",
+            "Empf. Intervention": "Pflicht",
+            "Versicherung": "Spezialversicherung"
+          },
+          {
+            "Nr.": "5",
+            "Sicherungsklasse": "SÜ 5 / SG 5",
+            "Risikograd": "Sehr hohes Risiko",
+            "Beschreibung": "Sehr hoher Schutz für besonders gefährdete Objekte",
+            "Beispiel-Objekte": "KRITIS, Tresorräume, Edelmetallhandel, Rechenzentren",
+            "EMA-Grad (EN 50131)": "Grad 3-4",
+            "VdS-Klasse": "Klasse C",
+            "Min. RC-Tür": "RC 5",
+            "Min. Verglasung": "P7B-P8B",
+            "NSL-Aufschaltung": "Pflicht (Dual-Path)",
+            "Empf. Intervention": "Pflicht (<3 Min.)",
+            "Versicherung": "KRITIS-Versicherung"
+          },
+          {
+            "Nr.": "6",
+            "Sicherungsklasse": "SÜ 6 / SG 6",
+            "Risikograd": "Höchstes Risiko",
+            "Beschreibung": "Höchster Schutz für staatliche/militärische Einrichtungen",
+            "Beispiel-Objekte": "Militär, Kernkraftwerke, Botschaften, Bunker",
+            "EMA-Grad (EN 50131)": "Grad 4",
+            "VdS-Klasse": "Klasse C",
+            "Min. RC-Tür": "RC 6",
+            "Min. Verglasung": "P8B + BR",
+            "NSL-Aufschaltung": "Pflicht (redundant)",
+            "Empf. Intervention": "Pflicht (sofort)",
+            "Versicherung": "Staatlich"
+          }
+        ]
+      },
+      {
+        "title": "EMA-SICHERHEITSGRADE nach DIN EN 50131-1",
+        "header": [
+          "Nr.",
+          "EMA-Grad",
+          "Risikostufe",
+          "Tätertyp",
+          "Täter-Kenntnisse",
+          "Werkzeug",
+          "Draht/Funk",
+          "Sabotage-Schutz",
+          "Alarmübertragung",
+          "Typische Objekte",
+          "Richtpreis EMA-System",
+          "Bemerkung"
+        ],
+        "rows": [
+          {
+            "Nr.": "1",
+            "EMA-Grad": "Grad 1 – Niedrig",
+            "Risikostufe": "Geringes Risiko",
+            "Tätertyp": "Gelegenheitstäter",
+            "Täter-Kenntnisse": "Keine Kenntnisse",
+            "Werkzeug": "Keine / Handwerkzeug",
+            "Draht/Funk": "Beides möglich",
+            "Sabotage-Schutz": "Basis",
+            "Alarmübertragung": "Telefon/SMS",
+            "Typische Objekte": "Wohnungen (Miete), Lager",
+            "Richtpreis EMA-System": "500 – 2.000 €",
+            "Bemerkung": "Einfache Systeme, DIY möglich"
+          },
+          {
+            "Nr.": "2",
+            "EMA-Grad": "Grad 2 – Mittel",
+            "Risikostufe": "Mittleres Risiko",
+            "Tätertyp": "Gelegenheitstäter",
+            "Täter-Kenntnisse": "Begrenzte Kenntnisse",
+            "Werkzeug": "Allg. Handwerkzeug",
+            "Draht/Funk": "Beides, Funk ab 868 MHz",
+            "Sabotage-Schutz": "Erweitert",
+            "Alarmübertragung": "IP oder GSM",
+            "Typische Objekte": "EFH, Büros, Einzelhandel",
+            "Richtpreis EMA-System": "2.000 – 6.000 €",
+            "Bemerkung": "Polizei-Empfehlung Minimum"
+          },
+          {
+            "Nr.": "3",
+            "EMA-Grad": "Grad 3 – Hoch",
+            "Risikostufe": "Erhöhtes Risiko",
+            "Tätertyp": "Erfahrener Einbrecher",
+            "Täter-Kenntnisse": "Gute Kenntnisse EMA",
+            "Werkzeug": "Elektrowerkzeuge",
+            "Draht/Funk": "Draht bevorzugt",
+            "Sabotage-Schutz": "Hoch (Leitungsüberwachung)",
+            "Alarmübertragung": "IP + GSM (Dual-Path)",
+            "Typische Objekte": "Banken, Juweliere, KRITIS",
+            "Richtpreis EMA-System": "6.000 – 20.000 €",
+            "Bemerkung": "VdS-Errichter Pflicht"
+          },
+          {
+            "Nr.": "4",
+            "EMA-Grad": "Grad 4 – Höchst",
+            "Risikostufe": "Höchstes Risiko",
+            "Tätertyp": "Professionelle Täter/Organisiert",
+            "Täter-Kenntnisse": "Expertenwissen",
+            "Werkzeug": "Spezialwerkzeuge",
+            "Draht/Funk": "Nur Draht/BUS",
+            "Sabotage-Schutz": "Höchst (Verschlüsselung)",
+            "Alarmübertragung": "Redundant (3-fach)",
+            "Typische Objekte": "Militär, Staatsgebäude",
+            "Richtpreis EMA-System": "20.000 – 100.000+ €",
+            "Bemerkung": "Sonderplanung erforderlich"
+          }
+        ]
+      },
+      {
+        "title": "WIDERSTANDSKLASSEN (RC) nach DIN EN 1627-1630",
+        "header": [
+          "Nr.",
+          "RC-Klasse",
+          "Widerstandszeit",
+          "Tätertyp",
+          "Werkzeuge",
+          "Verglasung",
+          "Typische Anwendung",
+          "Empfehlung",
+          "Polizei-Empf.",
+          "Richtpreis Tür (€)",
+          "Richtpreis Fenster (€)",
+          "Norm"
+        ],
+        "rows": [
+          {
+            "Nr.": "1",
+            "RC-Klasse": "RC 1 N",
+            "Widerstandszeit": "—",
+            "Tätertyp": "Vandalismus",
+            "Werkzeuge": "Körperliche Gewalt (Treten, Schulter)",
+            "Verglasung": "Keine Anforderung",
+            "Typische Anwendung": "Nebeneingänge, Keller (gering)",
+            "Empfehlung": "Privat Basis",
+            "Polizei-Empf.": "—",
+            "Richtpreis Tür (€)": "400 – 700",
+            "Richtpreis Fenster (€)": "250 – 450",
+            "Norm": "DIN EN 1627"
+          },
+          {
+            "Nr.": "2",
+            "RC-Klasse": "RC 2 N",
+            "Widerstandszeit": "3 Minuten",
+            "Tätertyp": "Gelegenheitstäter",
+            "Werkzeuge": "Schraubendreher, Zange, Keil",
+            "Verglasung": "Keine Anforderung",
+            "Typische Anwendung": "Standard Nachrüstung",
+            "Empfehlung": "Privat Standard",
+            "Polizei-Empf.": "✓ Minimum",
+            "Richtpreis Tür (€)": "600 – 1.000",
+            "Richtpreis Fenster (€)": "350 – 650",
+            "Norm": "DIN EN 1627"
+          },
+          {
+            "Nr.": "3",
+            "RC-Klasse": "RC 2",
+            "Widerstandszeit": "3 Minuten",
+            "Tätertyp": "Gelegenheitstäter",
+            "Werkzeuge": "Schraubendreher, Zange, Keil",
+            "Verglasung": "P4A",
+            "Typische Anwendung": "Wohnungen, Büros EG",
+            "Empfehlung": "Privat + Gewerbe",
+            "Polizei-Empf.": "✓✓ Empfohlen",
+            "Richtpreis Tür (€)": "800 – 1.500",
+            "Richtpreis Fenster (€)": "450 – 900",
+            "Norm": "DIN EN 1627"
+          },
+          {
+            "Nr.": "4",
+            "RC-Klasse": "RC 3",
+            "Widerstandszeit": "5 Minuten",
+            "Tätertyp": "Erfahrener Täter",
+            "Werkzeuge": "Zusätzlich Kuhfuß, Brecheisen",
+            "Verglasung": "P5A",
+            "Typische Anwendung": "Gewerbe, Juweliere",
+            "Empfehlung": "Gewerbe Standard",
+            "Polizei-Empf.": "✓✓ Empfohlen",
+            "Richtpreis Tür (€)": "1.500 – 3.500",
+            "Richtpreis Fenster (€)": "900 – 1.800",
+            "Norm": "DIN EN 1627"
+          },
+          {
+            "Nr.": "5",
+            "RC-Klasse": "RC 4",
+            "Widerstandszeit": "10 Minuten",
+            "Tätertyp": "Erfahren + Werkzeug",
+            "Werkzeuge": "Säge, Hammer, Meißel, Akku-Bohrer",
+            "Verglasung": "P6B",
+            "Typische Anwendung": "Banken, KRITIS, Apotheken",
+            "Empfehlung": "Gewerbe erhöht",
+            "Polizei-Empf.": "✓✓✓ Dringend",
+            "Richtpreis Tür (€)": "3.500 – 8.000",
+            "Richtpreis Fenster (€)": "1.800 – 4.000",
+            "Norm": "DIN EN 1627"
+          },
+          {
+            "Nr.": "6",
+            "RC-Klasse": "RC 5",
+            "Widerstandszeit": "15 Minuten",
+            "Tätertyp": "Elektrowerkzeuge",
+            "Werkzeuge": "Winkelschleifer, Stichsäge, Bohrmaschine",
+            "Verglasung": "P7B",
+            "Typische Anwendung": "Hochsicherheit, Tresorräume",
+            "Empfehlung": "KRITIS",
+            "Polizei-Empf.": "—",
+            "Richtpreis Tür (€)": "8.000 – 15.000",
+            "Richtpreis Fenster (€)": "4.000 – 8.000",
+            "Norm": "DIN EN 1627"
+          },
+          {
+            "Nr.": "7",
+            "RC-Klasse": "RC 6",
+            "Widerstandszeit": "20 Minuten",
+            "Tätertyp": "Leistungsstarke E-Werkzeuge",
+            "Werkzeuge": "Leistungsstarke Winkelschleifer, Bohrmaschinen",
+            "Verglasung": "P8B",
+            "Typische Anwendung": "Militär, Tresorräume, JVA",
+            "Empfehlung": "Höchste Stufe",
+            "Polizei-Empf.": "—",
+            "Richtpreis Tür (€)": "15.000 – 35.000",
+            "Richtpreis Fenster (€)": "8.000 – 20.000",
+            "Norm": "DIN EN 1627"
+          }
+        ]
+      }
+    ]
+  },
+  "perimeter": {
+    "intro": [
+      "PERIMETERSCHUTZ – Zone 1: Zäune, Tore, Barrieren & Sensoren",
+      "Erste Verteidigungslinie – Freigelände, Grundstücksgrenze, Zufahrten",
+      "🧱 ZÄUNE & BARRIEREN"
+    ],
+    "tables": [
+      {
+        "title": "🧱 ZÄUNE & BARRIEREN",
+        "header": [
+          "Nr.",
+          "Kategorie",
+          "Produkt / Maßnahme",
+          "Beschreibung",
+          "Widerstandsklasse",
+          "Norm / Richtlinie",
+          "Detektionsprinzip",
+          "Einsatzbereich",
+          "Höhe / Reichweite",
+          "Sicherungsklasse",
+          "Richtpreis (€)"
+        ],
+        "rows": [
+          {
+            "Nr.": "1",
+            "Kategorie": "Zaun",
+            "Produkt / Maßnahme": "Doppelstabmattenzaun 6/5/6 mm",
+            "Beschreibung": "Standard-Industriezaun, feuerverzinkt, RAL-Farben",
+            "Widerstandsklasse": "—",
+            "Norm / Richtlinie": "DIN EN 13241",
+            "Detektionsprinzip": "—",
+            "Einsatzbereich": "Gewerbe, Industrie",
+            "Höhe / Reichweite": "1,80 – 2,40 m",
+            "Sicherungsklasse": "SÜ 1-2",
+            "Richtpreis (€)": "35 – 55 €/lfm"
+          },
+          {
+            "Nr.": "2",
+            "Kategorie": "Zaun",
+            "Produkt / Maßnahme": "Doppelstabmattenzaun 8/6/8 mm",
+            "Beschreibung": "Verstärkte Ausführung, schwerer aufzuschneiden",
+            "Widerstandsklasse": "—",
+            "Norm / Richtlinie": "DIN EN 13241",
+            "Detektionsprinzip": "—",
+            "Einsatzbereich": "Industrie, Hochsicherheit",
+            "Höhe / Reichweite": "2,00 – 2,50 m",
+            "Sicherungsklasse": "SÜ 2-3",
+            "Richtpreis (€)": "55 – 85 €/lfm"
+          },
+          {
+            "Nr.": "3",
+            "Kategorie": "Zaun",
+            "Produkt / Maßnahme": "NATO-Draht / Concertina (S-Draht)",
+            "Beschreibung": "Stacheldraht mit Rasierklingen, als Aufsatz",
+            "Widerstandsklasse": "WK1–WK3",
+            "Norm / Richtlinie": "DIN EN 1722-1",
+            "Detektionsprinzip": "—",
+            "Einsatzbereich": "Militär, JVA, KRITIS",
+            "Höhe / Reichweite": "+ 0,50 m Aufsatz",
+            "Sicherungsklasse": "SÜ 4-6",
+            "Richtpreis (€)": "8 – 25 €/lfm"
+          },
+          {
+            "Nr.": "4",
+            "Kategorie": "Zaun",
+            "Produkt / Maßnahme": "Palisadenzaun (Anti-Climb)",
+            "Beschreibung": "Stahlpalisaden mit Spitzen, nicht übersteigbar",
+            "Widerstandsklasse": "WK2–WK4",
+            "Norm / Richtlinie": "BS 1722-12, LPS 1175",
+            "Detektionsprinzip": "—",
+            "Einsatzbereich": "KRITIS, Botschaften",
+            "Höhe / Reichweite": "2,40 – 3,00 m",
+            "Sicherungsklasse": "SÜ 3-5",
+            "Richtpreis (€)": "85 – 150 €/lfm"
+          },
+          {
+            "Nr.": "5",
+            "Kategorie": "Zaun",
+            "Produkt / Maßnahme": "Sicherheitszaun 358 Mesh",
+            "Beschreibung": "76,2×12,7mm Masche (Anti-Climb/Anti-Cut)",
+            "Widerstandsklasse": "SR1–SR4",
+            "Norm / Richtlinie": "LPS 1175, ASTM F2781",
+            "Detektionsprinzip": "—",
+            "Einsatzbereich": "Gefängnisse, Militär",
+            "Höhe / Reichweite": "2,40 – 4,00 m",
+            "Sicherungsklasse": "SÜ 5-6",
+            "Richtpreis (€)": "90 – 180 €/lfm"
+          },
+          {
+            "Nr.": "6",
+            "Kategorie": "Zaun",
+            "Produkt / Maßnahme": "Elektrifizierter Sicherheitszaun",
+            "Beschreibung": "Hochspannungsimpulse (nicht-letal, max. 10.000V)",
+            "Widerstandsklasse": "—",
+            "Norm / Richtlinie": "IEC 60335-2-76",
+            "Detektionsprinzip": "Berührung",
+            "Einsatzbereich": "KRITIS, Logistikzentren",
+            "Höhe / Reichweite": "2,00 – 3,00 m",
+            "Sicherungsklasse": "SÜ 4-6",
+            "Richtpreis (€)": "120 – 250 €/lfm"
+          }
+        ]
+      },
+      {
+        "title": "🚧 TORE, SCHRANKEN & POLLER",
+        "header": [
+          "Nr.",
+          "Kategorie",
+          "Produkt / Maßnahme",
+          "Beschreibung",
+          "Widerstandsklasse",
+          "Norm / Richtlinie",
+          "Detektionsprinzip",
+          "Einsatzbereich",
+          "Höhe / Reichweite",
+          "Sicherungsklasse",
+          "Richtpreis (€)"
+        ],
+        "rows": [
+          {
+            "Nr.": "7",
+            "Kategorie": "Schiebetor",
+            "Produkt / Maßnahme": "Freitragendes Schiebetor Industrie",
+            "Beschreibung": "Motorisiert, bis 12m Durchfahrt, Lichtschranke",
+            "Widerstandsklasse": "RC2–RC4",
+            "Norm / Richtlinie": "DIN EN 13241, 12453",
+            "Detektionsprinzip": "—",
+            "Einsatzbereich": "Werksgelände, Logistik",
+            "Höhe / Reichweite": "Bis 2,50 m hoch",
+            "Sicherungsklasse": "SÜ 2-4",
+            "Richtpreis (€)": "4.500 – 12.000 €"
+          },
+          {
+            "Nr.": "8",
+            "Kategorie": "Drehflügeltor",
+            "Produkt / Maßnahme": "Drehflügeltor 2-flügelig",
+            "Beschreibung": "Motorisiert, Schließkraftbegrenzung",
+            "Widerstandsklasse": "RC2–RC3",
+            "Norm / Richtlinie": "DIN EN 13241, 12453",
+            "Detektionsprinzip": "—",
+            "Einsatzbereich": "Firmengelände",
+            "Höhe / Reichweite": "Bis 2,00 m",
+            "Sicherungsklasse": "SÜ 2-3",
+            "Richtpreis (€)": "2.500 – 6.000 €"
+          },
+          {
+            "Nr.": "9",
+            "Kategorie": "Schnelllauftor",
+            "Produkt / Maßnahme": "HST Schnelllauftor Industrie",
+            "Beschreibung": "Schnellöffnung <1s/m, windbeständig",
+            "Widerstandsklasse": "—",
+            "Norm / Richtlinie": "DIN EN 13241",
+            "Detektionsprinzip": "—",
+            "Einsatzbereich": "Logistik, Hallen",
+            "Höhe / Reichweite": "Bis 6,00 m",
+            "Sicherungsklasse": "SÜ 1-3",
+            "Richtpreis (€)": "5.000 – 15.000 €"
+          },
+          {
+            "Nr.": "10",
+            "Kategorie": "Schranke",
+            "Produkt / Maßnahme": "Schrankenanlage + ANPR",
+            "Beschreibung": "Automatische Kennzeichenerkennung",
+            "Widerstandsklasse": "—",
+            "Norm / Richtlinie": "DIN EN 13241",
+            "Detektionsprinzip": "ANPR-Kamera",
+            "Einsatzbereich": "Parkplatz, Zufahrt",
+            "Höhe / Reichweite": "—",
+            "Sicherungsklasse": "SÜ 2-4",
+            "Richtpreis (€)": "3.000 – 8.000 €"
+          },
+          {
+            "Nr.": "11",
+            "Kategorie": "Poller",
+            "Produkt / Maßnahme": "Versenkbare Sicherheitspoller",
+            "Beschreibung": "Hydraulisch, Anti-Terror (HVM)",
+            "Widerstandsklasse": "IWA 14-1",
+            "Norm / Richtlinie": "PAS 68 / IWA 14-1",
+            "Detektionsprinzip": "—",
+            "Einsatzbereich": "Zufahrtsschutz, KRITIS",
+            "Höhe / Reichweite": "80–120 cm",
+            "Sicherungsklasse": "SÜ 4-6",
+            "Richtpreis (€)": "4.000 – 12.000 €/Stk"
+          },
+          {
+            "Nr.": "12",
+            "Kategorie": "Road Blocker",
+            "Produkt / Maßnahme": "Hydraulische Straßensperre",
+            "Beschreibung": "Versenkbar, stoppt LKW bis 7,5t bei 80 km/h",
+            "Widerstandsklasse": "IWA 14-1",
+            "Norm / Richtlinie": "PAS 68 / IWA 14-1",
+            "Detektionsprinzip": "—",
+            "Einsatzbereich": "Botschaften, Regierung",
+            "Höhe / Reichweite": "—",
+            "Sicherungsklasse": "SÜ 5-6",
+            "Richtpreis (€)": "15.000 – 45.000 €"
+          },
+          {
+            "Nr.": "13",
+            "Kategorie": "Vereinzelungsanlage",
+            "Produkt / Maßnahme": "Drehkreuz / Personenvereinzelung",
+            "Beschreibung": "Halbhoch/Vollhoch, RFID-gesteuert",
+            "Widerstandsklasse": "—",
+            "Norm / Richtlinie": "DIN EN 13241",
+            "Detektionsprinzip": "RFID/Biometrie",
+            "Einsatzbereich": "Eingangskontrolle",
+            "Höhe / Reichweite": "1,00–2,30 m",
+            "Sicherungsklasse": "SÜ 3-5",
+            "Richtpreis (€)": "3.000 – 15.000 €"
+          }
+        ]
+      },
+      {
+        "title": "📡 PERIMETERSENSOREN & DETEKTIONSSYSTEME",
+        "header": [
+          "Nr.",
+          "Kategorie",
+          "Produkt / Maßnahme",
+          "Beschreibung",
+          "Widerstandsklasse",
+          "Norm / Richtlinie",
+          "Detektionsprinzip",
+          "Einsatzbereich",
+          "Höhe / Reichweite",
+          "Sicherungsklasse",
+          "Richtpreis (€)"
+        ],
+        "rows": [
+          {
+            "Nr.": "14",
+            "Kategorie": "Zaunsensor",
+            "Produkt / Maßnahme": "Mikrophonisches Zaunmeldesystem",
+            "Beschreibung": "Detektiert Schneiden, Klettern, Manipulieren",
+            "Widerstandsklasse": "—",
+            "Norm / Richtlinie": "DIN EN 50131-2-7",
+            "Detektionsprinzip": "Vibration/Akustik",
+            "Einsatzbereich": "Zaun-Überwachung",
+            "Höhe / Reichweite": "Bis 600 m/Zone",
+            "Sicherungsklasse": "SÜ 3-5",
+            "Richtpreis (€)": "80 – 150 €/m"
+          },
+          {
+            "Nr.": "15",
+            "Kategorie": "Zaunsensor",
+            "Produkt / Maßnahme": "Glasfaser-Zaunsensorik (FOS)",
+            "Beschreibung": "Fiber-Optic Sensing, nicht überbrückbar",
+            "Widerstandsklasse": "—",
+            "Norm / Richtlinie": "DIN EN 50131-2-7",
+            "Detektionsprinzip": "Lichtlaufzeit (OTDR)",
+            "Einsatzbereich": "Hochsicherheit",
+            "Höhe / Reichweite": "Bis 40 km",
+            "Sicherungsklasse": "SÜ 5-6",
+            "Richtpreis (€)": "50 – 120 €/m"
+          },
+          {
+            "Nr.": "16",
+            "Kategorie": "Zaunsensor",
+            "Produkt / Maßnahme": "Elektrostatischer Feldsensor",
+            "Beschreibung": "Detektiert Annäherung VOR Berührung",
+            "Widerstandsklasse": "—",
+            "Norm / Richtlinie": "DIN EN 50131-2-9",
+            "Detektionsprinzip": "Elektrostatisch",
+            "Einsatzbereich": "Hochsicherheit",
+            "Höhe / Reichweite": "Bis 200 m/Zone",
+            "Sicherungsklasse": "SÜ 4-6",
+            "Richtpreis (€)": "100 – 200 €/m"
+          },
+          {
+            "Nr.": "17",
+            "Kategorie": "Bodensensor",
+            "Produkt / Maßnahme": "Erddrucksensor / Geophon",
+            "Beschreibung": "Detektiert Schritte & Fahrzeuge (vergrab.)",
+            "Widerstandsklasse": "—",
+            "Norm / Richtlinie": "DIN EN 50131-2-6",
+            "Detektionsprinzip": "Seismisch/Druck",
+            "Einsatzbereich": "Freigelände",
+            "Höhe / Reichweite": "Bis 200 m",
+            "Sicherungsklasse": "SÜ 4-6",
+            "Richtpreis (€)": "2.000 – 5.000 €/Stk"
+          },
+          {
+            "Nr.": "18",
+            "Kategorie": "Bodensensor",
+            "Produkt / Maßnahme": "Druckschlauch-System",
+            "Beschreibung": "Vergrabener pneumatischer Sensor",
+            "Widerstandsklasse": "—",
+            "Norm / Richtlinie": "DIN EN 50131-2-6",
+            "Detektionsprinzip": "Pneumatisch",
+            "Einsatzbereich": "Einfahrten, Wege",
+            "Höhe / Reichweite": "Bis 100 m",
+            "Sicherungsklasse": "SÜ 3-5",
+            "Richtpreis (€)": "1.500 – 4.000 €/Zone"
+          },
+          {
+            "Nr.": "19",
+            "Kategorie": "IR-Schranke",
+            "Produkt / Maßnahme": "Infrarot-Lichtschranke (AIR)",
+            "Beschreibung": "Aktiver IR-Strahl, Unterbrechungsdetektion",
+            "Widerstandsklasse": "Grad 2–4",
+            "Norm / Richtlinie": "DIN EN 50131-2-5, VdS 2358",
+            "Detektionsprinzip": "IR-Strahl",
+            "Einsatzbereich": "Perimeter, Eingänge",
+            "Höhe / Reichweite": "30 – 250 m",
+            "Sicherungsklasse": "SÜ 2-5",
+            "Richtpreis (€)": "300 – 1.200 €/Paar"
+          },
+          {
+            "Nr.": "20",
+            "Kategorie": "MW-Schranke",
+            "Produkt / Maßnahme": "Mikrowellen-Barriere",
+            "Beschreibung": "Volumetrische Detektion Sender/Empfänger",
+            "Widerstandsklasse": "Grad 3–4",
+            "Norm / Richtlinie": "DIN EN 50131-2-5",
+            "Detektionsprinzip": "Mikrowelle (X/K)",
+            "Einsatzbereich": "Freigelände",
+            "Höhe / Reichweite": "50 – 200 m",
+            "Sicherungsklasse": "SÜ 4-6",
+            "Richtpreis (€)": "1.500 – 4.000 €/Paar"
+          },
+          {
+            "Nr.": "21",
+            "Kategorie": "Video",
+            "Produkt / Maßnahme": "Thermalkamera + KI-Videoanalyse",
+            "Beschreibung": "IR-Wärmebild, KI erkennt Mensch/Tier/KFZ",
+            "Widerstandsklasse": "—",
+            "Norm / Richtlinie": "DIN EN 62676-4",
+            "Detektionsprinzip": "Thermal + KI",
+            "Einsatzbereich": "Perimeter 24/7",
+            "Höhe / Reichweite": "100 – 2.000 m",
+            "Sicherungsklasse": "SÜ 3-6",
+            "Richtpreis (€)": "3.000 – 15.000 €/Stk"
+          },
+          {
+            "Nr.": "22",
+            "Kategorie": "Radar",
+            "Produkt / Maßnahme": "Bodenradar / Weitwinkelradar",
+            "Beschreibung": "Doppler-Radar, 360° oder Sektor",
+            "Widerstandsklasse": "—",
+            "Norm / Richtlinie": "DIN EN 50131-2-6",
+            "Detektionsprinzip": "Radar (Doppler)",
+            "Einsatzbereich": "Großflächen, Flughäfen",
+            "Höhe / Reichweite": "Bis 500 m",
+            "Sicherungsklasse": "SÜ 4-6",
+            "Richtpreis (€)": "5.000 – 20.000 €/Stk"
+          },
+          {
+            "Nr.": "23",
+            "Kategorie": "LiDAR",
+            "Produkt / Maßnahme": "LiDAR-Perimeterscanner",
+            "Beschreibung": "Laserbasierte 3D-Überwachung",
+            "Widerstandsklasse": "—",
+            "Norm / Richtlinie": "DIN EN 50131",
+            "Detektionsprinzip": "Laser/LiDAR",
+            "Einsatzbereich": "Hochsicherheit",
+            "Höhe / Reichweite": "Bis 300 m",
+            "Sicherungsklasse": "SÜ 5-6",
+            "Richtpreis (€)": "8.000 – 25.000 €/Stk"
+          },
+          {
+            "Nr.": "24",
+            "Kategorie": "Laser",
+            "Produkt / Maßnahme": "Laserscanner (2D/3D)",
+            "Beschreibung": "Detektiert Objekte in definierten Zonen",
+            "Widerstandsklasse": "—",
+            "Norm / Richtlinie": "DIN EN 50131-2-5",
+            "Detektionsprinzip": "Laser (ToF)",
+            "Einsatzbereich": "Eingänge, Dächer",
+            "Höhe / Reichweite": "Bis 200 m",
+            "Sicherungsklasse": "SÜ 4-6",
+            "Richtpreis (€)": "4.000 – 12.000 €/Stk"
+          }
+        ]
+      }
+    ]
+  },
+  "aussenhaut": {
+    "intro": [
+      "AUSSENHAUT – Zone 2: Türen, Fenster, Verglasung, Schlösser",
+      "Physische Barriere – Gebäudehülle, Öffnungen, Verschlüsse"
+    ],
+    "tables": [
+      {
+        "title": "🚪 EINBRUCHHEMMENDE TÜREN nach DIN EN 1627",
+        "header": [
+          "Nr.",
+          "Kategorie",
+          "Produkt",
+          "Beschreibung",
+          "RC-Klasse",
+          "Norm",
+          "Prüfzeit",
+          "Verglasung",
+          "Einsatzbereich",
+          "Sicherungsklasse",
+          "Richtpreis (€)"
+        ],
+        "rows": [
+          {
+            "Nr.": "1",
+            "Kategorie": "Haustür",
+            "Produkt": "Sicherheitstür RC 2",
+            "Beschreibung": "Mehrf.Verriegelung, Sicherheitsschloss, P4A-Glas",
+            "RC-Klasse": "RC 2",
+            "Norm": "DIN EN 1627-1630",
+            "Prüfzeit": "3 Min.",
+            "Verglasung": "P4A",
+            "Einsatzbereich": "Wohnungen, Büros, Praxen",
+            "Sicherungsklasse": "SÜ 2",
+            "Richtpreis (€)": "800 – 1.500 €"
+          },
+          {
+            "Nr.": "2",
+            "Kategorie": "Haustür",
+            "Produkt": "Sicherheitstür RC 3",
+            "Beschreibung": "Verstärkte Profile, Spezialschloss, P5A-Glas",
+            "RC-Klasse": "RC 3",
+            "Norm": "DIN EN 1627-1630",
+            "Prüfzeit": "5 Min.",
+            "Verglasung": "P5A",
+            "Einsatzbereich": "Juweliere, Apotheken, Gewerbe",
+            "Sicherungsklasse": "SÜ 3",
+            "Richtpreis (€)": "1.500 – 3.500 €"
+          },
+          {
+            "Nr.": "3",
+            "Kategorie": "Hochsicherheit",
+            "Produkt": "Sicherheitstür RC 4",
+            "Beschreibung": "Panzerstahl, Spezialzylinder, P6B-Glas",
+            "RC-Klasse": "RC 4",
+            "Norm": "DIN EN 1627-1630",
+            "Prüfzeit": "10 Min.",
+            "Verglasung": "P6B",
+            "Einsatzbereich": "Banken, KRITIS",
+            "Sicherungsklasse": "SÜ 4",
+            "Richtpreis (€)": "3.500 – 8.000 €"
+          },
+          {
+            "Nr.": "4",
+            "Kategorie": "Hochsicherheit",
+            "Produkt": "Sicherheitstür RC 5",
+            "Beschreibung": "Verbundstahl, elektr. Verriegelung",
+            "RC-Klasse": "RC 5",
+            "Norm": "DIN EN 1627-1630",
+            "Prüfzeit": "15 Min.",
+            "Verglasung": "P7B",
+            "Einsatzbereich": "Tresorräume, Rechenzentren",
+            "Sicherungsklasse": "SÜ 5",
+            "Richtpreis (€)": "8.000 – 15.000 €"
+          },
+          {
+            "Nr.": "5",
+            "Kategorie": "Hochsicherheit",
+            "Produkt": "Sicherheitstür RC 6",
+            "Beschreibung": "Panzerstahl mehrlagig, höchster Widerstand",
+            "RC-Klasse": "RC 6",
+            "Norm": "DIN EN 1627-1630",
+            "Prüfzeit": "20 Min.",
+            "Verglasung": "P8B",
+            "Einsatzbereich": "Militär, Bunker, JVA",
+            "Sicherungsklasse": "SÜ 6",
+            "Richtpreis (€)": "15.000 – 35.000 €"
+          },
+          {
+            "Nr.": "6",
+            "Kategorie": "Fluchtweg",
+            "Produkt": "Paniktür DIN EN 1125",
+            "Beschreibung": "Panikstange, Notausgang, fluchtweggeeignet",
+            "RC-Klasse": "—",
+            "Norm": "DIN EN 1125",
+            "Prüfzeit": "—",
+            "Verglasung": "—",
+            "Einsatzbereich": "Fluchtwege (Pflicht)",
+            "Sicherungsklasse": "—",
+            "Richtpreis (€)": "500 – 1.200 €"
+          },
+          {
+            "Nr.": "7",
+            "Kategorie": "Brandschutz",
+            "Produkt": "Brandschutztür T30/T60/T90",
+            "Beschreibung": "Feuerwiderstand 30/60/90 Minuten",
+            "RC-Klasse": "T30–T90",
+            "Norm": "DIN 4102-5, EN 1634-1",
+            "Prüfzeit": "—",
+            "Verglasung": "—",
+            "Einsatzbereich": "Brandabschnitte",
+            "Sicherungsklasse": "—",
+            "Richtpreis (€)": "400 – 2.500 €"
+          },
+          {
+            "Nr.": "8",
+            "Kategorie": "Sondertür",
+            "Produkt": "Durchschusshemmende Tür",
+            "Beschreibung": "Beschusshemmend nach DIN EN 1522",
+            "RC-Klasse": "FB4–FB7",
+            "Norm": "DIN EN 1522/1523",
+            "Prüfzeit": "—",
+            "Verglasung": "BR4+",
+            "Einsatzbereich": "Botschaften, Militär",
+            "Sicherungsklasse": "SÜ 5-6",
+            "Richtpreis (€)": "5.000 – 25.000 €"
+          }
+        ]
+      },
+      {
+        "title": "🪟 FENSTER & VERGLASUNG",
+        "header": [
+          "Nr.",
+          "Kategorie",
+          "Produkt",
+          "Beschreibung",
+          "RC-Klasse",
+          "Norm",
+          "Prüfzeit",
+          "Verglasung",
+          "Einsatzbereich",
+          "Sicherungsklasse",
+          "Richtpreis (€)"
+        ],
+        "rows": [
+          {
+            "Nr.": "9",
+            "Kategorie": "Fenster",
+            "Produkt": "Sicherheitsfenster RC 2",
+            "Beschreibung": "Pilzkopfverriegelung + P4A-Glas, abschließbar",
+            "RC-Klasse": "RC 2",
+            "Norm": "DIN EN 1627",
+            "Prüfzeit": "3 Min.",
+            "Verglasung": "P4A",
+            "Einsatzbereich": "Wohnungen, EG-Fenster",
+            "Sicherungsklasse": "SÜ 2",
+            "Richtpreis (€)": "450 – 900 €"
+          },
+          {
+            "Nr.": "10",
+            "Kategorie": "Fenster",
+            "Produkt": "Sicherheitsfenster RC 3",
+            "Beschreibung": "Verstärkte Profile + P5A-Glas",
+            "RC-Klasse": "RC 3",
+            "Norm": "DIN EN 1627",
+            "Prüfzeit": "5 Min.",
+            "Verglasung": "P5A",
+            "Einsatzbereich": "Gewerbe, Juweliere",
+            "Sicherungsklasse": "SÜ 3",
+            "Richtpreis (€)": "900 – 1.800 €"
+          },
+          {
+            "Nr.": "11",
+            "Kategorie": "Fenster",
+            "Produkt": "Sicherheitsfenster RC 4",
+            "Beschreibung": "Stahlrahmen + P6B-Glas",
+            "RC-Klasse": "RC 4",
+            "Norm": "DIN EN 1627",
+            "Prüfzeit": "10 Min.",
+            "Verglasung": "P6B",
+            "Einsatzbereich": "Banken, KRITIS",
+            "Sicherungsklasse": "SÜ 4",
+            "Richtpreis (€)": "1.800 – 4.000 €"
+          },
+          {
+            "Nr.": "12",
+            "Kategorie": "Verglasung",
+            "Produkt": "P1A – Angriffhemmend",
+            "Beschreibung": "Kugelfalltest 1,5m, VSG 6,8mm",
+            "RC-Klasse": "P1A",
+            "Norm": "DIN EN 356",
+            "Prüfzeit": "—",
+            "Verglasung": "—",
+            "Einsatzbereich": "Privathäuser",
+            "Sicherungsklasse": "SÜ 1",
+            "Richtpreis (€)": "60 – 100 €/m²"
+          },
+          {
+            "Nr.": "13",
+            "Kategorie": "Verglasung",
+            "Produkt": "P4A – Angriffhemmend",
+            "Beschreibung": "Kugelfalltest 9,0m, VSG 13,5mm",
+            "RC-Klasse": "P4A",
+            "Norm": "DIN EN 356",
+            "Prüfzeit": "—",
+            "Verglasung": "—",
+            "Einsatzbereich": "RC2-Fenster, Standard",
+            "Sicherungsklasse": "SÜ 2",
+            "Richtpreis (€)": "150 – 250 €/m²"
+          },
+          {
+            "Nr.": "14",
+            "Kategorie": "Verglasung",
+            "Produkt": "P6B – Durchwurfhemmend",
+            "Beschreibung": "30-50 Axtschläge, VSG 22mm+",
+            "RC-Klasse": "P6B",
+            "Norm": "DIN EN 356",
+            "Prüfzeit": "—",
+            "Verglasung": "—",
+            "Einsatzbereich": "RC4-Fenster, Banken",
+            "Sicherungsklasse": "SÜ 4",
+            "Richtpreis (€)": "350 – 550 €/m²"
+          },
+          {
+            "Nr.": "15",
+            "Kategorie": "Verglasung",
+            "Produkt": "P8B – Durchwurfhemmend",
+            "Beschreibung": "71+ Axtschläge, VSG 35mm+",
+            "RC-Klasse": "P8B",
+            "Norm": "DIN EN 356",
+            "Prüfzeit": "—",
+            "Verglasung": "—",
+            "Einsatzbereich": "Höchste Sicherheit",
+            "Sicherungsklasse": "SÜ 5-6",
+            "Richtpreis (€)": "750 – 1.200 €/m²"
+          },
+          {
+            "Nr.": "16",
+            "Kategorie": "Verglasung",
+            "Produkt": "BR4-NS – Beschusshemmend",
+            "Beschreibung": ".44 Magnum, VSG 40mm+",
+            "RC-Klasse": "BR4",
+            "Norm": "DIN EN 1063",
+            "Prüfzeit": "—",
+            "Verglasung": "—",
+            "Einsatzbereich": "Botschaften",
+            "Sicherungsklasse": "SÜ 5-6",
+            "Richtpreis (€)": "1.000 – 1.800 €/m²"
+          },
+          {
+            "Nr.": "17",
+            "Kategorie": "Gitter",
+            "Produkt": "Fenstergitter fest/abschließbar",
+            "Beschreibung": "Stahlgitter vor Fenster, verz./beschichtet",
+            "RC-Klasse": "RC 2-3",
+            "Norm": "DIN EN 1627",
+            "Prüfzeit": "—",
+            "Verglasung": "—",
+            "Einsatzbereich": "Keller, EG-Fenster",
+            "Sicherungsklasse": "SÜ 2-3",
+            "Richtpreis (€)": "150 – 600 €/Stk"
+          },
+          {
+            "Nr.": "18",
+            "Kategorie": "Rollladen",
+            "Produkt": "Sicherheitsrollladen RC 2",
+            "Beschreibung": "Motorisiert, Hochschiebesicherung",
+            "RC-Klasse": "RC 2",
+            "Norm": "DIN EN 13659",
+            "Prüfzeit": "—",
+            "Verglasung": "—",
+            "Einsatzbereich": "Wohnungen, EG",
+            "Sicherungsklasse": "SÜ 2",
+            "Richtpreis (€)": "350 – 800 €/Stk"
+          }
+        ]
+      },
+      {
+        "title": "🔑 SCHLÖSSER, BESCHLÄGE & NACHRÜSTUNG",
+        "header": [
+          "Nr.",
+          "Kategorie",
+          "Produkt",
+          "Beschreibung",
+          "RC-Klasse",
+          "Norm",
+          "Prüfzeit",
+          "Verglasung",
+          "Einsatzbereich",
+          "Sicherungsklasse",
+          "Richtpreis (€)"
+        ],
+        "rows": [
+          {
+            "Nr.": "19",
+            "Kategorie": "Zylinder",
+            "Produkt": "Sicherheits-Profilzylinder",
+            "Beschreibung": "Bohrsicherung, Ziehschutz, Abtastschutz, Kopierschutz",
+            "RC-Klasse": "VdS A/B/BZ",
+            "Norm": "DIN 18252, EN 1303",
+            "Prüfzeit": "—",
+            "Verglasung": "—",
+            "Einsatzbereich": "Alle Türen",
+            "Sicherungsklasse": "SÜ 1-4",
+            "Richtpreis (€)": "40 – 250 €"
+          },
+          {
+            "Nr.": "20",
+            "Kategorie": "Beschlag",
+            "Produkt": "Schutzbeschlag mit Kernziehschutz",
+            "Beschreibung": "Sicherheitsbeschlag ES1-ES3",
+            "RC-Klasse": "ES1–ES3",
+            "Norm": "DIN 18257, EN 1906",
+            "Prüfzeit": "—",
+            "Verglasung": "—",
+            "Einsatzbereich": "Haustüren",
+            "Sicherungsklasse": "SÜ 2-4",
+            "Richtpreis (€)": "50 – 200 €"
+          },
+          {
+            "Nr.": "21",
+            "Kategorie": "Schloss",
+            "Produkt": "Automatik-Mehrfachverriegelung",
+            "Beschreibung": "3- bis 7-Punkt Verriegelung",
+            "RC-Klasse": "—",
+            "Norm": "DIN 18251, EN 12209",
+            "Prüfzeit": "—",
+            "Verglasung": "—",
+            "Einsatzbereich": "Haustüren",
+            "Sicherungsklasse": "SÜ 2-4",
+            "Richtpreis (€)": "150 – 500 €"
+          },
+          {
+            "Nr.": "22",
+            "Kategorie": "Nachrüstung",
+            "Produkt": "Panzerriegel / Querriegel",
+            "Beschreibung": "Zusätzl. Verriegelung über volle Türbreite",
+            "RC-Klasse": "—",
+            "Norm": "DIN 18104-1",
+            "Prüfzeit": "—",
+            "Verglasung": "—",
+            "Einsatzbereich": "Wohnungstüren",
+            "Sicherungsklasse": "SÜ 1-2",
+            "Richtpreis (€)": "100 – 350 €"
+          },
+          {
+            "Nr.": "23",
+            "Kategorie": "Nachrüstung",
+            "Produkt": "Fensterzusatzsicherung",
+            "Beschreibung": "Aufschraubbare Sicherung (Pilzkopf/Riegel)",
+            "RC-Klasse": "—",
+            "Norm": "DIN 18104-1",
+            "Prüfzeit": "—",
+            "Verglasung": "—",
+            "Einsatzbereich": "Nachrüstung Fenster",
+            "Sicherungsklasse": "SÜ 1-2",
+            "Richtpreis (€)": "30 – 120 €/Stk"
+          },
+          {
+            "Nr.": "24",
+            "Kategorie": "Schließanlage",
+            "Produkt": "Mechanische Schließanlage",
+            "Beschreibung": "Generalschlüssel + Gruppenschlüssel",
+            "RC-Klasse": "—",
+            "Norm": "DIN 18252",
+            "Prüfzeit": "—",
+            "Verglasung": "—",
+            "Einsatzbereich": "Gesamtgebäude",
+            "Sicherungsklasse": "SÜ 2-4",
+            "Richtpreis (€)": "50 – 200 €/Zyl."
+          },
+          {
+            "Nr.": "25",
+            "Kategorie": "Schließanlage",
+            "Produkt": "Mechatronische Schließanlage",
+            "Beschreibung": "Elektronisch + mechanisch, Protokoll",
+            "RC-Klasse": "—",
+            "Norm": "DIN EN 15684",
+            "Prüfzeit": "—",
+            "Verglasung": "—",
+            "Einsatzbereich": "Gewerbe, KRITIS",
+            "Sicherungsklasse": "SÜ 3-5",
+            "Richtpreis (€)": "150 – 500 €/Zyl."
+          }
+        ]
+      }
+    ]
+  },
+  "melder": {
+    "intro": [
+      "ALLE MELDERTYPEN – Innenraum, Außenhaut, Spezial & Brandmelder",
+      "Zone 2-4: Elektronische Detektion – Bewegung, Öffnung, Bruch, Erschütterung, Brand"
+    ],
+    "tables": [
+      {
+        "title": "🏃 BEWEGUNGSMELDER (Innenraum & Außen)",
+        "header": [
+          "Nr.",
+          "Zone",
+          "Kategorie",
+          "Meldertyp",
+          "Unterkategorie",
+          "Detektionsprinzip",
+          "Erfassungsbereich",
+          "VdS-Norm",
+          "DIN/EN-Norm",
+          "Einsatzbereich",
+          "Hersteller",
+          "Sicherungsklasse",
+          "Richtpreis (€)"
+        ],
+        "rows": [
+          {
+            "Nr.": "1",
+            "Zone": "Zone 3",
+            "Kategorie": "Bewegung",
+            "Meldertyp": "PIR-Melder (Passiv-Infrarot)",
+            "Unterkategorie": "Standard",
+            "Detektionsprinzip": "Wärmestrahlung 8-14µm",
+            "Erfassungsbereich": "12×12m / 90°",
+            "VdS-Norm": "VdS 2312",
+            "DIN/EN-Norm": "EN 50131-2-2",
+            "Einsatzbereich": "Büros, Wohnräume",
+            "Hersteller": "Bosch, Honeywell, Telenot",
+            "Sicherungsklasse": "SÜ 1-3",
+            "Richtpreis (€)": "25 – 80"
+          },
+          {
+            "Nr.": "2",
+            "Zone": "Zone 3",
+            "Kategorie": "Bewegung",
+            "Meldertyp": "PIR-Vorhangmelder",
+            "Unterkategorie": "Corridor",
+            "Detektionsprinzip": "Wärmestrahlung (schmal)",
+            "Erfassungsbereich": "2×20m / 6°",
+            "VdS-Norm": "VdS 2312",
+            "DIN/EN-Norm": "EN 50131-2-2",
+            "Einsatzbereich": "Flure, Durchgänge",
+            "Hersteller": "Bosch, Optex",
+            "Sicherungsklasse": "SÜ 2-3",
+            "Richtpreis (€)": "35 – 100"
+          },
+          {
+            "Nr.": "3",
+            "Zone": "Zone 3",
+            "Kategorie": "Bewegung",
+            "Meldertyp": "PIR-Deckenbewegungsmelder",
+            "Unterkategorie": "360° Decke",
+            "Detektionsprinzip": "Wärmestrahlung (rundum)",
+            "Erfassungsbereich": "Ø 12m / 360°",
+            "VdS-Norm": "VdS 2312",
+            "DIN/EN-Norm": "EN 50131-2-2",
+            "Einsatzbereich": "Räume, Treppenhäuser",
+            "Hersteller": "Bosch, ABB, Theben",
+            "Sicherungsklasse": "SÜ 2-3",
+            "Richtpreis (€)": "40 – 120"
+          },
+          {
+            "Nr.": "4",
+            "Zone": "Zone 3",
+            "Kategorie": "Bewegung",
+            "Meldertyp": "PIR-Langstreckenmelder",
+            "Unterkategorie": "Long Range",
+            "Detektionsprinzip": "Wärmestrahlung (fokussiert)",
+            "Erfassungsbereich": "5×30m",
+            "VdS-Norm": "VdS 2312",
+            "DIN/EN-Norm": "EN 50131-2-2",
+            "Einsatzbereich": "Hallen, Gänge",
+            "Hersteller": "Optex, Bosch",
+            "Sicherungsklasse": "SÜ 2-4",
+            "Richtpreis (€)": "50 – 150"
+          },
+          {
+            "Nr.": "5",
+            "Zone": "Zone 3",
+            "Kategorie": "Bewegung",
+            "Meldertyp": "Dualmelder (PIR + MW)",
+            "Unterkategorie": "Dual-Tech",
+            "Detektionsprinzip": "IR + Mikrowelle (AND-Logik)",
+            "Erfassungsbereich": "15×15m / 90°",
+            "VdS-Norm": "VdS 2312",
+            "DIN/EN-Norm": "EN 50131-2-4",
+            "Einsatzbereich": "Hallen, Werkstätten",
+            "Hersteller": "Bosch, Honeywell, DSC",
+            "Sicherungsklasse": "SÜ 3-5",
+            "Richtpreis (€)": "60 – 180"
+          },
+          {
+            "Nr.": "6",
+            "Zone": "Zone 3",
+            "Kategorie": "Bewegung",
+            "Meldertyp": "Mikrowellenmelder",
+            "Unterkategorie": "MW rein",
+            "Detektionsprinzip": "Mikrowelle (Doppler X/K)",
+            "Erfassungsbereich": "20×20m",
+            "VdS-Norm": "VdS 2312",
+            "DIN/EN-Norm": "EN 50131-2-3",
+            "Einsatzbereich": "Lagerhallen",
+            "Hersteller": "Bosch, Crow, Optex",
+            "Sicherungsklasse": "SÜ 3-4",
+            "Richtpreis (€)": "80 – 200"
+          },
+          {
+            "Nr.": "7",
+            "Zone": "Zone 1",
+            "Kategorie": "Bewegung",
+            "Meldertyp": "Außen-PIR (Outdoor)",
+            "Unterkategorie": "IP65 Wetterfest",
+            "Detektionsprinzip": "Wärmestrahlung + Filter",
+            "Erfassungsbereich": "12×12m, IP65",
+            "VdS-Norm": "VdS 2312",
+            "DIN/EN-Norm": "EN 50131-2-2",
+            "Einsatzbereich": "Fassade, Eingänge",
+            "Hersteller": "Optex, Ajax, Bosch",
+            "Sicherungsklasse": "SÜ 2-4",
+            "Richtpreis (€)": "80 – 250"
+          },
+          {
+            "Nr.": "8",
+            "Zone": "Zone 1",
+            "Kategorie": "Bewegung",
+            "Meldertyp": "Außen-Dualmelder",
+            "Unterkategorie": "Outdoor Dual",
+            "Detektionsprinzip": "IR + MW (wetterfest)",
+            "Erfassungsbereich": "15×15m, IP65",
+            "VdS-Norm": "VdS 2312",
+            "DIN/EN-Norm": "EN 50131-2-4",
+            "Einsatzbereich": "Außenbereich",
+            "Hersteller": "Optex, Bosch, Honeywell",
+            "Sicherungsklasse": "SÜ 4-6",
+            "Richtpreis (€)": "120 – 350"
+          },
+          {
+            "Nr.": "9",
+            "Zone": "Zone 3",
+            "Kategorie": "Bewegung",
+            "Meldertyp": "Anti-Masking PIR",
+            "Unterkategorie": "Sabotageerkenn.",
+            "Detektionsprinzip": "PIR + Anti-Mask-Technologie",
+            "Erfassungsbereich": "12×12m",
+            "VdS-Norm": "VdS 2312",
+            "DIN/EN-Norm": "EN 50131-2-2",
+            "Einsatzbereich": "Hochsicherheit",
+            "Hersteller": "Bosch, Honeywell",
+            "Sicherungsklasse": "SÜ 4-6",
+            "Richtpreis (€)": "100 – 280"
+          },
+          {
+            "Nr.": "10",
+            "Zone": "Zone 3",
+            "Kategorie": "Bewegung",
+            "Meldertyp": "Tierimmun-PIR",
+            "Unterkategorie": "Pet-immune",
+            "Detektionsprinzip": "PIR mit Gewichtsfilter (<25kg)",
+            "Erfassungsbereich": "12×12m",
+            "VdS-Norm": "VdS 2312",
+            "DIN/EN-Norm": "EN 50131-2-2",
+            "Einsatzbereich": "Wohnungen mit Tieren",
+            "Hersteller": "Bosch, DSC, Ajax",
+            "Sicherungsklasse": "SÜ 1-2",
+            "Richtpreis (€)": "35 – 100"
+          }
+        ]
+      },
+      {
+        "title": "📬 ÖFFNUNGSMELDER (Magnetkontakte & Schließblechkontakte)",
+        "header": [
+          "Nr.",
+          "Zone",
+          "Kategorie",
+          "Meldertyp",
+          "Unterkategorie",
+          "Detektionsprinzip",
+          "Erfassungsbereich",
+          "VdS-Norm",
+          "DIN/EN-Norm",
+          "Einsatzbereich",
+          "Hersteller",
+          "Sicherungsklasse",
+          "Richtpreis (€)"
+        ],
+        "rows": [
+          {
+            "Nr.": "11",
+            "Zone": "Zone 2",
+            "Kategorie": "Öffnung",
+            "Meldertyp": "Magnetkontakt (Reedkontakt)",
+            "Unterkategorie": "Aufputz Standard",
+            "Detektionsprinzip": "Magnetfeld-Unterbrechung",
+            "Erfassungsbereich": "15–25mm Abstand",
+            "VdS-Norm": "VdS 2120",
+            "DIN/EN-Norm": "EN 50131-2-6",
+            "Einsatzbereich": "Türen, Fenster",
+            "Hersteller": "Honeywell, Telenot, ABUS",
+            "Sicherungsklasse": "SÜ 1-3",
+            "Richtpreis (€)": "8 – 25"
+          },
+          {
+            "Nr.": "12",
+            "Zone": "Zone 2",
+            "Kategorie": "Öffnung",
+            "Meldertyp": "Magnetkontakt (Reedkontakt)",
+            "Unterkategorie": "Unterputz verdeckt",
+            "Detektionsprinzip": "Magnetfeld-Unterbrechung",
+            "Erfassungsbereich": "10–20mm Abstand",
+            "VdS-Norm": "VdS 2120",
+            "DIN/EN-Norm": "EN 50131-2-6",
+            "Einsatzbereich": "Türen, Fenster (verdeckt)",
+            "Hersteller": "Honeywell, Telenot",
+            "Sicherungsklasse": "SÜ 2-4",
+            "Richtpreis (€)": "12 – 40"
+          },
+          {
+            "Nr.": "13",
+            "Zone": "Zone 2",
+            "Kategorie": "Öffnung",
+            "Meldertyp": "Magnetkontakt (Hochleistung)",
+            "Unterkategorie": "Rolltor/Hallentor",
+            "Detektionsprinzip": "Magnetfeld (verstärkt)",
+            "Erfassungsbereich": "40–80mm Abstand",
+            "VdS-Norm": "VdS 2120",
+            "DIN/EN-Norm": "EN 50131-2-6",
+            "Einsatzbereich": "Rolltore, Hallentore",
+            "Hersteller": "Honeywell, Assa Abloy",
+            "Sicherungsklasse": "SÜ 2-4",
+            "Richtpreis (€)": "30 – 80"
+          },
+          {
+            "Nr.": "14",
+            "Zone": "Zone 2",
+            "Kategorie": "Öffnung",
+            "Meldertyp": "Fremdfeld-ges. Magnetkontakt",
+            "Unterkategorie": "Sabotageschutz",
+            "Detektionsprinzip": "Magnetfeld + Fremdfeld-Erkennung",
+            "Erfassungsbereich": "15–25mm",
+            "VdS-Norm": "VdS 2120",
+            "DIN/EN-Norm": "EN 50131-2-6",
+            "Einsatzbereich": "Hochsicherheit",
+            "Hersteller": "Telenot, Honeywell",
+            "Sicherungsklasse": "SÜ 4-6",
+            "Richtpreis (€)": "25 – 60"
+          },
+          {
+            "Nr.": "15",
+            "Zone": "Zone 2",
+            "Kategorie": "Öffnung",
+            "Meldertyp": "Schließblechkontakt",
+            "Unterkategorie": "Im Schloss integriert",
+            "Detektionsprinzip": "Riegelstellung Schließblech",
+            "Erfassungsbereich": "Im Schließblech",
+            "VdS-Norm": "VdS 2269",
+            "DIN/EN-Norm": "EN 50131-2-6",
+            "Einsatzbereich": "Türen mit Schloss",
+            "Hersteller": "BKS, Assa Abloy, GU",
+            "Sicherungsklasse": "SÜ 3-5",
+            "Richtpreis (€)": "35 – 90"
+          },
+          {
+            "Nr.": "16",
+            "Zone": "Zone 2",
+            "Kategorie": "Öffnung",
+            "Meldertyp": "Riegelschaltkontakt",
+            "Unterkategorie": "Am Schlossriegel",
+            "Detektionsprinzip": "Riegelstellung (Verriegelung)",
+            "Erfassungsbereich": "Am Schloss",
+            "VdS-Norm": "VdS 2269",
+            "DIN/EN-Norm": "EN 50131-2-6",
+            "Einsatzbereich": "Hochsicherheitstüren",
+            "Hersteller": "Assa Abloy, BKS",
+            "Sicherungsklasse": "SÜ 3-5",
+            "Richtpreis (€)": "25 – 60"
+          }
+        ]
+      },
+      {
+        "title": "💎 GLASBRUCHMELDER",
+        "header": [
+          "Nr.",
+          "Zone",
+          "Kategorie",
+          "Meldertyp",
+          "Unterkategorie",
+          "Detektionsprinzip",
+          "Erfassungsbereich",
+          "VdS-Norm",
+          "DIN/EN-Norm",
+          "Einsatzbereich",
+          "Hersteller",
+          "Sicherungsklasse",
+          "Richtpreis (€)"
+        ],
+        "rows": [
+          {
+            "Nr.": "17",
+            "Zone": "Zone 2",
+            "Kategorie": "Glasbruch",
+            "Meldertyp": "Passiver Glasbruchmelder (akustisch)",
+            "Unterkategorie": "Raum-/Deckenmontage",
+            "Detektionsprinzip": "Schallanalyse Bruchfrequenz <200kHz",
+            "Erfassungsbereich": "Radius 6m (mehrere Scheiben)",
+            "VdS-Norm": "VdS 2332",
+            "DIN/EN-Norm": "EN 50131-2-7-1",
+            "Einsatzbereich": "Räume mit Fenstern",
+            "Hersteller": "Honeywell, Bosch, Telenot",
+            "Sicherungsklasse": "SÜ 2-4",
+            "Richtpreis (€)": "30 – 80"
+          },
+          {
+            "Nr.": "18",
+            "Zone": "Zone 2",
+            "Kategorie": "Glasbruch",
+            "Meldertyp": "Aktiver Glasbruchmelder (Folie/Draht)",
+            "Unterkategorie": "Auf Scheibe geklebt",
+            "Detektionsprinzip": "Rissüberwachung Alarmfolie",
+            "Erfassungsbereich": "Pro Scheibe",
+            "VdS-Norm": "VdS 2332",
+            "DIN/EN-Norm": "EN 50131-2-7-2",
+            "Einsatzbereich": "Einzelne Scheiben",
+            "Hersteller": "Telenot, Honeywell, ABUS",
+            "Sicherungsklasse": "SÜ 2-4",
+            "Richtpreis (€)": "15 – 50"
+          },
+          {
+            "Nr.": "19",
+            "Zone": "Zone 2",
+            "Kategorie": "Glasbruch",
+            "Meldertyp": "Glasbruchsensor (piezoelektrisch)",
+            "Unterkategorie": "Direkt auf Scheibe",
+            "Detektionsprinzip": "Vibration + Akustik auf Glas",
+            "Erfassungsbereich": "Pro Scheibe",
+            "VdS-Norm": "VdS 2332",
+            "DIN/EN-Norm": "EN 50131-2-7-3",
+            "Einsatzbereich": "Schaufenster, Vitrinen",
+            "Hersteller": "Bosch, Honeywell",
+            "Sicherungsklasse": "SÜ 3-5",
+            "Richtpreis (€)": "20 – 60"
+          }
+        ]
+      },
+      {
+        "title": "💥 ERSCHÜTTERUNGSMELDER & KÖRPERSCHALLMELDER",
+        "header": [
+          "Nr.",
+          "Zone",
+          "Kategorie",
+          "Meldertyp",
+          "Unterkategorie",
+          "Detektionsprinzip",
+          "Erfassungsbereich",
+          "VdS-Norm",
+          "DIN/EN-Norm",
+          "Einsatzbereich",
+          "Hersteller",
+          "Sicherungsklasse",
+          "Richtpreis (€)"
+        ],
+        "rows": [
+          {
+            "Nr.": "20",
+            "Zone": "Zone 2-4",
+            "Kategorie": "Erschütterung",
+            "Meldertyp": "Piezo-Erschütterungsmelder",
+            "Unterkategorie": "Standard Piezo",
+            "Detektionsprinzip": "Vibration/Schock (Piezo-Element)",
+            "Erfassungsbereich": "2m Radius pro Wand",
+            "VdS-Norm": "VdS 2480",
+            "DIN/EN-Norm": "EN 50131-2-8",
+            "Einsatzbereich": "Wände, Türen, Tresore",
+            "Hersteller": "Honeywell, Telenot",
+            "Sicherungsklasse": "SÜ 3-5",
+            "Richtpreis (€)": "25 – 70"
+          },
+          {
+            "Nr.": "21",
+            "Zone": "Zone 4",
+            "Kategorie": "Erschütterung",
+            "Meldertyp": "MEMS-Erschütterungsmelder",
+            "Unterkategorie": "Hochempfindlich",
+            "Detektionsprinzip": "MEMS-Beschleunigungssensor",
+            "Erfassungsbereich": "Pro Objekt",
+            "VdS-Norm": "VdS 2480",
+            "DIN/EN-Norm": "EN 50131-2-8",
+            "Einsatzbereich": "Tresore, Wertbehältnisse",
+            "Hersteller": "Bosch, Sicurit",
+            "Sicherungsklasse": "SÜ 4-6",
+            "Richtpreis (€)": "50 – 150"
+          },
+          {
+            "Nr.": "22",
+            "Zone": "Zone 4",
+            "Kategorie": "Erschütterung",
+            "Meldertyp": "Körperschallmelder",
+            "Unterkategorie": "Tresor-Spezial",
+            "Detektionsprinzip": "Körperschall (Bohr-/Schneidgeräusche)",
+            "Erfassungsbereich": "Pro Tresor/Safe",
+            "VdS-Norm": "VdS 2480",
+            "DIN/EN-Norm": "EN 50131-2-8",
+            "Einsatzbereich": "Tresore, Panzerschränke",
+            "Hersteller": "Telenot, Honeywell",
+            "Sicherungsklasse": "SÜ 5-6",
+            "Richtpreis (€)": "60 – 200"
+          }
+        ]
+      },
+      {
+        "title": "🔬 SPEZIALMELDER",
+        "header": [
+          "Nr.",
+          "Zone",
+          "Kategorie",
+          "Meldertyp",
+          "Unterkategorie",
+          "Detektionsprinzip",
+          "Erfassungsbereich",
+          "VdS-Norm",
+          "DIN/EN-Norm",
+          "Einsatzbereich",
+          "Hersteller",
+          "Sicherungsklasse",
+          "Richtpreis (€)"
+        ],
+        "rows": [
+          {
+            "Nr.": "23",
+            "Zone": "Zone 4",
+            "Kategorie": "Spezial",
+            "Meldertyp": "Kapazitiver Feldmelder",
+            "Unterkategorie": "Annäherung",
+            "Detektionsprinzip": "Kapazitives Feld (Näherung)",
+            "Erfassungsbereich": "0,5m Abstand",
+            "VdS-Norm": "—",
+            "DIN/EN-Norm": "EN 50131-2-9",
+            "Einsatzbereich": "Tresore, Kunstobjekte",
+            "Hersteller": "Telenot, Bosch",
+            "Sicherungsklasse": "SÜ 5-6",
+            "Richtpreis (€)": "100 – 350"
+          },
+          {
+            "Nr.": "24",
+            "Zone": "Zone 3",
+            "Kategorie": "Spezial",
+            "Meldertyp": "IR-Lichtschranke (innen)",
+            "Unterkategorie": "Barriere",
+            "Detektionsprinzip": "IR-Strahl-Unterbrechung",
+            "Erfassungsbereich": "5–100m",
+            "VdS-Norm": "VdS 2358",
+            "DIN/EN-Norm": "EN 50131-2-5",
+            "Einsatzbereich": "Flure, Museen",
+            "Hersteller": "Optex, Bosch, Sick",
+            "Sicherungsklasse": "SÜ 3-5",
+            "Richtpreis (€)": "80 – 400"
+          },
+          {
+            "Nr.": "25",
+            "Zone": "Zone 3",
+            "Kategorie": "Spezial",
+            "Meldertyp": "Ultraschallmelder",
+            "Unterkategorie": "Raumvolumen",
+            "Detektionsprinzip": "Ultraschall (Doppler)",
+            "Erfassungsbereich": "10×10m",
+            "VdS-Norm": "—",
+            "DIN/EN-Norm": "EN 50131-2-1",
+            "Einsatzbereich": "Geschlossene Räume",
+            "Hersteller": "Honeywell, Bosch",
+            "Sicherungsklasse": "SÜ 3-4",
+            "Richtpreis (€)": "50 – 150"
+          },
+          {
+            "Nr.": "26",
+            "Zone": "Zone 3-4",
+            "Kategorie": "Spezial",
+            "Meldertyp": "Druckmatte / Trittmelder",
+            "Unterkategorie": "Boden",
+            "Detektionsprinzip": "Druckschalter unter Belag",
+            "Erfassungsbereich": "1-2 m² pro Matte",
+            "VdS-Norm": "—",
+            "DIN/EN-Norm": "EN 50131-2-6",
+            "Einsatzbereich": "Eingänge, Vitrinen",
+            "Hersteller": "Bircher, EOS, Mayser",
+            "Sicherungsklasse": "SÜ 4-6",
+            "Richtpreis (€)": "80 – 250"
+          },
+          {
+            "Nr.": "27",
+            "Zone": "Zone 4",
+            "Kategorie": "Spezial",
+            "Meldertyp": "Seismischer Sensor",
+            "Unterkategorie": "Tresor",
+            "Detektionsprinzip": "Seismische Vibration",
+            "Erfassungsbereich": "Pro Tresorwand",
+            "VdS-Norm": "—",
+            "DIN/EN-Norm": "EN 50131-2-8",
+            "Einsatzbereich": "Tresore, Tresorräume",
+            "Hersteller": "Sicurit, Telenot",
+            "Sicherungsklasse": "SÜ 5-6",
+            "Richtpreis (€)": "150 – 500"
+          },
+          {
+            "Nr.": "28",
+            "Zone": "Zone 4",
+            "Kategorie": "Spezial",
+            "Meldertyp": "Neigungssensor",
+            "Unterkategorie": "Lageüberwachung",
+            "Detektionsprinzip": "Gyrosensor / Neigung",
+            "Erfassungsbereich": "Pro Objekt",
+            "VdS-Norm": "—",
+            "DIN/EN-Norm": "—",
+            "Einsatzbereich": "Tresore, Geldautomaten",
+            "Hersteller": "Telenot, Honeywell",
+            "Sicherungsklasse": "SÜ 3-5",
+            "Richtpreis (€)": "30 – 100"
+          },
+          {
+            "Nr.": "29",
+            "Zone": "Zone 3",
+            "Kategorie": "Spezial",
+            "Meldertyp": "Wassermelder",
+            "Unterkategorie": "Leckage",
+            "Detektionsprinzip": "Leitfähigkeit / Feuchtigkeit",
+            "Erfassungsbereich": "Bodenkontakt",
+            "VdS-Norm": "—",
+            "DIN/EN-Norm": "—",
+            "Einsatzbereich": "Serverräume, Keller",
+            "Hersteller": "Honeywell, Telenot",
+            "Sicherungsklasse": "SÜ 2-4",
+            "Richtpreis (€)": "20 – 80"
+          },
+          {
+            "Nr.": "30",
+            "Zone": "Zone 3",
+            "Kategorie": "Spezial",
+            "Meldertyp": "Gasmelder (CO/CH4/LPG)",
+            "Unterkategorie": "Gaswarnung",
+            "Detektionsprinzip": "Katalytisch/Elektrochemisch",
+            "Erfassungsbereich": "Raum",
+            "VdS-Norm": "—",
+            "DIN/EN-Norm": "DIN EN 50194",
+            "Einsatzbereich": "Heizungsräume, Küchen",
+            "Hersteller": "Honeywell, Bosch",
+            "Sicherungsklasse": "SÜ 1-3",
+            "Richtpreis (€)": "30 – 120"
+          }
+        ]
+      },
+      {
+        "title": "🔥 BRANDMELDER (DIN EN 54 / DIN 14675)",
+        "header": [
+          "Nr.",
+          "Zone",
+          "Kategorie",
+          "Meldertyp",
+          "Unterkategorie",
+          "Detektionsprinzip",
+          "Erfassungsbereich",
+          "VdS-Norm",
+          "DIN/EN-Norm",
+          "Einsatzbereich",
+          "Hersteller",
+          "Sicherungsklasse",
+          "Richtpreis (€)"
+        ],
+        "rows": [
+          {
+            "Nr.": "31",
+            "Zone": "Zone 3",
+            "Kategorie": "Brand",
+            "Meldertyp": "Optischer Rauchmelder (punktf.)",
+            "Unterkategorie": "Standard",
+            "Detektionsprinzip": "Streulicht (Tyndall-Effekt)",
+            "Erfassungsbereich": "60-80m²",
+            "VdS-Norm": "—",
+            "DIN/EN-Norm": "DIN EN 54-7, VDE 0833-2",
+            "Einsatzbereich": "Büros, Wohnräume",
+            "Hersteller": "Siemens, Bosch, Hekatron",
+            "Sicherungsklasse": "Alle",
+            "Richtpreis (€)": "20 – 80"
+          },
+          {
+            "Nr.": "32",
+            "Zone": "Zone 3",
+            "Kategorie": "Brand",
+            "Meldertyp": "Thermischer Melder (Wärme)",
+            "Unterkategorie": "Max/Differential",
+            "Detektionsprinzip": "Temperaturanstieg >54°C",
+            "Erfassungsbereich": "30-40m²",
+            "VdS-Norm": "—",
+            "DIN/EN-Norm": "DIN EN 54-5",
+            "Einsatzbereich": "Küchen, Garagen",
+            "Hersteller": "Siemens, Bosch, Hekatron",
+            "Sicherungsklasse": "Alle",
+            "Richtpreis (€)": "25 – 90"
+          },
+          {
+            "Nr.": "33",
+            "Zone": "Zone 3",
+            "Kategorie": "Brand",
+            "Meldertyp": "Multisensormelder",
+            "Unterkategorie": "Rauch+Wärme",
+            "Detektionsprinzip": "Streulicht + Thermisch",
+            "Erfassungsbereich": "60-80m²",
+            "VdS-Norm": "—",
+            "DIN/EN-Norm": "DIN EN 54-29",
+            "Einsatzbereich": "Universell",
+            "Hersteller": "Siemens, Hekatron, Esser",
+            "Sicherungsklasse": "Alle",
+            "Richtpreis (€)": "50 – 150"
+          },
+          {
+            "Nr.": "34",
+            "Zone": "Zone 3",
+            "Kategorie": "Brand",
+            "Meldertyp": "Linienförmiger Rauchmelder",
+            "Unterkategorie": "Durchlicht",
+            "Detektionsprinzip": "IR-Lichtstrahl über Distanz",
+            "Erfassungsbereich": "Bis 100m",
+            "VdS-Norm": "—",
+            "DIN/EN-Norm": "DIN EN 54-12",
+            "Einsatzbereich": "Hallen, Atrien, Kirchen",
+            "Hersteller": "Bosch, Siemens, Securiton",
+            "Sicherungsklasse": "Alle",
+            "Richtpreis (€)": "500 – 2.000"
+          },
+          {
+            "Nr.": "35",
+            "Zone": "Zone 3-4",
+            "Kategorie": "Brand",
+            "Meldertyp": "Ansaugrauchmelder (ASD)",
+            "Unterkategorie": "Hochempfindlich",
+            "Detektionsprinzip": "Aktive Ansaugung + Laser",
+            "Erfassungsbereich": "Bis 2.000m²",
+            "VdS-Norm": "—",
+            "DIN/EN-Norm": "DIN EN 54-20",
+            "Einsatzbereich": "Server, Archive, Museen",
+            "Hersteller": "Wagner, Securiton, Xtralis",
+            "Sicherungsklasse": "SÜ 3-6",
+            "Richtpreis (€)": "1.500 – 5.000"
+          },
+          {
+            "Nr.": "36",
+            "Zone": "Zone 1",
+            "Kategorie": "Brand",
+            "Meldertyp": "Flammenmelder (IR/UV)",
+            "Unterkategorie": "Flamme",
+            "Detektionsprinzip": "UV-/IR-Strahlung",
+            "Erfassungsbereich": "10–30m",
+            "VdS-Norm": "—",
+            "DIN/EN-Norm": "DIN EN 54-10",
+            "Einsatzbereich": "Industrie, Tankstellen",
+            "Hersteller": "Siemens, Det-Tronics",
+            "Sicherungsklasse": "SÜ 3-5",
+            "Richtpreis (€)": "300 – 1.500"
+          },
+          {
+            "Nr.": "37",
+            "Zone": "Alle",
+            "Kategorie": "Brand",
+            "Meldertyp": "Handfeuermelder (Druckknopf)",
+            "Unterkategorie": "Manuell",
+            "Detektionsprinzip": "Manuelle Auslösung",
+            "Erfassungsbereich": "—",
+            "VdS-Norm": "—",
+            "DIN/EN-Norm": "DIN EN 54-11",
+            "Einsatzbereich": "Fluchtwege (Pflicht!)",
+            "Hersteller": "Siemens, Bosch, Hekatron",
+            "Sicherungsklasse": "Alle",
+            "Richtpreis (€)": "15 – 50"
+          },
+          {
+            "Nr.": "38",
+            "Zone": "Zone 3",
+            "Kategorie": "Brand",
+            "Meldertyp": "Lineare Wärmedetektion (LHD)",
+            "Unterkategorie": "Sensorkabel",
+            "Detektionsprinzip": "Wärmeleitung im Kabel",
+            "Erfassungsbereich": "Bis 2km Kabel",
+            "VdS-Norm": "—",
+            "DIN/EN-Norm": "DIN EN 54-22",
+            "Einsatzbereich": "Tunnel, Kabeltrassen",
+            "Hersteller": "Kidde, Protectowire",
+            "Sicherungsklasse": "SÜ 3-5",
+            "Richtpreis (€)": "15 – 40 €/m"
+          }
+        ]
+      }
+    ]
+  },
+  "ema_zka": {
+    "intro": [
+      "EMA & ZUTRITTSKONTROLLE – Zentralen, Signalgeber, Übertragung, NSL, ZKA",
+      "Übergeordnete Systeme: Alarmierung, Weiterleitung, Zugangssteuerung",
+      "⚡ EMA-ZENTRALEN"
+    ],
+    "tables": [
+      {
+        "title": "⚡ EMA-ZENTRALEN",
+        "header": [
+          "Nr.",
+          "Kategorie",
+          "Komponente",
+          "Beschreibung",
+          "VdS-Klasse / Grad",
+          "Norm",
+          "Hersteller",
+          "Draht/Funk",
+          "Kapazität",
+          "Sicherungsklasse",
+          "Richtpreis (€)"
+        ],
+        "rows": [
+          {
+            "Nr.": "1",
+            "Kategorie": "Zentrale",
+            "Komponente": "Kleine EMA (8 Zonen)",
+            "Beschreibung": "Kompaktzentrale kleine Objekte",
+            "VdS-Klasse / Grad": "Grad 2 / Kl. A",
+            "Norm": "VdS 2311, EN 50131-1",
+            "Hersteller": "Telenot, Honeywell, Bosch",
+            "Draht/Funk": "Draht",
+            "Kapazität": "8 Zonen, 4 Bereiche",
+            "Sicherungsklasse": "SÜ 1-2",
+            "Richtpreis (€)": "400 – 800"
+          },
+          {
+            "Nr.": "2",
+            "Kategorie": "Zentrale",
+            "Komponente": "Mittlere EMA (32 Zonen)",
+            "Beschreibung": "BUS-System mittlere Objekte",
+            "VdS-Klasse / Grad": "Grad 2-3 / Kl. B",
+            "Norm": "VdS 2311, EN 50131-1",
+            "Hersteller": "Telenot, Honeywell, Bosch",
+            "Draht/Funk": "Draht/Hybrid",
+            "Kapazität": "32 Zonen, 8 Bereiche",
+            "Sicherungsklasse": "SÜ 2-3",
+            "Richtpreis (€)": "800 – 2.500"
+          },
+          {
+            "Nr.": "3",
+            "Kategorie": "Zentrale",
+            "Komponente": "Große EMA (128+ Zonen)",
+            "Beschreibung": "Hochleistungs-BUS-Zentrale",
+            "VdS-Klasse / Grad": "Grad 3-4 / Kl. C",
+            "Norm": "VdS 2311, EN 50131-1",
+            "Hersteller": "Telenot, Honeywell, Bosch",
+            "Draht/Funk": "Draht/BUS",
+            "Kapazität": "128+ Zonen, 32 Bereiche",
+            "Sicherungsklasse": "SÜ 4-6",
+            "Richtpreis (€)": "2.500 – 8.000"
+          },
+          {
+            "Nr.": "4",
+            "Kategorie": "Zentrale",
+            "Komponente": "Funk-Alarmzentrale (64 Zonen)",
+            "Beschreibung": "Funkbasiert 868 MHz",
+            "VdS-Klasse / Grad": "Grad 2 / Kl. A-B",
+            "Norm": "VdS 2311, EN 50131-5-3",
+            "Hersteller": "Ajax, Daitem, Telenot",
+            "Draht/Funk": "Funk (868 MHz)",
+            "Kapazität": "64 Funk-Zonen",
+            "Sicherungsklasse": "SÜ 1-3",
+            "Richtpreis (€)": "600 – 2.000"
+          },
+          {
+            "Nr.": "5",
+            "Kategorie": "Bedienteil",
+            "Komponente": "LED-Bedienteil",
+            "Beschreibung": "Einfache Status-LEDs",
+            "VdS-Klasse / Grad": "Grad 2",
+            "Norm": "VdS 2311",
+            "Hersteller": "Telenot, Honeywell",
+            "Draht/Funk": "Draht/BUS",
+            "Kapazität": "—",
+            "Sicherungsklasse": "SÜ 1-3",
+            "Richtpreis (€)": "80 – 200"
+          },
+          {
+            "Nr.": "6",
+            "Kategorie": "Bedienteil",
+            "Komponente": "LCD/Touch-Bedienteil",
+            "Beschreibung": "Grafikdisplay mit Touchscreen",
+            "VdS-Klasse / Grad": "Grad 2-3",
+            "Norm": "VdS 2311",
+            "Hersteller": "Telenot, Bosch",
+            "Draht/Funk": "Draht/BUS",
+            "Kapazität": "—",
+            "Sicherungsklasse": "SÜ 2-4",
+            "Richtpreis (€)": "150 – 500"
+          },
+          {
+            "Nr.": "7",
+            "Kategorie": "Schalteinrichtung",
+            "Komponente": "Blockschloss (elektr.)",
+            "Beschreibung": "VdS-konformer Schlüsselschalter",
+            "VdS-Klasse / Grad": "Grad 2-4",
+            "Norm": "VdS 2227, VdS 2120",
+            "Hersteller": "Telenot, IKON, BKS",
+            "Draht/Funk": "Draht",
+            "Kapazität": "—",
+            "Sicherungsklasse": "SÜ 3-6",
+            "Richtpreis (€)": "200 – 600"
+          },
+          {
+            "Nr.": "8",
+            "Kategorie": "Schalteinrichtung",
+            "Komponente": "Codeschloss / Keypad",
+            "Beschreibung": "PIN-Eingabe Scharf/Unscharf",
+            "VdS-Klasse / Grad": "Grad 2-3",
+            "Norm": "VdS 2311",
+            "Hersteller": "Telenot, Honeywell",
+            "Draht/Funk": "Draht/BUS",
+            "Kapazität": "—",
+            "Sicherungsklasse": "SÜ 2-4",
+            "Richtpreis (€)": "100 – 300"
+          },
+          {
+            "Nr.": "9",
+            "Kategorie": "Signalgeber",
+            "Komponente": "Innensirene",
+            "Beschreibung": "Akustischer Alarm 110dB",
+            "VdS-Klasse / Grad": "Grad 2",
+            "Norm": "EN 50131-4",
+            "Hersteller": "Telenot, Honeywell, ABUS",
+            "Draht/Funk": "Draht/Funk",
+            "Kapazität": "110 dB",
+            "Sicherungsklasse": "SÜ 1-3",
+            "Richtpreis (€)": "30 – 100"
+          },
+          {
+            "Nr.": "10",
+            "Kategorie": "Signalgeber",
+            "Komponente": "Außensirene + Blitz",
+            "Beschreibung": "Akustisch + LED-Blitz, Sabotage-Schutz",
+            "VdS-Klasse / Grad": "Grad 2-3",
+            "Norm": "EN 50131-4, VdS 2227",
+            "Hersteller": "Telenot, Honeywell",
+            "Draht/Funk": "Draht/Funk",
+            "Kapazität": "110+ dB",
+            "Sicherungsklasse": "SÜ 2-5",
+            "Richtpreis (€)": "80 – 300"
+          },
+          {
+            "Nr.": "11",
+            "Kategorie": "Übertragung",
+            "Komponente": "IP-Alarmübertragungsgerät",
+            "Beschreibung": "Aufschaltung via Ethernet",
+            "VdS-Klasse / Grad": "Grad 2-4",
+            "Norm": "VdS 2463",
+            "Hersteller": "Telenot, TAS, Bosch",
+            "Draht/Funk": "IP/Ethernet",
+            "Kapazität": "—",
+            "Sicherungsklasse": "SÜ 2-5",
+            "Richtpreis (€)": "300 – 800"
+          },
+          {
+            "Nr.": "12",
+            "Kategorie": "Übertragung",
+            "Komponente": "GSM/LTE-Übertragungsgerät",
+            "Beschreibung": "Mobilfunk-Backup 4G/5G",
+            "VdS-Klasse / Grad": "Grad 2-4",
+            "Norm": "VdS 2463",
+            "Hersteller": "Telenot, TAS, Bosch",
+            "Draht/Funk": "GSM/4G/5G",
+            "Kapazität": "—",
+            "Sicherungsklasse": "SÜ 2-5",
+            "Richtpreis (€)": "200 – 600"
+          },
+          {
+            "Nr.": "13",
+            "Kategorie": "Übertragung",
+            "Komponente": "Dual-Path (IP + GSM)",
+            "Beschreibung": "Redundante Doppel-Übertragung",
+            "VdS-Klasse / Grad": "Grad 3-4",
+            "Norm": "VdS 2463",
+            "Hersteller": "Telenot, TAS",
+            "Draht/Funk": "IP + GSM",
+            "Kapazität": "—",
+            "Sicherungsklasse": "SÜ 4-6",
+            "Richtpreis (€)": "400 – 1.200"
+          },
+          {
+            "Nr.": "14",
+            "Kategorie": "NSL",
+            "Komponente": "NSL-Aufschaltung Klasse A",
+            "Beschreibung": "Privatobjekte, Alarmweiterleitung",
+            "VdS-Klasse / Grad": "VdS Kl. A",
+            "Norm": "VdS 3138, VdS 2311",
+            "Hersteller": "Securitas, Bosch, Kötter",
+            "Draht/Funk": "—",
+            "Kapazität": "—",
+            "Sicherungsklasse": "SÜ 1-2",
+            "Richtpreis (€)": "20 – 40/Monat"
+          },
+          {
+            "Nr.": "15",
+            "Kategorie": "NSL",
+            "Komponente": "NSL-Aufschaltung Klasse B",
+            "Beschreibung": "Gewerbeobjekte",
+            "VdS-Klasse / Grad": "VdS Kl. B",
+            "Norm": "VdS 3138, VdS 2311",
+            "Hersteller": "Securitas, Bosch, Kötter",
+            "Draht/Funk": "—",
+            "Kapazität": "—",
+            "Sicherungsklasse": "SÜ 3-4",
+            "Richtpreis (€)": "40 – 80/Monat"
+          },
+          {
+            "Nr.": "16",
+            "Kategorie": "NSL",
+            "Komponente": "NSL-Aufschaltung Klasse C",
+            "Beschreibung": "Hochsicherheit, Dual-Path",
+            "VdS-Klasse / Grad": "VdS Kl. C",
+            "Norm": "VdS 3138, VdS 2311",
+            "Hersteller": "Securitas, Bosch, Kötter",
+            "Draht/Funk": "—",
+            "Kapazität": "—",
+            "Sicherungsklasse": "SÜ 5-6",
+            "Richtpreis (€)": "80 – 150/Monat"
+          },
+          {
+            "Nr.": "17",
+            "Kategorie": "NSL",
+            "Komponente": "Interventionsdienst",
+            "Beschreibung": "Alarmverfolgung mit Anfahrt",
+            "VdS-Klasse / Grad": "—",
+            "Norm": "VdS 2172",
+            "Hersteller": "Securitas, Kötter, WWD",
+            "Draht/Funk": "—",
+            "Kapazität": "—",
+            "Sicherungsklasse": "SÜ 2-6",
+            "Richtpreis (€)": "50 – 200/Einsatz"
+          },
+          {
+            "Nr.": "18",
+            "Kategorie": "ZKA",
+            "Komponente": "RFID-Kartenleser",
+            "Beschreibung": "Zutrittskontrolle mit Karte/Chip",
+            "VdS-Klasse / Grad": "—",
+            "Norm": "EN 60839-11-1",
+            "Hersteller": "Nedap, dormakaba, ASSA",
+            "Draht/Funk": "Draht/IP",
+            "Kapazität": "—",
+            "Sicherungsklasse": "SÜ 2-4",
+            "Richtpreis (€)": "150 – 600"
+          },
+          {
+            "Nr.": "19",
+            "Kategorie": "ZKA",
+            "Komponente": "Biometrie-Leser (Fingerprint)",
+            "Beschreibung": "Fingerabdruck-Zutrittskontrolle",
+            "VdS-Klasse / Grad": "—",
+            "Norm": "EN 60839-11-1",
+            "Hersteller": "ekey, dormakaba, HID",
+            "Draht/Funk": "Draht/IP",
+            "Kapazität": "—",
+            "Sicherungsklasse": "SÜ 3-5",
+            "Richtpreis (€)": "400 – 1.500"
+          },
+          {
+            "Nr.": "20",
+            "Kategorie": "ZKA",
+            "Komponente": "Biometrie-Leser (Iris/Gesicht)",
+            "Beschreibung": "Iris- oder Gesichtserkennung",
+            "VdS-Klasse / Grad": "—",
+            "Norm": "EN 60839-11-1",
+            "Hersteller": "IrisID, NEC, Suprema",
+            "Draht/Funk": "IP",
+            "Kapazität": "—",
+            "Sicherungsklasse": "SÜ 5-6",
+            "Richtpreis (€)": "1.500 – 5.000"
+          },
+          {
+            "Nr.": "21",
+            "Kategorie": "ZKA",
+            "Komponente": "ZK-Zentrale / Controller",
+            "Beschreibung": "Verwaltung Zutrittsprofile, Zeitfenster",
+            "VdS-Klasse / Grad": "—",
+            "Norm": "EN 60839-11-1",
+            "Hersteller": "Nedap, dormakaba",
+            "Draht/Funk": "IP/BUS",
+            "Kapazität": "2-32 Türen",
+            "Sicherungsklasse": "SÜ 2-5",
+            "Richtpreis (€)": "500 – 3.000"
+          }
+        ]
+      }
+    ]
+  },
+  "preisliste": {
+    "intro": [
+      "PREISLISTE SICHERHEITSTECHNIK – Alle Komponenten mit Richtpreisen"
+    ],
+    "header": [
+      "Nr.",
+      "Bereich",
+      "Kategorie",
+      "Produkt",
+      "Einheit",
+      "Preis von (€)",
+      "Preis bis (€)",
+      "Sicherungsklasse",
+      "Bemerkung"
+    ],
+    "rows": [
+      {
+        "Nr.": "1",
+        "Bereich": "Melder",
+        "Kategorie": "Bewegung",
+        "Produkt": "PIR-Melder Standard",
+        "Einheit": "Stk",
+        "Preis von (€)": "25",
+        "Preis bis (€)": "80",
+        "Sicherungsklasse": "SÜ 1-3",
+        "Bemerkung": "VdS Grad 2"
+      },
+      {
+        "Nr.": "2",
+        "Bereich": "Melder",
+        "Kategorie": "Bewegung",
+        "Produkt": "Dualmelder PIR+MW",
+        "Einheit": "Stk",
+        "Preis von (€)": "60",
+        "Preis bis (€)": "180",
+        "Sicherungsklasse": "SÜ 3-5",
+        "Bemerkung": "Weniger Fehlalarme"
+      },
+      {
+        "Nr.": "3",
+        "Bereich": "Melder",
+        "Kategorie": "Bewegung",
+        "Produkt": "Außen-PIR IP65",
+        "Einheit": "Stk",
+        "Preis von (€)": "80",
+        "Preis bis (€)": "250",
+        "Sicherungsklasse": "SÜ 2-4",
+        "Bemerkung": "Wetterfest"
+      },
+      {
+        "Nr.": "4",
+        "Bereich": "Melder",
+        "Kategorie": "Bewegung",
+        "Produkt": "Außen-Dual IP65",
+        "Einheit": "Stk",
+        "Preis von (€)": "120",
+        "Preis bis (€)": "350",
+        "Sicherungsklasse": "SÜ 4-6",
+        "Bemerkung": "Hochsicherheit"
+      },
+      {
+        "Nr.": "5",
+        "Bereich": "Melder",
+        "Kategorie": "Öffnung",
+        "Produkt": "Magnetkontakt AP",
+        "Einheit": "Stk",
+        "Preis von (€)": "8",
+        "Preis bis (€)": "25",
+        "Sicherungsklasse": "SÜ 1-3",
+        "Bemerkung": "Standard"
+      },
+      {
+        "Nr.": "6",
+        "Bereich": "Melder",
+        "Kategorie": "Öffnung",
+        "Produkt": "Magnetkontakt UP",
+        "Einheit": "Stk",
+        "Preis von (€)": "12",
+        "Preis bis (€)": "40",
+        "Sicherungsklasse": "SÜ 2-4",
+        "Bemerkung": "Verdeckt"
+      },
+      {
+        "Nr.": "7",
+        "Bereich": "Melder",
+        "Kategorie": "Öffnung",
+        "Produkt": "Schließblechkontakt",
+        "Einheit": "Stk",
+        "Preis von (€)": "35",
+        "Preis bis (€)": "90",
+        "Sicherungsklasse": "SÜ 3-5",
+        "Bemerkung": "VdS 2269"
+      },
+      {
+        "Nr.": "8",
+        "Bereich": "Melder",
+        "Kategorie": "Glasbruch",
+        "Produkt": "Passiv akustisch",
+        "Einheit": "Stk",
+        "Preis von (€)": "30",
+        "Preis bis (€)": "80",
+        "Sicherungsklasse": "SÜ 2-4",
+        "Bemerkung": "Raum 6m"
+      },
+      {
+        "Nr.": "9",
+        "Bereich": "Melder",
+        "Kategorie": "Glasbruch",
+        "Produkt": "Aktiv Folie",
+        "Einheit": "Stk",
+        "Preis von (€)": "15",
+        "Preis bis (€)": "50",
+        "Sicherungsklasse": "SÜ 2-4",
+        "Bemerkung": "Pro Scheibe"
+      },
+      {
+        "Nr.": "10",
+        "Bereich": "Melder",
+        "Kategorie": "Erschütterung",
+        "Produkt": "Piezo-Melder",
+        "Einheit": "Stk",
+        "Preis von (€)": "25",
+        "Preis bis (€)": "70",
+        "Sicherungsklasse": "SÜ 3-5",
+        "Bemerkung": "Wände/Türen"
+      },
+      {
+        "Nr.": "11",
+        "Bereich": "Melder",
+        "Kategorie": "Erschütterung",
+        "Produkt": "Körperschallmelder",
+        "Einheit": "Stk",
+        "Preis von (€)": "60",
+        "Preis bis (€)": "200",
+        "Sicherungsklasse": "SÜ 5-6",
+        "Bemerkung": "Tresore"
+      },
+      {
+        "Nr.": "12",
+        "Bereich": "Melder",
+        "Kategorie": "Spezial",
+        "Produkt": "Kapazitiver Feldmelder",
+        "Einheit": "Stk",
+        "Preis von (€)": "100",
+        "Preis bis (€)": "350",
+        "Sicherungsklasse": "SÜ 5-6",
+        "Bemerkung": "Annäherung"
+      },
+      {
+        "Nr.": "13",
+        "Bereich": "Melder",
+        "Kategorie": "Spezial",
+        "Produkt": "IR-Lichtschranke innen",
+        "Einheit": "Paar",
+        "Preis von (€)": "80",
+        "Preis bis (€)": "400",
+        "Sicherungsklasse": "SÜ 3-5",
+        "Bemerkung": "5-100m"
+      },
+      {
+        "Nr.": "14",
+        "Bereich": "Melder",
+        "Kategorie": "Spezial",
+        "Produkt": "Druckmatte",
+        "Einheit": "Stk",
+        "Preis von (€)": "80",
+        "Preis bis (€)": "250",
+        "Sicherungsklasse": "SÜ 4-6",
+        "Bemerkung": "Boden"
+      },
+      {
+        "Nr.": "15",
+        "Bereich": "Brand",
+        "Kategorie": "Rauch",
+        "Produkt": "Optischer Rauchmelder",
+        "Einheit": "Stk",
+        "Preis von (€)": "20",
+        "Preis bis (€)": "80",
+        "Sicherungsklasse": "Alle",
+        "Bemerkung": "Standard"
+      },
+      {
+        "Nr.": "16",
+        "Bereich": "Brand",
+        "Kategorie": "Wärme",
+        "Produkt": "Thermischer Melder",
+        "Einheit": "Stk",
+        "Preis von (€)": "25",
+        "Preis bis (€)": "90",
+        "Sicherungsklasse": "Alle",
+        "Bemerkung": "Küchen"
+      },
+      {
+        "Nr.": "17",
+        "Bereich": "Brand",
+        "Kategorie": "Multi",
+        "Produkt": "Multisensormelder",
+        "Einheit": "Stk",
+        "Preis von (€)": "50",
+        "Preis bis (€)": "150",
+        "Sicherungsklasse": "Alle",
+        "Bemerkung": "Universal"
+      },
+      {
+        "Nr.": "18",
+        "Bereich": "Brand",
+        "Kategorie": "ASD",
+        "Produkt": "Ansaugrauchmelder",
+        "Einheit": "System",
+        "Preis von (€)": "1500",
+        "Preis bis (€)": "5000",
+        "Sicherungsklasse": "SÜ 3-6",
+        "Bemerkung": "Server"
+      },
+      {
+        "Nr.": "19",
+        "Bereich": "Brand",
+        "Kategorie": "Flamme",
+        "Produkt": "Flammenmelder IR/UV",
+        "Einheit": "Stk",
+        "Preis von (€)": "300",
+        "Preis bis (€)": "1500",
+        "Sicherungsklasse": "SÜ 3-5",
+        "Bemerkung": "Industrie"
+      },
+      {
+        "Nr.": "20",
+        "Bereich": "EMA",
+        "Kategorie": "Zentrale",
+        "Produkt": "Kleine EMA 8 Zonen",
+        "Einheit": "Stk",
+        "Preis von (€)": "400",
+        "Preis bis (€)": "800",
+        "Sicherungsklasse": "SÜ 1-2",
+        "Bemerkung": "Grad 2"
+      },
+      {
+        "Nr.": "21",
+        "Bereich": "EMA",
+        "Kategorie": "Zentrale",
+        "Produkt": "Mittlere EMA 32 Zonen",
+        "Einheit": "Stk",
+        "Preis von (€)": "800",
+        "Preis bis (€)": "2500",
+        "Sicherungsklasse": "SÜ 2-3",
+        "Bemerkung": "Grad 2-3"
+      },
+      {
+        "Nr.": "22",
+        "Bereich": "EMA",
+        "Kategorie": "Zentrale",
+        "Produkt": "Große EMA 128+ Zonen",
+        "Einheit": "Stk",
+        "Preis von (€)": "2500",
+        "Preis bis (€)": "8000",
+        "Sicherungsklasse": "SÜ 4-6",
+        "Bemerkung": "Grad 3-4"
+      },
+      {
+        "Nr.": "23",
+        "Bereich": "EMA",
+        "Kategorie": "Zentrale",
+        "Produkt": "Funk-Alarmzentrale",
+        "Einheit": "Stk",
+        "Preis von (€)": "600",
+        "Preis bis (€)": "2000",
+        "Sicherungsklasse": "SÜ 1-3",
+        "Bemerkung": "Nachrüstung"
+      },
+      {
+        "Nr.": "24",
+        "Bereich": "EMA",
+        "Kategorie": "Signal",
+        "Produkt": "Innensirene",
+        "Einheit": "Stk",
+        "Preis von (€)": "30",
+        "Preis bis (€)": "100",
+        "Sicherungsklasse": "SÜ 1-3",
+        "Bemerkung": "110dB"
+      },
+      {
+        "Nr.": "25",
+        "Bereich": "EMA",
+        "Kategorie": "Signal",
+        "Produkt": "Außensirene + Blitz",
+        "Einheit": "Stk",
+        "Preis von (€)": "80",
+        "Preis bis (€)": "300",
+        "Sicherungsklasse": "SÜ 2-5",
+        "Bemerkung": "110+ dB"
+      },
+      {
+        "Nr.": "26",
+        "Bereich": "EMA",
+        "Kategorie": "AÜA",
+        "Produkt": "IP-Übertragung",
+        "Einheit": "Stk",
+        "Preis von (€)": "300",
+        "Preis bis (€)": "800",
+        "Sicherungsklasse": "SÜ 2-5",
+        "Bemerkung": "NSL"
+      },
+      {
+        "Nr.": "27",
+        "Bereich": "EMA",
+        "Kategorie": "AÜA",
+        "Produkt": "GSM/LTE-Übertragung",
+        "Einheit": "Stk",
+        "Preis von (€)": "200",
+        "Preis bis (€)": "600",
+        "Sicherungsklasse": "SÜ 2-5",
+        "Bemerkung": "Backup"
+      },
+      {
+        "Nr.": "28",
+        "Bereich": "EMA",
+        "Kategorie": "AÜA",
+        "Produkt": "Dual-Path IP+GSM",
+        "Einheit": "Stk",
+        "Preis von (€)": "400",
+        "Preis bis (€)": "1200",
+        "Sicherungsklasse": "SÜ 4-6",
+        "Bemerkung": "Pflicht C"
+      },
+      {
+        "Nr.": "29",
+        "Bereich": "Perimeter",
+        "Kategorie": "Zaun",
+        "Produkt": "Doppelstabmatte 6/5/6",
+        "Einheit": "lfm",
+        "Preis von (€)": "35",
+        "Preis bis (€)": "55",
+        "Sicherungsklasse": "SÜ 1-2",
+        "Bemerkung": "1,8-2,4m"
+      },
+      {
+        "Nr.": "30",
+        "Bereich": "Perimeter",
+        "Kategorie": "Zaun",
+        "Produkt": "Doppelstabmatte 8/6/8",
+        "Einheit": "lfm",
+        "Preis von (€)": "55",
+        "Preis bis (€)": "85",
+        "Sicherungsklasse": "SÜ 2-3",
+        "Bemerkung": "Verstärkt"
+      },
+      {
+        "Nr.": "31",
+        "Bereich": "Perimeter",
+        "Kategorie": "Zaun",
+        "Produkt": "358 Mesh Anti-Climb",
+        "Einheit": "lfm",
+        "Preis von (€)": "90",
+        "Preis bis (€)": "180",
+        "Sicherungsklasse": "SÜ 5-6",
+        "Bemerkung": "Hochsicherheit"
+      },
+      {
+        "Nr.": "32",
+        "Bereich": "Perimeter",
+        "Kategorie": "Zaun",
+        "Produkt": "Elektrozaun",
+        "Einheit": "lfm",
+        "Preis von (€)": "120",
+        "Preis bis (€)": "250",
+        "Sicherungsklasse": "SÜ 4-6",
+        "Bemerkung": "10.000V"
+      },
+      {
+        "Nr.": "33",
+        "Bereich": "Perimeter",
+        "Kategorie": "Tor",
+        "Produkt": "Schiebetor Industrie",
+        "Einheit": "Stk",
+        "Preis von (€)": "4500",
+        "Preis bis (€)": "12000",
+        "Sicherungsklasse": "SÜ 2-4",
+        "Bemerkung": "Bis 12m"
+      },
+      {
+        "Nr.": "34",
+        "Bereich": "Perimeter",
+        "Kategorie": "Poller",
+        "Produkt": "Versenkbare Poller HVM",
+        "Einheit": "Stk",
+        "Preis von (€)": "4000",
+        "Preis bis (€)": "12000",
+        "Sicherungsklasse": "SÜ 4-6",
+        "Bemerkung": "IWA 14-1"
+      },
+      {
+        "Nr.": "35",
+        "Bereich": "Perimeter",
+        "Kategorie": "Sensor",
+        "Produkt": "Zaunsensorik mikrophon.",
+        "Einheit": "lfm",
+        "Preis von (€)": "80",
+        "Preis bis (€)": "150",
+        "Sicherungsklasse": "SÜ 3-5",
+        "Bemerkung": "Vibration"
+      },
+      {
+        "Nr.": "36",
+        "Bereich": "Perimeter",
+        "Kategorie": "Sensor",
+        "Produkt": "IR-Lichtschranke außen",
+        "Einheit": "Paar",
+        "Preis von (€)": "300",
+        "Preis bis (€)": "1200",
+        "Sicherungsklasse": "SÜ 2-5",
+        "Bemerkung": "30-250m"
+      },
+      {
+        "Nr.": "37",
+        "Bereich": "Perimeter",
+        "Kategorie": "Sensor",
+        "Produkt": "Thermalkamera + KI",
+        "Einheit": "Stk",
+        "Preis von (€)": "3000",
+        "Preis bis (€)": "15000",
+        "Sicherungsklasse": "SÜ 3-6",
+        "Bemerkung": "100-2000m"
+      },
+      {
+        "Nr.": "38",
+        "Bereich": "Perimeter",
+        "Kategorie": "Sensor",
+        "Produkt": "Radar",
+        "Einheit": "Stk",
+        "Preis von (€)": "5000",
+        "Preis bis (€)": "20000",
+        "Sicherungsklasse": "SÜ 4-6",
+        "Bemerkung": "Bis 500m"
+      },
+      {
+        "Nr.": "39",
+        "Bereich": "Mech.",
+        "Kategorie": "Tür",
+        "Produkt": "Sicherheitstür RC 2",
+        "Einheit": "Stk",
+        "Preis von (€)": "800",
+        "Preis bis (€)": "1500",
+        "Sicherungsklasse": "SÜ 2",
+        "Bemerkung": "3 Min."
+      },
+      {
+        "Nr.": "40",
+        "Bereich": "Mech.",
+        "Kategorie": "Tür",
+        "Produkt": "Sicherheitstür RC 3",
+        "Einheit": "Stk",
+        "Preis von (€)": "1500",
+        "Preis bis (€)": "3500",
+        "Sicherungsklasse": "SÜ 3",
+        "Bemerkung": "5 Min."
+      },
+      {
+        "Nr.": "41",
+        "Bereich": "Mech.",
+        "Kategorie": "Tür",
+        "Produkt": "Sicherheitstür RC 4",
+        "Einheit": "Stk",
+        "Preis von (€)": "3500",
+        "Preis bis (€)": "8000",
+        "Sicherungsklasse": "SÜ 4",
+        "Bemerkung": "10 Min."
+      },
+      {
+        "Nr.": "42",
+        "Bereich": "Mech.",
+        "Kategorie": "Tür",
+        "Produkt": "Sicherheitstür RC 5",
+        "Einheit": "Stk",
+        "Preis von (€)": "8000",
+        "Preis bis (€)": "15000",
+        "Sicherungsklasse": "SÜ 5",
+        "Bemerkung": "15 Min."
+      },
+      {
+        "Nr.": "43",
+        "Bereich": "Mech.",
+        "Kategorie": "Tür",
+        "Produkt": "Sicherheitstür RC 6",
+        "Einheit": "Stk",
+        "Preis von (€)": "15000",
+        "Preis bis (€)": "35000",
+        "Sicherungsklasse": "SÜ 6",
+        "Bemerkung": "20 Min."
+      },
+      {
+        "Nr.": "44",
+        "Bereich": "Mech.",
+        "Kategorie": "Fenster",
+        "Produkt": "Fenster RC 2 + P4A",
+        "Einheit": "Stk",
+        "Preis von (€)": "450",
+        "Preis bis (€)": "900",
+        "Sicherungsklasse": "SÜ 2",
+        "Bemerkung": "Standard"
+      },
+      {
+        "Nr.": "45",
+        "Bereich": "Mech.",
+        "Kategorie": "Fenster",
+        "Produkt": "Fenster RC 3 + P5A",
+        "Einheit": "Stk",
+        "Preis von (€)": "900",
+        "Preis bis (€)": "1800",
+        "Sicherungsklasse": "SÜ 3",
+        "Bemerkung": "Gewerbe"
+      },
+      {
+        "Nr.": "46",
+        "Bereich": "Mech.",
+        "Kategorie": "Schloss",
+        "Produkt": "Profilzylinder Sicherheit",
+        "Einheit": "Stk",
+        "Preis von (€)": "40",
+        "Preis bis (€)": "250",
+        "Sicherungsklasse": "SÜ 1-4",
+        "Bemerkung": "VdS A/B/BZ"
+      },
+      {
+        "Nr.": "47",
+        "Bereich": "Mech.",
+        "Kategorie": "Schloss",
+        "Produkt": "Panzerriegel",
+        "Einheit": "Stk",
+        "Preis von (€)": "100",
+        "Preis bis (€)": "350",
+        "Sicherungsklasse": "SÜ 1-2",
+        "Bemerkung": "Nachrüstung"
+      },
+      {
+        "Nr.": "48",
+        "Bereich": "Verglasung",
+        "Kategorie": "EN 356",
+        "Produkt": "P1A",
+        "Einheit": "m²",
+        "Preis von (€)": "60",
+        "Preis bis (€)": "100",
+        "Sicherungsklasse": "SÜ 1",
+        "Bemerkung": "1,5m Kugel"
+      },
+      {
+        "Nr.": "49",
+        "Bereich": "Verglasung",
+        "Kategorie": "EN 356",
+        "Produkt": "P4A",
+        "Einheit": "m²",
+        "Preis von (€)": "150",
+        "Preis bis (€)": "250",
+        "Sicherungsklasse": "SÜ 2",
+        "Bemerkung": "9m Kugel"
+      },
+      {
+        "Nr.": "50",
+        "Bereich": "Verglasung",
+        "Kategorie": "EN 356",
+        "Produkt": "P6B Durchwurfhemmend",
+        "Einheit": "m²",
+        "Preis von (€)": "350",
+        "Preis bis (€)": "550",
+        "Sicherungsklasse": "SÜ 4",
+        "Bemerkung": "30-50 Axt"
+      },
+      {
+        "Nr.": "51",
+        "Bereich": "Verglasung",
+        "Kategorie": "EN 356",
+        "Produkt": "P8B Durchwurfhemmend",
+        "Einheit": "m²",
+        "Preis von (€)": "750",
+        "Preis bis (€)": "1200",
+        "Sicherungsklasse": "SÜ 5-6",
+        "Bemerkung": "71+ Axt"
+      },
+      {
+        "Nr.": "52",
+        "Bereich": "Verglasung",
+        "Kategorie": "EN 1063",
+        "Produkt": "BR4-NS Beschusshemmend",
+        "Einheit": "m²",
+        "Preis von (€)": "1000",
+        "Preis bis (€)": "1800",
+        "Sicherungsklasse": "SÜ 5-6",
+        "Bemerkung": ".44 Mag"
+      },
+      {
+        "Nr.": "53",
+        "Bereich": "ZKA",
+        "Kategorie": "Leser",
+        "Produkt": "RFID-Kartenleser",
+        "Einheit": "Stk",
+        "Preis von (€)": "150",
+        "Preis bis (€)": "600",
+        "Sicherungsklasse": "SÜ 2-4",
+        "Bemerkung": "Karte/Chip"
+      },
+      {
+        "Nr.": "54",
+        "Bereich": "ZKA",
+        "Kategorie": "Biometrie",
+        "Produkt": "Fingerprint-Leser",
+        "Einheit": "Stk",
+        "Preis von (€)": "400",
+        "Preis bis (€)": "1500",
+        "Sicherungsklasse": "SÜ 3-5",
+        "Bemerkung": "Finger"
+      },
+      {
+        "Nr.": "55",
+        "Bereich": "ZKA",
+        "Kategorie": "Biometrie",
+        "Produkt": "Iris/Gesicht",
+        "Einheit": "Stk",
+        "Preis von (€)": "1500",
+        "Preis bis (€)": "5000",
+        "Sicherungsklasse": "SÜ 5-6",
+        "Bemerkung": "Hochsicherheit"
+      },
+      {
+        "Nr.": "56",
+        "Bereich": "ZKA",
+        "Kategorie": "Zentrale",
+        "Produkt": "ZK-Controller",
+        "Einheit": "Stk",
+        "Preis von (€)": "500",
+        "Preis bis (€)": "3000",
+        "Sicherungsklasse": "SÜ 2-5",
+        "Bemerkung": "2-32 Türen"
+      },
+      {
+        "Nr.": "",
+        "Bereich": "DURCHSCHNITTSPREIS",
+        "Kategorie": "",
+        "Produkt": "",
+        "Einheit": "",
+        "Preis von (€)": "1076.16071428571",
+        "Preis bis (€)": "2977.76785714286",
+        "Sicherungsklasse": "",
+        "Bemerkung": ""
+      }
+    ]
+  },
+  "diagramme": {
+    "kategorien": [
+      {
+        "kategorie": "Melder",
+        "min": 8,
+        "max": 350,
+        "avg": 120
+      },
+      {
+        "kategorie": "Perimeter",
+        "min": 35,
+        "max": 25000,
+        "avg": 4000
+      },
+      {
+        "kategorie": "Mech. Sicherung",
+        "min": 40,
+        "max": 35000,
+        "avg": 5000
+      },
+      {
+        "kategorie": "EMA-System",
+        "min": 30,
+        "max": 8000,
+        "avg": 1500
+      },
+      {
+        "kategorie": "Verglasung",
+        "min": 60,
+        "max": 8000,
+        "avg": 1500
+      },
+      {
+        "kategorie": "Brandmelder",
+        "min": 15,
+        "max": 5000,
+        "avg": 900
+      },
+      {
+        "kategorie": "Zutrittskontrolle",
+        "min": 150,
+        "max": 5000,
+        "avg": 1200
+      }
+    ],
+    "melderzahl": [
+      {
+        "typ": "Bewegungsmelder",
+        "anzahl": 10
+      },
+      {
+        "typ": "Öffnungsmelder",
+        "anzahl": 6
+      },
+      {
+        "typ": "Glasbruchmelder",
+        "anzahl": 3
+      },
+      {
+        "typ": "Erschütterungsm.",
+        "anzahl": 3
+      },
+      {
+        "typ": "Spezialmelder",
+        "anzahl": 8
+      },
+      {
+        "typ": "Brandmelder",
+        "anzahl": 8
+      }
+    ]
+  },
+  "dokumente": [
+    {
+      "Nr.": "1",
+      "Ordner": "Hauptordner",
+      "Dateiname": "NIS2-Stellungnahme AG-KRITIS.pdf",
+      "Typ": "PDF",
+      "Thema": "NIS2-Umsetzungsgesetz KRITIS",
+      "Relevante Normen": "NIS2, IT-SiG 2.0",
+      "Verwendet in Sheet": "1_Sicherheitskonzept"
+    },
+    {
+      "Nr.": "2",
+      "Ordner": "Hauptordner",
+      "Dateiname": "Führende Firmen & Softwarelösungen.docx",
+      "Typ": "DOCX",
+      "Thema": "Marktübersicht Sicherheitsfirmen",
+      "Relevante Normen": "—",
+      "Verwendet in Sheet": "1_Sicherheitskonzept"
+    },
+    {
+      "Nr.": "3",
+      "Ordner": "Hauptordner",
+      "Dateiname": "Sicherheitssoftware.docx",
+      "Typ": "DOCX",
+      "Thema": "Sicherheitssoftware",
+      "Relevante Normen": "—",
+      "Verwendet in Sheet": "—"
+    },
+    {
+      "Nr.": "4",
+      "Ordner": "Hauptordner",
+      "Dateiname": "Elektromagnetisches Spektrum.docx",
+      "Typ": "DOCX",
+      "Thema": "EM-Spektrum Grundlagen",
+      "Relevante Normen": "—",
+      "Verwendet in Sheet": "—"
+    },
+    {
+      "Nr.": "5",
+      "Ordner": "Hauptordner",
+      "Dateiname": "Hertz & Wellenlänge.docx",
+      "Typ": "DOCX",
+      "Thema": "Physik-Grundlagen",
+      "Relevante Normen": "—",
+      "Verwendet in Sheet": "—"
+    },
+    {
+      "Nr.": "6",
+      "Ordner": "Hauptordner",
+      "Dateiname": "Wellenarten Präsentation.pptx",
+      "Typ": "PPTX",
+      "Thema": "Wellenarten (Sensortechnik)",
+      "Relevante Normen": "—",
+      "Verwendet in Sheet": "—"
+    },
+    {
+      "Nr.": "7",
+      "Ordner": "Hauptordner",
+      "Dateiname": "TAB Wiesbaden.pdf",
+      "Typ": "PDF",
+      "Thema": "Technische Aufschaltbedingungen",
+      "Relevante Normen": "VdS, TAB",
+      "Verwendet in Sheet": "6_EMA"
+    },
+    {
+      "Nr.": "8",
+      "Ordner": "Arbeitssicherheit",
+      "Dateiname": "Flucht-/Brandschutztüren Normen.docx",
+      "Typ": "DOCX",
+      "Thema": "Flucht-/Brandschutztüren",
+      "Relevante Normen": "DIN EN 1125/179, DIN 4102",
+      "Verwendet in Sheet": "4_Außenhaut"
+    },
+    {
+      "Nr.": "9",
+      "Ordner": "Arbeitssicherheit",
+      "Dateiname": "Fluchtwege & Feuerlöscher.docx",
+      "Typ": "DOCX",
+      "Thema": "Fluchtwege, Feuerlöscher",
+      "Relevante Normen": "ASR A2.3, DIN EN 3",
+      "Verwendet in Sheet": "—"
+    },
+    {
+      "Nr.": "10",
+      "Ordner": "Brandmeldetechnik",
+      "Dateiname": "BMA-Dokumentation.docx",
+      "Typ": "DOCX",
+      "Thema": "Brandmeldeanlagen",
+      "Relevante Normen": "DIN 14675, VDE 0833-2",
+      "Verwendet in Sheet": "5_Melder (Brand)"
+    },
+    {
+      "Nr.": "11",
+      "Ordner": "Brandmeldetechnik",
+      "Dateiname": "Brandschutz-Gesetze.docx",
+      "Typ": "DOCX",
+      "Thema": "Brandschutzrecht",
+      "Relevante Normen": "MBO, LBO, DIN 4102",
+      "Verwendet in Sheet": "—"
+    },
+    {
+      "Nr.": "12",
+      "Ordner": "DIN VDS Normen",
+      "Dateiname": "VdS 2333 Sicherungsrichtlinien.pdf",
+      "Typ": "PDF",
+      "Thema": "VdS Sicherungsrichtlinien",
+      "Relevante Normen": "VdS 2333",
+      "Verwendet in Sheet": "2_Sicherungsklassen"
+    },
+    {
+      "Nr.": "13",
+      "Ordner": "Einbruchmeldetechnik",
+      "Dateiname": "BLKA Pflichtenkatalog EMA.pdf",
+      "Typ": "PDF",
+      "Thema": "BLKA EMA-Anforderungen",
+      "Relevante Normen": "VdS 2311, VDE 0833-3",
+      "Verwendet in Sheet": "6_EMA"
+    },
+    {
+      "Nr.": "14",
+      "Ordner": "Einbruchmeldetechnik",
+      "Dateiname": "EMA-Dokumentation.docx",
+      "Typ": "DOCX",
+      "Thema": "Einbruchmeldeanlagen",
+      "Relevante Normen": "VDE 0833-1/-3, VdS 2311",
+      "Verwendet in Sheet": "6_EMA"
+    },
+    {
+      "Nr.": "15",
+      "Ordner": "Einbruchmeldetechnik",
+      "Dateiname": "BHE Freigeländeüberwachung.pdf",
+      "Typ": "PDF",
+      "Thema": "BHE Perimeter-Planung",
+      "Relevante Normen": "VdS 2358, EN 50131",
+      "Verwendet in Sheet": "3_Perimeter"
+    },
+    {
+      "Nr.": "16",
+      "Ordner": "Einbruchmeldetechnik",
+      "Dateiname": "Hauptkatalog 2024.pdf",
+      "Typ": "PDF",
+      "Thema": "Produktkatalog",
+      "Relevante Normen": "Diverse",
+      "Verwendet in Sheet": "7_Preisliste"
+    },
+    {
+      "Nr.": "17",
+      "Ordner": "Einbruchmeldetechnik",
+      "Dateiname": "VdS 2120 Magnetkontakte.pdf",
+      "Typ": "PDF",
+      "Thema": "VdS Magnetkontakte",
+      "Relevante Normen": "VdS 2120",
+      "Verwendet in Sheet": "5_Melder"
+    },
+    {
+      "Nr.": "18",
+      "Ordner": "Einbruchmeldetechnik",
+      "Dateiname": "VdS 2163 Verglasung.pdf",
+      "Typ": "PDF",
+      "Thema": "VdS Verglasung",
+      "Relevante Normen": "VdS 2163",
+      "Verwendet in Sheet": "4_Außenhaut"
+    },
+    {
+      "Nr.": "19",
+      "Ordner": "Einbruchmeldetechnik",
+      "Dateiname": "VdS 2269 Schließblechkontakte.pdf",
+      "Typ": "PDF",
+      "Thema": "VdS Schließblechkontakte",
+      "Relevante Normen": "VdS 2269",
+      "Verwendet in Sheet": "5_Melder"
+    },
+    {
+      "Nr.": "20",
+      "Ordner": "Einbruchmeldetechnik",
+      "Dateiname": "VdS 2312 Bewegungsmelder.pdf",
+      "Typ": "PDF",
+      "Thema": "VdS Bewegungsmelder",
+      "Relevante Normen": "VdS 2312",
+      "Verwendet in Sheet": "5_Melder"
+    },
+    {
+      "Nr.": "21",
+      "Ordner": "Einbruchmeldetechnik",
+      "Dateiname": "VdS 2332 Glasbruchmelder.pdf",
+      "Typ": "PDF",
+      "Thema": "VdS Glasbruchmelder",
+      "Relevante Normen": "VdS 2332",
+      "Verwendet in Sheet": "5_Melder"
+    },
+    {
+      "Nr.": "22",
+      "Ordner": "Einbruchmeldetechnik",
+      "Dateiname": "VdS 2469 Einbruchmeldesysteme.pdf",
+      "Typ": "PDF",
+      "Thema": "VdS EMA-Systeme",
+      "Relevante Normen": "VdS 2469",
+      "Verwendet in Sheet": "6_EMA"
+    },
+    {
+      "Nr.": "23",
+      "Ordner": "Einbruchmeldetechnik",
+      "Dateiname": "VdS 2480 Erschütterungsmelder.pdf",
+      "Typ": "PDF",
+      "Thema": "VdS Erschütterungsmelder",
+      "Relevante Normen": "VdS 2480",
+      "Verwendet in Sheet": "5_Melder"
+    },
+    {
+      "Nr.": "24",
+      "Ordner": "Einbruchmeldetechnik",
+      "Dateiname": "VdS 3138 NSL.pdf",
+      "Typ": "PDF",
+      "Thema": "VdS Notruf-Serviceleitstelle",
+      "Relevante Normen": "VdS 3138",
+      "Verwendet in Sheet": "6_EMA"
+    },
+    {
+      "Nr.": "25",
+      "Ordner": "Mech. Sicherung",
+      "Dateiname": "DIN EN 1627 Einbruchhemmung.pdf",
+      "Typ": "PDF",
+      "Thema": "Einbruchhemmende Bauteile",
+      "Relevante Normen": "DIN EN 1627-1630",
+      "Verwendet in Sheet": "2_Sicherungsklassen, 4_Außenhaut"
+    },
+    {
+      "Nr.": "26",
+      "Ordner": "Mech. Sicherung",
+      "Dateiname": "Schlösser & Beschläge Normen.docx",
+      "Typ": "DOCX",
+      "Thema": "Schlösser-Normierung",
+      "Relevante Normen": "DIN 18251/52/57",
+      "Verwendet in Sheet": "4_Außenhaut"
+    },
+    {
+      "Nr.": "27",
+      "Ordner": "Mech. Sicherung",
+      "Dateiname": "Verglasung Normen Detail.docx",
+      "Typ": "DOCX",
+      "Thema": "Einbruchhemmende Verglasung",
+      "Relevante Normen": "DIN EN 356, P1A-P8B",
+      "Verwendet in Sheet": "4_Außenhaut"
+    },
+    {
+      "Nr.": "28",
+      "Ordner": "Mech. Sicherung",
+      "Dateiname": "VdS 2227 Einbruchmeldeanlagen.pdf",
+      "Typ": "PDF",
+      "Thema": "VdS EMA-Anforderungen",
+      "Relevante Normen": "VdS 2227",
+      "Verwendet in Sheet": "6_EMA"
+    },
+    {
+      "Nr.": "29",
+      "Ordner": "Wertbehältnisse",
+      "Dateiname": "Panzerschränke Normen.docx",
+      "Typ": "DOCX",
+      "Thema": "Tresore & Panzerschränke",
+      "Relevante Normen": "EN 1143-1, VdS 2450",
+      "Verwendet in Sheet": "1_Sicherheitskonzept"
+    },
+    {
+      "Nr.": "30",
+      "Ordner": "Zugangskontrolle",
+      "Dateiname": "Zugangskontrollsysteme Doku.docx",
+      "Typ": "DOCX",
+      "Thema": "Zutrittskontrollsysteme",
+      "Relevante Normen": "DIN EN 60839-11-1",
+      "Verwendet in Sheet": "6_EMA (ZKA)"
+    }
+  ],
+  "details": [
+    {
+      "key": "d1_pir_melder",
+      "name": "PIR-Melder",
+      "title": "PIR-MELDER – Passiv-Infrarot Bewegungsmelder (Funktionsdetail)",
+      "subtitle": "Detektionsprinzip: Pyroelektrischer Effekt | Wärmestrahlung 8–14 µm",
+      "sections": [
+        {
+          "title": "FUNKTIONSPRINZIP IM DETAIL",
+          "lines": [
+            "Der PIR-Melder (Passiv-Infrarot) ist ein passiver Sensor – er sendet selbst keine Strahlung aus.",
+            "Jeder Mensch strahlt aufgrund seiner Körpertemperatur (~37°C) Wärmestrahlung im Infrarotbereich (8–14 µm) ab.",
+            "Eine Fresnel-Linse vor dem Sensor teilt das Sichtfeld in viele schmale Zonen (typisch 90° / 100°).",
+            "Das pyroelektrische Element (LiTaO₃-Kristall) besteht aus 2 gegenpolig geschalteten Sensorfeldern.",
+            "Bewegt sich eine Wärmequelle durch die Zonen, entsteht eine wechselnde Spannungsdifferenz (Δ-Signal).",
+            "Ruhende Wärmequellen (Heizkörper, Sonnenlicht) erzeugen KEIN Signal → keine Fehlalarme.",
+            "Der Signalprozessor analysiert Amplitude, Frequenz und Muster des Δ-Signals → bei Übereinstimmung: ALARM."
+          ]
+        },
+        {
+          "title": "VARIANTEN & EINSATZBEREICHE",
+          "lines": [],
+          "table": {
+            "header": [
+              "Variante",
+              "Erfassungsbereich",
+              "Besonderheit",
+              "Montage",
+              "Einsatzort",
+              "VdS-Grad",
+              "SÜ-Klasse",
+              "Richtpreis"
+            ],
+            "rows": [
+              {
+                "Variante": "PIR Standard",
+                "Erfassungsbereich": "12×12m / 90°",
+                "Besonderheit": "Allround-Melder",
+                "Montage": "Wand 2,0–2,4m",
+                "Einsatzort": "Büros, Wohnräume",
+                "VdS-Grad": "Grad 2",
+                "SÜ-Klasse": "SÜ 1-3",
+                "Richtpreis": "25–80 €"
+              },
+              {
+                "Variante": "PIR Vorhang/Corridor",
+                "Erfassungsbereich": "2×20m / 6°",
+                "Besonderheit": "Schmaler Vorhang-Erfassungsbereich",
+                "Montage": "Wand",
+                "Einsatzort": "Flure, Durchgänge",
+                "VdS-Grad": "Grad 2",
+                "SÜ-Klasse": "SÜ 2-3",
+                "Richtpreis": "35–100 €"
+              },
+              {
+                "Variante": "PIR Decke 360°",
+                "Erfassungsbereich": "Ø12m / 360°",
+                "Besonderheit": "Rundumerfassung von oben",
+                "Montage": "Decke 2,5–3,5m",
+                "Einsatzort": "Räume, Treppenhäuser",
+                "VdS-Grad": "Grad 2",
+                "SÜ-Klasse": "SÜ 2-3",
+                "Richtpreis": "40–120 €"
+              },
+              {
+                "Variante": "PIR Long Range",
+                "Erfassungsbereich": "5×30m",
+                "Besonderheit": "Fokussierte Fernerfassung",
+                "Montage": "Wand",
+                "Einsatzort": "Hallen, lange Gänge",
+                "VdS-Grad": "Grad 2",
+                "SÜ-Klasse": "SÜ 2-4",
+                "Richtpreis": "50–150 €"
+              },
+              {
+                "Variante": "PIR Tierimmun",
+                "Erfassungsbereich": "12×12m / 90°",
+                "Besonderheit": "Filtert Tiere <25kg heraus",
+                "Montage": "Wand 2,0–2,4m",
+                "Einsatzort": "Wohnungen mit Haustieren",
+                "VdS-Grad": "Grad 2",
+                "SÜ-Klasse": "SÜ 1-2",
+                "Richtpreis": "35–100 €"
+              },
+              {
+                "Variante": "PIR Anti-Masking",
+                "Erfassungsbereich": "12×12m / 90°",
+                "Besonderheit": "Erkennt Abdeckung/Sabotage",
+                "Montage": "Wand 2,0–2,4m",
+                "Einsatzort": "Hochsicherheit",
+                "VdS-Grad": "Grad 3",
+                "SÜ-Klasse": "SÜ 4-6",
+                "Richtpreis": "100–280 €"
+              },
+              {
+                "Variante": "PIR Outdoor IP65",
+                "Erfassungsbereich": "12×12m",
+                "Besonderheit": "Wetterfest, Heizung, Filter",
+                "Montage": "Wand/Fassade",
+                "Einsatzort": "Fassade, Eingänge außen",
+                "VdS-Grad": "Grad 2-3",
+                "SÜ-Klasse": "SÜ 2-4",
+                "Richtpreis": "80–250 €"
+              }
+            ]
+          }
+        },
+        {
+          "title": "TYPISCHE FEHLALARMURSACHEN & VERMEIDUNG",
+          "lines": [
+            "Sonneneinstrahlung / Heizung direkt im Erfassungsbereich → Montage anpassen, nicht auf Fenster richten",
+            "Kleine Tiere (Katzen, Hunde) → Tierimmune Variante verwenden (PIR mit Gewichtsfilter)",
+            "Insekten direkt auf der Linse → Gehäuse mit Insektenschutz wählen",
+            "Starke Zugluft / Konvektion → Montageort prüfen, Abstand zu Lüftungen",
+            "Verdecken/Überkleben der Linse → Anti-Masking-PIR mit Sabotage-Erkennung verwenden"
+          ]
+        },
+        {
+          "title": "RELEVANTE NORMEN",
+          "lines": [],
+          "table": {
+            "header": [
+              "Norm",
+              "Beschreibung",
+              "Relevanz",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ],
+            "rows": [
+              {
+                "Norm": "VdS 2312",
+                "Beschreibung": "Richtlinien für Bewegungsmelder in EMA",
+                "Relevanz": "VdS-Anerkennung Pflicht ab SÜ 2"
+              },
+              {
+                "Norm": "DIN EN 50131-2-2",
+                "Beschreibung": "Passiv-Infrarot-Bewegungsmelder",
+                "Relevanz": "EU-Norm für PIR-Melder"
+              },
+              {
+                "Norm": "DIN VDE 0833-3",
+                "Beschreibung": "EMA – Festlegungen für Anlagen",
+                "Relevanz": "Planung und Errichtung"
+              },
+              {
+                "Norm": "VdS 2311",
+                "Beschreibung": "EMA – Planung und Einbau",
+                "Relevanz": "Montagevorschriften"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "d2_dualmelder",
+      "name": "Dualmelder PIR+MW",
+      "title": "DUALMELDER – PIR + Mikrowelle (AND-Verknüpfung)",
+      "subtitle": "Zwei unabhängige Technologien für minimale Fehlalarmrate",
+      "sections": [
+        {
+          "title": "FUNKTIONSPRINZIP",
+          "lines": [
+            "Der Dualmelder kombiniert zwei physikalisch unterschiedliche Detektionsprinzipien:",
+            "① PIR-Sensor: Erfasst Wärmestrahlung (8–14µm) – reagiert auf Temperaturänderung im Sichtfeld",
+            "② Mikrowellen-Sensor: Sendet 10,525 GHz Radar – erkennt Bewegung durch Doppler-Verschiebung",
+            "Beide Sensoren sind AND-verknüpft: Nur wenn BEIDE gleichzeitig auslösen → ALARM",
+            "Da Störquellen meist nur einen Sensor ansprechen, sinkt die Fehlalarmrate um bis zu 95%!",
+            "Einsatz überall dort, wo Einzelmelder zu viele Fehlalarme erzeugen: Hallen, Werkstätten, Tiefgaragen",
+            "VdS-Anerkennung: Grad 2–3, empfohlen ab SÜ 3 | Preis: 60–180 € | Hersteller: Bosch, Honeywell, DSC"
+          ]
+        },
+        {
+          "title": "VERGLEICH: FEHLALARMVERHALTEN",
+          "lines": [],
+          "table": {
+            "header": [
+              "Störquelle",
+              "Nur PIR",
+              "Nur MW",
+              "Dual (PIR+MW)",
+              "Erklärung",
+              "",
+              "",
+              ""
+            ],
+            "rows": [
+              {
+                "Störquelle": "Sonneneinstrahlung / Heizung",
+                "Nur PIR": "FEHLALARM",
+                "Nur MW": "Kein Alarm",
+                "Dual (PIR+MW)": "KEIN ALARM",
+                "Erklärung": "Wärme ohne Bewegung → MW stumm"
+              },
+              {
+                "Störquelle": "Zugluft / Vorhang",
+                "Nur PIR": "FEHLALARM",
+                "Nur MW": "FEHLALARM",
+                "Dual (PIR+MW)": "KEIN ALARM",
+                "Erklärung": "Keine IR-Signatur → PIR stumm"
+              },
+              {
+                "Störquelle": "Kleintiere (<5 kg)",
+                "Nur PIR": "Möglich",
+                "Nur MW": "FEHLALARM",
+                "Dual (PIR+MW)": "KEIN ALARM",
+                "Erklärung": "Zu wenig IR für PIR-Schwelle"
+              },
+              {
+                "Störquelle": "Neonröhren / Flackerlicht",
+                "Nur PIR": "Selten",
+                "Nur MW": "FEHLALARM",
+                "Dual (PIR+MW)": "KEIN ALARM",
+                "Erklärung": "Kein IR-Signal"
+              },
+              {
+                "Störquelle": "Vibration / Erschütterung",
+                "Nur PIR": "Kein Alarm",
+                "Nur MW": "FEHLALARM",
+                "Dual (PIR+MW)": "KEIN ALARM",
+                "Erklärung": "Kein IR-Signal"
+              },
+              {
+                "Störquelle": "Mensch (echter Einbruch)",
+                "Nur PIR": "ALARM ✓",
+                "Nur MW": "ALARM ✓",
+                "Dual (PIR+MW)": "ALARM ✓✓",
+                "Erklärung": "Beide Sensoren auslösend"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "d3_magnetkontakt",
+      "name": "Magnetkontakt",
+      "title": "MAGNETKONTAKT – Reed-Kontakt Öffnungsmelder",
+      "subtitle": "Ruhestrom-Prinzip: Geschlossen = OK | Offen = ALARM",
+      "sections": [
+        {
+          "title": "FUNKTIONSPRINZIP",
+          "lines": [
+            "Ein Magnetkontakt besteht aus zwei Teilen: einem Permanentmagneten und einem Reed-Kontakt.",
+            "Der Magnet wird am beweglichen Teil (Tür/Fenster) montiert, der Reed am festen Rahmen.",
+            "Im geschlossenen Zustand hält das Magnetfeld die Kontaktzungen zusammen → Stromkreis geschlossen.",
+            "Wird die Tür geöffnet, entfernt sich der Magnet → Kontakt öffnet → Ruhestrom unterbrochen → ALARM.",
+            "Das Ruhestrom-Prinzip (NC = Normally Closed) ist sabotagesicher: Kabelabriss = sofort ALARM.",
+            "Fremdfeld-gesicherte Varianten erkennen Manipulation durch externe Magnete (ab SÜ 4 gefordert).",
+            "Aufputz (AP): Sichtbar auf Rahmen | Unterputz (UP): Verdeckt in Rahmen eingefräst (ästhetisch)"
+          ]
+        },
+        {
+          "title": "VARIANTEN",
+          "lines": [],
+          "table": {
+            "header": [
+              "Variante",
+              "Bauform",
+              "Schaltabstand",
+              "Besonderheit",
+              "Einsatz",
+              "VdS",
+              "SÜ",
+              "Preis"
+            ],
+            "rows": [
+              {
+                "Variante": "AP Standard",
+                "Bauform": "Aufputz sichtbar",
+                "Schaltabstand": "15–25mm",
+                "Besonderheit": "Einfache Montage",
+                "Einsatz": "Türen, Fenster",
+                "VdS": "VdS 2120",
+                "SÜ": "SÜ 1-3",
+                "Preis": "8–25 €"
+              },
+              {
+                "Variante": "UP Verdeckt",
+                "Bauform": "Unterputz verdeckt",
+                "Schaltabstand": "10–20mm",
+                "Besonderheit": "Unsichtbar, ästhetisch",
+                "Einsatz": "Hochwertige Objekte",
+                "VdS": "VdS 2120",
+                "SÜ": "SÜ 2-4",
+                "Preis": "12–40 €"
+              },
+              {
+                "Variante": "Rolltor/Hallentor",
+                "Bauform": "Verstärkter Magnet",
+                "Schaltabstand": "40–80mm",
+                "Besonderheit": "Großer Schaltabstand",
+                "Einsatz": "Rolltore, Hallentore",
+                "VdS": "VdS 2120",
+                "SÜ": "SÜ 2-4",
+                "Preis": "30–80 €"
+              },
+              {
+                "Variante": "Fremdfeld-gesichert",
+                "Bauform": "AP mit Schutz",
+                "Schaltabstand": "15–25mm",
+                "Besonderheit": "Erkennt Fremdmagnete",
+                "Einsatz": "Hochsicherheit",
+                "VdS": "VdS 2120",
+                "SÜ": "SÜ 4-6",
+                "Preis": "25–60 €"
+              },
+              {
+                "Variante": "Funk-Magnetkontakt",
+                "Bauform": "Funk (868 MHz)",
+                "Schaltabstand": "15–25mm",
+                "Besonderheit": "Kabellose Montage",
+                "Einsatz": "Nachrüstung",
+                "VdS": "VdS 2120",
+                "SÜ": "SÜ 1-3",
+                "Preis": "30–80 €"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "d4_glasbruchmelder",
+      "name": "Glasbruchmelder",
+      "title": "GLASBRUCHMELDER – Akustisch, Aktiv & Piezoelektrisch",
+      "subtitle": "Schallanalyse: Niederfrequenter Aufprall + Hochfrequentes Splittern",
+      "sections": [
+        {
+          "title": "DREI DETEKTIONSPRINZIPIEN",
+          "lines": [
+            "① PASSIV AKUSTISCH (Raum-/Deckenmontage): Mikrofon analysiert Bruchschall im Raum.",
+            "→ Niedrigfrequenz (Aufprall/Biegung) + Hochfrequenz (Splittern, <200kHz) → Zwei-Phasen-Analyse",
+            "→ Radius 6m, überwacht MEHRERE Scheiben gleichzeitig → kosteneffizient",
+            "② AKTIV (Alarmfolie/Alarmdraht auf Scheibe): Leiterbahn bricht bei Glasriss → ALARM",
+            "→ 100% sicher: Jeder Riss wird erkannt, auch ohne Bruch. Pro Scheibe einzeln.",
+            "③ PIEZOELEKTRISCH (Sensor direkt auf Scheibe): Misst Glasvibration + Bruchschall kombiniert.",
+            "→ Höchste Sicherheit: Erkennt Anschneiden, Anbohren, Bruch. Pro Scheibe. VdS 2332.",
+            "Empfehlung: Passiver Melder für Räume mit vielen Fenstern | Piezo für einzelne Schaufenster/Vitrinen.",
+            "Norm: VdS 2332, DIN EN 50131-2-7 | Preis: 15–80 € | SÜ 2-5"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "d5_erschuetterung",
+      "name": "Erschütterungs- & Körperschallmelder",
+      "title": "ERSCHÜTTERUNGSMELDER & KÖRPERSCHALLMELDER",
+      "subtitle": "Piezokeramik & Schallanalyse: Tresor-, Wand- und Türüberwachung",
+      "sections": [
+        {
+          "title": "FUNKTIONSPRINZIP",
+          "lines": [
+            "PIEZO-ERSCHÜTTERUNGSMELDER: Piezokeramik-Element wandelt mechanische Vibration in elektrische Spannung.",
+            "→ Schwellwert-Auswertung: Erst wenn Amplitude UND Dauer einen Grenzwert überschreiten → ALARM.",
+            "→ Erfasst: Bohren, Stemmen, Hebeln, Schlagen auf Wände, Türen, Fensterrahmen, Tresorkörper.",
+            "→ Reichweite: ~2m Radius auf gleicher Fläche/Wand. Montage: Direkt auf überwachte Fläche geschraubt.",
+            "KÖRPERSCHALLMELDER (Tresor-Spezialmelder): Hochempfindliches Mikrofon mit Frequenzanalyse.",
+            "→ Analysiert das Frequenzspektrum von Körperschall IM Material (Stahl, Beton).",
+            "→ Erkennt: Bohrgeräusche, Schneidbrenner, Trennschleifer (Flex), sogar Sprengversuche.",
+            "→ Direkt auf Tresorkörper montiert. Unterscheidet Angriff vs. normale Umgebungsgeräusche.",
+            "→ Norm: VdS 2480, DIN EN 50131-2-8 | SÜ 5-6 | Preis: 60–200 €"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "d6_mikrowelle",
+      "name": "Mikrowellenmelder",
+      "title": "MIKROWELLENMELDER – Doppler-Radar Bewegungsdetektion",
+      "subtitle": "Aktiver Sensor: 10,525 GHz X-Band Radar | Volumetrische Erfassung",
+      "sections": [
+        {
+          "title": "DOPPLER-EFFEKT ERKLÄRT",
+          "lines": [
+            "Der Mikrowellenmelder ist ein AKTIVER Sensor – er sendet selbst Mikrowellen aus (10,525 GHz).",
+            "Die ausgesendeten Wellen werden von allen Objekten im Raum reflektiert.",
+            "Ruhende Objekte reflektieren mit GLEICHER Frequenz (f₀) → kein Signal.",
+            "Bewegte Objekte reflektieren mit VERSCHOBENER Frequenz (f₁) → Doppler-Effekt!",
+            "Die Frequenzverschiebung Δf = f₁ – f₀ ist proportional zur Geschwindigkeit des Objekts.",
+            "Der Sensor mischt gesendetes und empfangenes Signal → Differenzfrequenz = Bewegungssignal → ALARM.",
+            "WICHTIG: Mikrowellen durchdringen Glas, Holz, dünne Wände, Kunststoff!",
+            "→ Vorteil: Erfasst auch HINTER Regalen, Möbeln | Nachteil: Kann durch Wände „sehen\" → Fehlalarm",
+            "→ Metall, dicker Beton, Wasser stoppen Mikrowellen → natürliche Abgrenzung",
+            "Typische Fehlalarmquellen: Neonröhren, Wasserrohre (Fließen), Ventilatoren → nur als Dual verwenden!",
+            "Reichweite: 20×20m | VdS 2312 | DIN EN 50131-2-3 | SÜ 3-4 | Preis: 80–200 €"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "d7_ir_lichtschranke",
+      "name": "IR-Lichtschranke",
+      "title": "IR-LICHTSCHRANKE – Aktive Infrarot-Barriere",
+      "subtitle": "Sender/Empfänger-Prinzip: Strahlunterbrechung = ALARM",
+      "sections": [
+        {
+          "title": "FUNKTIONSPRINZIP & VARIANTEN",
+          "lines": [
+            "Der IR-Sender emittiert gepulste Infrarotstrahlen (940nm, für das Auge unsichtbar).",
+            "Mehrere parallele Strahlen (2/4/6-Strahl-Systeme) bilden eine unsichtbare „Lichtwand\".",
+            "Der Empfänger auf der Gegenseite registriert die codierten IR-Pulse → Synchronisation.",
+            "Wird ein Strahl unterbrochen (Person durchschreitet) → Empfänger meldet → ALARM.",
+            "Multi-Strahl-Systeme fordern mindestens 2 gleichzeitige Unterbrechungen → gegen Fehlalarm.",
+            "Anti-Sabotage: Die Pulse sind codiert – Überbrückung mit externer IR-Quelle wird erkannt.",
+            "Outdoor-Varianten: Beheizbare Optiken (gegen Beschlagen), IP65 wetterfest, Sonnenfilter.",
+            "Varianten: 2-Strahl (Innen/kurz) | 4-Strahl (Perimeter/Standard) | 6-Strahl (Hochsicherheit)",
+            "Reichweite: 5m (innen) bis 250m (außen) | VdS 2358 | DIN EN 50131-2-5 | SÜ 2-5 | 80–1.200 €"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "d8_brandmelder",
+      "name": "Brandmelder",
+      "title": "BRANDMELDER – Alle Detektionsprinzipien im Detail",
+      "subtitle": "DIN EN 54 / DIN 14675: Rauch, Wärme, Flamme, Ansaug, Multi",
+      "sections": [
+        {
+          "title": "ÜBERSICHT ALLER BRANDMELDERTYPEN",
+          "lines": [],
+          "table": {
+            "header": [
+              "Typ",
+              "Prinzip",
+              "Detektion",
+              "Fläche",
+              "Norm",
+              "Einsatzbereich",
+              "Hersteller",
+              "Preis"
+            ],
+            "rows": [
+              {
+                "Typ": "Optisch (Streulicht)",
+                "Prinzip": "Tyndall-Effekt",
+                "Detektion": "Rauchpartikel streuen LED-Licht",
+                "Fläche": "60-80m²",
+                "Norm": "DIN EN 54-7",
+                "Einsatzbereich": "Büros, Wohnräume, Universal",
+                "Hersteller": "Siemens, Hekatron, Bosch",
+                "Preis": "20–80 €"
+              },
+              {
+                "Typ": "Thermisch (Max.)",
+                "Prinzip": "Temperaturgrenze",
+                "Detektion": "Alarm bei >54°C",
+                "Fläche": "30-40m²",
+                "Norm": "DIN EN 54-5",
+                "Einsatzbereich": "Küchen, Garagen, Werkstätten",
+                "Hersteller": "Siemens, Hekatron, Bosch",
+                "Preis": "25–90 €"
+              },
+              {
+                "Typ": "Thermisch (Diff.)",
+                "Prinzip": "Temperaturanstieg",
+                "Detektion": "Alarm bei >10°C/min Anstieg",
+                "Fläche": "30-40m²",
+                "Norm": "DIN EN 54-5",
+                "Einsatzbereich": "Räume mit Wärmequellen",
+                "Hersteller": "Siemens, Hekatron",
+                "Preis": "30–100 €"
+              },
+              {
+                "Typ": "Multisensor",
+                "Prinzip": "Rauch + Wärme",
+                "Detektion": "Kombinierte Auswertung",
+                "Fläche": "60-80m²",
+                "Norm": "DIN EN 54-29",
+                "Einsatzbereich": "Universal, weniger Fehlalarme",
+                "Hersteller": "Siemens, Esser, Hekatron",
+                "Preis": "50–150 €"
+              },
+              {
+                "Typ": "Linienförmig",
+                "Prinzip": "Durchlicht-IR",
+                "Detektion": "IR-Strahl über Distanz",
+                "Fläche": "Bis 100m",
+                "Norm": "DIN EN 54-12",
+                "Einsatzbereich": "Hallen, Atrien, Kirchen",
+                "Hersteller": "Bosch, Siemens, Securiton",
+                "Preis": "500–2.000 €"
+              },
+              {
+                "Typ": "ASD (Ansaug)",
+                "Prinzip": "Laser-Ansaugung",
+                "Detektion": "Luft angesaugt + Laser analysiert",
+                "Fläche": "Bis 2.000m²",
+                "Norm": "DIN EN 54-20",
+                "Einsatzbereich": "Server, Archive, Museen",
+                "Hersteller": "Wagner, Xtralis, Securiton",
+                "Preis": "1.500–5.000 €"
+              },
+              {
+                "Typ": "Flammenmelder",
+                "Prinzip": "UV/IR-Strahlung",
+                "Detektion": "UV + IR-Emission von Flammen",
+                "Fläche": "10-30m",
+                "Norm": "DIN EN 54-10",
+                "Einsatzbereich": "Industrie, Tankstellen, Chemie",
+                "Hersteller": "Det-Tronics, Siemens",
+                "Preis": "300–1.500 €"
+              },
+              {
+                "Typ": "Handfeuermelder",
+                "Prinzip": "Manuell",
+                "Detektion": "Druckknopf-Auslösung",
+                "Fläche": "—",
+                "Norm": "DIN EN 54-11",
+                "Einsatzbereich": "Fluchtwege (Pflicht!)",
+                "Hersteller": "Siemens, Bosch, Hekatron",
+                "Preis": "15–50 €"
+              },
+              {
+                "Typ": "LHD (Sensorkabel)",
+                "Prinzip": "Wärmeleitung",
+                "Detektion": "Wärmeübertragung im Kabel",
+                "Fläche": "Bis 2km",
+                "Norm": "DIN EN 54-22",
+                "Einsatzbereich": "Tunnel, Kabeltrassen, Tiefgaragen",
+                "Hersteller": "Kidde, Protectowire",
+                "Preis": "15–40 €/m"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "d9_spezialmelder",
+      "name": "Spezialmelder",
+      "title": "SPEZIALMELDER – Ultraschall, Kapazitiv, Druckmatte & mehr",
+      "subtitle": "Sondertechnologien für spezielle Überwachungsanforderungen",
+      "sections": [
+        {
+          "title": "ÜBERSICHT SPEZIALMELDER",
+          "lines": [],
+          "table": {
+            "header": [
+              "Meldertyp",
+              "Prinzip",
+              "Erfassungsbereich",
+              "Besonderheit",
+              "Einsatzort",
+              "Norm",
+              "SÜ",
+              "Preis"
+            ],
+            "rows": [
+              {
+                "Meldertyp": "Ultraschallmelder",
+                "Prinzip": "Doppler-Ultraschall 40kHz",
+                "Erfassungsbereich": "10×10m",
+                "Besonderheit": "Füllt Raumvolumen, nur geschl. Räume",
+                "Einsatzort": "Geschlossene Räume",
+                "Norm": "EN 50131-2-1",
+                "SÜ": "SÜ 3-4",
+                "Preis": "50–150 €"
+              },
+              {
+                "Meldertyp": "Kapazitiver Feldmelder",
+                "Prinzip": "Elektrostatisches Feld",
+                "Erfassungsbereich": "0,5m Annäherung",
+                "Besonderheit": "Alarm VOR Berührung!",
+                "Einsatzort": "Tresore, Vitrinen, Kunst",
+                "Norm": "EN 50131-2-9",
+                "SÜ": "SÜ 5-6",
+                "Preis": "100–350 €"
+              },
+              {
+                "Meldertyp": "Druckmatte / Trittmelder",
+                "Prinzip": "Kontaktfolien unter Belag",
+                "Erfassungsbereich": "1-2m² pro Matte",
+                "Besonderheit": "Unsichtbar unter Teppich/Fliesen",
+                "Einsatzort": "Eingänge, vor Tresoren",
+                "Norm": "EN 50131-2-6",
+                "SÜ": "SÜ 4-6",
+                "Preis": "80–250 €"
+              },
+              {
+                "Meldertyp": "Seismischer Sensor",
+                "Prinzip": "Seismische Vibration",
+                "Erfassungsbereich": "Pro Tresorwand",
+                "Besonderheit": "Erkennt Bohr-/Sprengversuche",
+                "Einsatzort": "Tresore, Tresorräume",
+                "Norm": "EN 50131-2-8",
+                "SÜ": "SÜ 5-6",
+                "Preis": "150–500 €"
+              },
+              {
+                "Meldertyp": "Neigungssensor",
+                "Prinzip": "Gyrosensor / Neigung",
+                "Erfassungsbereich": "Pro Objekt",
+                "Besonderheit": "Erkennt Kippen/Umwerfen",
+                "Einsatzort": "Tresore, Geldautomaten",
+                "Norm": "—",
+                "SÜ": "SÜ 3-5",
+                "Preis": "30–100 €"
+              },
+              {
+                "Meldertyp": "Wassermelder",
+                "Prinzip": "Leitfähigkeit",
+                "Erfassungsbereich": "Bodenkontakt",
+                "Besonderheit": "Erkennt Leckagen/Überschwemmung",
+                "Einsatzort": "Serverräume, Keller",
+                "Norm": "—",
+                "SÜ": "SÜ 2-4",
+                "Preis": "20–80 €"
+              },
+              {
+                "Meldertyp": "Gasmelder (CO/CH₄)",
+                "Prinzip": "Katalytisch/Elektrochem.",
+                "Erfassungsbereich": "Raum",
+                "Besonderheit": "Erkennt Gasaustritt",
+                "Einsatzort": "Heizungsräume, Küchen",
+                "Norm": "DIN EN 50194",
+                "SÜ": "SÜ 1-3",
+                "Preis": "30–120 €"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "d10_schliessblechkontakt",
+      "name": "Schließblech-/Riegelkontakt",
+      "title": "SCHLIESSBLECH- & RIEGELKONTAKT – Verschlussüberwachung",
+      "subtitle": "Unterschied: Tür ZU ≠ Tür VERRIEGELT! | VdS 2269 ab SÜ 3",
+      "sections": [
+        {
+          "title": "WICHTIGER UNTERSCHIED",
+          "lines": [
+            "MAGNETKONTAKT erkennt: Tür OFFEN oder ZU (= Tür-Stellung im Rahmen)",
+            "SCHLIESSBLECH erkennt: Tür VERRIEGELT oder NICHT (= Schloss-Riegel eingefahren?)",
+            "→ Eine Tür kann ZU sein (Magnetkontakt = OK), aber NICHT ABGESCHLOSSEN!",
+            "→ Nur der Schließblechkontakt / Riegelschaltkontakt erkennt die tatsächliche Verriegelung.",
+            "→ Ab VdS SÜ 3 sind Schließblechkontakte für alle gesicherten Zugangstüren PFLICHT.",
+            "Empfehlung Hochsicherheit: Magnetkontakt + Schließblechkontakt = doppelte Absicherung",
+            "Norm: VdS 2269, DIN EN 50131-2-6 | Preis: 35–90 € | Hersteller: BKS, Assa Abloy, GU"
+          ]
+        }
+      ]
+    }
+  ]
+}
