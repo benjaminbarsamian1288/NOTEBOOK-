@@ -96,7 +96,34 @@
 
 /* Highlight active elements with a pulsing glow */
 .expl-svg g[id][style*="opacity: 1"] {
-  filter: drop-shadow(0 0 4px currentColor);
+  filter: drop-shadow(0 0 3px currentColor);
+}
+
+/* Currently active step gets stronger pulsing aura */
+.expl-svg .expl-active {
+  filter: drop-shadow(0 0 8px #38bdf8) drop-shadow(0 0 16px rgba(56,189,248,.5));
+  animation: explActivePulse 1.6s ease-in-out infinite;
+}
+@keyframes explActivePulse {
+  0%, 100% { filter: drop-shadow(0 0 6px #38bdf8) drop-shadow(0 0 14px rgba(56,189,248,.4)); }
+  50%      { filter: drop-shadow(0 0 12px #38bdf8) drop-shadow(0 0 24px rgba(56,189,248,.7)); }
+}
+
+/* Smooth fade for narration text */
+.expl-text {
+  transition: opacity .25s ease;
+}
+
+/* Speed switcher */
+.expl-speed-wrap {
+  display: flex; align-items: center; gap: 6px;
+}
+.expl-speed-wrap label { color: rgba(232,237,247,.6); }
+.expl-speed {
+  min-width: 48px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
 }
 
 /* Featured "play video" button in encyclopedia cards */
