@@ -97,6 +97,7 @@ window.V = (() => {
       { v:'galerie',      icon:'fa-images',              t:'Produkt-Galerie',       d:'Realistische Produkt-Fotos · Hersteller' },
       { v:'mediathek',    icon:'fa-photo-film',          t:'Mediathek',             d:'Alle Bilder + Animationsvideos zusammen' },
       { v:'zwiebel3d',    icon:'fa-circle-dot',          t:'3D-Zwiebelmodell',      d:'Interaktives 4-Zonen-Schutzkonzept' },
+      { v:'haus3d',       icon:'fa-house-chimney',       t:'Sicherheits-Haus 3D',   d:'Vom Außenzaun bis zum Tresor · alle 4 Zonen' },
       { v:'gesetze',      icon:'fa-gavel',               t:'Gesetze · KRITIS · NIS2', d:'BewachV · DGUV · VdS · KRITIS-DachG' },
       { v:'konfigurator', icon:'fa-sliders',             t:'Konfigurator',          d:'Komplette Stack-Empfehlung mit Preis' },
       { v:'vergleich',    icon:'fa-table-cells-large',   t:'Melder-Vergleich',      d:'PIR vs MW vs Dual vs Schranke' },

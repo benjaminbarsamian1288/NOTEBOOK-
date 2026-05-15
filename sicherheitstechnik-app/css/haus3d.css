@@ -1,0 +1,163 @@
+/* Sicherheits-Haus 3D */
+
+.haus-zonebar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.haus-zone-btn {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,.04);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 10px 12px;
+  cursor: pointer;
+  color: var(--text);
+  text-align: left;
+  transition: all .15s;
+}
+.haus-zone-btn:hover {
+  border-color: rgba(255,255,255,.15);
+  transform: translateY(-2px);
+}
+.haus-zone-btn.active {
+  border-color: var(--c);
+  background: color-mix(in srgb, var(--c) 14%, transparent);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--c) 35%, transparent);
+}
+.haus-zone-num {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: var(--c);
+  color: #0b1424;
+  font-weight: 900;
+  font-size: 13px;
+  display: grid; place-items: center;
+}
+.haus-zone-name {
+  font-weight: 800; font-size: 12px;
+  color: var(--c);
+  letter-spacing: .6px;
+  flex: 1; min-width: 0;
+}
+.haus-zone-eye {
+  width: 30px; height: 30px;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  border-radius: 8px;
+  display: grid; place-items: center;
+  transition: background .15s, color .15s;
+}
+.haus-zone-eye:hover { background: rgba(255,255,255,.1); color: var(--text); }
+.haus-zone-eye.off { color: var(--text-mute); opacity: .4; }
+
+.haus-card {
+  position: relative;
+  background: linear-gradient(135deg, rgba(11,20,36,.85), rgba(22,37,66,.6));
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 16px;
+  overflow: hidden;
+  min-height: 520px;
+  margin-bottom: 14px;
+}
+.haus-canvas {
+  display: block;
+  width: 100%;
+  cursor: grab;
+}
+.haus-canvas:active { cursor: grabbing; }
+
+.haus-ctrl {
+  position: absolute;
+  top: 12px; right: 12px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,.1);
+  padding: 5px;
+  border-radius: 12px;
+}
+.haus-ctrl button {
+  background: rgba(255,255,255,.1);
+  border: none;
+  color: white;
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: grid; place-items: center;
+  font-size: 13px;
+}
+.haus-ctrl button:hover { background: rgba(255,255,255,.2); }
+.haus-ctrl button.active {
+  background: var(--accent);
+  color: #0b1424;
+}
+
+.haus-details-empty {
+  background: rgba(255,255,255,.03);
+  border: 1px dashed rgba(255,255,255,.1);
+  border-radius: 12px;
+  padding: 22px;
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 13px;
+}
+.haus-details-empty i { color: var(--accent); margin-right: 6px; }
+
+.haus-details-card {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--c) 12%, var(--surface)), var(--surface));
+  border: 1px solid var(--c);
+  border-radius: 14px;
+  padding: 16px;
+}
+.haus-d-head {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 14px;
+}
+.haus-d-num {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: var(--c);
+  color: #0b1424;
+  font-weight: 900;
+  font-size: 16px;
+  display: grid; place-items: center;
+}
+.haus-d-head h3 { margin: 0; color: var(--c); font-size: 18px; letter-spacing: 1px; }
+
+.haus-d-tech {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 8px;
+}
+.haus-d-item {
+  display: flex; gap: 10px;
+  padding: 10px 12px;
+  background: rgba(0,0,0,.2);
+  border-left: 3px solid var(--c);
+  border-radius: 0 8px 8px 0;
+}
+.haus-d-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--c);
+  flex-shrink: 0;
+  margin-top: 6px;
+  box-shadow: 0 0 8px var(--c);
+}
+.haus-d-lbl {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--c);
+  margin-bottom: 2px;
+}
+.haus-d-desc {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.4;
+}
