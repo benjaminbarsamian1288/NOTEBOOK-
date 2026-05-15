@@ -20,6 +20,7 @@
     spektrum: () => SPEK.view(),
     galerie: (d) => GALLERY.view(d),
     zwiebel3d: (d) => ZWIEBEL3D.view(d),
+    gesetze: (d) => GESETZE.view(d),
     vergleich: V.vergleich,
     quiz: () => TOOLS.quiz(),
     glossar: () => TOOLS.glossar(),

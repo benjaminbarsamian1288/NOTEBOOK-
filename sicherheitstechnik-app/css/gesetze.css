@@ -1,0 +1,270 @@
+/* Gesetze · Normen · Richtlinien */
+
+.ges-stats {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 12px 0 16px;
+}
+.ges-stat-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: 999px;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.ges-stat-pill strong {
+  color: var(--text);
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+}
+.ges-stat-pill i { color: var(--c, var(--accent)); font-size: 14px; }
+
+/* KRITIS-Highlight Banner */
+.ges-highlight {
+  background: linear-gradient(135deg, rgba(239,68,68,.18), rgba(192,132,252,.10));
+  border: 1px solid rgba(239,68,68,.35);
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 18px;
+  position: relative;
+  overflow: hidden;
+}
+.ges-highlight::before {
+  content: '';
+  position: absolute;
+  top: -80px; right: -80px;
+  width: 240px; height: 240px;
+  background: radial-gradient(circle, rgba(239,68,68,.4) 0%, transparent 70%);
+  pointer-events: none;
+  animation: ges-highlight-pulse 4s ease-in-out infinite;
+}
+@keyframes ges-highlight-pulse {
+  0%, 100% { opacity: .5; transform: scale(1); }
+  50%      { opacity: .8; transform: scale(1.1); }
+}
+.ges-highlight-head {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 14px;
+  color: #ef4444;
+}
+.ges-highlight-head i {
+  font-size: 18px;
+  animation: gesBlink 1.5s ease-in-out infinite;
+}
+@keyframes gesBlink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: .5; }
+}
+.ges-highlight-head strong {
+  letter-spacing: 1.5px;
+  font-size: 13px;
+  color: #ef4444;
+}
+.ges-highlight-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 10px;
+  position: relative;
+  z-index: 1;
+}
+.ges-hl-card {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 12px;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition: all .15s;
+}
+.ges-hl-card:hover {
+  transform: translateX(4px);
+  background: rgba(255,255,255,.1);
+  border-color: rgba(239,68,68,.5);
+}
+.ges-hl-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: grid; place-items: center;
+  background: linear-gradient(135deg, #ef4444, #c084fc);
+  color: white;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.ges-hl-card strong { font-size: 14.5px; }
+
+/* Cards Grid */
+.ges-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 14px;
+  margin-top: 4px;
+}
+.ges-card {
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.08);
+  border-left: 4px solid var(--c);
+  border-radius: 14px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all .25s cubic-bezier(.4,0,.2,1);
+  backdrop-filter: blur(16px);
+  display: flex; flex-direction: column;
+}
+.ges-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--c);
+  background: color-mix(in srgb, var(--c) 8%, transparent);
+  box-shadow: 0 12px 32px -10px var(--c);
+}
+.ges-card-head {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 8px;
+}
+.ges-card-icon {
+  width: 32px; height: 32px;
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--c) 22%, transparent);
+  color: var(--c);
+  display: grid; place-items: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.ges-card-kat {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: var(--c);
+  text-transform: uppercase;
+}
+.ges-card-jahr {
+  margin-left: auto;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-mute);
+  padding: 2px 8px;
+  background: rgba(255,255,255,.05);
+  border-radius: 8px;
+}
+.ges-card-kuerzel {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.ges-card-name {
+  margin: 4px 0 6px;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+.ges-card-scope {
+  color: var(--text-dim);
+  font-size: 12.5px;
+  margin-bottom: 8px;
+  font-style: italic;
+}
+.ges-card-summary {
+  color: var(--text);
+  font-size: 13.5px;
+  line-height: 1.5;
+  flex: 1;
+}
+.ges-card-footer {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.ges-card-cta {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: var(--c);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: .5px;
+}
+.ges-card-cta i { transition: transform .25s; }
+.ges-card:hover .ges-card-cta i { transform: translateX(4px); }
+
+/* Detail-Drawer */
+.ges-detail-head {
+  display: flex; gap: 12px; align-items: center;
+  margin-bottom: 8px;
+}
+.ges-detail-kuerzel {
+  background: var(--c);
+  color: #0b1424;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: .5px;
+}
+.ges-detail-jahr {
+  color: var(--text-dim);
+  font-size: 13px;
+  padding: 4px 10px;
+  background: var(--bg-2);
+  border-radius: 8px;
+}
+.ges-detail-scope {
+  color: var(--text-dim);
+  font-style: italic;
+  font-size: 13.5px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,.03);
+  border-left: 3px solid var(--c);
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 16px;
+}
+.ges-detail h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--c);
+  margin: 16px 0 8px;
+}
+.ges-detail p {
+  color: var(--text-dim);
+  font-size: 13.5px;
+  line-height: 1.55;
+  margin: 4px 0;
+}
+.ges-list {
+  padding-left: 20px;
+  margin: 0;
+}
+.ges-list li {
+  color: var(--text-dim);
+  font-size: 13.5px;
+  line-height: 1.55;
+  margin: 4px 0;
+}
+.ges-tagrow {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.ges-tag {
+  display: inline-flex; align-items: center;
+  padding: 4px 10px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+  color: var(--text-dim);
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.ges-tag-link {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 10px;
+  background: color-mix(in srgb, var(--c) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--c) 35%, transparent);
+  color: var(--c);
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+.ges-tag-link::before { content: '🔗'; font-size: 10px; }

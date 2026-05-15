@@ -96,6 +96,7 @@ window.V = (() => {
       { v:'enzyklopaedie',icon:'fa-flask',               t:'Melder-Enzyklopädie',   d:'30 Detektoren · Aktiv/Passiv · Videos' },
       { v:'galerie',      icon:'fa-images',              t:'Produkt-Galerie',       d:'Realistische Produkt-Fotos · Hersteller' },
       { v:'zwiebel3d',    icon:'fa-circle-dot',          t:'3D-Zwiebelmodell',      d:'Interaktives 4-Zonen-Schutzkonzept' },
+      { v:'gesetze',      icon:'fa-gavel',               t:'Gesetze · KRITIS · NIS2', d:'BewachV · DGUV · VdS · KRITIS-DachG' },
       { v:'konfigurator', icon:'fa-sliders',             t:'Konfigurator',          d:'Komplette Stack-Empfehlung mit Preis' },
       { v:'vergleich',    icon:'fa-table-cells-large',   t:'Melder-Vergleich',      d:'PIR vs MW vs Dual vs Schranke' },
       { v:'calculators',  icon:'fa-calculator',          t:'Calculator-Suite',      d:'8 Live-Rechner für Mengen + Preis' },
