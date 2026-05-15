@@ -348,6 +348,12 @@ window.WWD = (() => {
      ======================================================================== */
 
   const STORE_KEY = 'wwd_videos_v1';
+  const DEFAULT_DEMO = {
+    type: 'youtube',
+    id: 'IZxgbNPId6I',
+    embed: 'https://www.youtube.com/embed/IZxgbNPId6I?rel=0&modestbranding=1',
+    isDefault: true,
+  };
   const SLOTS_DEFAULT = [
     { id:'detektion',    title:'Detektion',           desc:'Kamera erkennt Bewegung — IVS/SMD/KI klassifiziert',
       placeholder:'Kameraaufnahme zeigt Person/Fahrzeug das in den Erfassungsbereich eintritt', icon:'fa-eye', color:'#22d3ee' },
@@ -422,7 +428,7 @@ window.WWD = (() => {
     const grid = el('div', { class:'wwd-gallery' });
 
     SLOTS_DEFAULT.forEach(slot => {
-      const slotData = data[slot.id] || null;
+      const slotData = data[slot.id] || DEFAULT_DEMO;
       const slotEl = el('div', { class:'wwd-gallery-slot', style:`--c:${slot.color}` });
 
       const head = el('div', { class:'wwd-gs-head' });
@@ -524,11 +530,17 @@ window.WWD = (() => {
       }
       body.appendChild(player);
 
-      const filename = slotData.name ? `<span class="wwd-player-name muted small"><i class="fas fa-file-video"></i> ${slotData.name}</span>` : '';
+      const filename = slotData.name
+        ? `<span class="wwd-player-name muted small"><i class="fas fa-file-video"></i> ${slotData.name}</span>`
+        : (slotData.isDefault
+          ? `<span class="wwd-player-name muted small"><i class="fab fa-youtube" style="color:#ff0000"></i> KWS Video Control · Offizielles Demo</span>`
+          : '');
       const ctl = el('div', { class:'wwd-player-ctl' });
+      const removeLabel = slotData.isDefault ? 'Durch eigenes Video ersetzen' : 'Entfernen';
+      const removeIcon = slotData.isDefault ? 'fa-arrows-rotate' : 'fa-xmark';
       ctl.innerHTML = `
         ${filename}
-        <button class="btn btn-ghost" data-act="remove"><i class="fas fa-xmark"></i> Entfernen</button>
+        <button class="btn btn-ghost" data-act="remove"><i class="fas ${removeIcon}"></i> ${removeLabel}</button>
       `;
       ctl.querySelector('[data-act="remove"]').onclick = () => {
         const data = loadVideos();
