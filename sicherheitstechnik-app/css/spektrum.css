@@ -61,7 +61,18 @@
   border-radius: var(--r-md);
   background: rgba(0,0,0,.4);
   border: 1px solid var(--border-soft);
+  touch-action: none;  /* canvas darf nicht scrollen */
 }
+/* Bigger touch hitbox for tuner sliders */
+.spek-tuner .fp-slider { height: 30px; touch-action: pan-x; }
+.spek-tuner .fp-slider::-webkit-slider-thumb {
+  width: 28px; height: 28px;
+}
+.spek-tuner .fp-slider::-moz-range-thumb {
+  width: 28px; height: 28px;
+}
+/* Prevent page scrolling while interacting with sliders */
+input[type="range"] { touch-action: pan-x; }
 .spek-tuner-ctrl { display: flex; flex-direction: column; gap: 8px; }
 .spek-tuner-label { text-align: center; }
 .spek-tuner-label strong { display: block; }

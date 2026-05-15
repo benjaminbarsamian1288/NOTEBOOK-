@@ -80,11 +80,23 @@
 }
 .fp-slider {
   flex: 1; min-width: 180px;
-  height: 6px;
+  height: 24px;  /* bigger hitbox */
   -webkit-appearance: none; appearance: none;
-  background: var(--bg-2);
+  background: transparent;
   border-radius: 999px;
   outline: none;
+  touch-action: pan-x;  /* allow horizontal touch but not vertical scroll */
+  position: relative;
+}
+.fp-slider::-webkit-slider-runnable-track {
+  height: 6px;
+  background: var(--bg-2);
+  border-radius: 999px;
+}
+.fp-slider::-moz-range-track {
+  height: 6px;
+  background: var(--bg-2);
+  border-radius: 999px;
 }
 .fp-slider::-webkit-slider-thumb {
   -webkit-appearance: none;

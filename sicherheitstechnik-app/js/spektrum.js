@@ -228,10 +228,15 @@ window.SPEK = (() => {
       tunerFreq = +slider.value / 10;
       updateTunerLabel();
     });
+    // Block page-scroll while touching the slider
+    slider.addEventListener('touchstart', e => e.stopPropagation(), { passive:true });
+    slider.addEventListener('touchmove',  e => e.stopPropagation(), { passive:true });
     const ampSlider = el('input', { type:'range', min:'10', max:'100', value:'60', class:'fp-slider' });
     ampSlider.addEventListener('input', () => {
       tunerAmp = +ampSlider.value / 100;
     });
+    ampSlider.addEventListener('touchstart', e => e.stopPropagation(), { passive:true });
+    ampSlider.addEventListener('touchmove',  e => e.stopPropagation(), { passive:true });
     const lblFreq = el('div', { class:'spek-tuner-label' });
     const lblWave = el('div', { class:'spek-tuner-label small muted' });
 
@@ -247,22 +252,34 @@ window.SPEK = (() => {
       const f = Math.pow(10, power);
       let fStr;
       if (f < 1e3) fStr = f.toFixed(1) + ' Hz';
-      else if (f < 1e6) fStr = (f/1e3).toFixed(1) + ' kHz';
-      else if (f < 1e9) fStr = (f/1e6).toFixed(1) + ' MHz';
+      else if (f < 1e6) fStr = (f/1e3).toFixed(2) + ' kHz';
+      else if (f < 1e9) fStr = (f/1e6).toFixed(2) + ' MHz';
       else if (f < 1e12) fStr = (f/1e9).toFixed(2) + ' GHz';
+      else if (f < 1e15) fStr = (f/1e12).toFixed(2) + ' THz';
+      else if (f < 1e18) fStr = (f/1e15).toFixed(2) + ' PHz';
       else fStr = f.toExponential(2) + ' Hz';
       const c_lambda = 3e8 / f;
       let lStr;
-      if (c_lambda > 1e3) lStr = (c_lambda/1e3).toFixed(1) + ' km';
-      else if (c_lambda > 1) lStr = c_lambda.toFixed(1) + ' m';
-      else if (c_lambda > 1e-3) lStr = (c_lambda*1e3).toFixed(1) + ' mm';
-      else if (c_lambda > 1e-6) lStr = (c_lambda*1e6).toFixed(1) + ' µm';
+      if (c_lambda > 1e3) lStr = (c_lambda/1e3).toFixed(2) + ' km';
+      else if (c_lambda > 1) lStr = c_lambda.toFixed(2) + ' m';
+      else if (c_lambda > 1e-3) lStr = (c_lambda*1e3).toFixed(2) + ' mm';
+      else if (c_lambda > 1e-6) lStr = (c_lambda*1e6).toFixed(2) + ' µm';
       else if (c_lambda > 1e-9) lStr = (c_lambda*1e9).toFixed(1) + ' nm';
       else lStr = c_lambda.toExponential(2) + ' m';
+      // Energy (photon)
+      const h = 6.626e-34, eV = 1.602e-19;
+      const E_eV = (h * f / eV);
+      let eStr;
+      if (E_eV < 1e-6) eStr = (E_eV*1e9).toFixed(2) + ' neV';
+      else if (E_eV < 1e-3) eStr = (E_eV*1e6).toFixed(2) + ' µeV';
+      else if (E_eV < 1) eStr = (E_eV*1e3).toFixed(2) + ' meV';
+      else if (E_eV < 1e3) eStr = E_eV.toFixed(2) + ' eV';
+      else if (E_eV < 1e6) eStr = (E_eV/1e3).toFixed(2) + ' keV';
+      else eStr = (E_eV/1e6).toFixed(2) + ' MeV';
       // Where in the spectrum?
       const inBand = whichBand(f);
-      lblFreq.innerHTML = `<strong style="color:${inBand.color}; font-size:18px">${fStr}</strong>`;
-      lblWave.innerHTML = `λ ≈ ${lStr} · ${inBand.name} (${inBand.use.split(' · ')[0]})`;
+      lblFreq.innerHTML = `<strong style="color:${inBand.color}; font-size:22px; text-shadow:0 0 16px ${inBand.color}">${fStr}</strong>`;
+      lblWave.innerHTML = `λ = <strong>${lStr}</strong> · E = <strong>${eStr}</strong> · ${inBand.name}`;
     }
     function whichBand(f) {
       // Find the closest band by log distance

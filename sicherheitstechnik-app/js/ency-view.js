@@ -203,6 +203,40 @@ window.ENCYVIEW = (() => {
       body.appendChild(proc);
     }
 
+    // ===== KI-Block: Wie KI hier wirkt =====
+    if (window.ENCY_AI) {
+      const ai = ENCY_AI.getAI(m.key);
+      if (ai) {
+        body.appendChild(el('h3', { text:'✨ KI-Erweiterung · Wie künstliche Intelligenz wirkt' }));
+        const aibox = el('div', { class:'ency-ai' });
+        aibox.innerHTML = `
+          <div class="ency-ai-header">
+            <div class="ency-ai-badge"><i class="fas fa-microchip"></i> KI</div>
+            <div class="ency-ai-kurz">${ai.kurz}</div>
+            ${ai.gain ? `<div class="ency-ai-gain">${ai.gain}</div>` : ''}
+          </div>
+          <div class="ency-ai-methods">
+            ${ai.methods.map(meth => `
+              <div class="ency-ai-method">
+                <div class="ency-ai-method-name">${meth.m}</div>
+                <div class="ency-ai-method-desc">${meth.d}</div>
+              </div>
+            `).join('')}
+          </div>
+          <div class="ency-ai-cases">
+            <h4>Praxis-Anwendungen</h4>
+            <ul>${ai.use_cases.map(u => `<li>${u}</li>`).join('')}</ul>
+          </div>
+          ${ai.example ? `
+            <div class="ency-ai-example">
+              <i class="fas fa-lightbulb"></i>
+              <span><strong>Beispiel:</strong> ${ai.example}</span>
+            </div>` : ''}
+        `;
+        body.appendChild(aibox);
+      }
+    }
+
     if (m.staerken && m.staerken.length) {
       body.appendChild(el('h3', { text: 'Stärken' }));
       const ul = el('ul', { class:'strengths' });
