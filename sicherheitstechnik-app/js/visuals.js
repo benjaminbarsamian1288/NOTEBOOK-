@@ -195,23 +195,57 @@ window.VIZ = (() => {
     ];
 
     const toolbar = el('div', { class: 'filterbar' });
-    let selectedSensor = SENSORS[0];   // sensor type to place
-    let selectedIdx = -1;              // index of currently selected placed sensor
+    let selectedSensor = null;   // NULL = nichts platzieren bei Klick
+    let selectedIdx = -1;        // selektierter platzierter Sensor
 
     SENSORS.forEach(s => {
-      const c = el('button', { class: 'chip'+(s.id===selectedSensor.id?' active':''), html: `<i class="fas ${s.icon}"></i> ${s.label}` });
+      const c = el('button', { class: 'chip', html: `<i class="fas ${s.icon}"></i> ${s.label}` });
       c.style.color = s.color;
       c.dataset.id = s.id;
       c.addEventListener('click', () => {
-        selectedSensor = s;
-        toolbar.querySelectorAll('.chip').forEach(x => x.classList.toggle('active', x.dataset.id === s.id));
+        if (selectedSensor && selectedSensor.id === s.id) {
+          selectedSensor = null;  // toggle off
+        } else {
+          selectedSensor = s;
+        }
+        toolbar.querySelectorAll('.chip').forEach(x => x.classList.toggle('active', selectedSensor && x.dataset.id === selectedSensor.id));
         selectedIdx = -1;
         renderSelectionPanel();
+        renderModeHint();
         draw();
       });
       toolbar.appendChild(c);
     });
     root.appendChild(toolbar);
+
+    // Mode hint banner
+    const modeHint = el('div', { class:'fp-mode-banner' });
+    root.appendChild(modeHint);
+    function renderModeHint() {
+      if (selectedSensor) {
+        modeHint.innerHTML = `
+          <div class="fp-mode-inner fp-mode-place">
+            <span class="fp-mode-pulse" style="background:${selectedSensor.color}; box-shadow: 0 0 12px ${selectedSensor.color}"></span>
+            <strong>PLATZIEREN-MODUS</strong>
+            <span class="fp-mode-text">→ Tippe auf den Grundriss, um <strong style="color:${selectedSensor.color}">${selectedSensor.label}</strong> zu setzen</span>
+            <button class="fp-mode-cancel" data-cancel="1">Abbrechen ✕</button>
+          </div>`;
+        const cancel = modeHint.querySelector('[data-cancel]');
+        if (cancel) cancel.addEventListener('click', () => {
+          selectedSensor = null;
+          toolbar.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
+          renderModeHint(); draw();
+        });
+      } else {
+        modeHint.innerHTML = `
+          <div class="fp-mode-inner fp-mode-view">
+            <i class="fas fa-hand-pointer"></i>
+            <strong>ANSEHEN</strong>
+            <span class="fp-mode-text">→ Erst Sensor oben wählen, dann auf Grundriss tippen. Bestehenden Sensor antippen zum Bearbeiten.</span>
+          </div>`;
+      }
+    }
+    renderModeHint();
 
     // Action toolbar (save/load/clear + AUTO-PLAN)
     const actBar = el('div', { class: 'filterbar' });
@@ -345,8 +379,10 @@ window.VIZ = (() => {
       });
       // Coverage of placed sensors
       placed.forEach((p, i) => drawCoverage(ctx, p, i === selectedIdx));
-      // Hover preview
-      if (hover && selectedIdx < 0) drawCoverage(ctx, { x: hover.x, y: hover.y, sensor: selectedSensor, dir: -Math.PI/2, range: selectedSensor.range }, false, true);
+      // Hover preview – nur wenn ein Sensor explizit gewählt ist
+      if (hover && selectedIdx < 0 && selectedSensor) {
+        drawCoverage(ctx, { x: hover.x, y: hover.y, sensor: selectedSensor, dir: -Math.PI/2, range: selectedSensor.range }, false, true);
+      }
 
       // Update stat box
       updateStats();
@@ -390,17 +426,21 @@ window.VIZ = (() => {
         }
       }
       ctx.restore();
-      // Sensor body
-      ctx.fillStyle = s.color;
-      ctx.beginPath(); ctx.arc(x, y, isSelected ? 9 : 7, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#0b1424';
-      ctx.beginPath(); ctx.arc(x, y, isSelected ? 4 : 3.5, 0, Math.PI*2); ctx.fill();
+      // BHE-Symbol als Sensor-Marker (genormt nach BHE-Sicherheitstechnik)
+      const symbolSize = isSelected ? 32 : 26;
+      if (window.BHE_SYMBOLS) {
+        window.BHE_SYMBOLS.draw(ctx, s.id, x, y, symbolSize, s.color);
+      } else {
+        // Fallback
+        ctx.fillStyle = s.color;
+        ctx.beginPath(); ctx.arc(x, y, isSelected ? 9 : 7, 0, Math.PI*2); ctx.fill();
+      }
       // Selection ring + rotate handle
       if (isSelected) {
         ctx.strokeStyle = '#ffffff';
         ctx.lineWidth = 2;
         ctx.setLineDash([4, 4]);
-        ctx.beginPath(); ctx.arc(x, y, 16, 0, Math.PI*2); ctx.stroke();
+        ctx.beginPath(); ctx.arc(x, y, 24, 0, Math.PI*2); ctx.stroke();
         ctx.setLineDash([]);
         // Rotate handle for directional sensors
         if (s.type === 'cone' || s.type === 'beam') {
@@ -425,12 +465,11 @@ window.VIZ = (() => {
     }
 
     function findSensorAt(m) {
-      // Returns idx where mouse is on sensor body
+      // Returns idx where mouse is on sensor symbol
       for (let i = placed.length - 1; i >= 0; i--) {
         const p = placed[i];
-        const x = ox + p.x*scale, y = oy + p.y*scale;
         const d = Math.hypot(p.x*scale + ox - m.px, p.y*scale + oy - m.py);
-        if (d < 18) return { idx: i, mode: 'move' };
+        if (d < 22) return { idx: i, mode: 'move' };
       }
       return null;
     }
@@ -459,12 +498,16 @@ window.VIZ = (() => {
         drag = { mode: 'move', idx: hit.idx };
         renderSelectionPanel();
         draw();
-      } else {
-        // Empty area click → place new (only if no rotate-grip click)
+      } else if (selectedSensor) {
+        // Nur platzieren wenn explizit ein Sensor in der Toolbar angeklickt wurde
         if (m.x<0||m.y<0||m.x>16||m.y>10) return;
         const sCopy = selectedSensor;
         placed.push({ x: m.x, y: m.y, sensor: sCopy, dir: -Math.PI/2, range: sCopy.range });
         selectedIdx = placed.length - 1;
+        // Auto-exit place mode after one placement
+        selectedSensor = null;
+        toolbar.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
+        renderModeHint();
         renderSelectionPanel();
         autoSave();
         draw();

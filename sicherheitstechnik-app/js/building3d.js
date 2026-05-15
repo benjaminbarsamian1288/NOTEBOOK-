@@ -474,23 +474,15 @@ window.BLDG3D = (() => {
         ctx.fill();
       }
       ctx.restore();
-      // Body
-      const r = isSelected ? 12 : 10;
-      const grd = ctx.createRadialGradient(x-r*0.3, y-r*0.3, 0, x, y, r);
-      grd.addColorStop(0, '#ffffff');
-      grd.addColorStop(0.4, s.color);
-      grd.addColorStop(1, 'rgba(0,0,0,.5)');
-      ctx.fillStyle = grd;
-      ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fill();
-      ctx.strokeStyle = isSelected ? '#ffffff' : 'rgba(0,0,0,.5)';
-      ctx.lineWidth = isSelected ? 2 : 1;
-      ctx.stroke();
-      // Label
-      ctx.fillStyle = s.color;
-      ctx.font = `bold 10px system-ui`;
-      ctx.textAlign = 'center';
-      ctx.fillText(s.label.split(' ')[0], x, y + r + 13);
-      ctx.textAlign = 'start';
+      // BHE-Symbol als Sensor-Marker
+      const symSize = isSelected ? 32 : 26;
+      if (window.BHE_SYMBOLS) {
+        window.BHE_SYMBOLS.draw(ctx, s.id, x, y, symSize, s.color);
+      } else {
+        const r = isSelected ? 12 : 10;
+        ctx.fillStyle = s.color;
+        ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fill();
+      }
       // Selection ring + handle
       if (isSelected) {
         ctx.strokeStyle = '#ffffff';
@@ -652,16 +644,15 @@ window.BLDG3D = (() => {
         }
         ctx.globalAlpha = 1;
       }
-      const r = isSelected ? 10 : 8;
-      const grd = ctx.createRadialGradient(proj.sx-r*0.3, proj.sy-r*0.3, 0, proj.sx, proj.sy, r);
-      grd.addColorStop(0, '#ffffff');
-      grd.addColorStop(0.4, s.color);
-      grd.addColorStop(1, 'rgba(0,0,0,.5)');
-      ctx.fillStyle = grd;
-      ctx.beginPath(); ctx.arc(proj.sx, proj.sy, r, 0, Math.PI*2); ctx.fill();
-      ctx.strokeStyle = isSelected ? '#ffffff' : 'rgba(0,0,0,.4)';
-      ctx.lineWidth = isSelected ? 2 : 1;
-      ctx.stroke();
+      // BHE-Symbol als Marker im 3D-Modus
+      const symSize3 = isSelected ? 28 : 24;
+      if (window.BHE_SYMBOLS) {
+        window.BHE_SYMBOLS.draw(ctx, s.id, proj.sx, proj.sy, symSize3, s.color);
+      } else {
+        const r = isSelected ? 10 : 8;
+        ctx.fillStyle = s.color;
+        ctx.beginPath(); ctx.arc(proj.sx, proj.sy, r, 0, Math.PI*2); ctx.fill();
+      }
       if (isSelected) {
         ctx.strokeStyle = '#ffffff';
         ctx.lineWidth = 2;

@@ -2,6 +2,54 @@
    Floor-Plan Simulator – Selection-Panel, Sliders, Stats
    ============================================================ */
 
+/* Floor-Plan Modus-Banner */
+.fp-mode-banner { margin: 8px 0 12px; }
+.fp-mode-inner {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 13px;
+}
+.fp-mode-view {
+  background: linear-gradient(135deg, rgba(56,189,248,.10), rgba(34,211,238,.04));
+  border: 1px solid rgba(56,189,248,.25);
+  color: var(--text-dim);
+}
+.fp-mode-view i { color: var(--accent); }
+.fp-mode-view strong { color: var(--accent); letter-spacing: 1px; }
+.fp-mode-place {
+  background: linear-gradient(135deg, rgba(251,191,36,.18), rgba(251,191,36,.05));
+  border: 1px solid rgba(251,191,36,.45);
+  color: #fef3c7;
+  animation: fpPlaceBlink 2s ease-in-out infinite;
+}
+.fp-mode-place strong { color: #fbbf24; letter-spacing: 1px; }
+@keyframes fpPlaceBlink {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(251,191,36,.4); }
+  50%      { box-shadow: 0 0 0 8px rgba(251,191,36,0); }
+}
+.fp-mode-pulse {
+  width: 10px; height: 10px; border-radius: 50%;
+  animation: fpPulse 1s ease-in-out infinite;
+}
+@keyframes fpPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.4); opacity: .7; }
+}
+.fp-mode-text { flex: 1; }
+.fp-mode-cancel {
+  margin-left: auto;
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.15);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.fp-mode-cancel:hover { background: rgba(255,255,255,.2); }
+
 .fp-canvas {
   display: block;
   max-width: 100%;
