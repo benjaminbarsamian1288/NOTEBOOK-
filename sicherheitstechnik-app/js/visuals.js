@@ -255,6 +255,17 @@ window.VIZ = (() => {
     const clearBtn = el('button', { class: 'btn ghost', html:'<i class="fas fa-trash"></i> Alle löschen' });
     actBar.appendChild(autoBtn);
     actBar.appendChild(saveBtn); actBar.appendChild(loadBtn); actBar.appendChild(clearBtn);
+    // Zoom buttons
+    const zoomBox = el('div', { class:'fp-zoombox' });
+    const zoomIn = el('button', { class:'btn ghost fp-zoom-btn', html:'<i class="fas fa-plus"></i>' });
+    const zoomOut = el('button', { class:'btn ghost fp-zoom-btn', html:'<i class="fas fa-minus"></i>' });
+    const zoomReset = el('button', { class:'btn ghost fp-zoom-btn', html:'<i class="fas fa-arrows-to-circle"></i>' });
+    zoomIn.title = 'Vergrößern'; zoomOut.title = 'Verkleinern'; zoomReset.title = 'Zurücksetzen';
+    zoomIn.addEventListener('click', () => { zoomFactor = Math.min(4, zoomFactor * 1.2); draw(); });
+    zoomOut.addEventListener('click', () => { zoomFactor = Math.max(.4, zoomFactor / 1.2); draw(); });
+    zoomReset.addEventListener('click', () => { zoomFactor = 1.0; panX = 0; panY = 0; draw(); });
+    zoomBox.appendChild(zoomOut); zoomBox.appendChild(zoomReset); zoomBox.appendChild(zoomIn);
+    actBar.appendChild(zoomBox);
     // Auto-Plan handler: fills every room with intelligent sensors
     autoBtn.addEventListener('click', () => {
       if (placed.length && !confirm(`${placed.length} bestehende Sensoren werden überschrieben. Fortfahren?`)) return;
@@ -337,19 +348,52 @@ window.VIZ = (() => {
       }
     } catch {}
 
+    let zoomFactor = 1.0;
+    let panX = 0, panY = 0;
     function fit() {
       const W = cv.parentElement.clientWidth - 36;
       const H = 480;
       const dpr = window.devicePixelRatio || 1;
       cv.width = W*dpr; cv.height = H*dpr;
       cv.style.width = W + 'px'; cv.style.height = H + 'px';
-      scale = Math.min((W-30)/16, (H-30)/10);
-      ox = (W - 16*scale)/2; oy = 15;
+      scale = Math.min((W-30)/16, (H-30)/10) * zoomFactor;
+      ox = (W - 16*scale)/2 + panX;
+      oy = 15 + panY;
       const ctx = cv.getContext('2d');
       ctx.setTransform(dpr,0,0,dpr,0,0);
       return ctx;
     }
     function getCss(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+
+    // Wheel zoom
+    cv.addEventListener('wheel', e => {
+      e.preventDefault();
+      const factor = e.deltaY < 0 ? 1.15 : 1/1.15;
+      zoomFactor = Math.max(.4, Math.min(4, zoomFactor * factor));
+      draw();
+    }, { passive: false });
+
+    // Pinch zoom (touch)
+    let pinchStart = null;
+    cv.addEventListener('touchstart', e => {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        pinchStart = { dist: Math.hypot(dx, dy), zoom: zoomFactor };
+      }
+    }, { passive: false });
+    cv.addEventListener('touchmove', e => {
+      if (e.touches.length === 2 && pinchStart) {
+        e.preventDefault();
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const dist = Math.hypot(dx, dy);
+        zoomFactor = Math.max(.4, Math.min(4, pinchStart.zoom * (dist / pinchStart.dist)));
+        draw();
+      }
+    }, { passive: false });
+    cv.addEventListener('touchend', () => { pinchStart = null; });
 
     function draw() {
       const ctx = fit();

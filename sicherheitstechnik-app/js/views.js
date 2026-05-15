@@ -94,6 +94,8 @@ window.V = (() => {
       { v:'building3d',   icon:'fa-cube',                t:'3D-Gebäudeplaner',     d:'Isometrisches 3D-Haus · Etagen · rotierbar' },
       { v:'spektrum',     icon:'fa-wave-square',         t:'Frequenz-Spektrum',     d:'EM-Spektrum · Wellenformen · Video-KI' },
       { v:'enzyklopaedie',icon:'fa-flask',               t:'Melder-Enzyklopädie',   d:'30 Detektoren · Aktiv/Passiv · Videos' },
+      { v:'galerie',      icon:'fa-images',              t:'Produkt-Galerie',       d:'Realistische Produkt-Fotos · Hersteller' },
+      { v:'zwiebel3d',    icon:'fa-circle-dot',          t:'3D-Zwiebelmodell',      d:'Interaktives 4-Zonen-Schutzkonzept' },
       { v:'konfigurator', icon:'fa-sliders',             t:'Konfigurator',          d:'Komplette Stack-Empfehlung mit Preis' },
       { v:'vergleich',    icon:'fa-table-cells-large',   t:'Melder-Vergleich',      d:'PIR vs MW vs Dual vs Schranke' },
       { v:'calculators',  icon:'fa-calculator',          t:'Calculator-Suite',      d:'8 Live-Rechner für Mengen + Preis' },

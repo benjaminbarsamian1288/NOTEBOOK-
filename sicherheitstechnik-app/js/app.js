@@ -18,6 +18,8 @@
     simulator: V.simulator,
     building3d: (d) => BLDG3D.view(d),
     spektrum: () => SPEK.view(),
+    galerie: (d) => GALLERY.view(d),
+    zwiebel3d: (d) => ZWIEBEL3D.view(d),
     vergleich: V.vergleich,
     quiz: () => TOOLS.quiz(),
     glossar: () => TOOLS.glossar(),

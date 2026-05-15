@@ -1,4 +1,4 @@
-const CACHE = 'st-katalog-v17';
+const CACHE = 'st-katalog-v18';
 const ASSETS = [
   './',
   './index.html',
@@ -11,6 +11,7 @@ const ASSETS = [
   './css/floorplan.css',
   './css/building3d.css',
   './css/spektrum.css',
+  './css/gallery.css',
   './css/modern.css',
   './js/data.js',
   './js/util.js',
@@ -30,6 +31,8 @@ const ASSETS = [
   './js/ency-view.js',
   './js/building3d.js',
   './js/spektrum.js',
+  './js/gallery.js',
+  './js/zwiebel3d.js',
   './js/tools.js',
   './js/wizard.js',
   './js/views.js',
