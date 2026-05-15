@@ -161,6 +161,12 @@ window.WWD = (() => {
     procCard.appendChild(procGrid);
     root.appendChild(procCard);
 
+    // ===== Video Gallery (user-uploaded real videos) =====
+    root.appendChild(buildVideoGallery());
+
+    // ===== Detail-Erklärung Videotechnik =====
+    root.appendChild(buildDeepDive());
+
     // Varianten Grid
     const varCard = el('div', { class:'card mt-16' });
     varCard.appendChild(el('div', { class:'card-h' }, [
@@ -309,6 +315,394 @@ window.WWD = (() => {
     root.appendChild(cta);
 
     return root;
+  }
+
+  /* ========================================================================
+     VIDEO GALLERY — User lädt eigene WWD/KWS-Videos hoch (MP4 oder YouTube/Vimeo)
+     Persistiert in localStorage, MP4s als Object-URL (Blob in IndexedDB)
+     ======================================================================== */
+
+  const STORE_KEY = 'wwd_videos_v1';
+  const SLOTS_DEFAULT = [
+    { id:'detektion',    title:'Detektion',           desc:'Kamera erkennt Bewegung — IVS/SMD/KI klassifiziert',
+      placeholder:'Kameraaufnahme zeigt Person/Fahrzeug das in den Erfassungsbereich eintritt', icon:'fa-eye', color:'#22d3ee' },
+    { id:'verifikation', title:'KI-Verifikation',     desc:'Bounding-Box, Person- oder Fahrzeug-Klassifikation',
+      placeholder:'Live-Demo mit Overlay-Bounding-Boxes PERSON / VEHICLE', icon:'fa-user-check', color:'#22c55e' },
+    { id:'leitstelle',   title:'Leitstelle-Workflow', desc:'Operator empfängt Alarm, Verifikation, Dispatch',
+      placeholder:'Innenansicht WWD-Leitstelle bei Alarmverifikation', icon:'fa-headset', color:'#fbbf24' },
+    { id:'intervention', title:'Intervention',        desc:'Flutlicht + 120-dB-Lautsprecher-Ansprache',
+      placeholder:'Aufnahme mit Lautsprecher-Durchsage und Flutlicht-Aktivierung', icon:'fa-bullhorn', color:'#ef4444' },
+  ];
+
+  function loadVideos() {
+    try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; }
+    catch { return {}; }
+  }
+  function saveVideos(o) {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(o)); } catch {}
+  }
+
+  function parseEmbedURL(url) {
+    if (!url) return null;
+    let m;
+    // YouTube long, short, /shorts/
+    if ((m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{6,})/))) {
+      return { type:'youtube', id:m[1], embed:`https://www.youtube.com/embed/${m[1]}?rel=0&modestbranding=1` };
+    }
+    // Vimeo
+    if ((m = url.match(/vimeo\.com\/(\d+)/))) {
+      return { type:'vimeo', id:m[1], embed:`https://player.vimeo.com/video/${m[1]}` };
+    }
+    // Direct MP4/WebM URL
+    if (/\.(mp4|webm|mov|m4v)(\?|$)/i.test(url)) {
+      return { type:'file', url };
+    }
+    return null;
+  }
+
+  function buildVideoGallery() {
+    const card = el('div', { class:'card mt-16 wwd-gallery-card' });
+    card.appendChild(el('div', { class:'card-h' }, [
+      el('div', { class:'ico', html:'<i class="fas fa-film"></i>' }),
+      el('h3', { text:'Eigene Videos · WWD/KWS Echt-Aufnahmen' })
+    ]));
+
+    const intro = el('p', { class:'muted', style:'margin: 0 0 12px' });
+    intro.innerHTML = '<i class="fas fa-circle-info" style="color:#22d3ee"></i> Lade hier <strong>echte MP4-Demos</strong> (Drag &amp; Drop oder Datei wählen) oder füge <strong>YouTube/Vimeo-Links</strong> deiner Aufnahmen ein. Wird lokal in deinem Browser gespeichert — kein Upload, keine Cloud.';
+    card.appendChild(intro);
+
+    const data = loadVideos();
+    const grid = el('div', { class:'wwd-gallery' });
+
+    SLOTS_DEFAULT.forEach(slot => {
+      const slotData = data[slot.id] || null;
+      const slotEl = el('div', { class:'wwd-gallery-slot', style:`--c:${slot.color}` });
+
+      const head = el('div', { class:'wwd-gs-head' });
+      head.innerHTML = `
+        <div class="wwd-gs-icon"><i class="fas ${slot.icon}"></i></div>
+        <div class="wwd-gs-meta">
+          <strong>${slot.title}</strong>
+          <span class="muted small">${slot.desc}</span>
+        </div>
+      `;
+      slotEl.appendChild(head);
+
+      const body = el('div', { class:'wwd-gs-body' });
+      slotEl.appendChild(body);
+
+      renderSlot(slot, slotData, body);
+      grid.appendChild(slotEl);
+    });
+
+    card.appendChild(grid);
+
+    // Globale Aktionen unter der Galerie
+    const actions = el('div', { class:'wwd-gallery-actions' });
+    actions.innerHTML = `
+      <button class="btn btn-ghost" id="wwd-gal-clear"><i class="fas fa-trash-can"></i> Alle Videos entfernen</button>
+      <span class="muted small">💡 MP4-Dateien werden als Daten-URL im Browser gespeichert (Limit: ca. 5 MB pro Datei je nach Browser). Für größere Dateien lieber YouTube/Vimeo-Link verwenden.</span>
+    `;
+    card.appendChild(actions);
+    actions.querySelector('#wwd-gal-clear').onclick = () => {
+      if (confirm('Alle hochgeladenen Videos wirklich entfernen?')) {
+        localStorage.removeItem(STORE_KEY);
+        location.reload();
+      }
+    };
+
+    return card;
+  }
+
+  function renderSlot(slot, slotData, body) {
+    body.innerHTML = '';
+    if (!slotData) {
+      // Empty state: drop zone
+      const drop = el('div', { class:'wwd-drop' });
+      drop.innerHTML = `
+        <div class="wwd-drop-icon"><i class="fas fa-cloud-arrow-up"></i></div>
+        <div class="wwd-drop-text">
+          <strong>Video hier ablegen oder klicken</strong>
+          <span class="muted small">${slot.placeholder}</span>
+        </div>
+        <input type="file" accept="video/mp4,video/webm,video/quicktime" hidden>
+      `;
+      const input = drop.querySelector('input');
+      drop.onclick = () => input.click();
+      input.onchange = (e) => handleFile(slot, e.target.files[0], body);
+      drop.ondragover = (e) => { e.preventDefault(); drop.classList.add('drag-over'); };
+      drop.ondragleave = () => drop.classList.remove('drag-over');
+      drop.ondrop = (e) => {
+        e.preventDefault(); drop.classList.remove('drag-over');
+        if (e.dataTransfer.files[0]) handleFile(slot, e.dataTransfer.files[0], body);
+      };
+      body.appendChild(drop);
+
+      // OR URL input
+      const orRow = el('div', { class:'wwd-or' });
+      orRow.innerHTML = `<span>oder URL einfügen</span>`;
+      body.appendChild(orRow);
+
+      const urlBox = el('div', { class:'wwd-url-row' });
+      urlBox.innerHTML = `
+        <input type="url" placeholder="YouTube / Vimeo / direkter MP4-Link" class="wwd-url-input">
+        <button class="btn btn-primary"><i class="fas fa-plus"></i> Einfügen</button>
+      `;
+      const urlInput = urlBox.querySelector('input');
+      const urlBtn = urlBox.querySelector('button');
+      urlBtn.onclick = () => {
+        const url = urlInput.value.trim();
+        if (!url) return;
+        const parsed = parseEmbedURL(url);
+        if (!parsed) { alert('URL nicht erkannt. Unterstützt: YouTube, Vimeo, direkte .mp4/.webm/.mov-Links'); return; }
+        const data = loadVideos();
+        data[slot.id] = parsed;
+        saveVideos(data);
+        renderSlot(slot, parsed, body);
+      };
+      urlInput.onkeydown = (e) => { if (e.key === 'Enter') urlBtn.click(); };
+      body.appendChild(urlBox);
+    } else {
+      // Filled state: render player
+      const player = el('div', { class:'wwd-player' });
+      if (slotData.type === 'youtube' || slotData.type === 'vimeo') {
+        player.innerHTML = `<iframe src="${slotData.embed}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+      } else if (slotData.type === 'file' || slotData.type === 'blob') {
+        player.innerHTML = `
+          <video controls preload="metadata" playsinline>
+            <source src="${slotData.url}" type="${slotData.mime || 'video/mp4'}">
+            Dein Browser kann dieses Video nicht abspielen.
+          </video>
+        `;
+      }
+      body.appendChild(player);
+
+      const filename = slotData.name ? `<span class="wwd-player-name muted small"><i class="fas fa-file-video"></i> ${slotData.name}</span>` : '';
+      const ctl = el('div', { class:'wwd-player-ctl' });
+      ctl.innerHTML = `
+        ${filename}
+        <button class="btn btn-ghost" data-act="remove"><i class="fas fa-xmark"></i> Entfernen</button>
+      `;
+      ctl.querySelector('[data-act="remove"]').onclick = () => {
+        const data = loadVideos();
+        delete data[slot.id];
+        saveVideos(data);
+        renderSlot(slot, null, body);
+      };
+      body.appendChild(ctl);
+    }
+  }
+
+  function handleFile(slot, file, body) {
+    if (!file) return;
+    if (!/^video\//.test(file.type)) { alert('Bitte eine Video-Datei wählen (MP4/WebM/MOV).'); return; }
+    // Try storing as data URL for small files; for larger use blob URL (won't persist, warn user)
+    const LIMIT = 4.5 * 1024 * 1024; // 4.5 MB safe for localStorage
+    if (file.size <= LIMIT) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const data = loadVideos();
+        data[slot.id] = { type:'file', url: reader.result, mime: file.type, name: file.name };
+        try {
+          saveVideos(data);
+          renderSlot(slot, data[slot.id], body);
+        } catch (e) {
+          alert('Speicherplatz im Browser zu klein. Nutze YouTube/Vimeo-Link.');
+        }
+      };
+      reader.readAsDataURL(file);
+    } else {
+      // Use blob URL (session-only)
+      const url = URL.createObjectURL(file);
+      const slotData = { type:'blob', url, mime: file.type, name: file.name, sessionOnly: true };
+      renderSlot(slot, slotData, body);
+      const note = el('div', { class:'wwd-warn small' });
+      note.innerHTML = '<i class="fas fa-triangle-exclamation"></i> Datei zu groß für persistente Speicherung (>4.5 MB). Wird nur in dieser Browser-Session angezeigt. Für dauerhaft sichtbare Videos bitte auf YouTube/Vimeo hochladen und Link einfügen.';
+      body.appendChild(note);
+    }
+  }
+
+  /* ========================================================================
+     DEEP-DIVE — Videotechnik vollständig technisch erklärt
+     ======================================================================== */
+
+  function buildDeepDive() {
+    const card = el('div', { class:'card mt-16 wwd-deep' });
+    card.appendChild(el('div', { class:'card-h' }, [
+      el('div', { class:'ico', html:'<i class="fas fa-graduation-cap"></i>' }),
+      el('h3', { text:'Videotechnik im Detail · so funktioniert KWS Video Control wirklich' })
+    ]));
+
+    const sections = [
+      {
+        icon:'fa-camera',
+        title:'1. Die Kamera — Bildsensor & Optik',
+        body:`
+          <p><strong>Bildsensor:</strong> Die Dome-Kameras nutzen einen <strong>1/1.8" oder 1/2.8" CMOS Starlight-Sensor</strong>. Größere Pixel (typisch 2.9–4.2 µm Kantenlänge) sammeln mehr Photonen pro Pixel ein — entscheidend bei Nacht. Auflösung 4 MP (2560×1440) oder 8 MP (3840×2160 / „4K UHD").</p>
+          <p><strong>Optik:</strong> Motorzoom mit <strong>25× optischem Zoom</strong>. Brennweite typisch 4,8–120 mm. Bei 120 mm sehr engerer Bildwinkel (≈ 2°) — ein Gesicht aus 200 m wird formatfüllend. Auto-Iris hält die Belichtung über Tag/Nacht stabil.</p>
+          <p><strong>Tag/Nacht-Umschaltung:</strong> Ein mechanischer <strong>IR-Cut-Filter (ICR)</strong> schwenkt nachts weg. Der Sensor empfängt dann zusätzlich Infrarotlicht (≈ 850 nm) → das Bild wird s/w, aber dramatisch lichtempfindlicher.</p>
+          <p><strong>Laser-IR statt LED-IR:</strong> KWS-Towers nutzen <strong>Laser-IR mit bis zu 100 m Reichweite</strong>. Ein Laserdioden-Array bündelt IR auf einen sehr engen Kegel (5–10°), passend zum Tele-Zoom. LED-IR wäre bei 25× Zoom nutzlos — das Bild bliebe schwarz.</p>
+          <p class="muted small"><strong>Faustregel Auflösung:</strong> Beobachten 12 px/m (Bewegung sehen) · Erkennen 50 px/m (jemand bekannt) · Identifizieren 125 px/m (Gesicht in der Datenbank). Bei 8-MP-Sensor + 25× Zoom: <strong>identifizierbar &gt; 200 m</strong>, erkennbar &gt; 450 m, beobachten &gt; 900 m.</p>
+        `
+      },
+      {
+        icon:'fa-arrows-rotate',
+        title:'2. PTZ — Pan, Tilt, Zoom',
+        body:`
+          <p>„PTZ" steht für <strong>P</strong>an (Schwenken) · <strong>T</strong>ilt (Neigen) · <strong>Z</strong>oom. Die KWS-Domes drehen <strong>360° endlos</strong> und neigen <strong>0° bis 90°</strong>. Schwenkgeschwindigkeit bis 240°/s — schnell genug, einen laufenden Menschen zu verfolgen.</p>
+          <p><strong>Presets:</strong> Bis zu 256 fest abspeicherbare Positionen. Beispiel: P1 = Eingangstor, P2 = Lagertor-Nord, P3 = Parkplatz. Die Kamera kann diese als <em>Tour</em> automatisch abfahren (P1 5s → P2 5s → P3 5s …).</p>
+          <p><strong>Auto-Tracking:</strong> Erkennt die IVS-KI ein Bewegungsobjekt, übernimmt die PTZ-Steuerung automatisch und folgt dem Ziel — der Operator muss nicht eingreifen. Bei Verlust kehrt die Kamera zur Standardposition zurück.</p>
+          <p><strong>Digitaler Zoom:</strong> Nach Erreichen des optischen Limits (25×) kann elektronisch nachgezoomt werden (bis ca. 16× digital), allerdings mit Schärfeverlust. In der Praxis kombiniert man optischen Zoom + KI-Upscaling für maximale Detailtiefe.</p>
+        `
+      },
+      {
+        icon:'fa-brain',
+        title:'3. IVS · Intelligent Video Surveillance',
+        body:`
+          <p>IVS ist die <strong>regelbasierte Bildanalyse direkt in der Kamera</strong> (Edge-Processing). Algorithmen erkennen vordefinierte Ereignisse:</p>
+          <ul>
+            <li><strong>Tripwire:</strong> Virtuelle Linie. Wer sie überquert (mit konfigurierbarer Richtung), löst aus.</li>
+            <li><strong>Intrusion:</strong> Polygon-Bereich. Wer ihn betritt oder verlässt, löst aus.</li>
+            <li><strong>Abandoned Object:</strong> Objekt liegt länger als X Sek im Bild → Alarm (Bombendrohung, vergessene Tasche).</li>
+            <li><strong>Missing Object:</strong> Objekt verschwindet aus einer ROI (Region of Interest) → Diebstahl-Alarm.</li>
+            <li><strong>Loitering:</strong> Person hält sich länger als X Min in einer Zone auf.</li>
+            <li><strong>Crowd Density:</strong> Personenanzahl pro m² überschreitet Schwelle.</li>
+            <li><strong>Fast Motion / Slow Motion:</strong> Geschwindigkeitsanomalien (z. B. ein rennendes Kind in einer Verkehrszone).</li>
+          </ul>
+          <p>Vorteil gegenüber klassischem PIR-Bewegungsmelder: IVS unterscheidet <strong>Mensch / Tier / Fahrzeug / Schatten / Blattbewegung</strong> und liefert ein riesig niedrigeres Fehlalarm-Aufkommen.</p>
+        `
+      },
+      {
+        icon:'fa-microchip',
+        title:'4. SMD & KI · Smart Motion Detection',
+        body:`
+          <p><strong>SMD Plus (Smart Motion Detection):</strong> Eine in der Kamera laufende KI klassifiziert detektierte Objekte in Echtzeit als:</p>
+          <ul>
+            <li><strong>Person</strong> (Konfidenz 0–100 %)</li>
+            <li><strong>Fahrzeug</strong> (PKW / LKW / Motorrad)</li>
+            <li><strong>Sonstiges</strong> (Tier, Schatten, Wetter)</li>
+          </ul>
+          <p>Das Modell ist ein <strong>CNN (Convolutional Neural Network)</strong>, typisch YOLOv5/v8-Variante, optimiert für die NPU im Kamera-SoC (z. B. Hisilicon, Ambarella). Inferenz &lt; 50 ms pro Frame, läuft permanent auf 4 bis 8 MP Live-Stream.</p>
+          <p><strong>Konfidenzschwelle:</strong> Im Auslieferungszustand 70 %. Heißt: PERSON 71 % löst aus, PERSON 69 % nicht. Konfigurierbar pro Zone und Tageszeit.</p>
+          <p><strong>Bounding-Box-Metadata:</strong> Die Kamera sendet zusätzlich zum Video einen <strong>Metadaten-Stream</strong> (XML/JSON) mit Klassifikation, Konfidenz und Box-Koordinaten. Der NVR/das Leitstellen-VMS überlagert das im Live-Bild — exakt das, was du in der Animation siehst.</p>
+          <p><strong>Vorgelagerte Filter:</strong> Maskenzonen (z. B. Verkehrsstraße ausblenden), Tag/Nacht-Profile, Wettermodi (Regen-Schwerpunktfilter).</p>
+        `
+      },
+      {
+        icon:'fa-file-video',
+        title:'5. Codec & Streaming · H.265, RTSP, ONVIF',
+        body:`
+          <p><strong>H.265 / HEVC:</strong> Aktueller Standard-Codec. Komprimiert das Video <strong>~50 % effizienter</strong> als H.264 bei gleicher Qualität. KWS streamt typisch in H.265+ (mit dynamischem GOP/Smart-Codec — bei wenig Bewegung weniger Bandbreite).</p>
+          <p><strong>Multi-Stream:</strong> Eine Kamera liefert <em>parallel</em> mehrere Streams:</p>
+          <ul>
+            <li><strong>Mainstream:</strong> 4K oder 4MP @ 25 fps, 4–8 Mbit/s → für Aufzeichnung</li>
+            <li><strong>Substream:</strong> 720p @ 15 fps, ~500 kbit/s → für Live-Übertragung an die Leitstelle (Bandbreite sparen)</li>
+            <li><strong>Tertiary:</strong> 360p Thumbnail-Stream → für Mobile-App</li>
+          </ul>
+          <p><strong>RTSP (Real Time Streaming Protocol):</strong> Das Transport-Protokoll. URL-Format z. B. <code>rtsp://user:pass@192.168.1.10:554/cam/realmonitor?channel=1&amp;subtype=0</code>. Standard-Port 554.</p>
+          <p><strong>ONVIF:</strong> Herstellerübergreifender Standard für IP-Kameras. Jede ONVIF-Profile-S-Kamera lässt sich von jedem ONVIF-NVR ansteuern — egal welcher Hersteller. KWS-Towers sind ONVIF-Profile-S/T-konform.</p>
+          <p><strong>Übertragung Tower → Leitstelle:</strong> Über LTE/5G-Modem (4G+ Backup), Glasfaser oder Richtfunk. Verschlüsselung mit <strong>TLS 1.3</strong>, VPN-Tunnel (IPsec/WireGuard) zur Leitstelle.</p>
+        `
+      },
+      {
+        icon:'fa-database',
+        title:'6. NVR & Speicher · Bandbreite, Retention',
+        body:`
+          <p><strong>NVR (Network Video Recorder):</strong> Industrie-PC mit 2 TB HDD (typisch WD Purple oder Seagate Skyhawk — speziell für 24/7 Schreiblast). Aufzeichnung in H.265 mit 4–6 Mbit/s pro Kamera.</p>
+          <p><strong>Speicher-Berechnung (Beispiel KWS 4×):</strong></p>
+          <ul>
+            <li>4 Kameras × 5 Mbit/s = 20 Mbit/s = 2,5 MB/s</li>
+            <li>Pro Tag: 2,5 MB/s × 86 400 s = <strong>216 GB/Tag</strong></li>
+            <li>2 TB / 216 GB ≈ <strong>9 Tage</strong> bei 24/7-Vollaufzeichnung</li>
+            <li>Mit ereignisbasierter Aufzeichnung (nur bei IVS-Trigger): typisch <strong>30–60 Tage</strong></li>
+          </ul>
+          <p><strong>DSGVO:</strong> Voreinstellung 7 Tage Speicherdauer, automatische Überschreibung. Audit-Log über jeden Zugriff. Aufzeichnung verschlüsselt (AES-256), Zugriff nur per Zwei-Faktor-Authentifizierung.</p>
+          <p><strong>Cloud-Backup (optional):</strong> Kritische Clips werden parallel verschlüsselt in deutsches Rechenzentrum repliziert (S3-kompatibel).</p>
+        `
+      },
+      {
+        icon:'fa-tower-broadcast',
+        title:'7. Alarm-Pfad · Wer bekommt wann was?',
+        body:`
+          <p><strong>Eskalations-Reihenfolge bei einem IVS/KI-Alarm:</strong></p>
+          <ol>
+            <li><strong>t = 0 s:</strong> Kamera erkennt Person → KI klassifiziert (Konfidenz &gt; 70 %).</li>
+            <li><strong>t = 0–2 s:</strong> Metadaten + Snapshot werden an den lokalen NVR und parallel an die Leitstelle gesendet (Substream, &lt; 500 kbit/s).</li>
+            <li><strong>t = 2–10 s:</strong> Operator-Workplace ploppt auf, akustischer Alarm, Live-Bild im Vollscreen.</li>
+            <li><strong>t = 10–30 s:</strong> Operator <em>verifiziert</em> visuell — echter Eindringling oder Fehlalarm (Reh, Müllbeutel im Wind)?</li>
+            <li><strong>t = 30 s:</strong> Bei Bestätigung: parallel <strong>(a)</strong> Durchsage über 120-dB-Lautsprecher, <strong>(b)</strong> Flutlicht an, <strong>(c)</strong> Funkstreife / Polizei alarmieren.</li>
+            <li><strong>t = bis 3 Min:</strong> Eintreffen der Streife (typischer Industrie-Standort in Stadtnähe).</li>
+            <li><strong>t = nach Vorfall:</strong> Komplettes Aufzeichnungspaket (Clip ± 60 s um Trigger) wird ins Beweismittel-Archiv exportiert. SHA-256-Hash für Manipulationsschutz.</li>
+          </ol>
+          <p><strong>Multi-Sensor-Fusion:</strong> Wenn EMA-Magnetkontakt + Kamera-IVS gleichzeitig auslösen, steigt die Konfidenz auf 99 % → direkter Polizei-Dispatch ohne Operator-Verifikation („Verifiziertes Sicherheits-Ereignis" nach VdS 3138).</p>
+        `
+      },
+      {
+        icon:'fa-volume-high',
+        title:'8. Lautsprecher & Lichteinsatz',
+        body:`
+          <p><strong>Lautsprecher:</strong> <strong>120 dB</strong> bei 1 m. Zum Vergleich: ein Düsenjet bei 30 m Abstand liegt bei ca. 130 dB. Der Pegel hält Eindringlinge sicher davon ab, sich auf das Areal zu wagen.</p>
+          <p><strong>Halb-Duplex-Audio:</strong> Operator spricht → Lautsprecher gibt aus. Mikrofon am Mast → Operator kann auch <em>hören</em> (z. B. Antwort des Eindringlings). Vergleichbar mit einer Sprechanlage.</p>
+          <p><strong>Vorgefertigte Audio-Bänder:</strong> Bei Nicht-Verfügbarkeit eines Operators kann die Kamera ein vordefiniertes MP3 abspielen („Sie befinden sich im videoüberwachten Bereich. Verlassen Sie das Gelände."). Konfigurierbar pro IVS-Regel.</p>
+          <p><strong>LED-Flutlicht:</strong> 2× 100 W ≈ <strong>20 000 Lumen Gesamt</strong>. Lichtfarbe 6500 K (Kaltweiß) — maximale Helligkeit, schreckt zusätzlich ab. Aktivierung über Alarm-Output der Kamera (Relais) oder per VMS-Befehl.</p>
+          <p><strong>Strobe-Modus:</strong> Optional flackerndes Licht (3–5 Hz) — wirkt psychologisch deutlich stärker als Dauerlicht, ohne lokale Vorschriften für Anwohner zu verletzen.</p>
+        `
+      },
+      {
+        icon:'fa-bolt',
+        title:'9. Stromversorgung · Autark vs. Netz',
+        body:`
+          <p><strong>Verbrauch typisch (KWS 4× Vollausstattung):</strong></p>
+          <ul>
+            <li>4× Dome-Kameras mit Laser-IR: ~30 W (gepulst, je 7,5 W)</li>
+            <li>NVR: ~25 W</li>
+            <li>Netzwerk-Switch + Modem: ~10 W</li>
+            <li>Standby Flutlicht (aus): &lt; 1 W</li>
+            <li><strong>Grundlast: ~65 W</strong></li>
+            <li>Mit Flutlicht aktiv: + 200 W = 265 W (selten, nur bei Alarm)</li>
+          </ul>
+          <p><strong>Autark-Konfiguration:</strong> 2× 305 W Solar = 610 W Peak. Typischer Ertrag in Deutschland: 3,5 kWh/Tag im Winter, 6 kWh/Tag im Sommer (Süddach).</p>
+          <p><strong>Akkubank:</strong> 2× 220 Ah @ 12 V = 5,28 kWh nutzbar (bei 50 % DoD: ~2,6 kWh). Reicht für ~40 Std. Grundlastbetrieb ohne Sonne.</p>
+          <p><strong>Auslegungs-Faustregel:</strong> 3 Tage Autonomie ohne Sonne + 30 % Reserve. Wir kalkulieren standortspezifisch mit MeteoBlue/PVGIS-Daten.</p>
+        `
+      },
+      {
+        icon:'fa-scale-balanced',
+        title:'10. DSGVO · Was rechtlich wichtig ist',
+        body:`
+          <p><strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse) — Schutz von Eigentum, Personen, Verhinderung von Straftaten. Auf Privatgrund mit klarem Hinweis grundsätzlich zulässig.</p>
+          <p><strong>Pflichten:</strong></p>
+          <ul>
+            <li><strong>Hinweispflicht (Art. 13):</strong> Vor Betreten des überwachten Bereichs muss erkennbar sein, dass gefilmt wird. Schild mit Symbol + Verantwortlicher + Kontakt + Zweck.</li>
+            <li><strong>Datenschutz-Folgenabschätzung (Art. 35):</strong> Bei systematischer Videoüberwachung öffentlich zugänglicher Bereiche zwingend.</li>
+            <li><strong>Verzeichnis Verarbeitungstätigkeiten (Art. 30):</strong> Eintrag mit Zweck, Datenarten, Speicherdauer, Empfänger.</li>
+            <li><strong>Speicherbegrenzung (Art. 5):</strong> Standard 7 Tage, längere Speicherung nur mit konkretem Anlass.</li>
+            <li><strong>Zugriffsprotokoll:</strong> Jeder Zugriff auf Aufzeichnungen wird protokolliert (Wer, Wann, Was angeschaut, Warum).</li>
+            <li><strong>Verbot privater Bereiche:</strong> Keine Aufzeichnung von Nachbargrundstücken, öffentlichen Wegen (Privacy-Masken zwingend).</li>
+          </ul>
+          <p><strong>WWD liefert:</strong> Schilder, Zaunbanner, Mustertexte für Hinweise, DSFA-Vorlage und konfiguriert Privacy-Masken bei Inbetriebnahme.</p>
+        `
+      },
+    ];
+
+    const wrap = el('div', { class:'wwd-deep-wrap' });
+    sections.forEach((s, i) => {
+      const sec = el('details', { class:'wwd-deep-sec' });
+      if (i === 0) sec.setAttribute('open', '');
+      const summary = el('summary');
+      summary.innerHTML = `
+        <div class="wwd-deep-icon"><i class="fas ${s.icon}"></i></div>
+        <div class="wwd-deep-title">${s.title}</div>
+        <i class="fas fa-chevron-down wwd-deep-chev"></i>
+      `;
+      sec.appendChild(summary);
+      const body = el('div', { class:'wwd-deep-body' });
+      body.innerHTML = s.body;
+      sec.appendChild(body);
+      wrap.appendChild(sec);
+    });
+    card.appendChild(wrap);
+    return card;
   }
 
   function wwdExplainer() {
