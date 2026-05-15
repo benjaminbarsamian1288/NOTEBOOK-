@@ -118,7 +118,13 @@ window.ENCYVIEW = (() => {
                   : 'hybrid';
     const c = el('div', { class:'ency-card' });
     c.appendChild(el('div', { class: 'type-badge ' + typeKey, text: typeKey }));
-    c.appendChild(el('div', { class:'ica', html:`<i class="fas ${m.icon||'fa-wave-square'}"></i>` }));
+    // Real-looking product photo (SVG render)
+    if (window.PHOTOS && PHOTOS.MAP[m.key]) {
+      const ph = el('div', { class: 'ency-photo', html: PHOTOS.render(m.key) });
+      c.appendChild(ph);
+    } else {
+      c.appendChild(el('div', { class:'ica', html:`<i class="fas ${m.icon||'fa-wave-square'}"></i>` }));
+    }
     c.appendChild(el('div', { class:'kat', text: m.kat }));
     c.appendChild(el('h3', { text: m.name }));
     c.appendChild(el('div', { class:'prinz', text: m.principle }));
@@ -139,11 +145,15 @@ window.ENCYVIEW = (() => {
   function openDetail(m) {
     const body = el('div', { class:'ency-detail' });
 
-    // Explainer video at the very top (the krasse Animation!)
+    // Product photo at the top
+    if (window.PHOTOS && PHOTOS.MAP[m.key]) {
+      body.appendChild(el('div', { class:'ency-detail-photo', html: PHOTOS.render(m.key) }));
+    }
+
+    // Explainer video below the photo
     if (window.EXPL && EXPL.hasExplainer(m.key)) {
       EXPL.player(m.key, body);
     } else if (m.ill && window.ILL && ILL[m.ill]) {
-      // Fallback: static illustration
       body.appendChild(el('div', { class:'hero-ill', html: ILL[m.ill]() }));
     }
     const typeKey = m.type.toLowerCase().startsWith('passiv') ? 'passiv'
@@ -164,10 +174,14 @@ window.ENCYVIEW = (() => {
       el('div',{class:'k',text:'Reichweite'}),  el('div',{class:'v',text: m.range}),
       el('div',{class:'k',text:'Zone(n)'}),     el('div',{class:'v',text: (m.zone||[]).map(z=>'Zone '+z).join(', ')}),
       el('div',{class:'k',text:'Montage'}),     el('div',{class:'v',text: m.montage || '—'}),
-      el('div',{class:'k',text:'Normen'}),      el('div',{class:'v',text: (m.normen||[]).join(' · ')}),
+      el('div',{class:'k',text:'Normen'}),      el('div',{class:'v'}, (m.normen||[]).map(n => el('span',{class:'pill b', style:'margin-right:4px', text:n}))),
       el('div',{class:'k',text:'SÜ-Klasse'}),   el('div',{class:'v',text: m.sue || '—'}),
       el('div',{class:'k',text:'Richtpreis'}),  el('div',{class:'v',text: m.preis || '—'}),
-      el('div',{class:'k',text:'Hersteller'}),  el('div',{class:'v',text: (m.hersteller||[]).join(', ')}),
+      el('div',{class:'k',text:'Hersteller'}),  el('div',{class:'v hersteller-chips'}, (m.hersteller||[]).map(h => {
+        const ch = el('span', { class:'hersteller-chip' });
+        ch.innerHTML = `<i class="fas fa-industry"></i> ${h}`;
+        return ch;
+      })),
     ]));
 
     if (m.staerken && m.staerken.length) {

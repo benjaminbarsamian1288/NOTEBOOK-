@@ -1,4 +1,143 @@
-/* Spektrum + Wellenform-Visualisierung */
+/* Spektrum-Hero (großer animierter Spektrum-Strip) */
+.spek-hero {
+  background: linear-gradient(135deg, rgba(11,20,36,.9), rgba(22,37,66,.6));
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 18px;
+  margin-bottom: 16px;
+}
+.spek-hero-title {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 4px;
+}
+.spek-hero-title h2 {
+  margin: 0; font-size: 20px;
+  background: var(--grad-1);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.spek-hero-title i { font-size: 18px; color: var(--accent); }
+.spek-hero-sub { color: var(--text-dim); font-size: 13px; margin-bottom: 12px; }
+.spek-hero-canvas {
+  width: 100%;
+  border-radius: var(--r-md);
+  cursor: pointer;
+  display: block;
+  margin-top: 10px;
+}
+
+.spek-band-info { margin-bottom: 16px; }
+.spek-band-card {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--c) 14%, var(--surface)), var(--surface));
+  border: 1px solid var(--c);
+  border-radius: var(--r-md);
+  padding: 14px 18px;
+  display: flex; align-items: center; gap: 16px;
+}
+.spek-band-color {
+  width: 12px; height: 80px; border-radius: 4px;
+  background: var(--c);
+  box-shadow: 0 0 20px var(--c);
+}
+.spek-band-body { flex: 1; min-width: 0; }
+.spek-band-body h3 { margin: 0; font-size: 18px; color: var(--c); }
+.spek-band-stats { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.spek-band-body p { color: var(--text-dim); margin: 6px 0 0; font-size: 13.5px; }
+
+.spek-pill {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.spek-pill.outline { background: transparent; border: 1px solid var(--border); color: var(--text-dim); }
+
+/* Tuner: live-tunable wave */
+.spek-tuner { display: flex; flex-direction: column; gap: 14px; }
+.spek-tuner-canvas {
+  width: 100%; display: block;
+  border-radius: var(--r-md);
+  background: rgba(0,0,0,.4);
+  border: 1px solid var(--border-soft);
+}
+.spek-tuner-ctrl { display: flex; flex-direction: column; gap: 8px; }
+.spek-tuner-label { text-align: center; }
+.spek-tuner-label strong { display: block; }
+
+/* Wave compare grid */
+.spek-wavegrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+.spek-wavecard {
+  background: var(--bg-2);
+  border: 1px solid var(--border-soft);
+  border-left: 3px solid var(--wcolor);
+  border-radius: var(--r-md);
+  padding: 12px;
+  transition: transform .15s, border-color .15s;
+}
+.spek-wavecard:hover {
+  transform: translateY(-2px);
+  border-color: var(--wcolor);
+}
+.spek-wavelbl {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--wcolor);
+  margin-bottom: 6px;
+}
+.spek-wavecv {
+  width: 100%; height: 90px;
+  display: block;
+  border-radius: 6px;
+}
+.spek-wavefacts {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.45;
+}
+
+.spek-classgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+.spek-class {
+  background: var(--bg-2);
+  border: 1px solid var(--border-soft);
+  border-top: 3px solid var(--c);
+  border-radius: var(--r-md);
+  padding: 14px;
+}
+.spek-class-head {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 10px;
+}
+.spek-class-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: grid; place-items: center;
+  font-size: 16px;
+  background: color-mix(in srgb, var(--c) 20%, transparent);
+  color: var(--c);
+}
+.spek-class strong { font-size: 14.5px; }
+.spek-class ul {
+  margin: 0; padding-left: 18px;
+  color: var(--text-dim);
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+.spek-class ul li { margin: 2px 0; }
+
+/* Old base classes kept for backward compatibility */
 .spek-canvas {
   width: 100%;
   border-radius: var(--r-md);
