@@ -1,0 +1,548 @@
+/* ============================================================
+   MODERN OVERLAY · Glas-Morphism · Animated Gradients · Krass
+   Diese Datei wird ZULETZT geladen und überschreibt strategisch.
+   ============================================================ */
+
+/* ===== Modern Design Tokens ===== */
+:root {
+  --grad-mesh:
+    radial-gradient(at 20% 10%, rgba(56,189,248,.28) 0px, transparent 40%),
+    radial-gradient(at 80% 0%, rgba(192,132,252,.25) 0px, transparent 50%),
+    radial-gradient(at 30% 80%, rgba(34,197,94,.18) 0px, transparent 45%),
+    radial-gradient(at 90% 90%, rgba(244,114,182,.20) 0px, transparent 45%);
+  --shadow-glow: 0 20px 60px -20px rgba(56,189,248,.5),
+                 0 10px 40px -10px rgba(192,132,252,.3);
+  --shadow-card: 0 10px 40px -10px rgba(0,0,0,.5),
+                 0 4px 12px -4px rgba(0,0,0,.3);
+  --shadow-hover: 0 20px 60px -10px rgba(56,189,248,.4),
+                  0 10px 30px -5px rgba(192,132,252,.25);
+}
+
+/* ===== Body backdrop with animated mesh ===== */
+body {
+  background:
+    var(--grad-mesh),
+    radial-gradient(ellipse at top, #0b1424 0%, #0a0f1a 100%);
+  background-attachment: fixed;
+  position: relative;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(at 50% 50%, rgba(56,189,248,.05), transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+  animation: meshDrift 20s ease-in-out infinite alternate;
+}
+@keyframes meshDrift {
+  from { transform: translate(-2%, -2%) scale(1.05); }
+  to   { transform: translate(2%, 2%) scale(1); }
+}
+
+/* ===== Top bar — glassmorphism ===== */
+.topbar {
+  background: rgba(11,20,36,.55) !important;
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: 1px solid rgba(255,255,255,.08) !important;
+  box-shadow: 0 1px 0 rgba(255,255,255,.04) inset;
+}
+.brand-mark {
+  background: linear-gradient(135deg, #38bdf8, #818cf8 50%, #c084fc) !important;
+  box-shadow:
+    0 8px 20px rgba(56,189,248,.4),
+    0 0 0 1px rgba(255,255,255,.1) inset;
+  animation: brandPulse 3s ease-in-out infinite;
+}
+@keyframes brandPulse {
+  0%, 100% { box-shadow: 0 8px 20px rgba(56,189,248,.4), 0 0 0 1px rgba(255,255,255,.1) inset; }
+  50%      { box-shadow: 0 8px 30px rgba(56,189,248,.6), 0 0 0 1px rgba(255,255,255,.2) inset; }
+}
+
+.search-wrap {
+  background: rgba(255,255,255,.04) !important;
+  border: 1px solid rgba(255,255,255,.1) !important;
+  backdrop-filter: blur(10px);
+}
+.search-wrap:focus-within {
+  background: rgba(255,255,255,.08) !important;
+  border-color: rgba(56,189,248,.5) !important;
+  box-shadow: 0 0 0 4px rgba(56,189,248,.15) !important;
+}
+
+/* ===== Sidebar — sleeker ===== */
+.sidebar {
+  background: rgba(11,20,36,.65) !important;
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border-right: 1px solid rgba(255,255,255,.06) !important;
+}
+.navitem {
+  font-weight: 500 !important;
+  padding: 11px 14px !important;
+  letter-spacing: .1px;
+  transition: all .25s cubic-bezier(.4,0,.2,1);
+}
+.navitem:hover {
+  background: rgba(255,255,255,.05);
+  color: #fff !important;
+  transform: translateX(3px);
+}
+.navitem.active {
+  background: linear-gradient(135deg, rgba(56,189,248,.18), rgba(192,132,252,.10)) !important;
+  border-color: rgba(56,189,248,.4) !important;
+  box-shadow: 0 0 20px rgba(56,189,248,.2);
+  color: #fff !important;
+}
+.navitem.active i { color: #fff !important; filter: drop-shadow(0 0 8px rgba(56,189,248,.6)); }
+
+/* ===== HERO — much bigger and more impressive ===== */
+.hero {
+  background:
+    radial-gradient(800px 500px at 80% 10%, rgba(56,189,248,.25), transparent 60%),
+    radial-gradient(700px 500px at 10% 90%, rgba(192,132,252,.22), transparent 60%),
+    radial-gradient(500px 400px at 50% 50%, rgba(34,211,238,.10), transparent 70%),
+    linear-gradient(135deg, #0a0f1a 0%, #162542 100%) !important;
+  border: 1px solid rgba(255,255,255,.1) !important;
+  box-shadow: var(--shadow-glow);
+  padding: clamp(28px, 5vw, 50px) !important;
+  margin-bottom: 32px !important;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  width: 500px !important; height: 500px !important;
+  background: #38bdf8 !important;
+  filter: blur(120px) !important;
+  opacity: .5 !important;
+}
+.hero::after {
+  width: 400px !important; height: 400px !important;
+  background: #c084fc !important;
+  filter: blur(120px) !important;
+  opacity: .4 !important;
+}
+.hero-grid h1 {
+  font-size: clamp(32px, 6vw, 56px) !important;
+  font-weight: 900 !important;
+  letter-spacing: -1px !important;
+  line-height: 1.0 !important;
+  background: linear-gradient(135deg, #f8fafc 0%, #38bdf8 35%, #c084fc 70%, #f472b6 100%) !important;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0 0 14px !important;
+  text-shadow: 0 0 60px rgba(56,189,248,.4);
+}
+.hero-grid .lead {
+  font-size: clamp(16px, 1.8vw, 19px) !important;
+  line-height: 1.6 !important;
+  max-width: 60ch;
+  margin-bottom: 24px !important;
+  color: rgba(232,237,247,.85) !important;
+}
+.hero-grid .tag {
+  font-size: 12px !important;
+  padding: 6px 14px !important;
+  background: rgba(56,189,248,.15) !important;
+  border: 1px solid rgba(56,189,248,.4) !important;
+  color: #67e8f9 !important;
+  font-weight: 700;
+  letter-spacing: 2px !important;
+  margin-bottom: 16px !important;
+}
+.hero .btn {
+  padding: 12px 22px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  letter-spacing: .3px;
+  border-radius: 12px !important;
+  transition: all .25s cubic-bezier(.4,0,.2,1) !important;
+}
+.hero .btn.primary {
+  background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%) !important;
+  box-shadow:
+    0 10px 30px -10px rgba(56,189,248,.6),
+    0 4px 10px rgba(56,189,248,.3),
+    0 0 0 1px rgba(255,255,255,.1) inset !important;
+}
+.hero .btn.primary:hover {
+  transform: translateY(-3px) scale(1.02) !important;
+  box-shadow:
+    0 18px 40px -10px rgba(56,189,248,.7),
+    0 8px 16px rgba(192,132,252,.4),
+    0 0 0 1px rgba(255,255,255,.2) inset !important;
+}
+.hero .btn:not(.primary):hover {
+  background: rgba(255,255,255,.16) !important;
+  transform: translateY(-2px);
+}
+
+/* ===== Stats — modern glass cards ===== */
+.bigstat {
+  background: rgba(255,255,255,.03) !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+  backdrop-filter: blur(20px);
+  transition: all .3s cubic-bezier(.4,0,.2,1);
+}
+.bigstat:hover {
+  background: rgba(255,255,255,.06) !important;
+  border-color: rgba(56,189,248,.4) !important;
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: var(--shadow-hover);
+}
+.bigstat .num {
+  font-size: clamp(30px, 4vw, 40px) !important;
+  filter: drop-shadow(0 0 20px rgba(56,189,248,.3));
+}
+
+/* ===== Quick-Action Tiles — bigger, photo-like ===== */
+.quick-actions {
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
+  gap: 16px !important;
+}
+.qa-tile {
+  background: rgba(255,255,255,.03) !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+  backdrop-filter: blur(16px);
+  padding: 22px !important;
+  border-radius: 18px !important;
+  transition: all .3s cubic-bezier(.4,0,.2,1) !important;
+  position: relative;
+  overflow: hidden;
+}
+.qa-tile::after {
+  content: '';
+  position: absolute;
+  inset: -50% -10% auto auto;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity .4s;
+  pointer-events: none;
+}
+.qa-tile:hover {
+  transform: translateY(-6px) !important;
+  border-color: rgba(56,189,248,.4) !important;
+  background: rgba(56,189,248,.05) !important;
+  box-shadow: var(--shadow-hover) !important;
+}
+.qa-tile:hover::after { opacity: .15; }
+.qa-tile .qa-i {
+  width: 48px !important; height: 48px !important;
+  font-size: 20px !important;
+  background: linear-gradient(135deg, rgba(56,189,248,.30), rgba(192,132,252,.18)) !important;
+  color: #67e8f9 !important;
+  box-shadow:
+    0 6px 20px rgba(56,189,248,.3),
+    0 0 0 1px rgba(255,255,255,.08) inset !important;
+  margin-bottom: 14px !important;
+}
+.qa-tile:hover .qa-i {
+  transform: rotate(-8deg) scale(1.1) !important;
+  background: linear-gradient(135deg, #38bdf8, #818cf8) !important;
+  color: white !important;
+}
+.qa-tile .qa-t {
+  font-size: 16px !important;
+  letter-spacing: -.2px;
+}
+
+/* ===== Zone cards — fancy depth ===== */
+.zone-card {
+  background:
+    var(--grad-zone),
+    rgba(255,255,255,.03) !important;
+  border: 1px solid rgba(255,255,255,.1) !important;
+  backdrop-filter: blur(20px);
+  padding: 26px !important;
+  transition: all .3s cubic-bezier(.4,0,.2,1);
+}
+.zone-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  border-color: var(--zone-col) !important;
+  box-shadow: 0 16px 50px -10px var(--zone-col, var(--accent));
+}
+.zone-card .num {
+  font-size: 70px !important;
+  font-weight: 900 !important;
+  filter: drop-shadow(0 0 30px var(--zone-col, var(--accent)));
+}
+.zone-card h3 {
+  font-size: 22px !important;
+  font-weight: 800 !important;
+}
+
+/* ===== Cards in general — glass ===== */
+.card {
+  background: rgba(255,255,255,.025) !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+  backdrop-filter: blur(20px);
+  border-radius: 16px !important;
+}
+
+/* ===== Buttons modernization ===== */
+.btn {
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+  transition: all .2s cubic-bezier(.4,0,.2,1) !important;
+}
+.btn.primary {
+  background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%) !important;
+  box-shadow:
+    0 8px 20px -8px rgba(56,189,248,.6),
+    0 0 0 1px rgba(255,255,255,.1) inset !important;
+}
+.btn.primary:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 12px 28px -8px rgba(56,189,248,.7),
+    0 0 0 1px rgba(255,255,255,.2) inset !important;
+}
+
+/* ===== Chips & pills — sleek ===== */
+.chip {
+  background: rgba(255,255,255,.04) !important;
+  border: 1px solid rgba(255,255,255,.1) !important;
+  transition: all .2s !important;
+}
+.chip:hover {
+  background: rgba(255,255,255,.08) !important;
+  transform: translateY(-1px);
+}
+.chip.active {
+  background: linear-gradient(135deg, rgba(56,189,248,.25), rgba(192,132,252,.15)) !important;
+  border-color: rgba(56,189,248,.5) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(56,189,248,.25);
+}
+
+/* ===== Encyclopedia cards extra polish ===== */
+.ency-card {
+  background: rgba(255,255,255,.03) !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+  backdrop-filter: blur(16px);
+  border-radius: 18px !important;
+  padding: 20px !important;
+}
+.ency-card:hover {
+  transform: translateY(-6px) scale(1.01) !important;
+  background: rgba(255,255,255,.06) !important;
+  border-color: rgba(56,189,248,.4) !important;
+  box-shadow: var(--shadow-hover) !important;
+}
+.ency-photo {
+  background: linear-gradient(135deg, rgba(255,255,255,.04), rgba(255,255,255,.0)) !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+  height: 140px !important;
+  border-radius: 12px !important;
+}
+.ency-photo svg { max-height: 125px !important; }
+
+/* ===== Drawer — fancier ===== */
+.drawer-backdrop {
+  background: rgba(0,0,0,.7) !important;
+  backdrop-filter: blur(10px);
+}
+.drawer-panel {
+  background: rgba(15,26,46,.85) !important;
+  backdrop-filter: blur(30px) saturate(140%);
+  -webkit-backdrop-filter: blur(30px) saturate(140%);
+  border-left: 1px solid rgba(56,189,248,.2) !important;
+}
+.drawer-head {
+  background: linear-gradient(135deg, rgba(56,189,248,.08), transparent);
+  border-bottom: 1px solid rgba(255,255,255,.06) !important;
+  padding: 20px 24px !important;
+}
+.drawer-head h2 {
+  font-size: 22px !important;
+  font-weight: 800 !important;
+  letter-spacing: -.3px;
+}
+
+/* ===== Tables — modern ===== */
+table.data th {
+  background: rgba(255,255,255,.03) !important;
+  border-bottom: 1px solid rgba(255,255,255,.08) !important;
+}
+table.data td {
+  border-bottom: 1px solid rgba(255,255,255,.04) !important;
+}
+table.data tr:hover td {
+  background: rgba(56,189,248,.04) !important;
+}
+
+/* ===== Search overlay ===== */
+.search-overlay {
+  background: rgba(0,0,0,.65) !important;
+  backdrop-filter: blur(16px);
+}
+.search-panel {
+  background: rgba(15,26,46,.92) !important;
+  backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255,255,255,.1) !important;
+  border-radius: 20px !important;
+  box-shadow: var(--shadow-glow);
+}
+
+/* ===== View transitions — fade-up ===== */
+#view-host > * {
+  animation: viewIn .35s cubic-bezier(.16,.7,.3,1);
+}
+@keyframes viewIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ===== Floating action — back to top? ===== */
+
+/* ===== Scrollbar styling ===== */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(56,189,248,.3) transparent;
+}
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+  background: rgba(56,189,248,.3);
+  border-radius: 8px;
+}
+*::-webkit-scrollbar-thumb:hover { background: rgba(56,189,248,.5); }
+
+/* ===== Bigger touch targets on mobile ===== */
+@media (max-width: 600px) {
+  .btn { min-height: 44px; }
+  .chip { min-height: 36px; }
+  .iconbtn { width: 42px !important; height: 42px !important; }
+  .navitem { padding: 14px !important; font-size: 15px !important; }
+  .qa-tile { padding: 18px !important; }
+  .qa-tile .qa-t { font-size: 15px !important; }
+  .qa-tile .qa-d { font-size: 12px !important; }
+  .hero-grid h1 { font-size: 28px !important; }
+  .zone-card .num { font-size: 50px !important; }
+}
+
+/* ===== Konfigurator cards modernized ===== */
+.kfg-card {
+  background: rgba(255,255,255,.03) !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+  backdrop-filter: blur(16px);
+  border-radius: 16px !important;
+}
+.kfg-card:hover {
+  background: rgba(56,189,248,.05) !important;
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px -8px rgba(56,189,248,.3);
+}
+.kfg-sect {
+  background: rgba(255,255,255,.025) !important;
+  border: 1px solid rgba(255,255,255,.06) !important;
+  backdrop-filter: blur(20px);
+  padding: 18px !important;
+  border-radius: 16px !important;
+}
+
+/* ===== Explainer Player modernized ===== */
+.expl-wrap {
+  background:
+    radial-gradient(ellipse at top left, rgba(56,189,248,.15), transparent 50%),
+    linear-gradient(135deg, #0a0f1a, #162542) !important;
+  border: 1px solid rgba(255,255,255,.1) !important;
+  backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-card);
+  border-radius: 18px !important;
+  padding: 22px !important;
+}
+.expl-head h3 {
+  font-size: 20px !important;
+  font-weight: 800 !important;
+}
+.expl-stage {
+  background: rgba(0,0,0,.45) !important;
+  border-radius: 14px !important;
+}
+
+/* ===== Floating action button (FAB) for search ===== */
+.fab-search {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #38bdf8, #c084fc);
+  color: white;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  z-index: 50;
+  box-shadow:
+    0 10px 30px rgba(56,189,248,.5),
+    0 4px 12px rgba(192,132,252,.3);
+  display: none;  /* only on mobile */
+  align-items: center;
+  justify-content: center;
+  animation: fabBob 3s ease-in-out infinite;
+}
+@keyframes fabBob {
+  0%,100% { transform: translateY(0); }
+  50%     { transform: translateY(-4px); }
+}
+@media (max-width: 900px) {
+  .fab-search { display: flex; }
+}
+
+/* ===== Generally smoother typography ===== */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+.view-head h1 {
+  font-size: clamp(26px, 3.5vw, 36px) !important;
+  font-weight: 900 !important;
+  letter-spacing: -.5px !important;
+  margin-bottom: 6px !important;
+}
+.view-head p {
+  font-size: 15px !important;
+  color: rgba(232,237,247,.7) !important;
+  max-width: 70ch;
+}
+.view-head .crumb {
+  letter-spacing: 2px !important;
+  font-weight: 700;
+  color: rgba(56,189,248,.8) !important;
+}
+
+/* ===== Hover effects on all interactive elements ===== */
+button, .navitem, .chip, .qa-tile, .ency-card, .zone-card, .kfg-card, .bigstat {
+  will-change: transform;
+}
+
+/* ===== Modern light theme ===== */
+[data-theme="light"] body {
+  background:
+    radial-gradient(at 20% 10%, rgba(56,189,248,.12) 0px, transparent 50%),
+    radial-gradient(at 80% 0%, rgba(192,132,252,.10) 0px, transparent 50%),
+    radial-gradient(at 30% 80%, rgba(34,197,94,.08) 0px, transparent 50%),
+    linear-gradient(135deg, #f1f5fb, #e7ecf6) !important;
+}
+[data-theme="light"] .hero {
+  background:
+    radial-gradient(800px 500px at 80% 10%, rgba(56,189,248,.22), transparent 60%),
+    radial-gradient(700px 500px at 10% 90%, rgba(192,132,252,.18), transparent 60%),
+    linear-gradient(135deg, #0f1a2e 0%, #162542 100%) !important;
+}
+[data-theme="light"] .card,
+[data-theme="light"] .qa-tile,
+[data-theme="light"] .bigstat,
+[data-theme="light"] .ency-card {
+  background: rgba(255,255,255,.7) !important;
+  border-color: rgba(0,0,0,.06) !important;
+}
+[data-theme="light"] .topbar,
+[data-theme="light"] .sidebar {
+  background: rgba(255,255,255,.7) !important;
+  border-color: rgba(0,0,0,.06) !important;
+}
