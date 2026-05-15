@@ -371,6 +371,28 @@ window.WWD = (() => {
     intro.innerHTML = '<i class="fas fa-circle-info" style="color:#22d3ee"></i> Lade hier <strong>echte MP4-Demos</strong> (Drag &amp; Drop oder Datei wählen) oder füge <strong>YouTube/Vimeo-Links</strong> deiner Aufnahmen ein. Wird lokal in deinem Browser gespeichert — kein Upload, keine Cloud.';
     card.appendChild(intro);
 
+    // Quick-Links zu Hersteller-Quellen (User kopiert Video-Links von dort)
+    const sources = el('div', { class:'wwd-sources' });
+    sources.innerHTML = `
+      <span class="wwd-sources-label"><i class="fas fa-link"></i> Video-Quellen öffnen:</span>
+      <a href="https://www.kws-kiel.de/" target="_blank" rel="noopener" class="wwd-source-link">
+        <i class="fas fa-tower-cell"></i> KWS Kiel <i class="fas fa-arrow-up-right-from-square small"></i>
+      </a>
+      <a href="https://www.youtube.com/results?search_query=KWS+Video+Control+mobiler+Videoturm" target="_blank" rel="noopener" class="wwd-source-link">
+        <i class="fab fa-youtube"></i> YouTube · KWS Video Control <i class="fas fa-arrow-up-right-from-square small"></i>
+      </a>
+      <a href="https://www.youtube.com/@HikvisionEurope/videos" target="_blank" rel="noopener" class="wwd-source-link">
+        <i class="fab fa-youtube"></i> Hikvision Europe <i class="fas fa-arrow-up-right-from-square small"></i>
+      </a>
+      <a href="https://www.youtube.com/@DahuaTechnology/videos" target="_blank" rel="noopener" class="wwd-source-link">
+        <i class="fab fa-youtube"></i> Dahua Technology <i class="fas fa-arrow-up-right-from-square small"></i>
+      </a>
+      <a href="https://www.youtube.com/@AxisCommunications/videos" target="_blank" rel="noopener" class="wwd-source-link">
+        <i class="fab fa-youtube"></i> Axis Communications <i class="fas fa-arrow-up-right-from-square small"></i>
+      </a>
+    `;
+    card.appendChild(sources);
+
     const data = loadVideos();
     const grid = el('div', { class:'wwd-gallery' });
 
