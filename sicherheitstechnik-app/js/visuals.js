@@ -213,12 +213,47 @@ window.VIZ = (() => {
     });
     root.appendChild(toolbar);
 
-    // Action toolbar (save/load/clear)
+    // Action toolbar (save/load/clear + AUTO-PLAN)
     const actBar = el('div', { class: 'filterbar' });
+    const autoBtn = el('button', { class: 'btn primary', html:'<i class="fas fa-wand-magic-sparkles"></i> Auto-Plan' });
     const saveBtn = el('button', { class: 'btn ghost', html:'<i class="fas fa-floppy-disk"></i> Speichern' });
     const loadBtn = el('button', { class: 'btn ghost', html:'<i class="fas fa-folder-open"></i> Laden' });
     const clearBtn = el('button', { class: 'btn ghost', html:'<i class="fas fa-trash"></i> Alle löschen' });
+    actBar.appendChild(autoBtn);
     actBar.appendChild(saveBtn); actBar.appendChild(loadBtn); actBar.appendChild(clearBtn);
+    // Auto-Plan handler: fills every room with intelligent sensors
+    autoBtn.addEventListener('click', () => {
+      if (placed.length && !confirm(`${placed.length} bestehende Sensoren werden überschrieben. Fortfahren?`)) return;
+      const nPlaced = [];
+      // Magnetkontakte an allen Fenstern und Außentüren
+      OPENINGS.forEach(o => {
+        const sx = o.x + (o.d==='h' ? o.length/2 : 0);
+        const sy = o.y + (o.d==='v' ? o.length/2 : 0);
+        if (o.type === 'door' || o.type === 'window') {
+          const x = Math.max(0.3, Math.min(15.7, sx + (sx<.5 ? .3 : sx>15.5 ? -.3 : 0)));
+          const y = Math.max(0.3, Math.min(9.7, sy + (sy<.5 ? .3 : sy>9.5 ? -.3 : 0)));
+          nPlaced.push({ x, y, sensor: SENSORS.find(s=>s.id==='mag'), dir: 0, range: 0.5 });
+        }
+      });
+      // Pro Raum: PIR in Ecke + Rauchmelder in Mitte (Bad: kein Rauch + Glasbruch in wertvollen Räumen)
+      ROOMS.forEach(r => {
+        const cornerX = r.x + 0.6;
+        const cornerY = r.y + 0.6;
+        nPlaced.push({ x: cornerX, y: cornerY, sensor: SENSORS.find(s=>s.id==='pir'), dir: Math.PI/4, range: Math.min(r.w, r.h, 6) });
+        if (r.name !== 'Bad') {
+          nPlaced.push({ x: r.x + r.w/2, y: r.y + r.h/2, sensor: SENSORS.find(s=>s.id==='fire'), dir: 0, range: Math.min(r.w/2, r.h/2, 4) });
+        }
+        if (['Wohnen','Schlaf','Büro','Kind'].includes(r.name)) {
+          nPlaced.push({ x: r.x + r.w/2, y: r.y + r.h*0.7, sensor: SENSORS.find(s=>s.id==='glass'), dir: 0, range: 6 });
+        }
+      });
+      placed = nPlaced;
+      selectedIdx = -1;
+      renderSelectionPanel();
+      autoSave();
+      draw();
+      U.toast(`${nPlaced.length} Sensoren automatisch platziert`);
+    });
     const statBox = el('div', { class: 'fp-stat' });
     actBar.appendChild(statBox);
     root.appendChild(actBar);
@@ -295,6 +330,8 @@ window.VIZ = (() => {
         ctx.strokeRect(x,y,w,h);
         ctx.fillStyle = getCss('--text-dim'); ctx.font = '11px system-ui';
         ctx.fillText(r.name, x+4, y+14);
+        // Furniture (real floor-plan look)
+        if (window.FURN) FURN.render(ctx, r.name, x, y, scale, r.w, r.h);
       });
       // Openings
       OPENINGS.forEach(o => {
