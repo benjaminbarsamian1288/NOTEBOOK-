@@ -1,4 +1,16 @@
 /* 3D-Gebäudeplaner */
+.b3d-card { padding: 18px; overflow: visible; }
+.b3d-hint {
+  background: linear-gradient(135deg, rgba(56,189,248,.12), rgba(34,211,238,.05));
+  color: var(--text-dim);
+  font-size: 12.5px;
+  padding: 9px 14px;
+  border-radius: var(--r-md);
+  margin: 10px 0;
+  border: 1px solid rgba(56,189,248,.2);
+}
+.b3d-hint i { color: var(--accent); margin-right: 6px; }
+
 .b3d-canvas {
   display: block;
   width: 100%;
