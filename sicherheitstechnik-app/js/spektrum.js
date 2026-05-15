@@ -5,19 +5,52 @@
 window.SPEK = (() => {
   const { el } = U;
 
-  // 11 Bänder von Gamma bis Infraschall
+  // 11 Bänder mit präzisen Frequenz-Werten und Beispielen aus der Sicherheitstechnik
   const BANDS = [
-    { name:'Gamma',         freq:'> 10²⁰ Hz',     lambda:'< 10⁻¹² m',    color:'#a78bfa', use:'Medizin · Strahlentherapie · Sterilisation', f:1e21, lam:1e-13 },
-    { name:'Röntgen',       freq:'10¹⁶–10²⁰ Hz', lambda:'10⁻¹⁰–10⁻⁸ m', color:'#7c3aed', use:'Medizin · Materialprüfung · Sicherheitsscanner', f:1e18, lam:1e-10 },
-    { name:'UV',            freq:'10¹⁵–10¹⁶ Hz', lambda:'10⁻⁸–4·10⁻⁷ m', color:'#6366f1', use:'Flammenmelder · Desinfektion · Schwarzlicht', f:1e16, lam:3e-8 },
-    { name:'Sichtbar',      freq:'4·10¹⁴–8·10¹⁴ Hz', lambda:'400–700 nm', color:'#22c55e', use:'Auge · Kameras · Video · LED-Licht', f:5e14, lam:550e-9 },
-    { name:'Nahes IR',      freq:'10¹⁴ Hz',     lambda:'700–1000 nm',  color:'#fbbf24', use:'IR-Lichtschranke (940 nm) · Nachtsicht-Kameras', f:3e14, lam:940e-9 },
-    { name:'Thermisches IR',freq:'10¹²–10¹⁴ Hz', lambda:'1–14 µm',     color:'#ef4444', use:'PIR-Bewegungsmelder (8–14 µm) · Thermalkamera', f:3e13, lam:10e-6 },
-    { name:'Mikrowelle',    freq:'1–300 GHz',    lambda:'1 mm–1 m',    color:'#22d3ee', use:'MW-Melder (10,5 GHz) · Radar · Mobilfunk 5G', f:10e9, lam:3e-2 },
-    { name:'Funk / Radio',  freq:'30 kHz–1 GHz', lambda:'> 1 m',       color:'#38bdf8', use:'EMA-Funk 868 MHz · GSM · WLAN · FM-Radio', f:868e6, lam:0.35 },
-    { name:'Ultraschall',   freq:'20 kHz–500 kHz', lambda:'mm–cm',     color:'#a3e635', use:'Ultraschall-Melder (40 kHz) · Distanz-Sensoren', f:40e3, lam:8e-3, acoustic: true },
-    { name:'Schall (Audio)',freq:'20 Hz–20 kHz', lambda:'17 m–17 mm',  color:'#84cc16', use:'Glasbruch akustisch · Mikrofone · Hören', f:1000, lam:0.34, acoustic: true },
-    { name:'Infraschall',   freq:'< 20 Hz',      lambda:'> 17 m',      color:'#65a30d', use:'Erschütterungsmelder · Geophone · Seismik', f:5, lam:68, acoustic: true },
+    { name:'Gamma',         freq:'> 10²⁰ Hz · ≥ 100 EHz',     lambda:'< 1 pm (10⁻¹² m)',    color:'#a78bfa',
+      use:'Medizin: Strahlentherapie · Industrie: Materialprüfung',
+      details:'Energie: > 100 keV. Wird in der Sicherheitstechnik nicht aktiv genutzt, aber Detektoren (Geiger-Müller-Zähler) erkennen radioaktive Quellen.',
+      f:1e21, lam:1e-13 },
+    { name:'Röntgen',       freq:'10¹⁶ – 10²⁰ Hz · 10 PHz – 100 EHz', lambda:'10⁻¹⁰ – 10⁻⁸ m (0,1 – 10 nm)', color:'#7c3aed',
+      use:'Flughafen-Gepäckscanner · Containerscan · Medizin',
+      details:'Sicherheitsscanner: Photonenenergie ~10–200 keV. Materialdurchdringung je nach Dichte (Knochen, Metall sichtbar).',
+      f:1e18, lam:1e-10 },
+    { name:'UV',            freq:'7,5·10¹⁴ – 3·10¹⁶ Hz', lambda:'10 – 400 nm', color:'#6366f1',
+      use:'Flammenmelder UV (190–260 nm) · Desinfektion (UVC 254 nm)',
+      details:'Flammen erzeugen charakteristische UV-Emission die ein Solarblinder UV-Sensor erkennt — Sonnenlicht (atmosphärisch gefiltert) wird ausgeblendet.',
+      f:1e16, lam:3e-8 },
+    { name:'Sichtbar',      freq:'4,3·10¹⁴ – 7,5·10¹⁴ Hz', lambda:'400 – 700 nm', color:'#22c55e',
+      use:'Video-Kameras (RGB) · LEDs · Laser-Lichtschranken (635 nm rot)',
+      details:'CMOS/CCD-Sensoren in Kameras. 400 nm = blau, 550 nm = grün, 700 nm = rot. KI-Bildanalyse für Video-Technik.',
+      f:5e14, lam:550e-9 },
+    { name:'Nahes IR',      freq:'3·10¹³ – 4,3·10¹⁴ Hz',    lambda:'700 nm – 10 µm',  color:'#fbbf24',
+      use:'IR-Lichtschranke (940 nm typisch) · Nachtsicht-Kameras · Fernbedienung',
+      details:'940 nm ist der Standard für IR-Schranken — unsichtbar fürs Auge, gut transmittierbar. Sender = IR-LED, Empfänger = Photodiode.',
+      f:3.2e14, lam:940e-9 },
+    { name:'Thermisches IR',freq:'3·10¹² – 3·10¹³ Hz', lambda:'10 – 100 µm',     color:'#ef4444',
+      use:'PIR-Bewegungsmelder (8–14 µm) · Thermalkamera · Berührungsloses Thermometer',
+      details:'Bei 37 °C Körpertemperatur ist das Strahlungsmaximum bei λ ≈ 9,3 µm (Wien-Verschiebungsgesetz). Pyroelektrik im LiTaO₃-Element wandelt das in Spannung.',
+      f:3e13, lam:10e-6 },
+    { name:'Mikrowelle',    freq:'300 MHz – 300 GHz',    lambda:'1 mm – 1 m',    color:'#22d3ee',
+      use:'MW-Bewegungsmelder 10,525 GHz · Radar 24/77 GHz · 5G',
+      details:'X-Band 10,525 GHz für EU-zugelassene MW-Melder. K-Band 24 GHz für Radar. W-Band 77 GHz für hochauflösendes Perimeter-Radar.',
+      f:10.525e9, lam:2.85e-2 },
+    { name:'Funk / Radio',  freq:'30 kHz – 300 MHz', lambda:'1 m – 10 km',       color:'#38bdf8',
+      use:'EMA-Funk 868 MHz · GSM 900/1800 · LTE · WLAN 2,4/5 GHz · Bluetooth',
+      details:'EU-EMA-Standard: 868 MHz (lizenzfrei, hohe Reichweite, robust). USA: 433 MHz. EMA-Übertragung via GSM oder LTE als Backup zur IP-Übertragung.',
+      f:868e6, lam:0.345 },
+    { name:'Ultraschall',   freq:'20 kHz – 1 MHz', lambda:'17 mm – 0,3 mm',     color:'#a3e635',
+      use:'Ultraschall-Melder 40 kHz · Distanz-Sensor · Medizinische Bildgebung',
+      details:'Schallgeschwindigkeit in Luft = 343 m/s → bei 40 kHz ist λ ≈ 8,6 mm. Aktiver Doppler-Sensor. Funktioniert NUR in geschlossenen Räumen.',
+      f:40e3, lam:8.6e-3, acoustic: true },
+    { name:'Schall (Audio)',freq:'20 Hz – 20 kHz', lambda:'17 m – 17 mm',  color:'#84cc16',
+      use:'Glasbruch-Phase 2 (~100 kHz Splittern) · Mikrofone · Hören (50–4000 Hz)',
+      details:'Tief: 20–200 Hz (Aufprall/Stoß). Mittel: 200 Hz – 4 kHz (Sprache). Hoch: 4–20 kHz (Splittern, Klicken).',
+      f:1000, lam:0.343, acoustic: true },
+    { name:'Infraschall',   freq:'0,1 Hz – 20 Hz',      lambda:'17 m – 3,4 km',      color:'#65a30d',
+      use:'Erschütterungsmelder · Geophone · Seismik · Sprengversuche',
+      details:'Bohren, Stemmen, Sprengen erzeugt Infraschall. Geophone (5–500 Hz) sind vergrabene Sensoren mit Mustererkennung.',
+      f:5, lam:68.6, acoustic: true },
   ];
 
   // Animation-killer: stop loops when view unmounts
@@ -164,7 +197,8 @@ window.SPEK = (() => {
               <span class="spek-pill" style="background:${b.color}; color:#0b1424">${b.freq}</span>
               <span class="spek-pill outline">λ = ${b.lambda}</span>
             </div>
-            <p>${b.use}</p>
+            <p><strong>Verwendung:</strong> ${b.use}</p>
+            ${b.details ? `<p class="spek-details">${b.details}</p>` : ''}
           </div>
         </div>
       `;
@@ -324,6 +358,69 @@ window.SPEK = (() => {
       animateWave(cv, w, loop);
     });
     root.appendChild(wavesCard);
+
+    // ===================== Sensor-Frequenz-Tabelle =====================
+    const freqTable = el('div', { class:'card mt-16' });
+    freqTable.appendChild(el('div', { class:'card-h' }, [
+      el('div', { class:'ico', html:'<i class="fas fa-table-list"></i>' }),
+      el('h3', { text:'Sensor-Frequenz-Tabelle · Präzise Hz-Werte' })
+    ]));
+    const tableHtml = `
+      <div class="spek-freqtbl-wrap">
+        <table class="spek-freqtbl">
+          <thead>
+            <tr>
+              <th>Sensor / Verfahren</th>
+              <th>Frequenz</th>
+              <th>Wellenlänge (λ)</th>
+              <th>Welle</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><i class="fas fa-eye" style="color:#fbbf24"></i> <strong>PIR-Bewegungsmelder</strong></td>
+                <td>30 – 38 THz</td><td>8 – 14 µm</td><td>Therm. IR</td></tr>
+            <tr><td><i class="fas fa-tower-broadcast" style="color:#22d3ee"></i> <strong>Mikrowellenmelder</strong></td>
+                <td><strong>10,525 GHz</strong></td><td>28,5 mm</td><td>Mikrowelle X-Band</td></tr>
+            <tr><td><i class="fas fa-tower-broadcast" style="color:#22d3ee"></i> Perimeter-Radar</td>
+                <td>24 GHz · 77 GHz</td><td>12,5 mm · 3,9 mm</td><td>Mikrowelle K/W-Band</td></tr>
+            <tr><td><i class="fas fa-arrows-left-right" style="color:#0ea5e9"></i> <strong>IR-Lichtschranke</strong></td>
+                <td>~ 319 THz</td><td><strong>940 nm</strong></td><td>Nahes IR (gepulst)</td></tr>
+            <tr><td><i class="fas fa-volume-high" style="color:#a78bfa"></i> <strong>Ultraschallmelder</strong></td>
+                <td><strong>40 kHz</strong></td><td>8,6 mm (Luft)</td><td>Akustisch</td></tr>
+            <tr><td><i class="fas fa-window-maximize" style="color:#38bdf8"></i> Glasbruch Phase 1 (Aufprall)</td>
+                <td>50 – 200 Hz</td><td>1,7 – 7 m (Luft)</td><td>Akustisch tief</td></tr>
+            <tr><td><i class="fas fa-window-maximize" style="color:#38bdf8"></i> Glasbruch Phase 2 (Splittern)</td>
+                <td>50 – 200 kHz</td><td>1,7 – 7 mm</td><td>Akustisch hoch</td></tr>
+            <tr><td><i class="fas fa-bolt" style="color:#fb923c"></i> <strong>Erschütterungs-Melder</strong></td>
+                <td>5 – 500 Hz</td><td>17 m – 6,9 km</td><td>Mechanisch</td></tr>
+            <tr><td><i class="fas fa-bolt" style="color:#fb923c"></i> Körperschall im Stahl</td>
+                <td>1 kHz – 50 kHz</td><td>5,9 m – 12 cm (Stahl)</td><td>Mech. Festkörper</td></tr>
+            <tr><td><i class="fas fa-fire" style="color:#ef4444"></i> Optischer Rauchmelder (LED)</td>
+                <td>~ 333 THz</td><td>~ 900 nm</td><td>Nahes IR</td></tr>
+            <tr><td><i class="fas fa-fire" style="color:#ef4444"></i> Flammenmelder UV</td>
+                <td>1,15 – 1,62 PHz</td><td>185 – 260 nm</td><td>Solar-blind UV</td></tr>
+            <tr><td><i class="fas fa-fire" style="color:#ef4444"></i> Flammenmelder IR</td>
+                <td>~ 70 THz</td><td>~ 4,3 µm</td><td>Therm. IR (CO₂-Emission)</td></tr>
+            <tr><td><i class="fas fa-video" style="color:#a3e635"></i> <strong>Video-Kamera RGB</strong></td>
+                <td>430 – 770 THz</td><td>400 – 700 nm</td><td>Sichtbar</td></tr>
+            <tr><td><i class="fas fa-video" style="color:#a3e635"></i> Thermalkamera</td>
+                <td>21,4 – 37,5 THz</td><td>8 – 14 µm</td><td>LWIR</td></tr>
+            <tr><td><i class="fas fa-broadcast-tower" style="color:#38bdf8"></i> <strong>EMA-Funk (EU)</strong></td>
+                <td><strong>868,3 MHz</strong></td><td>34,5 cm</td><td>UHF Funk</td></tr>
+            <tr><td><i class="fas fa-broadcast-tower" style="color:#38bdf8"></i> GSM (D-Netz)</td>
+                <td>900 MHz · 1800 MHz</td><td>33,3 cm · 16,7 cm</td><td>UHF Mobilfunk</td></tr>
+            <tr><td><i class="fas fa-broadcast-tower" style="color:#38bdf8"></i> LTE (4G)</td>
+                <td>800 MHz – 2,6 GHz</td><td>37,5 cm – 11,5 cm</td><td>UHF Mobilfunk</td></tr>
+            <tr><td><i class="fas fa-radar" style="color:#22d3ee"></i> LiDAR (typisch)</td>
+                <td>~ 320 THz</td><td>905 nm · 1550 nm</td><td>Laser NIR</td></tr>
+            <tr><td><i class="fas fa-grip" style="color:#22d3ee"></i> Glasfaser-Zaun (FOS)</td>
+                <td>~ 194 THz</td><td>1550 nm</td><td>Laser (Telekom-Wellenlänge)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    `;
+    freqTable.insertAdjacentHTML('beforeend', tableHtml);
+    root.appendChild(freqTable);
 
     // ===================== Wave Classes =====================
     const cls = el('div', { class:'card mt-16' });

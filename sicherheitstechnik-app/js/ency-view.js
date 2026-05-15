@@ -184,6 +184,25 @@ window.ENCYVIEW = (() => {
       })),
     ]));
 
+    // ===== "So denkt der Sensor" — KI-/Signal-Analyse-Box =====
+    if (m.physik) {
+      body.appendChild(el('h3', { text: '🧠 Signal-Verarbeitung · Frame-by-Frame' }));
+      const proc = el('div', { class:'ency-proc' });
+      const steps = buildProcessingSteps(m);
+      steps.forEach((s, i) => {
+        const stepEl = el('div', { class:'ency-proc-step' });
+        stepEl.innerHTML = `
+          <div class="ency-proc-num">${i+1}</div>
+          <div class="ency-proc-body">
+            <div class="ency-proc-title">${s.t}</div>
+            <div class="ency-proc-desc">${s.d}</div>
+          </div>
+        `;
+        proc.appendChild(stepEl);
+      });
+      body.appendChild(proc);
+    }
+
     if (m.staerken && m.staerken.length) {
       body.appendChild(el('h3', { text: 'Stärken' }));
       const ul = el('ul', { class:'strengths' });
@@ -204,6 +223,105 @@ window.ENCYVIEW = (() => {
     }
 
     drawer(m.name, body);
+  }
+
+  // Generate sensor-specific processing pipeline (like video frames)
+  function buildProcessingSteps(m) {
+    // Sensor-specific pipelines
+    const map = {
+      'pir-standard': [
+        { t:'INPUT', d:'IR-Strahlung 8–14 µm aus Fresnel-Zone (30–38 THz)' },
+        { t:'WANDLUNG', d:'Pyroelektrik (LiTaO₃) erzeugt Spannung bei Temperatur-Δ' },
+        { t:'VERSTÄRKUNG', d:'Operationsverstärker (~10000× Verstärkung)' },
+        { t:'FILTER', d:'Bandpass 0,3–10 Hz (typische Bewegungsfrequenz)' },
+        { t:'ANALYSE', d:'Amplitude + Pattern-Match → menschliche Bewegung?' },
+        { t:'OUTPUT', d:'Relais-Kontakt schaltet → Alarm an EMA' }
+      ],
+      'mikrowelle': [
+        { t:'TX-SIGNAL', d:'Gunn-Diode generiert kontinuierliche 10,525 GHz Welle' },
+        { t:'EMISSION', d:'Hornantenne strahlt in Kegel (~110° Öffnungswinkel)' },
+        { t:'REFLEXION', d:'Empfangsantenne fängt reflektierte Wellen auf' },
+        { t:'MISCHER', d:'TX und RX mischen → Beat-Frequenz (Doppler Δf)' },
+        { t:'TIEFPASS', d:'Δf isoliert (typ. 5–500 Hz bei normaler Bewegung)' },
+        { t:'AUSWERTUNG', d:'Amplitude und Dauer > Schwellwert → Alarm' }
+      ],
+      'dualmelder': [
+        { t:'PIR-KANAL', d:'IR-Wandlung wie bei Standard-PIR' },
+        { t:'MW-KANAL', d:'Doppler-Analyse parallel ausführen' },
+        { t:'KORRELATION', d:'Zeitstempel und Wert beider Kanäle abgleichen' },
+        { t:'AND-LOGIK', d:'PIR=1 UND MW=1 (Toleranzfenster typ. 2 Sek.)' },
+        { t:'ENTSCHEIDUNG', d:'Nur bei beidseitiger Auslösung → Alarm' }
+      ],
+      'magnetkontakt': [
+        { t:'RUHESTROM', d:'Ohmscher Widerstand der Schleife wird gemessen' },
+        { t:'KONTAKT', d:'Reed-Glasampulle wird durch Magnetfeld geschlossen' },
+        { t:'OVERWATCH', d:'EOL-Widerstände erkennen Kurzschluss + Bruch' },
+        { t:'ANALYSE', d:'Strom = OK | Offen oder geändert → Alarm' }
+      ],
+      'glas-passiv': [
+        { t:'AUDIO-INPUT', d:'Mikrofon nimmt Raumschall 20 Hz – 100 kHz auf' },
+        { t:'BAND-1', d:'Tiefpass < 200 Hz → Aufprall-Signatur' },
+        { t:'BAND-2', d:'Hochpass > 50 kHz → Splittern-Signatur' },
+        { t:'TIMING', d:'Beide Bänder in <300 ms → Glasbruch-Muster' },
+        { t:'TRIGGER', d:'Nur bei Doppel-Trigger → Alarm' }
+      ],
+      'piezo-erschuetterung': [
+        { t:'TRANSDUCER', d:'Piezokeramik wandelt Mechanik → Spannung (mV bis V)' },
+        { t:'BANDPASS', d:'5 – 500 Hz Vibrations-Spektrum' },
+        { t:'INTEGRATION', d:'Energie-Integral über Zeitfenster (typ. 100 ms)' },
+        { t:'SCHWELLWERT', d:'Adaptive Schwelle gegen Umgebungslärm' },
+        { t:'ALARM', d:'Über Schwelle UND > Mindestdauer → Tresor-Angriff' }
+      ],
+      'ir-schranke': [
+        { t:'TX-PULS', d:'IR-LED gepulst bei 940 nm (z.B. 20 kHz codiert)' },
+        { t:'KODIERUNG', d:'PRN-Sequenz (Pseudo-Random) gegen Fremdlicht' },
+        { t:'EMPFANG', d:'Photodiode + Bandpass-Filter um Sendefrequenz' },
+        { t:'KORRELATION', d:'Erwartete Code-Sequenz mit Empfang vergleichen' },
+        { t:'STRAHL-LOGIK', d:'Multi-Strahl AND (z.B. 2 von 4 unterbrochen)' },
+        { t:'ALARM', d:'Code passt nicht ODER Strahl unterbrochen' }
+      ],
+      'kapazitiv': [
+        { t:'OSZILLATOR', d:'RC-Schwingkreis mit Sensor-Elektrode (~1 MHz)' },
+        { t:'FELDAUFBAU', d:'Elektrostatisches Feld um geschütztes Objekt' },
+        { t:'KAPAZITÄTS-MESSUNG', d:'Annäherung ändert Kapazität (fF-pF-Bereich)' },
+        { t:'FREQUENZ-Δ', d:'Schwingkreis ändert Frequenz proportional' },
+        { t:'AUSWERTUNG', d:'> 0,5 m Annäherung → ALARM vor Berührung' }
+      ],
+      'rauch-streulicht': [
+        { t:'LED-PULSE', d:'IR-LED gepulst (~900 nm, 1 Hz)' },
+        { t:'KAMMER', d:'Labyrinth lässt Rauch ein, Tageslicht aus' },
+        { t:'PHOTODIODE', d:'90°-Winkel: misst gestreutes Licht (Tyndall-Effekt)' },
+        { t:'BASELINE', d:'Hintergrund-Streulicht abziehen' },
+        { t:'TRIGGER', d:'Δ über Schwelle für > 5 Sek. → Alarm' }
+      ],
+      'thermalkam': [
+        { t:'OPTIK', d:'Germanium-Linse fokussiert 8–14 µm auf Sensor' },
+        { t:'BOLOMETER', d:'Mikrobolometer-Array (160×120 bis 640×480 Pixel)' },
+        { t:'KALIBRIERUNG', d:'NUC (Non-Uniformity Correction) jede Sekunde' },
+        { t:'BILDPROZESS', d:'Bild → Falschfarben-LUT (gelb = heiß, blau = kalt)' },
+        { t:'KI-INFERENZ', d:'CNN-Modell detektiert Mensch/Tier/Fahrzeug' },
+        { t:'TRACKING', d:'Objekt-Tracker mit Bounding-Box + Konfidenz' },
+        { t:'ALARM', d:'Person + Verbleib in Sicherheitszone → Alarm' }
+      ],
+      'radar': [
+        { t:'FMCW-RAMP', d:'Frequenz-modulierte Rampe (z.B. 76–77 GHz)' },
+        { t:'EMISSION', d:'Patch-Antenne strahlt in Sektor' },
+        { t:'BEAT-FREQ', d:'Mischer: TX × RX → Beat = Distanz + Doppler' },
+        { t:'FFT', d:'2D-FFT über Range + Velocity' },
+        { t:'CFAR', d:'Constant False Alarm Rate Detektion (Schwellen)' },
+        { t:'TRACKER', d:'Kalman-Filter verfolgt Targets über Zeit' },
+        { t:'KLASSIFIKATION', d:'KI: Mensch (1,4 m/s), Auto (>3 m/s)' }
+      ],
+    };
+    // Fallback for sensors without specific pipeline: generic 5-step
+    const fb = [
+      { t:'INPUT', d:'Sensor empfängt physikalische Größe' },
+      { t:'WANDLUNG', d:'In elektrisches Signal umgewandelt' },
+      { t:'FILTER', d:'Rauschen und Störungen entfernt' },
+      { t:'ANALYSE', d:'Mustererkennung gegen Schwellen' },
+      { t:'OUTPUT', d:'Bei Erkennung → Alarm-Relais an EMA' }
+    ];
+    return map[m.key] || fb;
   }
 
   function onion3d() {

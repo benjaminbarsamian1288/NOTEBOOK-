@@ -279,6 +279,42 @@
 }
 .hersteller-chip i { font-size: 10px; opacity: .8; }
 
+/* Signal-Processing Pipeline (Frame-by-Frame) */
+.ency-proc {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 8px 0;
+}
+.ency-proc-step {
+  display: flex; gap: 12px; align-items: stretch;
+  padding: 10px 14px;
+  background: linear-gradient(90deg, rgba(56,189,248,.06), rgba(56,189,248,0));
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+}
+.ency-proc-num {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--grad-1);
+  color: white;
+  display: grid; place-items: center;
+  font-weight: 800; font-size: 13px;
+  flex-shrink: 0;
+}
+.ency-proc-title {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: var(--accent);
+  margin-bottom: 2px;
+}
+.ency-proc-desc {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+
 .ency-card .ica {
   width: 44px; height: 44px;
   border-radius: 12px;

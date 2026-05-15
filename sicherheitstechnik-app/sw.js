@@ -1,4 +1,4 @@
-const CACHE = 'st-katalog-v12';
+const CACHE = 'st-katalog-v13';
 const ASSETS = [
   './',
   './index.html',
@@ -20,6 +20,8 @@ const ASSETS = [
   './js/explainers.js',
   './js/explainers-extra.js',
   './js/explainers-rest.js',
+  './js/explainers-extra2.js',
+  './js/encyclopedia-extra.js',
   './js/product-photos.js',
   './js/ency-view.js',
   './js/building3d.js',

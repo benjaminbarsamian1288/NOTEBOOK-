@@ -176,6 +176,61 @@
 }
 .spek-info p { margin: 0; color: var(--text-dim); font-size: 13px; }
 
+.spek-details {
+  margin-top: 8px !important;
+  padding: 8px 12px;
+  background: var(--bg-2);
+  border-left: 3px solid var(--c);
+  border-radius: 0 6px 6px 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+/* Frequency table */
+.spek-freqtbl-wrap {
+  margin-top: 12px;
+  overflow-x: auto;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-soft);
+}
+.spek-freqtbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 600px;
+}
+.spek-freqtbl th {
+  background: var(--surface-2);
+  color: var(--text-dim);
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.spek-freqtbl td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-soft);
+  vertical-align: top;
+}
+.spek-freqtbl td:nth-child(2),
+.spek-freqtbl td:nth-child(3) {
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+  font-weight: 600;
+}
+.spek-freqtbl td:nth-child(4) {
+  color: var(--text-dim);
+  font-size: 12px;
+}
+.spek-freqtbl tr:hover td {
+  background: var(--surface-2);
+}
+.spek-freqtbl tr:last-child td { border-bottom: none; }
+.spek-freqtbl strong { color: var(--text); }
+
 .spek-wavegrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
