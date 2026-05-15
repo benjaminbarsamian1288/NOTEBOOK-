@@ -1,4 +1,4 @@
-const CACHE = 'st-katalog-v20';
+const CACHE = 'st-katalog-v21';
 const ASSETS = [
   './',
   './index.html',
@@ -13,6 +13,7 @@ const ASSETS = [
   './css/spektrum.css',
   './css/gallery.css',
   './css/gesetze.css',
+  './css/mediathek.css',
   './css/modern.css',
   './js/data.js',
   './js/util.js',
@@ -35,6 +36,8 @@ const ASSETS = [
   './js/gallery.js',
   './js/zwiebel3d.js',
   './js/gesetze.js',
+  './js/paragraphen.js',
+  './js/mediathek.js',
   './js/tools.js',
   './js/wizard.js',
   './js/views.js',

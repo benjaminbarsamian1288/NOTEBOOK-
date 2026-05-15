@@ -95,6 +95,7 @@ window.V = (() => {
       { v:'spektrum',     icon:'fa-wave-square',         t:'Frequenz-Spektrum',     d:'EM-Spektrum · Wellenformen · Video-KI' },
       { v:'enzyklopaedie',icon:'fa-flask',               t:'Melder-Enzyklopädie',   d:'30 Detektoren · Aktiv/Passiv · Videos' },
       { v:'galerie',      icon:'fa-images',              t:'Produkt-Galerie',       d:'Realistische Produkt-Fotos · Hersteller' },
+      { v:'mediathek',    icon:'fa-photo-film',          t:'Mediathek',             d:'Alle Bilder + Animationsvideos zusammen' },
       { v:'zwiebel3d',    icon:'fa-circle-dot',          t:'3D-Zwiebelmodell',      d:'Interaktives 4-Zonen-Schutzkonzept' },
       { v:'gesetze',      icon:'fa-gavel',               t:'Gesetze · KRITIS · NIS2', d:'BewachV · DGUV · VdS · KRITIS-DachG' },
       { v:'konfigurator', icon:'fa-sliders',             t:'Konfigurator',          d:'Komplette Stack-Empfehlung mit Preis' },

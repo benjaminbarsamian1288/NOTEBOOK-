@@ -501,6 +501,32 @@ window.GESETZE = (() => {
         ${(g.links||[]).map(p => `<span class="ges-tag-link">${p}</span>`).join('')}
       </div>
     `;
+    // Paragraphen interaktiv
+    if (window.PARAGRAPHEN) {
+      const ps = PARAGRAPHEN.getParagraphen(g.key);
+      if (ps.length) {
+        const wrap = el('div', { class:'ges-para-wrap' });
+        wrap.appendChild(el('h3', { html:'📜 Paragraphen / Artikel <span class="ges-para-count">'+ps.length+'</span>' }));
+        ps.forEach((p, i) => {
+          const item = el('div', { class:'ges-para' });
+          item.innerHTML = `
+            <button class="ges-para-head" data-i="${i}">
+              <span class="ges-para-nr">${p.nr}</span>
+              <span class="ges-para-titel">${p.titel}</span>
+              <i class="fas fa-chevron-down ges-para-chevron"></i>
+            </button>
+            <div class="ges-para-body">
+              <p>${p.inhalt}</p>
+            </div>
+          `;
+          item.querySelector('.ges-para-head').addEventListener('click', () => {
+            item.classList.toggle('open');
+          });
+          wrap.appendChild(item);
+        });
+        body.appendChild(wrap);
+      }
+    }
     drawer(g.kuerzel + ' · ' + g.name, body);
   }
 
