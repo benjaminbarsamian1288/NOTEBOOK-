@@ -186,6 +186,31 @@ window.WWD = (() => {
     procCard.appendChild(procGrid);
     root.appendChild(procCard);
 
+    // ===== INTERACTIVE MODULES =====
+    if (window.WWD_IX) {
+      // Section title
+      const ixHeader = el('div', { class:'wwd-ix-header mt-16' });
+      ixHeader.innerHTML = `
+        <div class="wwd-ix-header-inner">
+          <div class="wwd-ix-header-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
+          <div>
+            <h2 style="margin:0; font-size:22px; font-weight:900">Interaktive Werkzeuge</h2>
+            <p style="margin:4px 0 0; color:var(--text-dim); font-size:13px">
+              Konfigurator · Reichweiten-Visualizer · Energie/Speicher-Kalkulator · Audio-Demo · KPI-Dashboard
+            </p>
+          </div>
+        </div>
+      `;
+      root.appendChild(ixHeader);
+
+      root.appendChild(WWD_IX.towerConfigurator());
+      root.appendChild(WWD_IX.rangeVisualizer());
+      root.appendChild(WWD_IX.energyCalculator());
+      root.appendChild(WWD_IX.storageCalculator());
+      root.appendChild(WWD_IX.audioDemo());
+      root.appendChild(WWD_IX.kpiDashboard());
+    }
+
     // ===== Video Gallery (user-uploaded real videos) =====
     root.appendChild(buildVideoGallery());
 
