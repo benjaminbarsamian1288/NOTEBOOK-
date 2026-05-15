@@ -390,6 +390,97 @@
   .bigstat .num { font-size: 24px; }
 }
 
+/* ----- Konfigurator visualisierte Empfehlung ----- */
+.kfg-vis { display: flex; flex-direction: column; gap: 16px; }
+.kfg-sect {
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-md);
+  padding: 14px;
+  background: var(--surface);
+  border-left: 4px solid var(--sect-color, var(--accent));
+}
+.kfg-secthead {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 12px;
+}
+.kfg-secticon {
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  display: grid; place-items: center;
+  background: color-mix(in srgb, var(--sect-color, var(--accent)) 18%, transparent);
+  color: var(--sect-color, var(--accent));
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.kfg-secttitle { flex: 1; min-width: 0; }
+.kfg-secttitle strong { font-size: 15px; }
+.kfg-sectprice {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  background: var(--grad-1);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 14px;
+  text-align: right;
+}
+
+.kfg-cardgrid {
+  display: grid; gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+.kfg-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform .15s, border-color .15s, box-shadow .15s;
+  cursor: default;
+}
+.kfg-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--sect-color);
+  box-shadow: 0 8px 24px rgba(0,0,0,.2);
+}
+.kfg-cardill {
+  width: 100%;
+  height: 100px;
+  background: linear-gradient(135deg, rgba(11,20,36,.4), rgba(22,37,66,.3));
+  border-bottom: 1px solid var(--border-soft);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+.kfg-cardill svg { width: 100%; height: 100%; }
+.kfg-cardill-empty {
+  font-size: 32px;
+  color: var(--sect-color);
+  opacity: .45;
+}
+.kfg-cardbody { padding: 12px; flex: 1; display: flex; flex-direction: column; gap: 4px; }
+.kfg-cardtitle { font-weight: 700; font-size: 14px; line-height: 1.25; }
+.kfg-cardmeta { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: .4px; }
+.kfg-cardrow { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; }
+.kfg-qty {
+  display: inline-block;
+  background: var(--sect-color);
+  color: #0b1424;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 12.5px;
+}
+.kfg-unitprice { font-variant-numeric: tabular-nums; }
+.kfg-subprice {
+  margin-top: 8px;
+  font-weight: 800;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  color: var(--sect-color);
+  text-align: right;
+}
+
 /* ----- Quick-Action Tile-Grid (Home) ----- */
 .quick-actions {
   display: grid;

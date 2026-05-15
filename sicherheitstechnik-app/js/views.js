@@ -91,6 +91,7 @@ window.V = (() => {
     [
       { v:'wizard',       icon:'fa-wand-magic-sparkles', t:'Sicherheits-Assistent', d:'7-Schritte-Analyse → SÜ-Empfehlung' },
       { v:'simulator',    icon:'fa-vector-square',       t:'Floor-Plan Simulator',  d:'Sensoren drehen, verschieben, planen' },
+      { v:'building3d',   icon:'fa-cube',                t:'3D-Gebäudeplaner',     d:'Isometrisches 3D-Haus · Etagen · rotierbar' },
       { v:'enzyklopaedie',icon:'fa-flask',               t:'Melder-Enzyklopädie',   d:'30 Detektoren · Aktiv/Passiv · Videos' },
       { v:'konfigurator', icon:'fa-sliders',             t:'Konfigurator',          d:'Komplette Stack-Empfehlung mit Preis' },
       { v:'vergleich',    icon:'fa-table-cells-large',   t:'Melder-Vergleich',      d:'PIR vs MW vs Dual vs Schranke' },

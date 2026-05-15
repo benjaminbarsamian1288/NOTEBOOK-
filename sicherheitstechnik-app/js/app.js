@@ -16,6 +16,7 @@
     konfigurator: V.konfigurator,
     calculators: (d) => TOOLS.calculators(d),
     simulator: V.simulator,
+    building3d: (d) => BLDG3D.view(d),
     vergleich: V.vergleich,
     quiz: () => TOOLS.quiz(),
     glossar: () => TOOLS.glossar(),

@@ -227,6 +227,36 @@ window.KFG = (() => {
     const result = el('div', { class:'kfg-result' });
     root.appendChild(result);
 
+    // Map Bereich -> visual config (color + icon + optional SVG illustration)
+    const BEREICH_META = {
+      'EMA':        { color: '#22d3ee', icon: 'fa-bell',         label: 'Alarmanlage' },
+      'Melder':     { color: '#fbbf24', icon: 'fa-wave-square',  label: 'Detektoren' },
+      'Brand':      { color: '#ef4444', icon: 'fa-fire',         label: 'Brandschutz' },
+      'Perimeter':  { color: '#22c55e', icon: 'fa-tower-broadcast', label: 'Perimeter' },
+      'Mech.':      { color: '#a78bfa', icon: 'fa-door-closed',  label: 'Mechanik' },
+      'Verglasung': { color: '#38bdf8', icon: 'fa-window-maximize', label: 'Verglasung' },
+    };
+
+    // Map specific product names to a small SVG illustration key in ILL
+    const PRODUCT_ILL = {
+      'PIR':       'pir',  'Bewegung': 'pir',
+      'Dual':      'dual',
+      'Magnet':    'mag',
+      'Schließblech':'mag',
+      'Glasbruch':'glass','Aktiv Folie':'glass','Passiv':'glass',
+      'Erschüt':   'shake','Körperschall':'shake','Piezo':'shake',
+      'Mikrowelle':'mw',   'IR':'irBeam','Lichtschranke':'irBeam',
+      'Rauch':     'fire', 'Brand':'fire','Multisensor':'fire','Flammen':'fire','Ansaug':'fire',
+      'Zaun':      'fence','Thermalkamera':'fence','Radar':'fence',
+      'Druckmatte':'press','Wassermelder':'press','Gasmelder':'press','Kapazit':'cap',
+    };
+    function findIllustration(productName) {
+      for (const k of Object.keys(PRODUCT_ILL)) {
+        if (productName.toLowerCase().includes(k.toLowerCase())) return PRODUCT_ILL[k];
+      }
+      return null;
+    }
+
     function update() {
       result.innerHTML = '';
       const recipe = RECIPES[activeSue];
@@ -234,7 +264,10 @@ window.KFG = (() => {
       result.appendChild(el('h2', { text: recipe.label, style:'margin:0 0 4px' }));
       result.appendChild(el('p', { class:'muted', text: recipe.desc, style:'margin:0 0 8px' }));
       result.appendChild(totalEl);
-      const list = el('div', { class:'kfg-list' });
+
+      // Pre-compute items grouped by Bereich for visual presentation
+      const itemsByBereich = {};
+      const flatItems = [];
       let totLo = 0, totHi = 0, n = 0;
       const skipped = [];
 
@@ -247,20 +280,14 @@ window.KFG = (() => {
         totLo += lo*qty;
         totHi += hi*qty;
         n += qty;
-        const row = el('div', { class:'kfg-row' });
-        row.appendChild(el('div', { class:'label' }, [
-          el('div', { text: product['Produkt'] }),
-          el('div', { class:'small muted', text: `${product['Bereich']} · ${product['Einheit']||''}` })
-        ]));
-        row.appendChild(el('div', { class:'qty', text:`× ${qty}` }));
-        row.appendChild(el('div', { class:'unit-price', text: `${fmtEUR(lo)}–${fmtEUR(hi)}` }));
-        row.appendChild(el('div', { class:'sub-price', text: `${fmtEUR(qty*lo)}–${fmtEUR(qty*hi)}` }));
-        list.appendChild(row);
+        const entry = { product, qty, lo, hi, illKey: findIllustration(product['Produkt']) };
+        flatItems.push(entry);
+        (itemsByBereich[product['Bereich']] = itemsByBereich[product['Bereich']] || []).push(entry);
       });
       totalEl.appendChild(el('span', { class:'price', text: `${fmtEUR(totLo)} – ${fmtEUR(totHi)}` }));
       totalEl.appendChild(el('span', { class:'range', text:`Investitionsrahmen · ${n} Komponenten · Ø ${fmtEUR((totLo+totHi)/2)}` }));
 
-      // Action buttons (export, save)
+      // Action buttons + SÜ-Klassen Visualisierung
       const acts = el('div', { class: 'row mt-12' });
       const expBtn = el('button', { class:'btn', html:'<i class="fas fa-file-pdf"></i> Als PDF exportieren' });
       expBtn.addEventListener('click', () => exportPDF(d, activeSue, sizeFactor, recipe, totLo, totHi));
@@ -269,7 +296,6 @@ window.KFG = (() => {
       acts.appendChild(expBtn); acts.appendChild(saveBtn);
       result.appendChild(acts);
 
-      // Add NSL recommendation
       const sueRow = d.sicherungsklassen.tables[0].rows.find(r => r['Sicherungsklasse'].includes('SÜ '+activeSue));
       if (sueRow) {
         const meta = el('div', { class:'row mt-12', style:'gap:8px;flex-wrap:wrap;' }, [
@@ -282,7 +308,55 @@ window.KFG = (() => {
         ]);
         result.appendChild(meta);
       }
-      result.appendChild(list);
+
+      // ===== Visual recommendation grid grouped by Bereich =====
+      const visWrap = el('div', { class: 'kfg-vis mt-16' });
+      const orderedBereiche = ['Mech.','Verglasung','Perimeter','Melder','Brand','EMA'];
+      orderedBereiche.forEach(b => {
+        const list = itemsByBereich[b];
+        if (!list || !list.length) return;
+        const meta = BEREICH_META[b] || { color: '#94a3c4', icon: 'fa-cube', label: b };
+        const sect = el('div', { class: 'kfg-sect' });
+        sect.style.setProperty('--sect-color', meta.color);
+        // section header
+        const head = el('div', { class: 'kfg-secthead' });
+        head.innerHTML = `
+          <div class="kfg-secticon"><i class="fas ${meta.icon}"></i></div>
+          <div class="kfg-secttitle">
+            <strong>${meta.label}</strong>
+            <div class="muted small">${list.length} Produkt${list.length>1?'e':''} · ${list.reduce((s,it)=>s+it.qty,0)} Stück</div>
+          </div>
+          <div class="kfg-sectprice">${fmtEUR(list.reduce((s,it)=>s+it.qty*it.lo,0))} – ${fmtEUR(list.reduce((s,it)=>s+it.qty*it.hi,0))}</div>`;
+        sect.appendChild(head);
+        // cards grid
+        const grid = el('div', { class: 'kfg-cardgrid' });
+        list.forEach(it => {
+          const card = el('div', { class: 'kfg-card' });
+          card.style.setProperty('--sect-color', meta.color);
+          // mini illustration if available
+          if (it.illKey && window.ILL && ILL[it.illKey]) {
+            card.appendChild(el('div', { class: 'kfg-cardill', html: ILL[it.illKey]() }));
+          } else {
+            card.appendChild(el('div', { class: 'kfg-cardill kfg-cardill-empty', html: `<i class="fas ${meta.icon}"></i>` }));
+          }
+          // body
+          const body = el('div', { class: 'kfg-cardbody' });
+          body.innerHTML = `
+            <div class="kfg-cardtitle">${it.product['Produkt']}</div>
+            <div class="kfg-cardmeta">${it.product['Einheit']||''} · ${it.product['Sicherungsklasse']||''}</div>
+            <div class="kfg-cardrow">
+              <span class="kfg-qty">× ${it.qty}</span>
+              <span class="kfg-unitprice muted small">${fmtEUR(it.lo)}–${fmtEUR(it.hi)}</span>
+            </div>
+            <div class="kfg-subprice">${fmtEUR(it.qty*it.lo)} – ${fmtEUR(it.qty*it.hi)}</div>
+          `;
+          card.appendChild(body);
+          grid.appendChild(card);
+        });
+        sect.appendChild(grid);
+        visWrap.appendChild(sect);
+      });
+      result.appendChild(visWrap);
 
       if (skipped.length) {
         result.appendChild(el('p', { class:'muted small mt-12', text:`Hinweis: ${skipped.length} Position(en) nicht in Preisliste hinterlegt (${skipped.join(', ')}).`}));
