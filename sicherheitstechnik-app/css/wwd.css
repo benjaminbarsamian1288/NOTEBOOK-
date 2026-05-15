@@ -104,6 +104,13 @@
   background: linear-gradient(135deg, #0a0f1a, #1e2a44) !important;
   border-color: rgba(220,38,38,.3) !important;
 }
+.wwd-anim-card .expl-svg {
+  aspect-ratio: 900/500;
+  max-height: 540px;
+  border-radius: 12px;
+  background: #020617;
+  box-shadow: inset 0 0 60px rgba(0,0,0,.7), 0 8px 24px rgba(0,0,0,.5);
+}
 
 /* 5-Steps Workflow */
 .wwd-steps {
