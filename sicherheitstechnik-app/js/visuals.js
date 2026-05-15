@@ -307,7 +307,7 @@ window.VIZ = (() => {
     const selPanel = el('div', { class: 'fp-selpanel', style:'display:none' });
     root.appendChild(selPanel);
 
-    const cv = el('canvas', { class: 'fp-canvas', width: '900', height: '480' });
+    const cv = el('canvas', { class: 'fp-canvas', width: '900', height: '560' });
     root.appendChild(cv);
 
     // Floor plan rooms (16x10 meters)
@@ -352,7 +352,7 @@ window.VIZ = (() => {
     let panX = 0, panY = 0;
     function fit() {
       const W = cv.parentElement.clientWidth - 36;
-      const H = 480;
+      const H = 560;
       const dpr = window.devicePixelRatio || 1;
       cv.width = W*dpr; cv.height = H*dpr;
       cv.style.width = W + 'px'; cv.style.height = H + 'px';
@@ -365,40 +365,105 @@ window.VIZ = (() => {
     }
     function getCss(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
 
-    // Wheel zoom
+    // Wheel zoom centered on cursor
     cv.addEventListener('wheel', e => {
       e.preventDefault();
       const factor = e.deltaY < 0 ? 1.15 : 1/1.15;
-      zoomFactor = Math.max(.4, Math.min(4, zoomFactor * factor));
-      draw();
+      const r = cv.getBoundingClientRect();
+      const mx = e.clientX - r.left, my = e.clientY - r.top;
+      zoomAt(mx, my, factor);
     }, { passive: false });
 
-    // Pinch zoom (touch)
+    // === Pinch-Zoom + 2-Finger Pan ===
     let pinchStart = null;
+    let panStart = null;  // single-finger pan when no sensor mode + not on existing sensor
+
+    function zoomAt(cx, cy, factor) {
+      // World coords at (cx,cy) before zoom:
+      const oldWX = (cx - ox)/scale;
+      const oldWY = (cy - oy)/scale;
+      zoomFactor = Math.max(.5, Math.min(5, zoomFactor * factor));
+      // Force fit recalc by drawing; then adjust pan so (oldWX, oldWY) maps to (cx, cy)
+      fit();  // recompute ox, oy, scale from new zoomFactor (incl. panX,panY)
+      const newSX = ox + oldWX * scale;
+      const newSY = oy + oldWY * scale;
+      // Shift pan so new screen pos == cx, cy
+      panX += cx - newSX;
+      panY += cy - newSY;
+      draw();
+    }
+
     cv.addEventListener('touchstart', e => {
       if (e.touches.length === 2) {
         e.preventDefault();
-        const dx = e.touches[0].clientX - e.touches[1].clientX;
-        const dy = e.touches[0].clientY - e.touches[1].clientY;
-        pinchStart = { dist: Math.hypot(dx, dy), zoom: zoomFactor };
+        const a = e.touches[0], b = e.touches[1];
+        const r = cv.getBoundingClientRect();
+        const ax = a.clientX - r.left, ay = a.clientY - r.top;
+        const bx = b.clientX - r.left, by = b.clientY - r.top;
+        const dx = ax - bx, dy = ay - by;
+        pinchStart = {
+          dist: Math.hypot(dx, dy),
+          zoom: zoomFactor,
+          midX: (ax + bx) / 2,
+          midY: (ay + by) / 2,
+          startPanX: panX, startPanY: panY,
+        };
+        // Cancel single-finger drag if pinch starts
+        drag = null;
+        panStart = null;
+      } else if (e.touches.length === 1) {
+        // Convert to mouse-event for the existing handlers (only if mousedown wasn't fired by browser)
       }
     }, { passive: false });
+
     cv.addEventListener('touchmove', e => {
       if (e.touches.length === 2 && pinchStart) {
         e.preventDefault();
-        const dx = e.touches[0].clientX - e.touches[1].clientX;
-        const dy = e.touches[0].clientY - e.touches[1].clientY;
-        const dist = Math.hypot(dx, dy);
-        zoomFactor = Math.max(.4, Math.min(4, pinchStart.zoom * (dist / pinchStart.dist)));
+        const a = e.touches[0], b = e.touches[1];
+        const r = cv.getBoundingClientRect();
+        const ax = a.clientX - r.left, ay = a.clientY - r.top;
+        const bx = b.clientX - r.left, by = b.clientY - r.top;
+        const dx = ax - bx, dy = ay - by;
+        const newDist = Math.hypot(dx, dy);
+        const newMidX = (ax + bx) / 2;
+        const newMidY = (ay + by) / 2;
+        // New zoom around midpoint
+        const factor = newDist / pinchStart.dist;
+        // World-coord at midpoint before pinch (using start-state)
+        // We adjust panX/panY so the pinch midpoint stays anchored:
+        // 1. Compute what world point was under pinchStart.midX/Y at start
+        //    Actually simpler: just multiply zoomFactor and shift pan by the midpoint delta + zoom delta
+        const newZoom = Math.max(.5, Math.min(5, pinchStart.zoom * factor));
+        // Restore panX/panY to start values first to avoid drift
+        panX = pinchStart.startPanX;
+        panY = pinchStart.startPanY;
+        // Save old scale (with old zoom):
+        const oldScale = Math.min((cv.parentElement.clientWidth - 36 - 30)/16, (480-30)/10) * pinchStart.zoom;
+        const oldOx = ((cv.parentElement.clientWidth - 36) - 16*oldScale)/2 + pinchStart.startPanX;
+        const oldOy = 15 + pinchStart.startPanY;
+        const worldX = (pinchStart.midX - oldOx) / oldScale;
+        const worldY = (pinchStart.midY - oldOy) / oldScale;
+        // Set zoom + recompute
+        zoomFactor = newZoom;
+        fit();  // updates scale, ox, oy
+        // Now adjust pan so worldX,worldY maps to newMidX,newMidY
+        const newSX = ox + worldX * scale;
+        const newSY = oy + worldY * scale;
+        panX += newMidX - newSX;
+        panY += newMidY - newSY;
         draw();
       }
     }, { passive: false });
-    cv.addEventListener('touchend', () => { pinchStart = null; });
+
+    cv.addEventListener('touchend', e => {
+      if (e.touches.length < 2) pinchStart = null;
+    });
+    cv.addEventListener('touchcancel', () => { pinchStart = null; });
 
     function draw() {
       const ctx = fit();
       const W = cv.parentElement.clientWidth - 36;
-      ctx.clearRect(0, 0, W, 480);
+      ctx.clearRect(0, 0, W, 560);
       // Rooms
       ROOMS.forEach(r => {
         const x = ox + r.x*scale, y = oy + r.y*scale, w = r.w*scale, h = r.h*scale;
@@ -555,6 +620,9 @@ window.VIZ = (() => {
         renderSelectionPanel();
         autoSave();
         draw();
+      } else {
+        // Pan-Modus: kein Sensor gewählt, klick auf leere Fläche → Pan
+        drag = { mode: 'pan', startPanX: panX, startPanY: panY, startMX: m.px, startMY: m.py };
       }
     });
 
@@ -562,13 +630,17 @@ window.VIZ = (() => {
       const m = getMouse(e);
       hover = m;
       if (drag) {
-        const p = placed[drag.idx];
         if (drag.mode === 'move') {
+          const p = placed[drag.idx];
           p.x = Math.max(0, Math.min(16, m.x));
           p.y = Math.max(0, Math.min(10, m.y));
         } else if (drag.mode === 'rotate') {
+          const p = placed[drag.idx];
           const cx = ox + p.x*scale, cy = oy + p.y*scale;
           p.dir = Math.atan2(m.py - cy, m.px - cx);
+        } else if (drag.mode === 'pan') {
+          panX = drag.startPanX + (m.px - drag.startMX);
+          panY = drag.startPanY + (m.py - drag.startMY);
         }
         draw();
       } else {
