@@ -125,6 +125,31 @@ window.WWD = (() => {
     `;
     root.appendChild(hero);
 
+    // ===== OFFIZIELLES KWS-DEMO-VIDEO (Hero-Embed) =====
+    const officialVid = el('div', { class:'card wwd-official-video' });
+    officialVid.innerHTML = `
+      <div class="card-h">
+        <div class="ico" style="background:rgba(255,0,0,.15); color:#ff0000"><i class="fab fa-youtube"></i></div>
+        <h3>Offizielles KWS Video Control · Demo</h3>
+        <span class="wwd-live-badge">▶ LIVE</span>
+      </div>
+      <div class="wwd-player wwd-player-xl">
+        <iframe
+          src="https://www.youtube.com/embed/IZxgbNPId6I?rel=0&modestbranding=1"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+          title="KWS Video Control · Demo">
+        </iframe>
+      </div>
+      <p class="muted small" style="margin: 10px 0 0; display:flex; align-items:center; gap:6px">
+        <i class="fas fa-circle-info"></i>
+        Echte Produktdemo des KWS Video Control Systems.
+        Weiter unten kannst du eigene Aufnahmen hochladen oder weitere Videos einbetten.
+      </p>
+    `;
+    root.appendChild(officialVid);
+
     // Big Tower-Animation
     const animCard = el('div', { class:'card wwd-anim-card' });
     animCard.appendChild(el('div', { class:'card-h' }, [
