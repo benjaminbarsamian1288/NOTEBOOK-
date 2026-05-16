@@ -166,11 +166,13 @@ window.MECH_ENCY_VIEW = (() => {
       const info = KAT_COLORS[m.kat] || { c:'#22d3ee' };
       const c = el('div', { class:'mency-card', style:`--c:${info.c}` });
       const isCompared = state.compare.includes(m.key);
+      const hasVideo = window.EXPL && EXPL.hasExplainer(m.key);
 
       c.innerHTML = `
         <button class="mency-card-compare ${isCompared?'on':''}" title="Zum Vergleich hinzufügen">
           <i class="fas fa-${isCompared?'check':'plus'}"></i>
         </button>
+        ${hasVideo ? '<div class="mency-video-badge"><i class="fas fa-circle-play"></i> Video</div>' : ''}
         <div class="mency-card-typebadge ${m.typ}">${m.typ}</div>
         <div class="mency-card-img">${m.svg}</div>
         <div class="mency-card-body">
@@ -184,7 +186,7 @@ window.MECH_ENCY_VIEW = (() => {
           </div>
         </div>
         <div class="mency-card-cta">
-          <i class="fas fa-circle-info"></i> Details anzeigen
+          <i class="fas fa-circle-info"></i> Details ${hasVideo ? '+ Animation' : 'anzeigen'}
         </div>
       `;
 
@@ -256,6 +258,8 @@ window.MECH_ENCY_VIEW = (() => {
 
         <div class="mency-drawer-img">${m.svg}</div>
 
+        <div id="mency-anim-mount"></div>
+
         <div class="mency-drawer-body">
           <section>
             <h3><i class="fas fa-atom"></i> Wirkprinzip</h3>
@@ -304,6 +308,15 @@ window.MECH_ENCY_VIEW = (() => {
       drawer.appendChild(inner);
       document.body.appendChild(drawer);
       requestAnimationFrame(() => drawer.classList.add('open'));
+
+      // Animation-Player wenn vorhanden
+      if (window.EXPL && EXPL.hasExplainer(m.key)) {
+        const mount = inner.querySelector('#mency-anim-mount');
+        const animCard = el('section', { class:'mency-anim-section' });
+        animCard.innerHTML = `<h3><i class="fas fa-circle-play"></i> Live-Animation · Wirkprinzip</h3>`;
+        EXPL.player(m.key, animCard);
+        mount.appendChild(animCard);
+      }
 
       const close = () => {
         drawer.classList.remove('open');
