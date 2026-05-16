@@ -29,6 +29,7 @@
 <link rel="stylesheet" href="css/mechanik.css?v=30">
 <link rel="stylesheet" href="css/mech-ency.css?v=36">
 <link rel="stylesheet" href="css/master-ency.css?v=37">
+<link rel="stylesheet" href="css/gesetze-view.css?v=38">
 <link rel="stylesheet" href="css/katalog.css?v=33">
 <link rel="stylesheet" href="css/lab.css?v=34">
 <link rel="stylesheet" href="css/fp-planner.css?v=35">
@@ -65,6 +66,7 @@
     <button class="global-search-trigger" id="gs-trigger"><i class="fas fa-search"></i> <span>Suche · alles…</span><kbd>Ctrl K</kbd></button>
     <button class="navitem active" data-view="home"><i class="fas fa-house"></i><span>Übersicht</span></button>
     <button class="navitem" data-view="masterency" style="background:linear-gradient(135deg, rgba(34,211,238,.25), rgba(220,38,38,.16), rgba(168,85,247,.18)); border-color:rgba(34,211,238,.5); position:relative"><i class="fas fa-book-open-reader" style="color:#22d3ee"></i><span><strong>📚 MASTER · Komplett-Katalog</strong></span></button>
+    <button class="navitem" data-view="gesetze" style="background:linear-gradient(135deg, rgba(220,38,38,.22), rgba(124,58,237,.16), rgba(251,191,36,.10)); border-color:rgba(220,38,38,.4); position:relative"><i class="fas fa-gavel" style="color:#dc2626"></i><span><strong>⚖️ GESETZE · 150+ §§</strong></span></button>
     <button class="navitem" data-view="katalog" style="background:linear-gradient(135deg, rgba(34,211,238,.22), rgba(168,85,247,.16), rgba(220,38,38,.12)); border-color:rgba(168,85,247,.4); position:relative"><i class="fas fa-folder-tree" style="color:#a855f7"></i><span>KATALOG · Hub</span></button>
     <button class="navitem" data-view="lab" style="background:linear-gradient(135deg, rgba(34,211,238,.18), rgba(59,130,246,.12), rgba(168,85,247,.10)); border-color:rgba(34,211,238,.4)"><i class="fas fa-calculator" style="color:#22d3ee"></i><span><strong>🧮 Engineering-Lab</strong></span></button>
     <button class="navitem" data-view="fp" style="background:linear-gradient(135deg, rgba(251,191,36,.18), rgba(234,88,12,.12)); border-color:rgba(251,191,36,.4)"><i class="fas fa-vector-square" style="color:#fbbf24"></i><span><strong>🏗️ Plan-Designer</strong></span></button>
@@ -162,6 +164,8 @@
 <script src="js/floorplan.js?v=35"></script>
 <script src="js/katalog-explainers.js?v=37"></script>
 <script src="js/master-ency.js?v=37"></script>
+<script src="js/gesetze-data.js?v=38"></script>
+<script src="js/gesetze-view.js?v=38"></script>
 <script>
   // Wire global-search trigger after DOM ready
   window.addEventListener('load', () => {

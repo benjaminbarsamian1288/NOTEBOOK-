@@ -32,7 +32,7 @@
     lab:        (d) => LAB.view(d),
     fp:         (d) => FLOORPLAN.view(d),
     masterency: (d) => MASTER_ENCY.view(d),
-    gesetze: (d) => GESETZE.view(d),
+    gesetze: (d) => GESETZE_VIEW.view(d),
     mediathek: (d) => MEDIATHEK.view(d),
     vergleich: V.vergleich,
     quiz: () => TOOLS.quiz(),

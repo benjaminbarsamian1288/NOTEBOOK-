@@ -1,0 +1,411 @@
+/* Gesetze-View Styles */
+
+.gv-hero {
+  position: relative;
+  padding: 30px 32px;
+  border-radius: 20px;
+  margin-bottom: 14px;
+  background: linear-gradient(135deg, #0b1424 0%, #312e81 40%, #831843 100%);
+  color: white;
+  overflow: hidden;
+}
+.gv-hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 85% 15%, rgba(220,38,38,.18), transparent 50%),
+    radial-gradient(circle at 15% 85%, rgba(34,211,238,.15), transparent 50%);
+  pointer-events: none;
+}
+.gv-hero-content { position: relative; z-index: 1; }
+.gv-tag {
+  display: inline-block;
+  background: rgba(0,0,0,.3);
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(255,255,255,.2);
+}
+.gv-hero h1 {
+  margin: 0 0 8px;
+  font-size: clamp(22px, 4vw, 32px);
+  font-weight: 900;
+  color: white !important;
+  -webkit-text-fill-color: white !important;
+  background: none !important;
+}
+.gv-hero p {
+  margin: 0 0 16px;
+  font-size: 13.5px;
+  color: rgba(255,255,255,.9);
+  line-height: 1.5;
+}
+.gv-hero-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 8px;
+}
+.gv-hero-stat {
+  background: rgba(0,0,0,.3);
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--c) 30%, rgba(255,255,255,.1));
+  text-align: center;
+}
+.gv-hero-stat i { font-size: 15px; color: var(--c); display: block; margin-bottom: 4px; }
+.gv-hero-stat strong { display: block; font-size: 18px; color: var(--c); font-weight: 900; font-variant-numeric: tabular-nums; }
+.gv-hero-stat span { font-size: 10px; color: rgba(255,255,255,.7); text-transform: uppercase; }
+
+/* ====== Suche ====== */
+.gv-search {
+  margin-bottom: 16px;
+}
+.gv-search-box {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--bg-2);
+  border: 1px solid var(--m-stroke);
+  border-radius: 14px;
+  padding: 10px 16px;
+  position: sticky;
+  top: 8px;
+  z-index: 6;
+  backdrop-filter: blur(12px);
+}
+.gv-search-box i { color: #22d3ee; font-size: 16px; }
+.gv-search-box input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 15px;
+  outline: none;
+}
+.gv-search-count {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-dim);
+  background: var(--surface);
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+/* ====== Gesetz-Tabs (große Karten) ====== */
+.gv-tabs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.gv-tab {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--bg-2);
+  border: 1px solid var(--m-stroke);
+  border-left: 4px solid var(--c);
+  border-radius: 14px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: all .2s;
+  text-align: left;
+  --c: #22d3ee;
+}
+.gv-tab:hover {
+  transform: translateY(-2px);
+  border-color: var(--c);
+  background: color-mix(in srgb, var(--c) 8%, var(--bg-2));
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--c) 18%, transparent);
+}
+.gv-tab.active {
+  background: color-mix(in srgb, var(--c) 15%, var(--bg-2));
+  border-color: var(--c);
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--c) 30%, transparent);
+}
+.gv-tab-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--c) 18%, transparent);
+  color: var(--c);
+  display: grid; place-items: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.gv-tab-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.gv-tab-body strong { font-size: 15px; font-weight: 800; }
+.gv-tab-body span { font-size: 11.5px; color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gv-tab-body em {
+  font-style: normal;
+  font-size: 10px;
+  color: var(--c);
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+/* ====== Gesetz-Detail ====== */
+.gv-gesetz {
+  background: var(--bg-2);
+  border: 1px solid var(--m-stroke);
+  border-top: 4px solid var(--c);
+  border-radius: 16px;
+  padding: 20px 22px;
+}
+.gv-gesetz-head {
+  display: flex; align-items: flex-start; gap: 14px;
+  margin-bottom: 12px;
+}
+.gv-gesetz-icon {
+  width: 56px; height: 56px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--c) 18%, transparent);
+  color: var(--c);
+  display: grid; place-items: center;
+  font-size: 26px;
+}
+.gv-gesetz-cat {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--c);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 2px;
+}
+.gv-gesetz h2 {
+  margin: 0 0 8px;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -.3px;
+}
+.gv-gesetz-meta {
+  display: flex; flex-wrap: wrap; gap: 12px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.gv-gesetz-meta i { color: var(--c); margin-right: 4px; }
+.gv-gesetz-url {
+  color: var(--c) !important;
+  font-weight: 700;
+  text-decoration: none;
+}
+.gv-gesetz-url:hover { text-decoration: underline; }
+
+.gv-gesetz-intro {
+  margin: 12px 0 16px;
+  padding: 14px 16px;
+  background: color-mix(in srgb, var(--c) 8%, transparent);
+  border-left: 3px solid var(--c);
+  border-radius: 0 10px 10px 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+.gv-vis-wrap {
+  margin: 0 0 18px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--m-stroke);
+  box-shadow: 0 6px 18px rgba(0,0,0,.25);
+}
+.ges-vis { width: 100%; height: auto; display: block; }
+
+/* ====== Abschnitt (details) ====== */
+.gv-abschnitt {
+  background: var(--bg);
+  border: 1px solid var(--m-stroke);
+  border-radius: 10px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+.gv-abschnitt summary {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+.gv-abschnitt summary::-webkit-details-marker { display: none; }
+.gv-abschnitt summary:hover { background: var(--m-glass); }
+.gv-abschnitt-nr {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--c) 18%, transparent);
+  color: var(--c);
+  display: grid; place-items: center;
+  font-size: 13px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.gv-abschnitt summary strong { flex: 1; font-size: 14.5px; }
+.gv-abschnitt-count {
+  font-size: 11px;
+  color: var(--text-dim);
+  background: var(--bg-2);
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+.gv-chev {
+  color: var(--text-dim);
+  transition: transform .2s;
+}
+.gv-abschnitt[open] .gv-chev { transform: rotate(180deg); }
+
+.gv-para-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 8px;
+  padding: 12px 16px 16px;
+}
+
+.gv-para {
+  background: var(--bg-2);
+  border: 1px solid var(--m-stroke);
+  border-left: 3px solid var(--c);
+  border-radius: 10px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all .15s;
+}
+.gv-para:hover {
+  background: color-mix(in srgb, var(--c) 8%, var(--bg-2));
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0,0,0,.15);
+}
+.gv-para.wichtig {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--c) 12%, var(--bg-2)), var(--bg-2));
+  border-left-width: 4px;
+}
+.gv-para-head {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 6px;
+}
+.gv-para-head strong {
+  background: color-mix(in srgb, var(--c) 22%, transparent);
+  color: var(--c);
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.gv-para-head span {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 700;
+}
+.gv-star { color: #fbbf24; font-size: 12px; }
+.gv-para p {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+.gv-para-tags {
+  display: flex; flex-wrap: wrap; gap: 4px;
+}
+.gv-tag-chip {
+  background: var(--surface);
+  border: 1px solid var(--m-stroke);
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+/* ====== Search Results ====== */
+.gv-search-results {
+  background: var(--bg-2);
+  border: 1px solid var(--m-stroke);
+  border-radius: 14px;
+  padding: 16px;
+}
+.gv-results-head h3 {
+  margin: 0 0 14px;
+  font-size: 14px;
+}
+.gv-result-item {
+  background: var(--bg);
+  border: 1px solid var(--m-stroke);
+  border-left: 4px solid var(--c);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all .15s;
+}
+.gv-result-item:hover {
+  transform: translateY(-1px);
+  background: color-mix(in srgb, var(--c) 8%, var(--bg));
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--c) 22%, transparent);
+}
+.gv-result-meta {
+  display: flex; gap: 8px;
+  margin-bottom: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+.gv-result-short {
+  background: color-mix(in srgb, var(--c) 22%, transparent);
+  color: var(--c);
+  padding: 2px 10px;
+  border-radius: 999px;
+}
+.gv-result-short i { margin-right: 4px; }
+.gv-result-abs {
+  background: var(--surface);
+  color: var(--text-dim);
+  padding: 2px 10px;
+  border-radius: 999px;
+}
+.gv-result-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  display: flex; align-items: center; gap: 6px;
+}
+.gv-result-title strong {
+  background: color-mix(in srgb, var(--c) 22%, transparent);
+  color: var(--c);
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+}
+.gv-result-item p {
+  margin: 0 0 8px;
+  font-size: 12.5px;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+.gv-result-item mark, .gv-para p mark {
+  background: color-mix(in srgb, #fbbf24 35%, transparent);
+  color: #fbbf24;
+  font-weight: 700;
+  padding: 0 3px;
+  border-radius: 3px;
+}
+
+/* ====== Drawer Extras ====== */
+.gv-drawer-meta {
+  display: flex; gap: 10px; align-items: center;
+  font-size: 12px;
+  color: rgba(255,255,255,.85);
+}
+.gv-drawer-wichtig {
+  background: #fbbf24;
+  color: #0b1424;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+.gv-drawer-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.gv-drawer-context {
+  display: flex; flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.gv-drawer-context strong { color: var(--text); }
