@@ -8,24 +8,12 @@ window.GESETZE_VIEW = (() => {
     const allG = GESETZE_DB.getAll();
     const allP = GESETZE_DB.getAllParagraphs();
 
-    // ====== HERO ======
-    const hero = el('div', { class:'gv-hero' });
+    // ====== Kompakter HERO ======
+    const hero = el('div', { class:'gv-hero gv-hero-compact' });
     hero.innerHTML = `
-      <div class="gv-hero-bg"></div>
       <div class="gv-hero-content">
-        <div class="gv-tag">GESETZES-DATENBANK · INTERAKTIV</div>
-        <h1>⚖️ ${allG.length} Sicherheits-Gesetze · ${allP.length} Paragraphen</h1>
-        <p>
-          BeWachV · KRITIS-DachG · NIS-2/BSIG · DGUV V1 · DGUV V23 — alle Paragraphen erklärt,
-          durchsuchbar, mit Visualisierungen. Klick einen Paragraph für die Detail-Erklärung.
-        </p>
-        <div class="gv-hero-stats">
-          ${allG.map(g => `<div class="gv-hero-stat" style="--c:${g.farbe}">
-            <i class="fas ${g.icon}"></i>
-            <strong>${g.abschnitte.reduce((s,a) => s + a.paragraphen.length, 0)}</strong>
-            <span>${g.short}</span>
-          </div>`).join('')}
-        </div>
+        <h1>⚖️ Gesetzes-Katalog</h1>
+        <p><strong>${allG.length}</strong> Gesetze · <strong>${allP.length}</strong> Paragraphen · Klick einen § für Detail-Erklärung</p>
       </div>
     `;
     root.appendChild(hero);
@@ -108,18 +96,16 @@ window.GESETZE_VIEW = (() => {
                 <span class="gv-abschnitt-count">${a.paragraphen.length} §§</span>
                 <i class="fas fa-chevron-down gv-chev"></i>
               </summary>
-              <div class="gv-para-grid">
+              <div class="gv-para-list">
                 ${a.paragraphen.map(p => `
-                  <div class="gv-para ${p.wichtig?'wichtig':''}" data-pkey="${g.id}-${(p.p||'').replace(/\\s/g,'')}">
-                    <div class="gv-para-head">
-                      <strong>${p.p}</strong>
-                      <span>${p.t}</span>
-                      ${p.wichtig ? '<i class="fas fa-star gv-star" title="Wichtig"></i>' : ''}
+                  <div class="gv-para-row ${p.wichtig?'wichtig':''}" data-pkey="${g.id}-${(p.p||'').replace(/\\s/g,'')}">
+                    <div class="gv-para-num">${p.p}</div>
+                    <div class="gv-para-content">
+                      <div class="gv-para-title">${p.t} ${p.wichtig ? '<i class="fas fa-star gv-star" title="Wichtig"></i>' : ''}</div>
+                      <div class="gv-para-sum">${p.s}</div>
+                      ${p.tags && p.tags.length ? `<div class="gv-para-tags">${p.tags.map(t => `<span class="gv-tag-chip">${t}</span>`).join('')}</div>` : ''}
                     </div>
-                    <p>${p.s}</p>
-                    <div class="gv-para-tags">
-                      ${(p.tags || []).map(t => `<span class="gv-tag-chip">${t}</span>`).join('')}
-                    </div>
+                    <i class="fas fa-chevron-right gv-para-go"></i>
                   </div>
                 `).join('')}
               </div>
@@ -129,7 +115,7 @@ window.GESETZE_VIEW = (() => {
       `;
 
       // Klick auf Paragraph → Drawer
-      content.querySelectorAll('.gv-para').forEach(el => {
+      content.querySelectorAll('.gv-para-row').forEach(el => {
         el.onclick = () => {
           const key = el.dataset.pkey;
           const para = findParagraph(key);

@@ -136,17 +136,12 @@ window.MASTER_ENCY = (() => {
     const root = el('div');
     const all = normalizeAll();
 
-    // Hero (kompakt)
-    const hero = el('div', { class:'me-hero' });
+    // Kompakter Hero
+    const hero = el('div', { class:'me-hero me-hero-compact' });
     hero.innerHTML = `
-      <div class="me-hero-bg"></div>
       <div class="me-hero-content">
-        <div class="me-tag">MASTER-KATALOG · ALLE KOMPONENTEN</div>
-        <h1>📚 ${all.length} Komponenten in 6 Kategorien</h1>
-        <p>
-          Wähle eine Kategorie unten als Kachel — oder filtere/suche direkt. Alle Komponenten mit Bildern,
-          Klassen, Herstellern und Live-Animationen.
-        </p>
+        <h1>📚 Komplett-Katalog</h1>
+        <p><strong>${all.length}</strong> Komponenten · ${Object.keys(GROUPS).length} Kategorien · ${all.filter(x => window.EXPL && EXPL.hasExplainer(x.key)).length} mit Live-Animation</p>
       </div>
     `;
     root.appendChild(hero);
@@ -156,23 +151,17 @@ window.MASTER_ENCY = (() => {
     // ============ KATEGORIE-KACHELN (Hauptfilter) ============
     const kachelGrid = el('div', { class:'me-kacheln' });
 
-    // "Alle"-Kachel
-    const allKachel = el('button', { class:'me-kachel me-kachel-all active' });
     const passivCount = all.filter(x => x.typ === 'passiv').length;
     const aktivCount = all.filter(x => x.typ === 'aktiv').length;
-    const videoCount = all.filter(x => window.EXPL && EXPL.hasExplainer(x.key)).length;
+
+    // "Alle"-Kachel
+    const allKachel = el('button', { class:'me-kachel me-kachel-all active' });
     allKachel.innerHTML = `
       <div class="me-kachel-icon"><i class="fas fa-layer-group"></i></div>
       <div class="me-kachel-body">
         <div class="me-kachel-title">Alle Komponenten</div>
-        <div class="me-kachel-stat"><strong>${all.length}</strong> gesamt</div>
-        <div class="me-kachel-meta">
-          <span class="passiv">${passivCount} passiv</span>
-          <span class="aktiv">${aktivCount} aktiv</span>
-          <span class="video">${videoCount} mit Video</span>
-        </div>
+        <div class="me-kachel-count">${all.length}</div>
       </div>
-      <div class="me-kachel-check"><i class="fas fa-check"></i></div>
     `;
     allKachel.onclick = () => activate('gruppe', 'Alle');
     kachelGrid.appendChild(allKachel);
@@ -180,47 +169,26 @@ window.MASTER_ENCY = (() => {
     Object.entries(GROUPS).forEach(([gid, g]) => {
       const inGroup = all.filter(x => (KATS[x.kategorie]||{}).group === gid);
       const count = inGroup.length;
-      const subKats = Array.from(new Set(inGroup.map(x => x.kategorie)));
-      const previews = subKats.slice(0, 3).map(k => k.replace('Bewegung','PIR/MW').replace('Beschläge','Schlösser')).join(' · ');
       const kachel = el('button', { class:'me-kachel', style:`--c:${g.c}` });
       kachel.innerHTML = `
         <div class="me-kachel-icon"><i class="fas ${g.icon}"></i></div>
         <div class="me-kachel-body">
           <div class="me-kachel-title">${g.label}</div>
-          <div class="me-kachel-stat"><strong>${count}</strong> Komponenten</div>
-          <div class="me-kachel-preview">${previews}${subKats.length > 3 ? ' …' : ''}</div>
+          <div class="me-kachel-count">${count}</div>
         </div>
-        <div class="me-kachel-check"><i class="fas fa-check"></i></div>
       `;
       kachel.onclick = () => activate('gruppe', gid);
       kachelGrid.appendChild(kachel);
     });
     root.appendChild(kachelGrid);
 
-    // ============ Aktiv/Passiv-Info (kompakt nur als Hinweis) ============
-    const ap = el('div', { class:'me-ap-compact' });
-    ap.innerHTML = `
-      <div class="me-ap-pill passiv"><i class="fas fa-shield-halved"></i> <strong>${passivCount}</strong> passive Komponenten · halten still, widerstehen</div>
-      <div class="me-ap-pill aktiv"><i class="fas fa-bolt"></i> <strong>${aktivCount}</strong> aktive Komponenten · senden Signal, schalten</div>
-    `;
-    root.appendChild(ap);
-
-    // FILTER-BAR (nur noch Sub-Kategorie + Typ + Suche)
+    // FILTER-BAR (sehr schlank: nur Sub-Kat + Typ + Suche)
     const filterBar = el('div', { class:'me-filter' });
 
-    // Gruppen-Tabs (kompakte Wiederholung als Schnellwechsler)
+    // Hidden Group-Bar als Fallback (Code-Kompatibilität)
     const groupBar = el('div', { class:'me-tabs me-tabs-groups', style:'display:none' });
     const allGroupBtn = el('button', { class:'me-tab active' });
-    allGroupBtn.innerHTML = `<i class="fas fa-layer-group"></i><span>Alle</span><em>${all.length}</em>`;
-    allGroupBtn.onclick = () => activate('gruppe', 'Alle');
     groupBar.appendChild(allGroupBtn);
-    Object.entries(GROUPS).forEach(([gid, g]) => {
-      const count = all.filter(x => (KATS[x.kategorie]||{}).group === gid).length;
-      const b = el('button', { class:'me-tab', style:`--c:${g.c}` });
-      b.innerHTML = `<i class="fas ${g.icon}"></i><span>${g.label}</span><em>${count}</em>`;
-      b.onclick = () => activate('gruppe', gid);
-      groupBar.appendChild(b);
-    });
     filterBar.appendChild(groupBar);
 
     // Sub-Kategorie + Typ + Suche
