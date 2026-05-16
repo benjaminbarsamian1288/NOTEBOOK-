@@ -1,0 +1,195 @@
+/* ====================================================================
+   v49 · Drawer wieder SCROLLBAR · nur Bilder/Animations bleiben fix
+   ==================================================================== */
+
+/* Drawer-Container: scrollbar + flex aufgehoben */
+.mency-drawer {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  display: block !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  -webkit-overflow-scrolling: touch !important;
+  scrollbar-gutter: stable !important;
+}
+
+/* Alle Kinder als normaler Block-Flow */
+.mency-drawer-head,
+.mency-drawer-tabs,
+.mency-drawer-img,
+.mency-drawer-body,
+.mency-anim-section {
+  flex: none !important;
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box;
+}
+
+/* Tabs werden sticky oben beim Scrollen */
+.mency-drawer-tabs {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 5 !important;
+  background: var(--bg-2) !important;
+  backdrop-filter: blur(10px);
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 2px !important;
+  padding: 6px !important;
+  height: auto !important;
+  border-bottom: 1px solid var(--m-stroke);
+}
+
+/* Header: NICHT mehr fixe Höhe */
+.mency-drawer-head {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  padding: 16px 18px !important;
+}
+
+/* Drawer-Body: einfacher normaler Block, kein Grid mehr */
+.mency-drawer-body {
+  display: block !important;
+  height: auto !important;
+  overflow: visible !important;
+  min-height: 0 !important;
+  padding: 14px 18px 100px !important;
+}
+
+/* Tab-Panels: einfach show/hide statt overlap */
+.mency-dpanel {
+  display: none !important;
+  grid-row: auto !important;
+  grid-column: auto !important;
+  position: relative !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  min-height: 0 !important;
+}
+.mency-dpanel.active {
+  display: block !important;
+  animation: dp-in .2s ease-out;
+}
+@keyframes dp-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Bild-Container: bleibt FIX (Höhe + Zentrierung) */
+.mency-drawer-img {
+  height: 220px !important;
+  min-height: 220px !important;
+  max-height: 220px !important;
+  display: grid !important;
+  place-items: center !important;
+  contain: layout style !important;
+  overflow: hidden !important;
+  background: linear-gradient(135deg, #0a0f1a, #1e293b);
+}
+.mency-drawer-img svg {
+  width: auto !important;
+  height: 180px !important;
+  max-height: 180px !important;
+  max-width: 90% !important;
+}
+
+/* Animation-Section: Inhalt FIX, aber Section selbst scrollt mit */
+.mency-anim-section {
+  margin: 12px 14px !important;
+  padding: 10px 12px !important;
+  display: block !important;
+  contain: none !important;
+}
+.mency-anim-section .expl-wrap {
+  display: block !important;
+  grid-template-rows: none !important;
+}
+.mency-anim-section .expl-head { margin-bottom: 6px; }
+.mency-anim-section .expl-head h3 { margin: 0 0 2px; font-size: 13px; }
+.mency-anim-section .expl-sub { font-size: 11px !important; display: block !important; opacity: .8; margin-bottom: 6px; }
+
+.mency-anim-section .expl-stage {
+  height: 220px !important;
+  width: 100% !important;
+  margin: 6px 0;
+  background: linear-gradient(135deg, #020617, #1e293b);
+  border-radius: 10px;
+  overflow: hidden !important;
+  position: relative !important;
+  contain: strict !important;
+}
+.mency-anim-section .expl-stage svg.expl-svg {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+}
+
+.mency-anim-section .expl-narration {
+  min-height: 70px !important;
+  margin-top: 6px;
+}
+.mency-anim-section .expl-text {
+  min-height: 50px;
+  max-height: 80px;
+  font-size: 13px;
+  line-height: 1.5;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+.mency-anim-section .expl-controls {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* Card-Image weiterhin fixe Höhe */
+.mency-card-img {
+  height: 200px !important;
+  min-height: 200px !important;
+  max-height: 200px !important;
+  display: grid !important;
+  place-items: center !important;
+  contain: strict !important;
+  overflow: hidden !important;
+}
+.mency-card-img svg {
+  width: auto !important;
+  height: 170px !important;
+  max-width: 95% !important;
+}
+
+/* Card-Grid auf Mobile */
+@media (max-width: 720px) {
+  .mency-grid { grid-template-columns: 1fr !important; }
+  .mency-card { grid-template-rows: 170px 1fr auto !important; min-height: 360px !important; }
+  .mency-card-img { height: 170px !important; min-height: 170px !important; max-height: 170px !important; }
+  .mency-card-img svg { height: 140px !important; }
+}
+
+/* Mediathek auch */
+.mtk-photo {
+  height: 200px !important;
+  min-height: 200px !important;
+  max-height: 200px !important;
+  display: grid !important;
+  place-items: center !important;
+  contain: strict !important;
+}
+.mtk-photo svg {
+  width: auto !important;
+  height: 170px !important;
+  max-width: 95% !important;
+}
+
+/* Iframe (WWD-Player) */
+.wwd-player iframe, .wwd-player video {
+  display: block;
+}
