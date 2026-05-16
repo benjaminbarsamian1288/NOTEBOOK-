@@ -29,6 +29,7 @@
 <link rel="stylesheet" href="css/mechanik.css?v=30">
 <link rel="stylesheet" href="css/mech-ency.css?v=36">
 <link rel="stylesheet" href="css/master-ency.css?v=41">
+<link rel="stylesheet" href="css/polish-v42.css?v=42">
 <link rel="stylesheet" href="css/gesetze-view.css?v=38">
 <link rel="stylesheet" href="css/katalog.css?v=33">
 <link rel="stylesheet" href="css/lab.css?v=34">
@@ -64,39 +65,39 @@
 <aside id="sidebar" class="sidebar">
   <nav class="navlist">
     <button class="global-search-trigger" id="gs-trigger"><i class="fas fa-search"></i> <span>Suche · alles…</span><kbd>Ctrl K</kbd></button>
+
+    <div class="nav-group-label">Hauptzugänge</div>
     <button class="navitem active" data-view="home"><i class="fas fa-house"></i><span>Übersicht</span></button>
-    <button class="navitem" data-view="masterency" style="background:linear-gradient(135deg, rgba(34,211,238,.25), rgba(220,38,38,.16), rgba(168,85,247,.18)); border-color:rgba(34,211,238,.5); position:relative"><i class="fas fa-book-open-reader" style="color:#22d3ee"></i><span><strong>📚 MASTER · Komplett-Katalog</strong></span></button>
-    <button class="navitem" data-view="gesetze" style="background:linear-gradient(135deg, rgba(220,38,38,.22), rgba(124,58,237,.16), rgba(251,191,36,.10)); border-color:rgba(220,38,38,.4); position:relative"><i class="fas fa-gavel" style="color:#dc2626"></i><span><strong>⚖️ GESETZE · 150+ §§</strong></span></button>
-    <button class="navitem" data-view="katalog" style="background:linear-gradient(135deg, rgba(34,211,238,.22), rgba(168,85,247,.16), rgba(220,38,38,.12)); border-color:rgba(168,85,247,.4); position:relative"><i class="fas fa-folder-tree" style="color:#a855f7"></i><span>KATALOG · Hub</span></button>
-    <button class="navitem" data-view="lab" style="background:linear-gradient(135deg, rgba(34,211,238,.18), rgba(59,130,246,.12), rgba(168,85,247,.10)); border-color:rgba(34,211,238,.4)"><i class="fas fa-calculator" style="color:#22d3ee"></i><span><strong>🧮 Engineering-Lab</strong></span></button>
-    <button class="navitem" data-view="fp" style="background:linear-gradient(135deg, rgba(251,191,36,.18), rgba(234,88,12,.12)); border-color:rgba(251,191,36,.4)"><i class="fas fa-vector-square" style="color:#fbbf24"></i><span><strong>🏗️ Plan-Designer</strong></span></button>
-    <button class="navitem" data-view="konzept"><i class="fas fa-layer-group"></i><span>Schutzkonzept</span></button>
-    <button class="navitem" data-view="klassen"><i class="fas fa-medal"></i><span>SÜ · Grade · RC</span></button>
-    <button class="navitem" data-view="perimeter"><i class="fas fa-tower-broadcast"></i><span>Perimeter · Zone 1</span></button>
-    <button class="navitem" data-view="aussenhaut"><i class="fas fa-door-open"></i><span>Außenhaut · Zone 2</span></button>
-    <button class="navitem" data-view="melder"><i class="fas fa-wave-square"></i><span>Melder · Zone 2–4</span></button>
-    <button class="navitem" data-view="enzyklopaedie"><i class="fas fa-flask"></i><span>Enzyklopädie · Aktiv/Passiv</span></button>
-    <button class="navitem" data-view="galerie"><i class="fas fa-images"></i><span>Produkt-Galerie</span></button>
-    <button class="navitem" data-view="mediathek"><i class="fas fa-photo-film"></i><span>Mediathek · Bilder + Videos</span></button>
-    <button class="navitem" data-view="zwiebel3d"><i class="fas fa-circle-dot"></i><span>3D-Zwiebelmodell</span></button>
+    <button class="navitem nav-pri" data-view="masterency"><i class="fas fa-book-open-reader"></i><span><strong>Komplett-Katalog</strong></span><em>142</em></button>
+    <button class="navitem nav-pri" data-view="gesetze"><i class="fas fa-gavel"></i><span><strong>Gesetze · §§</strong></span><em>9</em></button>
+
+    <div class="nav-group-label">Werkzeuge</div>
+    <button class="navitem nav-tool" data-view="lab"><i class="fas fa-calculator"></i><span>Engineering-Lab</span><em>12</em></button>
+    <button class="navitem nav-tool" data-view="fp"><i class="fas fa-vector-square"></i><span>Plan-Designer</span></button>
+    <button class="navitem nav-tool" data-view="wizard"><i class="fas fa-wand-magic-sparkles"></i><span>Sicherheits-Assistent</span></button>
+    <button class="navitem nav-tool" data-view="konfigurator"><i class="fas fa-sliders"></i><span>Konfigurator</span></button>
+    <button class="navitem nav-tool" data-view="calculators"><i class="fas fa-calculator"></i><span>Calculator-Suite</span></button>
+
+    <div class="nav-group-label">3D-Visualisierungen</div>
     <button class="navitem" data-view="haus3d"><i class="fas fa-house-chimney"></i><span>Sicherheits-Haus 3D</span></button>
-    <button class="navitem" data-view="wwd" style="background:linear-gradient(135deg, rgba(220,38,38,.18), rgba(234,88,12,.10)); border-color:rgba(220,38,38,.3)"><i class="fas fa-tower-cell" style="color:#dc2626"></i><span>WWD Video-Türme</span></button>
-    <button class="navitem" data-view="mechency" style="background:linear-gradient(135deg, rgba(34,211,238,.18), rgba(124,58,237,.12)); border-color:rgba(34,211,238,.3)"><i class="fas fa-flask-vial" style="color:#22d3ee"></i><span>Mech.-Enzyklopädie</span></button>
-    <button class="navitem" data-view="mechanik" style="background:linear-gradient(135deg, rgba(124,58,237,.18), rgba(8,145,178,.10)); border-color:rgba(124,58,237,.3)"><i class="fas fa-shield-halved" style="color:#a855f7"></i><span>Mechanik · Türen · Tresore</span></button>
-    <button class="navitem" data-view="ema"><i class="fas fa-broadcast-tower"></i><span>EMA · ZKA · NSL</span></button>
-    <button class="navitem" data-view="preisliste"><i class="fas fa-euro-sign"></i><span>Preisliste</span></button>
-    <button class="navitem" data-view="wizard"><i class="fas fa-wand-magic-sparkles"></i><span>Sicherheitsassistent</span></button>
-    <button class="navitem" data-view="konfigurator"><i class="fas fa-sliders"></i><span>Konfigurator</span></button>
-    <button class="navitem" data-view="calculators"><i class="fas fa-calculator"></i><span>Calculator-Suite</span></button>
-    <button class="navitem" data-view="simulator"><i class="fas fa-vector-square"></i><span>Floor-Plan Simulator</span></button>
-    <button class="navitem" data-view="building3d"><i class="fas fa-cube"></i><span>3D-Gebäudeplaner</span></button>
+    <button class="navitem" data-view="zwiebel3d"><i class="fas fa-circle-dot"></i><span>3D-Zwiebelmodell</span></button>
     <button class="navitem" data-view="spektrum"><i class="fas fa-wave-square"></i><span>Frequenz-Spektrum</span></button>
-    <button class="navitem" data-view="vergleich"><i class="fas fa-table-cells-large"></i><span>Melder-Vergleich</span></button>
+
+    <div class="nav-group-label">Spezial</div>
+    <button class="navitem nav-wwd" data-view="wwd"><i class="fas fa-tower-cell"></i><span>WWD Video-Türme</span></button>
+    <button class="navitem" data-view="ema"><i class="fas fa-broadcast-tower"></i><span>EMA · ZKA · NSL</span></button>
+    <button class="navitem" data-view="klassen"><i class="fas fa-medal"></i><span>SÜ · Grade · RC</span></button>
+
+    <div class="nav-group-label">Bilder + Lernen</div>
+    <button class="navitem" data-view="galerie"><i class="fas fa-images"></i><span>Produkt-Galerie</span></button>
+    <button class="navitem" data-view="mediathek"><i class="fas fa-photo-film"></i><span>Mediathek</span></button>
     <button class="navitem" data-view="quiz"><i class="fas fa-graduation-cap"></i><span>Quiz · Lernmodus</span></button>
     <button class="navitem" data-view="glossar"><i class="fas fa-book"></i><span>Glossar</span></button>
+
+    <div class="nav-group-label">Verwaltung</div>
+    <button class="navitem" data-view="preisliste"><i class="fas fa-euro-sign"></i><span>Preisliste</span></button>
     <button class="navitem" data-view="projects"><i class="fas fa-folder"></i><span>Meine Projekte</span></button>
     <button class="navitem" data-view="diagramme"><i class="fas fa-chart-column"></i><span>Diagramme</span></button>
-    <button class="navitem" data-view="gesetze"><i class="fas fa-gavel"></i><span>Gesetze · KRITIS · NIS2</span></button>
     <button class="navitem" data-view="dokumente"><i class="fas fa-folder-open"></i><span>Dokumente · Normen</span></button>
   </nav>
   <div class="sidebar-foot">
