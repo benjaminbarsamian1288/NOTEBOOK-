@@ -1,4 +1,4 @@
-const CACHE = 'st-katalog-v42';
+const CACHE = 'st-katalog-v43';
 const ASSETS = [
   './',
   './index.html',
