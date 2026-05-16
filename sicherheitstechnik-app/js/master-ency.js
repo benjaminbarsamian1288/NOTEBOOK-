@@ -146,6 +146,86 @@ window.MASTER_ENCY = (() => {
     `;
     root.appendChild(hero);
 
+    // === Mini-Stat-Charts ===
+    const passivCntStat = all.filter(x => x.typ === 'passiv').length;
+    const aktivCntStat = all.filter(x => x.typ === 'aktiv').length;
+    const videoCntStat = all.filter(x => window.EXPL && EXPL.hasExplainer(x.key)).length;
+    const stats = el('div', { class:'me-mini-charts' });
+    stats.innerHTML = `
+      <div class="me-mini-chart" style="--c:#22d3ee">
+        <div class="me-mini-chart-icon"><i class="fas fa-cubes"></i></div>
+        <div class="me-mini-chart-body">
+          <div class="me-mini-chart-val">${all.length}</div>
+          <div class="me-mini-chart-lbl">Komponenten gesamt</div>
+        </div>
+      </div>
+      <div class="me-mini-chart" style="--c:#fbbf24">
+        <div class="me-mini-chart-icon"><i class="fas fa-shield-halved"></i></div>
+        <div class="me-mini-chart-body">
+          <div class="me-mini-chart-val">${passivCntStat}</div>
+          <div class="me-mini-chart-lbl">Passive Komponenten</div>
+        </div>
+      </div>
+      <div class="me-mini-chart" style="--c:#06b6d4">
+        <div class="me-mini-chart-icon"><i class="fas fa-bolt"></i></div>
+        <div class="me-mini-chart-body">
+          <div class="me-mini-chart-val">${aktivCntStat}</div>
+          <div class="me-mini-chart-lbl">Aktive Komponenten</div>
+        </div>
+      </div>
+      <div class="me-mini-chart" style="--c:#ef4444">
+        <div class="me-mini-chart-icon"><i class="fas fa-circle-play"></i></div>
+        <div class="me-mini-chart-body">
+          <div class="me-mini-chart-val">${videoCntStat}</div>
+          <div class="me-mini-chart-lbl">Mit Live-Animation</div>
+        </div>
+      </div>
+    `;
+    root.appendChild(stats);
+
+    // === FEATURED-Bereich · Top-Highlights ===
+    const featured = pickFeatured(all);
+    if (featured.length) {
+      const fb = el('div', { class:'me-featured' });
+      const itemsHTML = featured.map(m => {
+        const info = KATS[m.kategorie] || { c:'#22d3ee' };
+        return `
+          <div class="me-featured-item" data-key="${m.key}" style="--c:${info.c}">
+            <div class="me-featured-item-cat">${m.kategorie}</div>
+            <div class="me-featured-item-name">${m.name}</div>
+            <div class="me-featured-item-desc">${(m.principle || '').slice(0, 100)}</div>
+            <span class="me-featured-item-klass">${m.klasse || ''}</span>
+          </div>
+        `;
+      }).join('');
+      fb.innerHTML = `
+        <div class="me-featured-head"><i class="fas fa-star"></i><h3>Top-Highlights · Polizei-Empfehlungen + KRITIS</h3></div>
+        <div class="me-featured-row">${itemsHTML}</div>
+      `;
+      fb.querySelectorAll('.me-featured-item').forEach(item => {
+        item.onclick = () => {
+          const m = all.find(x => x.key === item.dataset.key);
+          if (m) openDrawer(m, KATS[m.kategorie] || { c:'#22d3ee' });
+        };
+      });
+      root.appendChild(fb);
+    }
+
+    function pickFeatured(list) {
+      // Wähle 8 wichtigste Komponenten verschiedener Kategorien
+      const keys = [
+        'tuer-rc2', 'fenster-rc2', 'tresor-1', 'poller-versenk-hydr',
+        'cam-ptz', 'pir-standard', 'ema-zentrale', 'sprinkler-nass',
+        'rfid-mifare', 'glas-p4a',
+      ];
+      const featured = [];
+      keys.forEach(k => {
+        const m = list.find(x => x.key === k);
+        if (m) featured.push(m);
+      });
+      return featured;
+    }
+
     const state = { gruppe:'Alle', kat:'Alle', typ:'Alle', q:'', onlyVideo:false };
 
     // ============ KATEGORIE-KACHELN (Hauptfilter) ============
@@ -219,13 +299,64 @@ window.MASTER_ENCY = (() => {
     };
     ctrl.appendChild(videoFilter);
 
+    // Sortier-Dropdown
+    const sortSel = el('select', { class:'me-sort' });
+    sortSel.innerHTML = `
+      <option value="default">↕ Standard</option>
+      <option value="name">A → Z (Name)</option>
+      <option value="name-desc">Z → A</option>
+      <option value="kat">Kategorie</option>
+      <option value="klasse">Klasse</option>
+    `;
+    state.sort = 'default';
+    sortSel.onchange = () => { state.sort = sortSel.value; render(); };
+    ctrl.appendChild(sortSel);
+
+    // View-Mode Toggle
+    state.view = 'grid';
+    const viewToggle = el('div', { class:'me-viewtoggle' });
+    viewToggle.innerHTML = `
+      <button data-v="grid" class="active" title="Karten"><i class="fas fa-table-cells-large"></i></button>
+      <button data-v="list" title="Liste"><i class="fas fa-list"></i></button>
+    `;
+    viewToggle.querySelectorAll('button').forEach(b => {
+      b.onclick = () => {
+        state.view = b.dataset.v;
+        viewToggle.querySelectorAll('button').forEach(x => x.classList.toggle('active', x === b));
+        grid.className = 'mency-grid view-' + state.view;
+        render();
+      };
+    });
+    ctrl.appendChild(viewToggle);
+
     const search = el('input', { class:'mency-search' });
     search.type = 'search';
     search.placeholder = '🔍 Suche durch alle Komponenten...';
     search.oninput = () => { state.q = search.value.toLowerCase().trim(); render(); };
     ctrl.appendChild(search);
 
+    // Quick-Filter Chips (beliebte Suchen)
+    const quickRow = el('div', { class:'me-quickfilter' });
+    const quickItems = [
+      { label:'RC2 Polizei-Empfehlung', q:'rc2', icon:'fa-shield-halved' },
+      { label:'Tresor Klasse III', q:'klasse iii', icon:'fa-vault' },
+      { label:'PTZ-Kameras', q:'ptz', icon:'fa-video' },
+      { label:'VdS-zertifiziert', q:'vds', icon:'fa-certificate' },
+      { label:'KRITIS-relevant', q:'kritis', icon:'fa-shield-virus' },
+      { label:'WaffG-konform', q:'waff', icon:'fa-gun' },
+    ];
+    quickItems.forEach(qi => {
+      const b = el('button', { class:'me-qchip' });
+      b.innerHTML = `<i class="fas ${qi.icon}"></i> ${qi.label}`;
+      b.onclick = () => {
+        search.value = qi.q;
+        state.q = qi.q.toLowerCase();
+        render();
+      };
+      quickRow.appendChild(b);
+    });
     filterBar.appendChild(ctrl);
+    filterBar.appendChild(quickRow);
     root.appendChild(filterBar);
 
     function activate(key, val) {
@@ -280,7 +411,7 @@ window.MASTER_ENCY = (() => {
     root.appendChild(grid);
 
     function render() {
-      const filtered = all.filter(m => {
+      let filtered = all.filter(m => {
         if (state.gruppe !== 'Alle' && (KATS[m.kategorie]||{}).group !== state.gruppe) return false;
         if (state.kat !== 'Alle' && m.kategorie !== state.kat) return false;
         if (state.typ !== 'Alle' && !m.typ.toLowerCase().startsWith(state.typ)) return false;
@@ -291,6 +422,12 @@ window.MASTER_ENCY = (() => {
         }
         return true;
       });
+
+      // Sortierung
+      if (state.sort === 'name') filtered.sort((a,b) => a.name.localeCompare(b.name));
+      if (state.sort === 'name-desc') filtered.sort((a,b) => b.name.localeCompare(a.name));
+      if (state.sort === 'kat') filtered.sort((a,b) => (a.kategorie||'').localeCompare(b.kategorie||''));
+      if (state.sort === 'klasse') filtered.sort((a,b) => (a.klasse||'').localeCompare(b.klasse||''));
 
       stats.innerHTML = `
         <span class="mency-stats-count"><strong>${filtered.length}</strong> ${filtered.length === 1 ? 'Komponente' : 'Komponenten'}</span>
