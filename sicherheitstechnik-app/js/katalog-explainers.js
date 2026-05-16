@@ -797,6 +797,1004 @@
   };
 
   /* =========================================================
+     WEITERE ANIMATIONEN — 12 zusätzliche
+     ========================================================= */
+
+  // Magnetkontakt
+  ANIMS['magnet-kontakt'] = {
+    title:'Magnet-Kontakt · Reed-Schalter Wirkprinzip',
+    intro:'Tür/Fenster öffnet → Magnetfeld trennt → Alarm',
+    cycle:9000,
+    svg: wrap('0 0 600 360', `
+      <rect width="600" height="360" fill="#0a0f1a"/>
+      <!-- Rahmen -->
+      <rect x="60" y="60" width="180" height="240" fill="#1e293b" stroke="#475569" stroke-width="2"/>
+      <!-- Türflügel -->
+      <g id="mk-door">
+        <rect x="80" y="80" width="140" height="200" fill="#92400e">
+          <animateTransform attributeName="transform" type="rotate" values="0 220 180;-30 220 180;0 220 180" keyTimes="0;.5;1" dur="3s" repeatCount="indefinite"/>
+        </rect>
+      </g>
+      <!-- Reed-Schalter (im Rahmen) -->
+      <rect x="245" y="120" width="60" height="36" rx="3" fill="#1e293b" stroke="#22c55e" stroke-width="2"/>
+      <text x="275" y="142" text-anchor="middle" font-size="11" fill="#22c55e" font-family="system-ui" font-weight="800">REED</text>
+      <line id="mk-reed-l" x1="251" y1="148" x2="269" y2="148" stroke="#22c55e" stroke-width="2.5"/>
+      <line id="mk-reed-r" x1="281" y1="148" x2="299" y2="148" stroke="#22c55e" stroke-width="2.5"/>
+      <!-- Magnet (an Türflügel) -->
+      <g id="mk-mag">
+        <rect x="206" y="120" width="36" height="36" rx="3" fill="#fbbf24">
+          <animate attributeName="x" values="206;120;206" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <text x="224" y="142" text-anchor="middle" font-size="10" fill="#0b1424" font-family="system-ui" font-weight="900">N · S</text>
+      </g>
+
+      <!-- s1: Feld-Linien -->
+      <g id="s1-field" opacity="0">
+        ${[1,2,3].map(i => `<path d="M 224 ${135-i*5} q -10 -8 -20 0" stroke="#fbbf24" stroke-width="1.5" fill="none" opacity="${0.7-i*0.15}"/>`).join('')}
+        ${[1,2,3].map(i => `<path d="M 224 ${161+i*5} q -10 8 -20 0" stroke="#fbbf24" stroke-width="1.5" fill="none" opacity="${0.7-i*0.15}"/>`).join('')}
+      </g>
+
+      <!-- s2: Reed geschlossen -->
+      <g id="s2-closed" opacity="0">
+        <text x="350" y="142" font-size="11" fill="#22c55e" font-family="monospace" font-weight="800">→ KONTAKT GESCHLOSSEN</text>
+        <text x="350" y="160" font-size="9" fill="#94a3b8">Linie OK · Tür zu</text>
+      </g>
+
+      <!-- s3: Tür öffnet sich → Magnet weg -->
+      <g id="s3-open" opacity="0">
+        ${[1,2,3].map(i => `<path d="M 269 ${148-i*4} q 5 -8 12 0" stroke="#475569" stroke-width="1.5" fill="none" stroke-dasharray="2 2" opacity=".5"/>`).join('')}
+        <text x="350" y="170" font-size="11" fill="#ef4444" font-family="monospace" font-weight="800">→ KONTAKT OFFEN</text>
+        <text x="350" y="186" font-size="9" fill="#94a3b8">Magnetfeld &lt; Schwelle</text>
+      </g>
+
+      <!-- s4: Alarm -->
+      <g id="s4-alarm" opacity="0">
+        <rect x="20" y="20" width="240" height="32" rx="6" fill="#ef4444"><animate attributeName="opacity" values=".5;1;.5" dur=".4s" repeatCount="indefinite"/></rect>
+        <text x="140" y="40" text-anchor="middle" font-size="13" fill="white" font-family="system-ui" font-weight="900">⚠ EINBRUCH-LINIE 3</text>
+      </g>
+    `),
+    steps: [
+      { t: 0,    h: [],                       text:'① Magnetkontakt: Reed-Schalter im Rahmen, Permanentmagnet am Tür-/Fensterflügel. Bei geschlossener Tür sitzt Magnet direkt neben Reed.' },
+      { t: 1800, h: ['s1-field','s2-closed'], text:'② Magnetfeld des Permanentmagneten zieht die zwei ferromagnetischen Plättchen im Glasröhrchen zusammen → Stromkreis geschlossen.' },
+      { t: 4000, h: ['s3-open'],              text:'③ Tür wird geöffnet → Magnet entfernt sich. Sobald das Feld unter Schwelle fällt, federn die Reed-Kontakte auseinander.' },
+      { t: 6500, h: ['s3-open','s4-alarm'],   text:'④ Stromkreis bricht → EMA-Zentrale erkennt Linien-Unterbrechung in &lt; 100 ms → Alarm. VdS-Variante erkennt zusätzlich Magnet-Sabotage (Anhalten eines Fremd-Magneten).' },
+    ],
+  };
+
+  // PIR-Standard
+  ANIMS['pir-standard'] = {
+    title:'PIR-Bewegungsmelder · Pyroelektrik',
+    intro:'Wärmestrahlung 8—14 µm · Fresnel-Linsen-Optik',
+    cycle:11000,
+    svg: wrap('0 0 600 360', `
+      <rect width="600" height="360" fill="#0a0f1a"/>
+      <line x1="0" y1="320" x2="600" y2="320" stroke="#1e293b" stroke-width="3"/>
+      <!-- PIR-Gehäuse -->
+      <rect x="40" y="60" width="60" height="60" rx="6" fill="#1e293b" stroke="#22d3ee" stroke-width="2"/>
+      <rect x="48" y="84" width="44" height="20" fill="#0a0f1a"/>
+      <circle cx="70" cy="94" r="6" fill="#22d3ee"/>
+      <text x="70" y="138" text-anchor="middle" font-size="10" fill="#22d3ee" font-weight="800">PIR</text>
+
+      <!-- s1: Fresnel-Zonen -->
+      <g id="s1-zones" opacity="0">
+        ${Array.from({length: 12}, (_,i) => {
+          const ang = -55 + i * 10;
+          return `<path d="M 70 100 L ${70 + Math.sin(ang*Math.PI/180)*500} ${100 + Math.cos(ang*Math.PI/180)*500}" stroke="#22d3ee" stroke-width=".8" stroke-dasharray="2 4" opacity=".4"/>`;
+        }).join('')}
+        <text x="300" y="50" font-size="11" fill="#22d3ee" font-weight="700">Fresnel-Linse · 12 Zonen</text>
+      </g>
+
+      <!-- s2: Wärmequelle Person -->
+      <g id="s2-person" opacity="0">
+        <g>
+          <animateTransform attributeName="transform" type="translate" values="580 0;280 0;100 0;100 0" keyTimes="0;.4;.7;1" dur="6s" repeatCount="indefinite"/>
+          <circle cx="0" cy="230" r="12" fill="#ef4444" opacity=".7"/>
+          <ellipse cx="0" cy="260" rx="14" ry="22" fill="#fbbf24" opacity=".7"/>
+          <rect x="-12" y="246" width="6" height="20" rx="3" fill="#fbbf24" opacity=".6" transform="rotate(-10)"/>
+          <rect x="6" y="246" width="6" height="20" rx="3" fill="#fbbf24" opacity=".6" transform="rotate(10)"/>
+          <rect x="-5" y="282" width="4" height="30" rx="2" fill="#fbbf24" opacity=".6"/>
+          <rect x="1" y="282" width="4" height="30" rx="2" fill="#fbbf24" opacity=".6"/>
+        </g>
+      </g>
+
+      <!-- s3: Element pyroelektrisch -->
+      <g id="s3-elem" opacity="0">
+        <rect x="370" y="60" width="200" height="80" rx="6" fill="#0a0f1a" stroke="#fbbf24"/>
+        <text x="470" y="80" text-anchor="middle" font-size="10" fill="#fbbf24" font-weight="800">LiTaO₃ DUAL-ELEMENT</text>
+        <rect x="395" y="95" width="60" height="30" fill="#1e293b" stroke="#fbbf24"/>
+        <rect x="485" y="95" width="60" height="30" fill="#1e293b" stroke="#fbbf24"/>
+        <line x1="455" y1="110" x2="485" y2="110" stroke="#475569"/>
+        <text x="395" y="135" font-size="9" fill="#94a3b8">+</text>
+        <text x="540" y="135" font-size="9" fill="#94a3b8">−</text>
+      </g>
+
+      <!-- s4: Spannungs-Wechsel -->
+      <g id="s4-signal" opacity="0">
+        <rect x="370" y="150" width="200" height="80" rx="6" fill="#0a0f1a" stroke="#22c55e"/>
+        <text x="470" y="168" text-anchor="middle" font-size="10" fill="#22c55e" font-weight="800">DIFFERENZ-SPANNUNG</text>
+        <path d="M 380 200 L 395 200 L 405 180 L 420 180 L 430 200 L 445 200 L 455 220 L 470 220 L 480 200 L 495 200 L 505 180 L 520 180 L 530 200 L 560 200" stroke="#22c55e" stroke-width="2" fill="none"/>
+      </g>
+
+      <!-- s5: Alarm -->
+      <g id="s5-alarm" opacity="0">
+        <rect x="20" y="20" width="240" height="32" rx="6" fill="#ef4444"><animate attributeName="opacity" values=".5;1;.5" dur=".4s" repeatCount="indefinite"/></rect>
+        <text x="140" y="40" text-anchor="middle" font-size="13" fill="white" font-weight="900">⚠ BEWEGUNG DETEKTIERT</text>
+      </g>
+    `),
+    steps: [
+      { t: 0,    h: [],                       text:'① PIR-Bewegungsmelder. Detektiert pyroelektrisch — Spannungsänderung bei wechselnder Wärmestrahlung.' },
+      { t: 2000, h: ['s1-zones'],              text:'② Fresnel-Linse teilt das Sichtfeld in 12 schmale Sektoren — quasi 12 Mikro-Mess-Bereiche.' },
+      { t: 4200, h: ['s1-zones','s2-person'],  text:'③ Person bewegt sich durch die Zonen. Jede Zone wird kurz "warm" → kurz "kalt" → wechselndes Wärmesignal.' },
+      { t: 6500, h: ['s2-person','s3-elem','s4-signal'], text:'④ LiTaO₃-Dual-Element vergleicht zwei Halb-Felder. Bewegung erzeugt Differenz-Spannung im µV-Bereich.' },
+      { t: 9000, h: ['s3-elem','s4-signal','s5-alarm'],   text:'⑤ Verstärker + Auswerter → bei Schwelle Überschreitung → Alarm. Anti-Tier-Maskierung filtert Haustiere (Größe).' },
+    ],
+  };
+
+  // CO2-Anlage
+  ANIMS['co2-anlage'] = {
+    title:'CO₂-Löschanlage · Vollflutung',
+    intro:'Sauerstoff-Verdrängung · LEBENSGEFAHR',
+    cycle:13000,
+    svg: wrap('0 0 600 360', `
+      <rect width="600" height="360" fill="#0a0f1a"/>
+      <!-- Flasche -->
+      <rect x="40" y="50" width="80" height="240" rx="40" fill="#0a0f1a" stroke="#22d3ee" stroke-width="3"/>
+      <text x="80" y="175" text-anchor="middle" font-size="28" fill="#22d3ee" font-weight="900">CO₂</text>
+      <text x="80" y="200" text-anchor="middle" font-size="10" fill="#94a3b8">60 bar</text>
+      <!-- Raum -->
+      <rect x="200" y="60" width="360" height="240" rx="6" fill="#1e293b" stroke="#475569" stroke-width="2"/>
+      <text x="220" y="80" font-size="10" fill="#94a3b8" font-weight="700">SERVER-RAUM</text>
+      <!-- Server-Schränke -->
+      ${[230,290,350,410,470].map(x => `<rect x="${x}" y="180" width="40" height="100" fill="#475569" stroke="#1e293b"/><circle cx="${x+20}" cy="195" r="2" fill="#22c55e"/>`).join('')}
+
+      <!-- s1: Brandmelder -->
+      <g id="s1-detect" opacity="0">
+        <circle cx="380" cy="100" r="14" fill="#1e293b" stroke="#22c55e" stroke-width="2"/>
+        <circle cx="380" cy="100" r="6" fill="#22c55e"/>
+        <text x="380" y="138" text-anchor="middle" font-size="9" fill="#22c55e" font-weight="800">SENSOR</text>
+        <g transform="translate(310, 240)">
+          <path d="M-10 -8 Q-5 -25 0 -15 Q8 -28 12 -10 Q15 -3 5 5 Q-5 5 -10 -8 Z" fill="#dc2626">
+            <animate attributeName="fill" values="#dc2626;#fbbf24;#dc2626" dur=".4s" repeatCount="indefinite"/>
+          </path>
+        </g>
+      </g>
+
+      <!-- s2: Vorwarnung -->
+      <g id="s2-warn" opacity="0">
+        <rect x="220" y="100" width="200" height="38" rx="4" fill="#fbbf24"><animate attributeName="opacity" values=".5;1;.5" dur=".5s" repeatCount="indefinite"/></rect>
+        <text x="320" y="118" text-anchor="middle" font-size="11" fill="#0b1424" font-weight="900">⚠ VORWARNUNG · 30 s</text>
+        <text x="320" y="132" text-anchor="middle" font-size="9" fill="#7f1d1d">Raum verlassen!</text>
+      </g>
+
+      <!-- s3: CO2-Stroming -->
+      <g id="s3-flow" opacity="0">
+        <line x1="120" y1="170" x2="200" y2="170" stroke="#22d3ee" stroke-width="4"/>
+        <line x1="200" y1="170" x2="200" y2="100" stroke="#22d3ee" stroke-width="4"/>
+        ${[230,290,350,410,470].map((x,i) => `<line x1="200" y1="80" x2="${x+20}" y2="80" stroke="#22d3ee" stroke-width="2"/><line x1="${x+20}" y1="80" x2="${x+20}" y2="100" stroke="#22d3ee" stroke-width="2"/>`).join('')}
+        ${[230,290,350,410,470].map((x,i) => `<g transform="translate(${x+20}, 100)">${Array.from({length: 4}, (_,j) => `<line x1="0" y1="0" x2="${(j-1.5)*8}" y2="${20+j*5}" stroke="#22d3ee" stroke-width="2"><animate attributeName="opacity" values="0;1;0" dur=".5s" begin="${j*0.1}s" repeatCount="indefinite"/></line>`).join('')}</g>`).join('')}
+      </g>
+
+      <!-- s4: Raum füllt sich -->
+      <g id="s4-flood" opacity="0">
+        ${Array.from({length: 30}, (_,i) => `<circle cx="${210 + (i%6)*60}" cy="${${80} + Math.floor(i/6)*40}" r="${6 + Math.random()*3}" fill="#22d3ee" opacity=".3"><animate attributeName="opacity" values=".1;.5;.1" dur="1s" begin="${i*0.04}s" repeatCount="indefinite"/></circle>`).join('')}
+      </g>
+
+      <!-- s5: gelöscht -->
+      <g id="s5-done" opacity="0">
+        <rect x="20" y="20" width="240" height="32" rx="6" fill="#22c55e"/>
+        <text x="140" y="40" text-anchor="middle" font-size="13" fill="#0b1424" font-weight="900">✓ BRAND GELÖSCHT</text>
+        <text x="380" y="100" text-anchor="middle" font-size="9" fill="#22c55e">Konzentration &gt; 30 %</text>
+      </g>
+    `),
+    steps: [
+      { t: 0,    h: [],                          text:'① CO₂-Löschanlage für Server-Raum. CO₂-Flaschen unter 60 bar Druck. Brandmelder überwachen Raum.' },
+      { t: 2000, h: ['s1-detect'],               text:'② Brandmelder detektiert Feuer → Auslösung der Löschsequenz. Brand vorhanden.' },
+      { t: 4200, h: ['s1-detect','s2-warn'],     text:'③ 30 Sek Vorwarnung mit Alarm + Sirene. Personen müssen den Raum verlassen — sonst Erstickungsgefahr!' },
+      { t: 7000, h: ['s2-warn','s3-flow'],       text:'④ Magnetventile öffnen → CO₂ strömt unter Druck zu den Düsen im Raum. Rohrleitung in &lt; 5 Sek voll.' },
+      { t: 9500, h: ['s3-flow','s4-flood'],      text:'⑤ Vollflutung: CO₂-Konzentration steigt auf &gt; 30 %. Sauerstoff-Anteil sinkt auf &lt; 14 % → Verbrennung unterbrochen.' },
+      { t: 11500,h: ['s4-flood','s5-done'],      text:'⑥ Brand gelöscht. Keine Rückstände — perfekt für Server-/Daten-Räume. Danach Raum 30 min lüften vor Betreten.' },
+    ],
+  };
+
+  // ASD-Aspirations-Melder
+  ANIMS['asd'] = {
+    title:'ASD · Aspirations-Rauchmelder',
+    intro:'Aktiv-Luftansaugung · 1.000× empfindlicher als Punkt-Melder',
+    cycle:11000,
+    svg: wrap('0 0 600 360', `
+      <rect width="600" height="360" fill="#0a0f1a"/>
+      <!-- Deckenleitung mit Bohrungen -->
+      <rect x="0" y="60" width="600" height="14" fill="#475569"/>
+      ${[60,140,220,300,380,460,540].map(x => `<circle cx="${x}" cy="80" r="3" fill="#0a0f1a"/>`).join('')}
+      <text x="20" y="55" font-size="10" fill="#94a3b8">PVC-ROHRNETZ (Ø 25 mm)</text>
+
+      <!-- ASD-Box -->
+      <rect x="60" y="180" width="120" height="100" rx="6" fill="#1e293b" stroke="#22d3ee" stroke-width="2"/>
+      <text x="120" y="200" text-anchor="middle" font-size="11" fill="#22d3ee" font-weight="800">ASD</text>
+      <rect x="80" y="215" width="80" height="50" fill="#0a0f1a" stroke="#475569"/>
+      <text x="120" y="240" text-anchor="middle" font-size="14" fill="#22c55e" font-family="monospace" font-weight="800">0,03%</text>
+      <text x="120" y="255" text-anchor="middle" font-size="8" fill="#94a3b8">obs/m</text>
+      <line x1="120" y1="180" x2="120" y2="74" stroke="#94a3b8" stroke-width="3"/>
+
+      <!-- s1: Lüfter -->
+      <g id="s1-fan" opacity="0">
+        <circle cx="120" cy="155" r="14" fill="#1e293b" stroke="#22d3ee" stroke-width="2"/>
+        <g transform="translate(120,155)">
+          <animateTransform attributeName="transform" type="rotate" values="0;360" dur=".5s" repeatCount="indefinite"/>
+          ${[0,60,120,180,240,300].map(a => `<rect x="-1" y="-10" width="2" height="10" fill="#22d3ee" transform="rotate(${a})"/>`).join('')}
+        </g>
+        <text x="155" y="158" font-size="9" fill="#22d3ee" font-weight="700">SAUG-LÜFTER</text>
+      </g>
+
+      <!-- s2: Luftstrom-Pfeile -->
+      <g id="s2-flow" opacity="0">
+        ${[60,140,220,300,380,460,540].map(x => `
+          <line x1="${x}" y1="85" x2="${x}" y2="76" stroke="#22d3ee" stroke-width="2">
+            <animate attributeName="opacity" values="0;1;0" dur="1.5s" repeatCount="indefinite"/>
+          </line>
+          <polygon points="${x},85 ${x-3},81 ${x+3},81" fill="#22d3ee">
+            <animate attributeName="opacity" values="0;1;0" dur="1.5s" repeatCount="indefinite"/>
+          </polygon>
+        `).join('')}
+      </g>
+
+      <!-- s3: Brand -->
+      <g id="s3-fire" opacity="0">
+        <g transform="translate(440, 320)">
+          <path d="M-12 -8 Q-6 -25 0 -15 Q8 -28 12 -10 Q15 -3 6 5 Q-4 5 -12 -8 Z" fill="#dc2626">
+            <animate attributeName="fill" values="#dc2626;#fbbf24;#dc2626" dur=".4s" repeatCount="indefinite"/>
+          </path>
+        </g>
+        <!-- Rauch -->
+        ${Array.from({length: 4}, (_,i) => `<circle cx="${440}" cy="${280-i*30}" r="${10+i*5}" fill="#94a3b8" opacity=".5"><animate attributeName="cy" values="${290-i*30};${100-i*30}" dur="2s" begin="${i*0.5}s" repeatCount="indefinite"/></circle>`).join('')}
+      </g>
+
+      <!-- s4: Anstieg -->
+      <g id="s4-rise" opacity="0">
+        <text x="120" y="240" text-anchor="middle" font-size="14" fill="#fbbf24" font-family="monospace" font-weight="800">0,52%</text>
+        <rect x="200" y="100" width="180" height="60" rx="6" fill="#0a0f1a" stroke="#fbbf24"/>
+        <text x="290" y="120" text-anchor="middle" font-size="10" fill="#fbbf24" font-weight="800">FRÜHWARNUNG</text>
+        <text x="290" y="135" text-anchor="middle" font-size="9" fill="#94a3b8">Anstieg messbar bevor</text>
+        <text x="290" y="148" text-anchor="middle" font-size="9" fill="#94a3b8">Punkt-Melder reagiert</text>
+      </g>
+
+      <!-- s5: Voll-Alarm -->
+      <g id="s5-alarm" opacity="0">
+        <text x="120" y="240" text-anchor="middle" font-size="14" fill="#ef4444" font-family="monospace" font-weight="800">3,2%</text>
+        <rect x="20" y="20" width="240" height="32" rx="6" fill="#ef4444"><animate attributeName="opacity" values=".5;1;.5" dur=".4s" repeatCount="indefinite"/></rect>
+        <text x="140" y="40" text-anchor="middle" font-size="13" fill="white" font-weight="900">⚠ ALARM · BRAND</text>
+      </g>
+    `),
+    steps: [
+      { t: 0,    h: [],                       text:'① Aspirations-Rauchmelder. PVC-Rohrnetz mit Ansaug-Bohrungen entlang der Decke des überwachten Bereichs.' },
+      { t: 2000, h: ['s1-fan','s2-flow'],     text:'② Eingebauter Saug-Lüfter zieht permanent Raumluft durch das Rohrnetz an. Hochempfindlicher Laser- oder Wolkenkammer-Sensor analysiert.' },
+      { t: 4500, h: ['s2-flow','s3-fire'],    text:'③ Schwelbrand entsteht — produziert kaum sichtbaren Rauch. Punkt-Rauchmelder reagieren noch nicht.' },
+      { t: 7000, h: ['s3-fire','s4-rise'],    text:'④ ASD detektiert minimal erhöhte Partikel-Konzentration (0,03 → 0,52 % Trübung/m). Frühwarnung lange vor sichtbarem Rauch.' },
+      { t: 9500, h: ['s3-fire','s5-alarm'],   text:'⑤ Wenn Konzentration weiter steigt → Voll-Alarm. Reaktionszeit gegen Server-Schäden entscheidend.' },
+    ],
+  };
+
+  // Gesichtserkennung
+  ANIMS['gesichtserkennung'] = {
+    title:'Face-ID · 3D-Gesichtserkennung mit Liveness',
+    intro:'IR-Tiefenscan + KI · Anti-Spoof gegen Fotos',
+    cycle:11000,
+    svg: wrap('0 0 600 360', `
+      <rect width="600" height="360" fill="#0a0f1a"/>
+      <!-- Kamera -->
+      <rect x="40" y="140" width="120" height="80" rx="8" fill="#1e293b" stroke="#22d3ee" stroke-width="2"/>
+      <circle cx="80" cy="180" r="14" fill="#0c0a1a" stroke="#22d3ee"/>
+      <circle cx="80" cy="180" r="6" fill="#22d3ee"/>
+      <circle cx="120" cy="170" r="6" fill="#0c0a1a" stroke="#a855f7"/>
+      <text x="120" y="200" text-anchor="middle" font-size="8" fill="#a855f7" font-weight="700">IR</text>
+
+      <!-- Gesicht (rechts) -->
+      <g>
+        <ellipse cx="450" cy="180" rx="55" ry="70" fill="#fbbf24" opacity=".15"/>
+        <circle cx="450" cy="170" r="50" fill="rgba(251,191,36,.25)" stroke="#fbbf24"/>
+        <circle cx="430" cy="160" r="4" fill="#0a0f1a"/>
+        <circle cx="470" cy="160" r="4" fill="#0a0f1a"/>
+        <path d="M435 195 Q450 205 465 195" stroke="#0a0f1a" stroke-width="2" fill="none"/>
+      </g>
+
+      <!-- s1: IR-Punkte (Dot Projector) -->
+      <g id="s1-dots" opacity="0">
+        ${Array.from({length: 30}, (_,i) => {
+          const a = (i * 137.5) % 360;
+          const r = 5 + (i % 8) * 6;
+          const x = 450 + Math.cos(a*Math.PI/180) * r;
+          const y = 180 + Math.sin(a*Math.PI/180) * r;
+          return `<circle cx="${x}" cy="${y}" r="1.5" fill="#a855f7"><animate attributeName="opacity" values="0;1;0" dur="1.5s" begin="${i*0.03}s" repeatCount="indefinite"/></circle>`;
+        }).join('')}
+        <text x="450" y="280" text-anchor="middle" font-size="10" fill="#a855f7" font-weight="700">30.000 IR-PUNKTE</text>
+      </g>
+
+      <!-- s2: Tiefen-Map / Landmarks -->
+      <g id="s2-landmarks" opacity="0">
+        ${[
+          [430,150],[470,150],[450,165],[450,180],[450,195],[440,205],[460,205],[420,195],[480,195]
+        ].map(([x,y]) => `<circle cx="${x}" cy="${y}" r="3" fill="#22d3ee" stroke="white" stroke-width=".5"/>`).join('')}
+        <rect x="395" y="120" width="110" height="120" fill="none" stroke="#22d3ee" stroke-width="1.5" stroke-dasharray="4 2"/>
+      </g>
+
+      <!-- s3: Vektor-Encoding -->
+      <g id="s3-vector" opacity="0">
+        <rect x="200" y="40" width="200" height="60" rx="6" fill="#0a0f1a" stroke="#a855f7"/>
+        <text x="300" y="60" text-anchor="middle" font-size="10" fill="#a855f7" font-weight="800">128-DIM EMBEDDING</text>
+        <text x="300" y="80" text-anchor="middle" font-size="9" fill="#94a3b8" font-family="monospace">[0.34, -0.89, 0.12, ...]</text>
+        <text x="300" y="93" text-anchor="middle" font-size="9" fill="#22c55e">cosine-similarity: 0.97</text>
+      </g>
+
+      <!-- s4: Liveness-Check -->
+      <g id="s4-liveness" opacity="0">
+        <rect x="200" y="110" width="200" height="40" rx="4" fill="#0a0f1a" stroke="#fbbf24"/>
+        <text x="300" y="125" text-anchor="middle" font-size="10" fill="#fbbf24" font-weight="800">LIVENESS-CHECK</text>
+        <text x="300" y="142" text-anchor="middle" font-size="9" fill="#22c55e">✓ 3D-Tiefe · ✓ Mikro-Bewegung</text>
+      </g>
+
+      <!-- s5: Auth -->
+      <g id="s5-ok" opacity="0">
+        <rect x="20" y="20" width="240" height="32" rx="6" fill="#22c55e"/>
+        <text x="140" y="40" text-anchor="middle" font-size="13" fill="#0b1424" font-weight="900">✓ MITARBEITER #1247</text>
+      </g>
+    `),
+    steps: [
+      { t: 0,    h: [],                          text:'① Face-ID-Leser mit RGB-Kamera + IR-Tiefen-Sensor. Person tritt vor das Gerät.' },
+      { t: 1800, h: ['s1-dots'],                 text:'② Dot-Projector wirft ~30.000 unsichtbare IR-Punkte auf das Gesicht. IR-Kamera misst Deformation des Musters.' },
+      { t: 4000, h: ['s1-dots','s2-landmarks'],  text:'③ KI extrahiert 30+ Gesichts-Landmarks (Augen, Mund, Nase, Konturen). 3D-Tiefen-Map wird erstellt.' },
+      { t: 6300, h: ['s2-landmarks','s3-vector'],text:'④ Deep-Neural-Network konvertiert Gesicht in 128-dim Vektor (Face-Embedding). Cosine-Vergleich mit Datenbank.' },
+      { t: 8500, h: ['s3-vector','s4-liveness'], text:'⑤ Liveness-Check: 3D-Tiefen-Verteilung + Mikro-Augenbewegung verhindert Foto-/Maske-Spoofing.' },
+      { t: 10000,h: ['s3-vector','s4-liveness','s5-ok'], text:'⑥ Match-Score &gt; 0,95 → Authentifiziert. Tür öffnet. Audit-Log mit Zeitstempel.' },
+    ],
+  };
+
+  // Fingerprint
+  ANIMS['fingerprint'] = {
+    title:'Fingerprint · Kapazitiver Sensor + Minutien-Match',
+    intro:'Hautlinien-Auswertung · FAR < 0,001 %',
+    cycle:10000,
+    svg: wrap('0 0 600 360', `
+      <rect width="600" height="360" fill="#0a0f1a"/>
+      <!-- Sensor -->
+      <rect x="180" y="60" width="240" height="240" rx="10" fill="#1e293b" stroke="#a855f7" stroke-width="2"/>
+      <rect x="200" y="80" width="200" height="200" rx="6" fill="#0c0a1a"/>
+
+      <!-- Fingerprint-Muster -->
+      <g id="fp-pattern">
+        <g stroke="#a855f7" fill="none" stroke-width="1.5">
+          <path d="M250 160 Q300 130 350 160 Q360 200 300 220 Q240 200 250 160 Z"/>
+          <path d="M260 165 Q300 145 340 165 Q350 195 300 210 Q250 195 260 165 Z"/>
+          <path d="M275 175 Q300 165 325 175 Q330 195 300 200 Q270 195 275 175 Z"/>
+          <path d="M285 185 Q300 180 315 185 Q318 195 300 195 Q282 195 285 185 Z"/>
+          <line x1="290" y1="240" x2="310" y2="240"/>
+          <line x1="285" y1="250" x2="315" y2="250"/>
+          <line x1="280" y1="260" x2="320" y2="260"/>
+        </g>
+      </g>
+
+      <!-- s1: Scan-Linie -->
+      <g id="s1-scan" opacity="0">
+        <line x1="200" y1="80" x2="400" y2="80" stroke="#a855f7" stroke-width="2"><animate attributeName="y1" values="80;280;80" dur="2s" repeatCount="indefinite"/><animate attributeName="y2" values="80;280;80" dur="2s" repeatCount="indefinite"/></line>
+        <text x="300" y="320" text-anchor="middle" font-size="10" fill="#a855f7" font-weight="700">KAPAZITIVER SCAN</text>
+      </g>
+
+      <!-- s2: Minutien finden -->
+      <g id="s2-minutien" opacity="0">
+        ${[[270,165],[330,170],[280,190],[320,195],[300,210],[295,235]].map(([x,y]) => `
+          <circle cx="${x}" cy="${y}" r="6" fill="none" stroke="#22c55e" stroke-width="2"/>
+          <circle cx="${x}" cy="${y}" r="2" fill="#22c55e"/>
+        `).join('')}
+        <text x="450" y="180" font-size="11" fill="#22c55e" font-weight="800">15-40 Minutien</text>
+        <text x="450" y="200" font-size="9" fill="#94a3b8">Verzweigungen,</text>
+        <text x="450" y="213" font-size="9" fill="#94a3b8">Endpunkte</text>
+      </g>
+
+      <!-- s3: Match-Score -->
+      <g id="s3-match" opacity="0">
+        <rect x="60" y="60" width="100" height="240" rx="6" fill="#0a0f1a" stroke="#22c55e"/>
+        <text x="110" y="80" text-anchor="middle" font-size="10" fill="#22c55e" font-weight="800">DB-MATCH</text>
+        <text x="110" y="110" text-anchor="middle" font-size="9" fill="#94a3b8">Template-ID</text>
+        <text x="110" y="128" text-anchor="middle" font-size="13" fill="#fbbf24" font-family="monospace" font-weight="800">#1247</text>
+        <text x="110" y="160" text-anchor="middle" font-size="9" fill="#94a3b8">Score</text>
+        <text x="110" y="178" text-anchor="middle" font-size="20" fill="#22c55e" font-family="monospace" font-weight="900">0.97</text>
+        <text x="110" y="220" text-anchor="middle" font-size="9" fill="#94a3b8">FAR &lt; 10⁻⁶</text>
+        <text x="110" y="240" text-anchor="middle" font-size="9" fill="#94a3b8">FRR &lt; 1 %</text>
+      </g>
+
+      <!-- s4: Ergebnis -->
+      <g id="s4-ok" opacity="0">
+        <rect x="20" y="20" width="240" height="32" rx="6" fill="#22c55e"/>
+        <text x="140" y="40" text-anchor="middle" font-size="13" fill="#0b1424" font-weight="900">✓ ZUTRITT GEWÄHRT</text>
+      </g>
+    `),
+    steps: [
+      { t: 0,    h: [],                       text:'① Kapazitiver Fingerprint-Sensor. Microchip-Array misst elektrische Felder unter den Fingerlinien.' },
+      { t: 1800, h: ['s1-scan'],               text:'② Scan: Hautlinien (Höhen) und Vertiefungen erzeugen unterschiedliche Kapazitäts-Messwerte → 2D-Bild.' },
+      { t: 4000, h: ['s1-scan','s2-minutien'], text:'③ Bildverarbeitung findet 15—40 Minutien-Punkte: Linien-Endpunkte und Verzweigungen (charakteristisch).' },
+      { t: 6500, h: ['s2-minutien','s3-match'], text:'④ Template wird mit Datenbank verglichen. Score &gt; 0,95 = Match. False-Accept-Rate &lt; 0,001 %.' },
+      { t: 8500, h: ['s2-minutien','s3-match','s4-ok'], text:'⑤ Authentifiziert. Tür öffnet. Optional 2-Faktor mit PIN.' },
+    ],
+  };
+
+  // ANPR-Kamera
+  ANIMS['cam-anpr'] = {
+    title:'ANPR · Kennzeichen-Erkennung mit KI',
+    intro:'IR-LEDs + Deep Learning · Whitelist-Abgleich',
+    cycle:10000,
+    svg: wrap('0 0 600 360', `
+      <rect width="600" height="360" fill="#0a0f1a"/>
+      <rect y="240" width="600" height="120" fill="#1e293b"/>
+      <line y1="240" x2="600" y2="240" stroke="#475569" stroke-width="2"/>
+      <line y1="290" x2="600" y2="290" stroke="#475569" stroke-dasharray="12 8"/>
+      <!-- Kamera oben -->
+      <rect x="40" y="50" width="100" height="50" rx="6" fill="#1e293b" stroke="#22d3ee" stroke-width="2"/>
+      <circle cx="65" cy="75" r="12" fill="#0c0a1a" stroke="#dc2626"/>
+      <circle cx="65" cy="75" r="5" fill="#dc2626"/>
+      <text x="105" y="80" font-size="11" fill="#22d3ee" font-weight="800">ANPR</text>
+      <text x="105" y="92" font-size="8" fill="#94a3b8">940nm IR</text>
+
+      <!-- s1: IR-Beleuchtung -->
+      <g id="s1-ir" opacity="0">
+        <path d="M 65 100 L 250 220 L 250 270 L 65 100 Z" fill="rgba(220,38,38,.1)" stroke="rgba(220,38,38,.3)" stroke-dasharray="3 2"/>
+        <text x="180" y="140" font-size="10" fill="#dc2626" font-weight="700">IR-Blitz · Reflektor-Schild</text>
+      </g>
+
+      <!-- s2: Auto fährt heran -->
+      <g id="s2-car" opacity="0">
+        <g>
+          <animateTransform attributeName="transform" type="translate" values="700 0;200 0;200 0" keyTimes="0;.5;1" dur="3s" repeatCount="indefinite"/>
+          <rect x="-50" y="220" width="100" height="36" rx="3" fill="#475569"/>
+          <rect x="-40" y="200" width="60" height="22" rx="6" fill="#0f172a"/>
+          <circle cx="-30" cy="258" r="8" fill="#0a0f1a"/>
+          <circle cx="30" cy="258" r="8" fill="#0a0f1a"/>
+          <!-- Kennzeichen -->
+          <rect x="-30" y="235" width="60" height="14" fill="#fef3c7" stroke="#fbbf24"/>
+          <text x="0" y="246" text-anchor="middle" font-size="10" fill="#0b1424" font-family="monospace" font-weight="900">B-XK 1288</text>
+        </g>
+      </g>
+
+      <!-- s3: OCR-Box auf Schild -->
+      <g id="s3-ocr" opacity="0">
+        <rect x="170" y="235" width="60" height="14" fill="none" stroke="#22d3ee" stroke-width="2" stroke-dasharray="4 2"><animate attributeName="stroke-dashoffset" values="0;-12" dur=".5s" repeatCount="indefinite"/></rect>
+        <rect x="148" y="220" width="100" height="12" fill="#22d3ee"/>
+        <text x="200" y="229" text-anchor="middle" font-size="8" fill="#0b1424" font-weight="900">PLATE DETECTED</text>
+      </g>
+
+      <!-- s4: Deep Learning Engine -->
+      <g id="s4-cnn" opacity="0">
+        <rect x="280" y="40" width="280" height="70" rx="6" fill="#0a0f1a" stroke="#a855f7"/>
+        <text x="420" y="60" text-anchor="middle" font-size="11" fill="#a855f7" font-weight="800">CNN · YOLO + CRNN</text>
+        <text x="420" y="80" text-anchor="middle" font-size="11" fill="#22c55e" font-family="monospace" font-weight="900">B-XK 1288</text>
+        <text x="420" y="98" text-anchor="middle" font-size="9" fill="#94a3b8">Confidence 0,99</text>
+      </g>
+
+      <!-- s5: Whitelist-Match -->
+      <g id="s5-list" opacity="0">
+        <rect x="380" y="130" width="180" height="70" rx="6" fill="#0a0f1a" stroke="#22c55e"/>
+        <text x="470" y="148" text-anchor="middle" font-size="10" fill="#22c55e" font-weight="800">WHITELIST</text>
+        <text x="470" y="166" text-anchor="middle" font-size="9" fill="#94a3b8" font-family="monospace">B-XK 1288 ✓</text>
+        <text x="470" y="180" text-anchor="middle" font-size="9" fill="#94a3b8" font-family="monospace">M-AB 4567</text>
+        <text x="470" y="194" text-anchor="middle" font-size="9" fill="#94a3b8" font-family="monospace">F-ZZ 9999</text>
+      </g>
+
+      <!-- s6: Tor öffnet -->
+      <g id="s6-open" opacity="0">
+        <rect x="20" y="20" width="240" height="32" rx="6" fill="#22c55e"/>
+        <text x="140" y="40" text-anchor="middle" font-size="13" fill="#0b1424" font-weight="900">✓ TOR ÖFFNET · Mitarbeiter</text>
+      </g>
+    `),
+    steps: [
+      { t: 0,    h: [],                          text:'① ANPR-Kamera am Werkstor. Spezial-Sensor mit IR-Cut-Filter und 940-nm-LEDs für reflektierende Schilder.' },
+      { t: 1500, h: ['s1-ir'],                   text:'② IR-Blitz beleuchtet den Bereich. 940 nm ist für menschliches Auge unsichtbar, reflektiert von Kennzeichen-Folie.' },
+      { t: 3500, h: ['s1-ir','s2-car'],          text:'③ Fahrzeug fährt heran. Kamera nimmt Bild mit 1/2000 s Verschluss → scharfes Schild trotz Bewegung.' },
+      { t: 5500, h: ['s2-car','s3-ocr'],         text:'④ Computer-Vision: YOLO-Network lokalisiert das Kennzeichen-Rechteck in &lt; 50 ms.' },
+      { t: 7000, h: ['s3-ocr','s4-cnn'],         text:'⑤ CRNN (Convolutional Recurrent NN) liest die einzelnen Zeichen. Konfidenz 0,99 ohne Schmutz/Folie.' },
+      { t: 8500, h: ['s4-cnn','s5-list','s6-open'], text:'⑥ Datenbank-Abgleich → Whitelist-Hit → Tor-Steuerung öffnet. Audit-Log mit Foto + Zeitstempel.' },
+    ],
+  };
+
+  // Sirene außen
+  ANIMS['sirene-aussen'] = {
+    title:'Außensirene · 110 dB + Blitzleuchte',
+    intro:'Akustische + optische Abschreckung',
+    cycle:10000,
+    svg: wrap('0 0 600 360', `
+      <rect width="600" height="360" fill="#020617"/>
+      <!-- Hausfassade -->
+      <rect x="0" y="280" width="600" height="80" fill="#1e293b"/>
+      <rect x="0" y="100" width="600" height="180" fill="#0c1429"/>
+      <!-- Fenster vergangen -->
+      <rect x="60" y="160" width="60" height="80" fill="rgba(34,211,238,.08)" stroke="#475569"/>
+      <rect x="480" y="160" width="60" height="80" fill="rgba(34,211,238,.08)" stroke="#475569"/>
+      <!-- Sirene -->
+      <g>
+        <rect x="270" y="120" width="60" height="60" rx="4" fill="#dc2626" stroke="#0b1424" stroke-width="2"/>
+        <circle cx="300" cy="150" r="18" fill="#1e293b"/>
+        <circle cx="300" cy="150" r="12" fill="#7f1d1d"/>
+        <circle cx="300" cy="150" r="6" fill="#dc2626"/>
+        <!-- Stroboskop -->
+        <rect id="strobe" x="278" y="186" width="44" height="22" rx="3" fill="#475569"/>
+      </g>
+
+      <!-- s1: Alarm aus -->
+      <g id="s1-silent" opacity="0">
+        <text x="20" y="40" font-size="12" fill="#22c55e" font-family="monospace" font-weight="700">▮ Standby</text>
+      </g>
+
+      <!-- s2: Auslösung -->
+      <g id="s2-trigger" opacity="0">
+        <rect x="20" y="20" width="200" height="32" rx="6" fill="#ef4444"><animate attributeName="opacity" values=".5;1;.5" dur=".4s" repeatCount="indefinite"/></rect>
+        <text x="120" y="40" text-anchor="middle" font-size="13" fill="white" font-weight="900">⚠ EMA AUSGELÖST</text>
+      </g>
+
+      <!-- s3: Stroboskop blinkt -->
+      <g id="s3-strobe" opacity="0">
+        <rect x="278" y="186" width="44" height="22" rx="3" fill="#fbbf24"><animate attributeName="opacity" values="0;1;0;1;0" dur=".25s" repeatCount="indefinite"/></rect>
+        <text x="300" y="200" text-anchor="middle" font-size="9" fill="#0b1424" font-weight="900">⚡</text>
+        <!-- Glow -->
+        <ellipse cx="300" cy="200" rx="100" ry="40" fill="#fbbf24" opacity=".2"><animate attributeName="opacity" values="0;.4;0" dur=".25s" repeatCount="indefinite"/></ellipse>
+      </g>
+
+      <!-- s4: Schallwellen -->
+      <g id="s4-sound" opacity="0">
+        ${[1,2,3,4,5].map(i => `<circle cx="300" cy="150" r="${i*30}" fill="none" stroke="#dc2626" stroke-width="2" opacity="${0.7 - i*0.12}"><animate attributeName="r" values="${i*15};${i*40};${i*15}" dur="1.2s" begin="${i*0.2}s" repeatCount="indefinite"/><animate attributeName="opacity" values="${0.7 - i*0.12};0;${0.7 - i*0.12}" dur="1.2s" begin="${i*0.2}s" repeatCount="indefinite"/></circle>`).join('')}
+        <text x="450" y="60" text-anchor="middle" font-size="18" fill="#dc2626" font-weight="900">110 dB</text>
+        <text x="450" y="80" text-anchor="middle" font-size="9" fill="#94a3b8">bei 1 m</text>
+      </g>
+
+      <!-- s5: NSL -->
+      <g id="s5-nsl" opacity="0">
+        <rect x="380" y="280" width="200" height="60" rx="6" fill="#0a0f1a" stroke="#fbbf24"/>
+        <text x="480" y="300" text-anchor="middle" font-size="11" fill="#fbbf24" font-weight="800">NSL alarmiert</text>
+        <text x="480" y="318" text-anchor="middle" font-size="9" fill="#22c55e">Operator → Polizei</text>
+        <text x="480" y="333" text-anchor="middle" font-size="9" fill="#22c55e">Streife in &lt; 3 Min</text>
+      </g>
+    `),
+    steps: [
+      { t: 0,    h: ['s1-silent'],          text:'① Außensirene VdS-zertifiziert · 110 dB Schallleistung + Blitzleuchte. Im Standby unsichtbar an Hausfassade.' },
+      { t: 2000, h: ['s2-trigger'],          text:'② EMA-Zentrale löst aus. Relais-Output schaltet die Sirene + Stroboskop ein.' },
+      { t: 4000, h: ['s2-trigger','s3-strobe'], text:'③ Stroboskop (LED oder Xenon) blitzt mit 3—5 Hz → Aufmerksamkeit für Nachbarn auch wenn taub.' },
+      { t: 6000, h: ['s3-strobe','s4-sound'], text:'④ Sirene fährt auf 110 dB hoch → für Einbrecher schwer auszuhalten. Lärmschutz: max. 3 min Auslösedauer.' },
+      { t: 8000, h: ['s3-strobe','s4-sound','s5-nsl'], text:'⑤ Parallel: NSL erhält Alarm via GSM. Operator verifiziert und ruft Polizei.' },
+    ],
+  };
+
+  // Elektrozaun
+  ANIMS['zaun-elektro'] = {
+    title:'Elektrozaun · Pulsspannung + Sabotage-Detektion',
+    intro:'2.000—10.000 V Puls · ungefährlich aber schmerzhaft',
+    cycle:10000,
+    svg: wrap('0 0 600 360', `
+      <rect width="600" height="360" fill="#0a0f1a"/>
+      <line x1="0" y1="320" x2="600" y2="320" stroke="#1e293b" stroke-width="3"/>
+      <!-- Pfosten -->
+      <rect x="60" y="80" width="14" height="240" fill="#64748b"/>
+      <rect x="526" y="80" width="14" height="240" fill="#64748b"/>
+      <!-- 5 Drähte -->
+      <g id="wires">
+        ${[100,135,170,205,240].map(y => `<line x1="70" y1="${y}" x2="540" y2="${y}" stroke="#c084fc" stroke-width="2.5"/>`).join('')}
+        ${[100,135,170,205,240].map(y => `<circle cx="70" cy="${y}" r="4" fill="#c084fc"/><circle cx="540" cy="${y}" r="4" fill="#c084fc"/>`).join('')}
+      </g>
+      <!-- Energiegerät -->
+      <rect x="430" y="280" width="80" height="40" rx="4" fill="#1e293b" stroke="#fbbf24" stroke-width="2"/>
+      <text x="470" y="298" text-anchor="middle" font-size="10" fill="#fbbf24" font-weight="800">10 kV PULS</text>
+      <text x="470" y="314" text-anchor="middle" font-size="9" fill="#94a3b8">1 Hz · &lt; 5 J</text>
+
+      <!-- s1: Puls fließt -->
+      <g id="s1-pulse" opacity="0">
+        ${[100,135,170,205,240].map((y, i) => `<circle cx="70" cy="${y}" r="6" fill="#fbbf24" opacity=".8"><animate attributeName="cx" values="70;540" dur="1s" begin="${i*0.2}s" repeatCount="indefinite"/><animate attributeName="opacity" values=".8;0" dur="1s" begin="${i*0.2}s" repeatCount="indefinite"/></circle>`).join('')}
+        <text x="300" y="55" text-anchor="middle" font-size="11" fill="#fbbf24" font-weight="800">PULS · alle 1 Sek</text>
+      </g>
+
+      <!-- s2: Eindringling kommt -->
+      <g id="s2-intruder" opacity="0">
+        <g transform="translate(380, 260)">
+          <circle cx="0" cy="-8" r="6" fill="#475569"/>
+          <rect x="-5" y="-2" width="10" height="18" fill="#1e293b"/>
+          <line x1="-3" y1="16" x2="-5" y2="35" stroke="#0f172a" stroke-width="2"/>
+          <line x1="3" y1="16" x2="5" y2="35" stroke="#0f172a" stroke-width="2"/>
+          <!-- Arm zum Zaun -->
+          <line x1="5" y1="0" x2="40" y2="-30" stroke="#1e293b" stroke-width="3"/>
+        </g>
+      </g>
+
+      <!-- s3: Blitz -->
+      <g id="s3-spark" opacity="0">
+        <polygon points="420,240 410,225 425,228 415,212 430,218 422,200" fill="#fbbf24" stroke="#fef3c7" stroke-width="1.5">
+          <animate attributeName="opacity" values="1;0;1;0;1" dur=".2s" repeatCount="indefinite"/>
+        </polygon>
+        <text x="400" y="180" font-size="14" fill="#fbbf24" font-weight="900">ZAP! 10 kV</text>
+      </g>
+
+      <!-- s4: Schmerz + Rückzug -->
+      <g id="s4-back" opacity="0">
+        <g transform="translate(440, 260)">
+          <circle cx="0" cy="-8" r="6" fill="#dc2626"/>
+          <text x="0" y="-15" text-anchor="middle" font-size="9" fill="#dc2626" font-weight="900">!</text>
+        </g>
+      </g>
+
+      <!-- s5: Detektion -->
+      <g id="s5-detect" opacity="0">
+        <rect x="20" y="20" width="280" height="32" rx="6" fill="#dc2626"><animate attributeName="opacity" values=".5;1;.5" dur=".4s" repeatCount="indefinite"/></rect>
+        <text x="160" y="40" text-anchor="middle" font-size="12" fill="white" font-weight="900">⚠ ZAUN-BERÜHRUNG · Linie 2</text>
+      </g>
+    `),
+    steps: [
+      { t: 0,    h: [],                       text:'① Elektrozaun mit isolierten Spanndrähten. Spannungserzeuger pulst 10 kV (5 J Energie pro Puls).' },
+      { t: 1800, h: ['s1-pulse'],              text:'② Spannungspulse breiten sich über die Drahtlänge aus. Tier-/Tot-Berührung erzeugt kurzen schmerzhaften Schlag.' },
+      { t: 3800, h: ['s2-intruder'],           text:'③ Eindringling versucht über den Zaun zu klettern.' },
+      { t: 5800, h: ['s2-intruder','s3-spark'],text:'④ Kontakt → Stromschlag. 10 kV bei 5 J ist ungefährlich aber sehr schmerzhaft. Abschreckung wirkt.' },
+      { t: 7500, h: ['s3-spark','s4-back','s5-detect'], text:'⑤ Energiegerät erkennt Lasten-Änderung am Draht → Alarm an EMA. Bei Drahtbruch: ebenfalls Alarm.' },
+    ],
+  };
+
+  // LiDAR-Scanner
+  ANIMS['lidar-perim'] = {
+    title:'LiDAR-Perimeter · 360°-Laser-3D-Scan',
+    intro:'Time-of-Flight · KI-Klassifikation',
+    cycle:11000,
+    svg: wrap('0 0 600 360', `
+      <rect width="600" height="360" fill="#0a0f1a"/>
+      <line x1="0" y1="300" x2="600" y2="300" stroke="#1e293b" stroke-width="3"/>
+
+      <!-- LiDAR-Mast -->
+      <rect x="296" y="100" width="8" height="200" fill="#475569"/>
+      <circle cx="300" cy="100" r="22" fill="#1e293b" stroke="#a855f7" stroke-width="2"/>
+      <circle cx="300" cy="100" r="14" fill="#0c0a1a"/>
+      <circle cx="300" cy="100" r="6" fill="#a855f7"/>
+
+      <!-- s1: Rotierender Strahl -->
+      <g id="s1-beam" opacity="0">
+        <g>
+          <animateTransform attributeName="transform" type="rotate" values="0 300 100;360 300 100" dur="3s" repeatCount="indefinite"/>
+          <line x1="300" y1="100" x2="540" y2="100" stroke="#a855f7" stroke-width="3" opacity=".7"/>
+          ${[40,80,120,160,200].map(d => `<circle cx="${300+d}" cy="100" r="2" fill="#fbbf24"/>`).join('')}
+        </g>
+      </g>
+
+      <!-- s2: Punktewolke -->
+      <g id="s2-points" opacity="0">
+        ${Array.from({length: 80}, (_,i) => {
+          const a = (i / 80) * Math.PI * 2;
+          const r = 80 + Math.random() * 120;
+          const x = 300 + Math.cos(a) * r;
+          const y = 100 + Math.sin(a) * r * 0.8;
+          if (y > 295) return '';
+          return `<circle cx="${x}" cy="${y}" r="1.5" fill="#22d3ee" opacity=".7"><animate attributeName="opacity" values="0;.7;0" dur="3s" begin="${i*0.04}s" repeatCount="indefinite"/></circle>`;
+        }).join('')}
+      </g>
+
+      <!-- s3: Person erkannt -->
+      <g id="s3-person" opacity="0">
+        <g transform="translate(450, 260)">
+          <circle cx="0" cy="-12" r="6" fill="#fbbf24"/>
+          <ellipse cx="0" cy="5" rx="8" ry="18" fill="#fbbf24"/>
+          <rect x="-4" y="20" width="3" height="20" fill="#fbbf24"/>
+          <rect x="1" y="20" width="3" height="20" fill="#fbbf24"/>
+        </g>
+        <rect x="440" y="220" width="50" height="80" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="3 2">
+          <animate attributeName="stroke-dashoffset" values="0;-10" dur=".5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="420" y="206" width="100" height="14" fill="#ef4444"/>
+        <text x="470" y="216" text-anchor="middle" font-size="9" fill="white" font-family="monospace" font-weight="800">HUMAN 0.96</text>
+      </g>
+
+      <!-- s4: Distanz -->
+      <g id="s4-dist" opacity="0">
+        <line x1="304" y1="105" x2="450" y2="265" stroke="#22c55e" stroke-width="1" stroke-dasharray="3 2"/>
+        <text x="380" y="180" font-size="11" fill="#22c55e" font-weight="800">d = 87 m</text>
+      </g>
+
+      <!-- s5: Klassifikation -->
+      <g id="s5-class" opacity="0">
+        <rect x="20" y="20" width="240" height="50" rx="6" fill="#0a0f1a" stroke="#a855f7"/>
+        <text x="140" y="38" text-anchor="middle" font-size="11" fill="#a855f7" font-weight="800">KLASSE: PERSON</text>
+        <text x="140" y="55" text-anchor="middle" font-size="9" fill="#22c55e">Tracking aktiv · Geschw. 1,2 m/s</text>
+      </g>
+    `),
+    steps: [
+      { t: 0,    h: [],                          text:'① LiDAR-Perimeter-Scanner. Rotierender Laser (905 nm) misst Zeit-bis-Reflexion → exakte 3D-Punktposition.' },
+      { t: 1800, h: ['s1-beam'],                 text:'② Scanner rotiert 10—20 Hz und sendet Tausende Laserpulse pro Sekunde. Reichweite 50—300 m.' },
+      { t: 3800, h: ['s1-beam','s2-points'],     text:'③ Jeder reflektierte Puls liefert einen 3D-Punkt → dichte Punktewolke des Geländes.' },
+      { t: 6200, h: ['s2-points','s3-person','s4-dist'], text:'④ Hindernis-Detektion: Cluster von Punkten in „leerem" Bereich identifiziert ein Objekt. Distanz exakt messbar.' },
+      { t: 8500, h: ['s3-person','s4-dist','s5-class'], text:'⑤ KI klassifiziert Cluster nach Form/Bewegung: Person, PKW, LKW oder Tier. Mit Geschwindigkeits-Schätzung.' },
+    ],
+  };
+
+  // Smart-Lock
+  ANIMS['smartlock'] = {
+    title:'Smart-Lock · BLE-Pairing + Motor-Verriegelung',
+    intro:'Bluetooth 5 · App-Steuerung · Audit-Log',
+    cycle:10000,
+    svg: wrap('0 0 600 360', `
+      <rect width="600" height="360" fill="#0a0f1a"/>
+      <!-- Türschloss -->
+      <rect x="380" y="60" width="140" height="240" rx="10" fill="#1e293b" stroke="#06b6d4" stroke-width="2"/>
+      <rect x="400" y="80" width="100" height="180" rx="6" fill="#0a0f1a"/>
+      <!-- Drehknauf -->
+      <g id="sl-knob">
+        <circle cx="450" cy="170" r="32" fill="#475569" stroke="#0b1424" stroke-width="2">
+          <animateTransform attributeName="transform" type="rotate" values="0 450 170;0 450 170;90 450 170;90 450 170;0 450 170" keyTimes="0;.3;.5;.85;1" dur="4s" repeatCount="indefinite"/>
+        </circle>
+        <rect x="447" y="142" width="6" height="20" fill="#cbd5e1"/>
+      </g>
+      <rect x="420" y="270" width="60" height="14" rx="3" fill="#475569"/>
+
+      <!-- Smartphone -->
+      <g>
+        <rect x="60" y="100" width="100" height="160" rx="12" fill="#1e293b" stroke="#06b6d4" stroke-width="2"/>
+        <rect x="68" y="110" width="84" height="120" rx="3" fill="#0a0f1a"/>
+        <text x="110" y="135" text-anchor="middle" font-size="9" fill="#06b6d4" font-weight="800">SMART-LOCK</text>
+        <circle cx="110" cy="170" r="22" fill="#0c0a1a" stroke="#06b6d4" stroke-width="2"/>
+        <text x="110" y="175" text-anchor="middle" font-size="20" fill="#06b6d4">🔓</text>
+        <text x="110" y="220" text-anchor="middle" font-size="9" fill="#22c55e">Verbunden ✓</text>
+        <rect x="92" y="240" width="36" height="14" rx="7" fill="#475569"/>
+      </g>
+
+      <!-- s1: BLE-Wellen -->
+      <g id="s1-ble" opacity="0">
+        ${[1,2,3,4].map(i => `<path d="M 160 180 q ${20+i*15} 0 ${40+i*30} 0" stroke="#06b6d4" stroke-width="2" fill="none" opacity="${0.7-i*0.15}"><animate attributeName="opacity" values="0;${0.7-i*0.15};0" dur="1s" begin="${i*0.15}s" repeatCount="indefinite"/></path>`).join('')}
+        <text x="280" y="150" text-anchor="middle" font-size="11" fill="#06b6d4" font-weight="800">BLE 5.x · 2,4 GHz</text>
+      </g>
+
+      <!-- s2: Crypto -->
+      <g id="s2-crypto" opacity="0">
+        <rect x="180" y="200" width="200" height="46" rx="4" fill="#0a0f1a" stroke="#a855f7"/>
+        <text x="280" y="218" text-anchor="middle" font-size="10" fill="#a855f7" font-weight="800">AES-128 + Rolling Code</text>
+        <text x="280" y="235" text-anchor="middle" font-size="9" fill="#94a3b8" font-family="monospace">CHAL: 4B7E1A...</text>
+      </g>
+
+      <!-- s3: Motor läuft -->
+      <g id="s3-motor" opacity="0">
+        <text x="450" y="100" text-anchor="middle" font-size="11" fill="#fbbf24" font-weight="800">⚙ MOTOR</text>
+        <circle cx="450" cy="170" r="40" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="6 3"><animate attributeName="stroke-dashoffset" values="0;-18" dur=".5s" repeatCount="indefinite"/></circle>
+      </g>
+
+      <!-- s4: Audit-Log -->
+      <g id="s4-log" opacity="0">
+        <rect x="20" y="280" width="380" height="60" rx="4" fill="#0a0f1a" stroke="#22c55e"/>
+        <text x="210" y="297" text-anchor="middle" font-size="10" fill="#22c55e" font-weight="800">AUDIT-LOG</text>
+        <text x="35" y="316" font-size="9" fill="#94a3b8" font-family="monospace">12:45:32  Anna  ENTRIEGELT</text>
+        <text x="35" y="330" font-size="9" fill="#94a3b8" font-family="monospace">12:46:18  Anna  VERRIEGELT (Auto)</text>
+      </g>
+
+      <!-- s5: Status -->
+      <g id="s5-ok" opacity="0">
+        <rect x="20" y="20" width="200" height="32" rx="6" fill="#22c55e"/>
+        <text x="120" y="40" text-anchor="middle" font-size="13" fill="#0b1424" font-weight="900">✓ TÜR OFFEN</text>
+      </g>
+    `),
+    steps: [
+      { t: 0,    h: [],                       text:'① Smart-Lock am Profilzylinder. App auf Smartphone, BLE 5.x-Pairing. Batterie-Betrieb mit 6—12 Monaten Laufzeit.' },
+      { t: 1500, h: ['s1-ble'],                text:'② Bluetooth-Verbindung: Smartphone wird in Nähe erkannt (BLE-Advertising), Lock authentifiziert Gerät.' },
+      { t: 3500, h: ['s1-ble','s2-crypto'],    text:'③ AES-128 Challenge-Response: Lock sendet Random-Challenge, App verschlüsselt mit Geräte-Schlüssel.' },
+      { t: 5500, h: ['s2-crypto','s3-motor'],  text:'④ Auth OK → Motor dreht den Profilzylinder elektrisch. Riegel fährt zurück. Auch ohne App via PIN-Tastatur.' },
+      { t: 7500, h: ['s3-motor','s4-log','s5-ok'], text:'⑤ Audit-Log speichert jede Aktion mit Zeit + Benutzer. Auto-Lock nach X Sekunden möglich.' },
+    ],
+  };
+
+  // Schiebetor mit ANPR
+  ANIMS['tor-schiebe'] = {
+    title:'Schiebetor freitragend · Automatik mit ANPR',
+    intro:'Bis 12 m Durchfahrtsbreite · ohne Bodenschiene',
+    cycle:12000,
+    svg: wrap('0 0 600 360', `
+      <rect width="600" height="360" fill="#0a0f1a"/>
+      <line x1="0" y1="300" x2="600" y2="300" stroke="#475569" stroke-width="2"/>
+      <line x1="0" y1="340" x2="600" y2="340" stroke="#475569" stroke-dasharray="10 8" opacity=".5"/>
+      <!-- Pfosten -->
+      <rect x="100" y="120" width="14" height="180" fill="#64748b"/>
+      <rect x="480" y="120" width="14" height="180" fill="#64748b"/>
+      <!-- Tor -->
+      <g id="tor-gate">
+        <g>
+          <animateTransform attributeName="transform" type="translate" values="0 0;0 0;-260 0;-260 0;0 0;0 0" keyTimes="0;.2;.4;.7;.9;1" dur="9s" repeatCount="indefinite"/>
+          <rect x="125" y="160" width="350" height="120" fill="rgba(8,145,178,.2)" stroke="#0891b2" stroke-width="2"/>
+          ${Array.from({length: 18}, (_,i) => `<rect x="${130+i*19}" y="165" width="3" height="110" fill="#0891b2"/>`).join('')}
+          <rect x="125" y="218" width="350" height="3" fill="#0891b2"/>
+          <rect x="285" y="226" width="30" height="28" fill="#dc2626" stroke="#fbbf24" stroke-width="1.5"/>
+          <text x="300" y="244" text-anchor="middle" font-size="8" fill="white" font-weight="800">PRIVAT</text>
+        </g>
+      </g>
+
+      <!-- ANPR Kamera -->
+      <g>
+        <rect x="514" y="60" width="50" height="30" rx="3" fill="#1e293b" stroke="#22d3ee" stroke-width="1.5"/>
+        <circle cx="525" cy="75" r="8" fill="#0c0a1a" stroke="#dc2626"/>
+        <circle cx="525" cy="75" r="3" fill="#dc2626"/>
+        <text x="555" y="80" font-size="9" fill="#22d3ee" font-weight="800">ANPR</text>
+      </g>
+
+      <!-- s1: Auto kommt -->
+      <g id="s1-car" opacity="0">
+        <g>
+          <animateTransform attributeName="transform" type="translate" values="700 0;420 0;420 0;100 0;100 0" keyTimes="0;.2;.4;.7;1" dur="9s" repeatCount="indefinite"/>
+          <rect x="-50" y="260" width="100" height="36" rx="3" fill="#475569"/>
+          <rect x="-38" y="240" width="56" height="22" rx="6" fill="#0f172a"/>
+          <circle cx="-30" cy="298" r="8" fill="#0a0f1a"/>
+          <circle cx="30" cy="298" r="8" fill="#0a0f1a"/>
+          <rect x="-30" y="275" width="60" height="14" fill="#fef3c7" stroke="#fbbf24"/>
+          <text x="0" y="286" text-anchor="middle" font-size="10" fill="#0b1424" font-family="monospace" font-weight="900">B-XK 1288</text>
+        </g>
+      </g>
+
+      <!-- s2: ANPR liest -->
+      <g id="s2-scan" opacity="0">
+        <path d="M 525 92 L 460 270 L 380 270 Z" fill="rgba(34,211,238,.18)" stroke="rgba(34,211,238,.4)" stroke-dasharray="3 2"/>
+        <rect x="380" y="40" width="200" height="40" rx="4" fill="#0a0f1a" stroke="#22d3ee"/>
+        <text x="480" y="60" text-anchor="middle" font-size="11" fill="#22d3ee" font-weight="800">B-XK 1288</text>
+        <text x="480" y="74" text-anchor="middle" font-size="9" fill="#22c55e">✓ Whitelist</text>
+      </g>
+
+      <!-- s3: Antrieb -->
+      <g id="s3-motor" opacity="0">
+        <rect x="40" y="280" width="60" height="20" rx="2" fill="#1e293b" stroke="#22c55e"/>
+        <text x="70" y="295" text-anchor="middle" font-size="9" fill="#22c55e" font-weight="700">ANTRIEB</text>
+        <circle cx="20" cy="290" r="4" fill="#22c55e"><animate attributeName="opacity" values="1;.3;1" dur=".5s" repeatCount="indefinite"/></circle>
+      </g>
+
+      <!-- s4: Status -->
+      <g id="s4-open" opacity="0">
+        <rect x="20" y="20" width="240" height="32" rx="6" fill="#fbbf24"/>
+        <text x="140" y="40" text-anchor="middle" font-size="13" fill="#0b1424" font-weight="900">TOR ÖFFNET...</text>
+      </g>
+
+      <!-- s5: Klemmschutz -->
+      <g id="s5-safety" opacity="0">
+        <rect x="380" y="100" width="200" height="40" rx="4" fill="#0a0f1a" stroke="#fbbf24"/>
+        <text x="480" y="115" text-anchor="middle" font-size="10" fill="#fbbf24" font-weight="800">KLEMMSCHUTZ EN 12453</text>
+        <text x="480" y="130" text-anchor="middle" font-size="9" fill="#94a3b8">&lt; 150 N Schliesskraft</text>
+      </g>
+    `),
+    steps: [
+      { t: 0,    h: [],                       text:'① Schiebetor freitragend bis 12 m Durchfahrtsbreite. Antrieb 230 V mit Endschaltern. ANPR-Kamera oben am Pfosten.' },
+      { t: 2000, h: ['s1-car','s2-scan'],     text:'② Fahrzeug nähert sich. ANPR-Kamera erfasst Kennzeichen. KI liest in &lt; 1 s und vergleicht mit Whitelist.' },
+      { t: 4500, h: ['s2-scan','s3-motor','s4-open'], text:'③ Berechtigung erkannt → Antriebsmotor startet. Tor öffnet seitlich auf einer Rolle.' },
+      { t: 7000, h: ['s3-motor','s5-safety'],  text:'④ Klemm-/Quetschschutz nach EN 12453: Bei Hindernis sofort Stopp + Reverse. Schließkraft &lt; 150 N.' },
+      { t: 9500, h: [],                        text:'⑤ Nach Durchfahrt fährt das Tor automatisch zu (Endschalter + Lichtschranke). Komplett-Zyklus 30—45 Sek.' },
+    ],
+  };
+
+  // Drehkreuz
+  ANIMS['drehkreuz'] = {
+    title:'Vollhöhen-Drehkreuz · Anti-Tailgating',
+    intro:'EN 16005 · 1 Person je Berechtigung',
+    cycle:10000,
+    svg: wrap('0 0 600 360', `
+      <rect width="600" height="360" fill="#0a0f1a"/>
+      <line x1="0" y1="320" x2="600" y2="320" stroke="#1e293b" stroke-width="3"/>
+      <!-- Drehkreuz-Gehäuse -->
+      <rect x="220" y="40" width="160" height="280" rx="4" fill="#0a0f1a" stroke="#a855f7" stroke-width="2"/>
+      <!-- 3-Arm-Rotor -->
+      <g id="dk-rotor">
+        <g transform="translate(300, 180)">
+          <animateTransform attributeName="transform" type="rotate" values="0 0 0;0 0 0;120 0 0;120 0 0;120 0 0" keyTimes="0;.3;.55;.95;1" dur="4s" additive="sum" repeatCount="indefinite"/>
+          ${[0,120,240].map(ang => `<line x1="0" y1="0" x2="${Math.cos(ang*Math.PI/180)*60}" y2="${Math.sin(ang*Math.PI/180)*60}" stroke="#a855f7" stroke-width="5"/>`).join('')}
+          <circle r="8" fill="#1e293b" stroke="#a855f7" stroke-width="2"/>
+        </g>
+      </g>
+      <!-- RFID-Leser oben -->
+      <rect x="240" y="50" width="120" height="30" rx="3" fill="#1e293b" stroke="#22d3ee"/>
+      <text x="300" y="70" text-anchor="middle" font-size="11" fill="#22d3ee" font-weight="800">RFID-LESER</text>
+
+      <!-- s1: Person + Karte -->
+      <g id="s1-person" opacity="0">
+        <g transform="translate(120, 220)">
+          <circle cx="0" cy="-30" r="10" fill="#fbbf24"/>
+          <ellipse cx="0" cy="0" rx="18" ry="35" fill="#3b82f6"/>
+          <rect x="-22" y="-5" width="6" height="30" rx="3" fill="#3b82f6" transform="rotate(-15)"/>
+          <rect x="15" y="-5" width="6" height="30" rx="3" fill="#3b82f6" transform="rotate(20)"/>
+          <!-- Karte in Hand -->
+          <rect x="22" y="-10" width="20" height="14" rx="2" fill="#fbbf24"/>
+        </g>
+      </g>
+
+      <!-- s2: Karte vor Leser -->
+      <g id="s2-rfid" opacity="0">
+        <rect x="260" y="62" width="20" height="14" rx="2" fill="#fbbf24"/>
+        ${[1,2,3].map(i => `<path d="M 260 ${64+i*3} q -8 5 0 10" stroke="#22d3ee" stroke-width="2" fill="none"><animate attributeName="opacity" values="0;1;0" dur=".8s" begin="${i*0.15}s" repeatCount="indefinite"/></path>`).join('')}
+      </g>
+
+      <!-- s3: Drehung & Person geht durch -->
+      <g id="s3-pass" opacity="0">
+        <text x="300" y="280" text-anchor="middle" font-size="10" fill="#22c55e" font-weight="700">→ Sektor entriegelt</text>
+        <g transform="translate(300, 240)">
+          <circle cx="0" cy="-12" r="6" fill="#22c55e"/>
+          <ellipse cx="0" cy="0" rx="10" ry="14" fill="#22c55e"/>
+        </g>
+      </g>
+
+      <!-- s4: Anti-Tailgating-Sensor -->
+      <g id="s4-anti" opacity="0">
+        <circle cx="300" cy="40" r="6" fill="#fbbf24"><animate attributeName="opacity" values="1;.3;1" dur=".5s" repeatCount="indefinite"/></circle>
+        <text x="320" y="45" font-size="10" fill="#fbbf24" font-weight="700">Anti-Tailgating-Sensor</text>
+      </g>
+
+      <!-- s5: Status -->
+      <g id="s5-ok" opacity="0">
+        <rect x="20" y="20" width="240" height="32" rx="6" fill="#22c55e"/>
+        <text x="140" y="40" text-anchor="middle" font-size="13" fill="#0b1424" font-weight="900">✓ DURCHGANG · 1 PERSON</text>
+      </g>
+    `),
+    steps: [
+      { t: 0,    h: [],                       text:'① Vollhöhen-Drehkreuz mit 3 Edelstahl-Armen (220 cm hoch). RFID-Leser oben, gesperrte Sektoren.' },
+      { t: 1500, h: ['s1-person'],             text:'② Mitarbeiter tritt vor das Drehkreuz mit RFID-Karte in der Hand.' },
+      { t: 3500, h: ['s1-person','s2-rfid'],   text:'③ Karte vor Leser → 13,56-MHz-Auth. Bei Whitelist-Hit Sektor entriegelt.' },
+      { t: 5500, h: ['s3-pass'],               text:'④ Rotor dreht 120° → Person passiert. Mechanik verhindert zweite Person mitzugehen.' },
+      { t: 7500, h: ['s3-pass','s4-anti','s5-ok'], text:'⑤ Anti-Tailgating-Sensor (Decken-Stereo-Kamera oder Bodengewichts-Sensor) zählt Personen.' },
+    ],
+  };
+
+  // Wandhydrant
+  ANIMS['wandhydrant'] = {
+    title:'Wandhydrant Typ S · Selbsthilfe-Löschung',
+    intro:'Schlauch + Strahlrohr für Mieter/Personal',
+    cycle:9000,
+    svg: wrap('0 0 600 360', `
+      <rect width="600" height="360" fill="#0a0f1a"/>
+      <!-- Wandkasten -->
+      <rect x="180" y="80" width="240" height="220" rx="6" fill="#dc2626" stroke="#fbbf24" stroke-width="3"/>
+      <text x="300" y="105" text-anchor="middle" font-size="11" fill="#fbbf24" font-weight="900">WANDHYDRANT TYP S</text>
+      <!-- Glasfach -->
+      <rect x="200" y="115" width="200" height="170" fill="#1e293b" stroke="#fbbf24"/>
+      <rect x="200" y="115" width="200" height="170" fill="rgba(34,211,238,.05)" stroke="#fbbf24"/>
+
+      <!-- Schlauchhaspel (statisch) -->
+      <g id="haspel">
+        <circle cx="300" cy="200" r="60" fill="#dc2626" stroke="#0b1424" stroke-width="2"/>
+        <circle cx="300" cy="200" r="45" fill="none" stroke="#0b1424"/>
+        <circle cx="300" cy="200" r="30" fill="none" stroke="#0b1424"/>
+        <circle cx="300" cy="200" r="15" fill="#1e293b" stroke="#fbbf24"/>
+        <text x="300" y="204" text-anchor="middle" font-size="10" fill="#fbbf24" font-weight="800">30 m</text>
+      </g>
+
+      <!-- s1: Brand -->
+      <g id="s1-fire" opacity="0">
+        <g transform="translate(490, 300)">
+          <path d="M-15 -10 Q-8 -35 0 -20 Q10 -38 15 -12 Q22 -5 8 8 Q-5 8 -15 -10 Z" fill="#dc2626">
+            <animate attributeName="fill" values="#dc2626;#fbbf24;#dc2626" dur=".4s" repeatCount="indefinite"/>
+          </path>
+        </g>
+      </g>
+
+      <!-- s2: Schlauch ausziehen -->
+      <g id="s2-pull" opacity="0">
+        <path d="M 300 200 Q 350 250 450 270 Q 480 285 510 290" stroke="#94a3b8" stroke-width="4" fill="none"/>
+        <text x="200" y="335" font-size="10" fill="#fbbf24" font-weight="700">Schlauch ausziehen</text>
+      </g>
+
+      <!-- s3: Strahlrohr -->
+      <g id="s3-rohr" opacity="0">
+        <rect x="500" y="288" width="30" height="6" fill="#fbbf24"/>
+        <rect x="500" y="290" width="20" height="2" fill="#0b1424"/>
+        <text x="515" y="320" text-anchor="middle" font-size="9" fill="#fbbf24" font-weight="700">DIN 14365</text>
+      </g>
+
+      <!-- s4: Wasserstrahl -->
+      <g id="s4-water" opacity="0">
+        <path d="M 528 290 L 580 270" stroke="#22d3ee" stroke-width="4"><animate attributeName="opacity" values="0;1;0;1" dur=".3s" repeatCount="indefinite"/></path>
+        ${[1,2,3,4].map(i => `<circle cx="${540+i*8}" cy="${288-i}" r="2" fill="#22d3ee"><animate attributeName="opacity" values="0;1;0" dur=".4s" begin="${i*0.05}s" repeatCount="indefinite"/></circle>`).join('')}
+        <text x="560" y="240" text-anchor="middle" font-size="11" fill="#22d3ee" font-weight="800">2—4 bar</text>
+        <text x="560" y="255" text-anchor="middle" font-size="9" fill="#94a3b8">~100 l/min</text>
+      </g>
+
+      <!-- s5: Brand gelöscht -->
+      <g id="s5-done" opacity="0">
+        <rect x="20" y="20" width="200" height="32" rx="6" fill="#22c55e"/>
+        <text x="120" y="40" text-anchor="middle" font-size="13" fill="#0b1424" font-weight="900">✓ ENTSTEHUNGSBRAND</text>
+      </g>
+    `),
+    steps: [
+      { t: 0,    h: [],                       text:'① Wandhydrant Typ S in Treppenraum/Flur. 30 m Schlauch (Ø 25 mm) auf Haspel. Anschluss an Löschwasser-Leitung.' },
+      { t: 1500, h: ['s1-fire'],               text:'② Entstehungsbrand entdeckt — Bewohner alarmiert. Schnelle Reaktion entscheidend (innerhalb 3 Min).' },
+      { t: 3500, h: ['s1-fire','s2-pull','s3-rohr'], text:'③ Schlauch wird ausgerollt und das Strahlrohr (DIN 14365) bis zum Brandherd gebracht.' },
+      { t: 6000, h: ['s2-pull','s3-rohr','s4-water'], text:'④ Ventil öffnen → Wasserdruck 2—4 bar treibt ~100 l/min Wasser. Auch von Laien bedienbar.' },
+      { t: 8000, h: ['s4-water','s5-done'],    text:'⑤ Entstehungsbrand gelöscht. Pflicht in vielen Gebäuden — kostet keine Energie, immer einsatzbereit.' },
+    ],
+  };
+
+  /* =========================================================
      REGISTER · alle Animationen in EXPL einhängen
      ========================================================= */
   Object.keys(ANIMS).forEach(key => {
