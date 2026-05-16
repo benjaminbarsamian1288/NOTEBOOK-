@@ -1,0 +1,122 @@
+/* Hersteller-Cards · Fachfirmen */
+
+.hst-section { background: linear-gradient(135deg, rgba(34,211,238,.03), rgba(0,0,0,0)); }
+
+.hst-group {
+  margin-top: 14px;
+  padding: 14px 0 4px;
+  border-top: 1px solid var(--border-soft);
+}
+.hst-group:first-of-type { border-top: none; padding-top: 0; }
+
+.hst-group-head {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 12px;
+}
+.hst-group-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--c) 20%, transparent);
+  flex-shrink: 0;
+}
+.hst-group-head h4 {
+  margin: 0;
+  font-size: 14.5px;
+  font-weight: 800;
+  color: var(--c);
+  letter-spacing: -.1px;
+}
+
+.hst-firms {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 8px;
+}
+
+.hst-firm {
+  position: relative;
+  background: var(--bg-2);
+  border: 1px solid var(--border-soft);
+  border-left: 3px solid var(--c);
+  border-radius: 10px;
+  padding: 12px 14px;
+  transition: all .15s;
+}
+.hst-firm:hover {
+  border-color: var(--c);
+  background: color-mix(in srgb, var(--c) 6%, var(--bg-2));
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--c) 18%, transparent);
+}
+
+.hst-firm-tag {
+  position: absolute;
+  top: 8px; right: 8px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: transparent;
+  color: transparent;
+}
+.hst-firm-tag.top {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: #0b1424;
+}
+.hst-firm-tag.highend {
+  background: linear-gradient(135deg, #a855f7, #7c3aed);
+  color: white;
+}
+.hst-firm-tag.default {
+  background: rgba(148,163,184,.18);
+  color: var(--text-dim);
+}
+.hst-firm-tag.pflicht {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+}
+.hst-firm-tag.foerder {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+}
+.hst-firm-tag:empty { display: none; }
+
+.hst-firm-main {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+  padding-right: 50px;
+}
+.hst-firm-main strong {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -.2px;
+}
+.hst-firm-land {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: .6px;
+}
+.hst-firm-spec {
+  font-size: 12.5px;
+  color: var(--text-dim);
+  line-height: 1.45;
+  margin-bottom: 4px;
+}
+.hst-firm-klass {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--c);
+  background: color-mix(in srgb, var(--c) 12%, transparent);
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-top: 4px;
+}

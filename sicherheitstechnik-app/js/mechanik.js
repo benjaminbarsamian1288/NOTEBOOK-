@@ -123,6 +123,7 @@ window.MECHANIK = (() => {
         </div>
       </div>
     `;
+    if (window.HERSTELLER) wrap.appendChild(HERSTELLER.renderSection('tueren'));
     return wrap;
   }
 
@@ -251,6 +252,7 @@ window.MECHANIK = (() => {
         </div>
       </div>
     `;
+    if (window.HERSTELLER) wrap.appendChild(HERSTELLER.renderSection('tore'));
     return wrap;
   }
 
@@ -434,6 +436,7 @@ window.MECHANIK = (() => {
         </div>
       </div>
     `;
+    if (window.HERSTELLER) wrap.appendChild(HERSTELLER.renderSection('zaeune'));
     return wrap;
   }
 
@@ -569,6 +572,7 @@ window.MECHANIK = (() => {
         </div>
       </div>
     `;
+    if (window.HERSTELLER) wrap.appendChild(HERSTELLER.renderSection('poller'));
     return wrap;
   }
 
@@ -752,6 +756,7 @@ window.MECHANIK = (() => {
         </div>
       </div>
     `;
+    if (window.HERSTELLER) wrap.appendChild(HERSTELLER.renderSection('tresore'));
     return wrap;
   }
 
@@ -894,6 +899,7 @@ window.MECHANIK = (() => {
         </div>
       </div>
     `;
+    if (window.HERSTELLER) wrap.appendChild(HERSTELLER.renderSection('fenster'));
     return wrap;
   }
 
@@ -992,6 +998,8 @@ window.MECHANIK = (() => {
       if (!tab) return;
       content.innerHTML = '';
       content.appendChild(tab.build());
+      // append globale Fachfirmen-Sektion
+      if (window.HERSTELLER) content.appendChild(HERSTELLER.renderFachfirmen());
       tabBar.querySelectorAll('.mech-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === id));
       // Scroll content into view
       content.scrollIntoView({ behavior:'smooth', block:'start' });
