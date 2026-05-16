@@ -90,6 +90,27 @@
   padding: 4px 10px;
   border-radius: 999px;
 }
+.gv-pdf-btn {
+  background: linear-gradient(135deg, #22d3ee, #3b82f6);
+  border: none;
+  color: white;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: transform .15s;
+}
+.gv-pdf-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(34,211,238,.45); }
+@media print {
+  .gv-hero, .gv-search, .gv-tabs, .navitem, .topbar, .global-search-trigger { display: none !important; }
+  body { background: white !important; color: black !important; }
+  .gv-gesetz { box-shadow: none; border: 1px solid #ccc; }
+  .gv-abschnitt[open] { page-break-inside: avoid; }
+}
 
 /* ====== Gesetz-Tabs (große Karten) ====== */
 .gv-tabs {

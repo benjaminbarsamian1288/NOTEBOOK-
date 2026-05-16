@@ -37,6 +37,7 @@ window.GESETZE_VIEW = (() => {
         <i class="fas fa-search"></i>
         <input type="search" id="gv-q" placeholder="Suche: § 14 Haftpflicht · Bewacherregister · NIS-2 · Ersthelfer · Diensthund · 500.000 ..." autofocus>
         <span class="gv-search-count" id="gv-cnt">${allP.length} Paragraphen</span>
+        <button class="gv-pdf-btn" onclick="window.print()" title="Aktuelles Gesetz als PDF drucken"><i class="fas fa-print"></i> PDF</button>
       </div>
     `;
     root.appendChild(search);

@@ -136,57 +136,80 @@ window.MASTER_ENCY = (() => {
     const root = el('div');
     const all = normalizeAll();
 
-    // Hero
+    // Hero (kompakt)
     const hero = el('div', { class:'me-hero' });
     hero.innerHTML = `
       <div class="me-hero-bg"></div>
       <div class="me-hero-content">
-        <div class="me-tag">MASTER-ENZYKLOPÄDIE · KOMPLETT-KATALOG</div>
-        <h1>📚 ${all.length} Komponenten · Alles in einer Übersicht</h1>
+        <div class="me-tag">MASTER-KATALOG · ALLE KOMPONENTEN</div>
+        <h1>📚 ${all.length} Komponenten in 6 Kategorien</h1>
         <p>
-          Detektion, Mechanik, Video, Brandschutz, Zutritt, Alarmierung — alle Komponenten in einer einzigen
-          Datenbank, kategorisiert mit Bildern, Klassen, Herstellern und Live-Animationen.
+          Wähle eine Kategorie unten als Kachel — oder filtere/suche direkt. Alle Komponenten mit Bildern,
+          Klassen, Herstellern und Live-Animationen.
         </p>
-        <div class="me-hero-stats">
-          ${Object.entries(GROUPS).map(([gid, g]) => {
-            const count = all.filter(x => (KATS[x.kategorie]||{}).group === gid).length;
-            return `<div class="me-hero-stat" style="--c:${g.c}">
-              <i class="fas ${g.icon}"></i><strong>${count}</strong><span>${g.label}</span>
-            </div>`;
-          }).join('')}
-        </div>
       </div>
     `;
     root.appendChild(hero);
 
-    // Aktiv/Passiv-Intro (im Stil der Melder-Ency)
-    const ap = el('div', { class:'me-ap' });
+    const state = { gruppe:'Alle', kat:'Alle', typ:'Alle', q:'', onlyVideo:false };
+
+    // ============ KATEGORIE-KACHELN (Hauptfilter) ============
+    const kachelGrid = el('div', { class:'me-kacheln' });
+
+    // "Alle"-Kachel
+    const allKachel = el('button', { class:'me-kachel me-kachel-all active' });
+    const passivCount = all.filter(x => x.typ === 'passiv').length;
+    const aktivCount = all.filter(x => x.typ === 'aktiv').length;
+    const videoCount = all.filter(x => window.EXPL && EXPL.hasExplainer(x.key)).length;
+    allKachel.innerHTML = `
+      <div class="me-kachel-icon"><i class="fas fa-layer-group"></i></div>
+      <div class="me-kachel-body">
+        <div class="me-kachel-title">Alle Komponenten</div>
+        <div class="me-kachel-stat"><strong>${all.length}</strong> gesamt</div>
+        <div class="me-kachel-meta">
+          <span class="passiv">${passivCount} passiv</span>
+          <span class="aktiv">${aktivCount} aktiv</span>
+          <span class="video">${videoCount} mit Video</span>
+        </div>
+      </div>
+      <div class="me-kachel-check"><i class="fas fa-check"></i></div>
+    `;
+    allKachel.onclick = () => activate('gruppe', 'Alle');
+    kachelGrid.appendChild(allKachel);
+
+    Object.entries(GROUPS).forEach(([gid, g]) => {
+      const inGroup = all.filter(x => (KATS[x.kategorie]||{}).group === gid);
+      const count = inGroup.length;
+      const subKats = Array.from(new Set(inGroup.map(x => x.kategorie)));
+      const previews = subKats.slice(0, 3).map(k => k.replace('Bewegung','PIR/MW').replace('Beschläge','Schlösser')).join(' · ');
+      const kachel = el('button', { class:'me-kachel', style:`--c:${g.c}` });
+      kachel.innerHTML = `
+        <div class="me-kachel-icon"><i class="fas ${g.icon}"></i></div>
+        <div class="me-kachel-body">
+          <div class="me-kachel-title">${g.label}</div>
+          <div class="me-kachel-stat"><strong>${count}</strong> Komponenten</div>
+          <div class="me-kachel-preview">${previews}${subKats.length > 3 ? ' …' : ''}</div>
+        </div>
+        <div class="me-kachel-check"><i class="fas fa-check"></i></div>
+      `;
+      kachel.onclick = () => activate('gruppe', gid);
+      kachelGrid.appendChild(kachel);
+    });
+    root.appendChild(kachelGrid);
+
+    // ============ Aktiv/Passiv-Info (kompakt nur als Hinweis) ============
+    const ap = el('div', { class:'me-ap-compact' });
     ap.innerHTML = `
-      <div class="me-ap-card passiv">
-        <div class="me-ap-head">
-          <div class="me-ap-icon"><i class="fas fa-shield-halved"></i></div>
-          <div><h3>Passive Komponenten</h3><span>Empfangen / widerstehen / schützen statisch</span></div>
-        </div>
-        <p>Sie <strong>halten still</strong>: Türen, Fenster, Tresore, Glas, Zäune, PIR-Melder, Magnetkontakte, Glasbruch-Mikrofone, Wärmebildkameras.</p>
-        <strong class="me-ap-count">${all.filter(x => x.typ === 'passiv').length} Komponenten</strong>
-      </div>
-      <div class="me-ap-card aktiv">
-        <div class="me-ap-head">
-          <div class="me-ap-icon"><i class="fas fa-bolt"></i></div>
-          <div><h3>Aktive Komponenten</h3><span>Senden Signal oder reagieren elektrisch</span></div>
-        </div>
-        <p>Sie <strong>schalten oder strahlen</strong>: Mikrowellen-Radar, IR-Lichtschranken, PTZ-Kameras, ANPR-Lesegeräte, Versenkpoller, Schleusen, Elektrozäune, Sirenen.</p>
-        <strong class="me-ap-count">${all.filter(x => x.typ === 'aktiv').length} Komponenten</strong>
-      </div>
+      <div class="me-ap-pill passiv"><i class="fas fa-shield-halved"></i> <strong>${passivCount}</strong> passive Komponenten · halten still, widerstehen</div>
+      <div class="me-ap-pill aktiv"><i class="fas fa-bolt"></i> <strong>${aktivCount}</strong> aktive Komponenten · senden Signal, schalten</div>
     `;
     root.appendChild(ap);
 
-    // FILTER-BAR
+    // FILTER-BAR (nur noch Sub-Kategorie + Typ + Suche)
     const filterBar = el('div', { class:'me-filter' });
-    const state = { gruppe:'Alle', kat:'Alle', typ:'Alle', q:'', onlyVideo:false };
 
-    // Gruppen-Tabs
-    const groupBar = el('div', { class:'me-tabs me-tabs-groups' });
+    // Gruppen-Tabs (kompakte Wiederholung als Schnellwechsler)
+    const groupBar = el('div', { class:'me-tabs me-tabs-groups', style:'display:none' });
     const allGroupBtn = el('button', { class:'me-tab active' });
     allGroupBtn.innerHTML = `<i class="fas fa-layer-group"></i><span>Alle</span><em>${all.length}</em>`;
     allGroupBtn.onclick = () => activate('gruppe', 'Alle');
@@ -240,18 +263,22 @@ window.MASTER_ENCY = (() => {
     function activate(key, val) {
       state[key] = val;
       if (key === 'gruppe') state.kat = 'Alle';
-      // Update tabs
-      groupBar.querySelectorAll('.me-tab').forEach(b => {
-        const isAllBtn = b === allGroupBtn;
-        if (isAllBtn) b.classList.toggle('active', state.gruppe === 'Alle');
-      });
-      // Setze richtige Tab aktiv
-      groupBar.querySelectorAll('.me-tab').forEach((b, i) => {
-        if (i > 0) {
-          const gid = Object.keys(GROUPS)[i-1];
-          b.classList.toggle('active', state.gruppe === gid);
+      // Update KACHELN (Hauptfilter)
+      const kacheln = kachelGrid.querySelectorAll('.me-kachel');
+      kacheln.forEach(k => k.classList.remove('active'));
+      if (state.gruppe === 'Alle') {
+        kacheln[0].classList.add('active');
+      } else {
+        const idx = Object.keys(GROUPS).indexOf(state.gruppe) + 1;
+        if (kacheln[idx]) kacheln[idx].classList.add('active');
+      }
+      // Scroll zum Grid
+      setTimeout(() => {
+        const grid = root.querySelector('.mency-grid');
+        if (grid && key === 'gruppe' && val !== 'Alle') {
+          grid.scrollIntoView({ behavior:'smooth', block:'start' });
         }
-      });
+      }, 100);
       rebuildKatBar();
       render();
     }

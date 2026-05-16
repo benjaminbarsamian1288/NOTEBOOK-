@@ -378,10 +378,180 @@ window.GESETZE_DB = (() => {
         },
       ],
     },
+
+    /* ============= GewO § 34a ============= */
+    {
+      id: 'gewo34a',
+      short: 'GewO § 34a',
+      title: 'Gewerbeordnung § 34a · Bewachungsgewerbe',
+      kategorie: 'Gewerberecht',
+      datum: 'Letzte Änderung 2024',
+      farbe: '#06b6d4',
+      icon: 'fa-briefcase',
+      url: 'https://www.gesetze-im-internet.de/gewo/__34a.html',
+      intro: 'Grundnorm für das Bewachungsgewerbe. Erlaubnis-Pflicht, Zuverlässigkeit, Vermögensverhältnisse, Sachkunde, Bewacherregister.',
+      anwender: 'Gewerbliche Bewacher, Aufsichtsbehörden, IHK',
+      visualisierung: 'gewo-erlaubnis',
+      abschnitte: [
+        {
+          nr: 1, title: '§ 34a Absatzweise',
+          paragraphen: [
+            { p:'Abs. 1', t:'Erlaubnispflicht', s:'Wer gewerbsmäßig Leben/Eigentum fremder Personen bewacht, bedarf einer Erlaubnis der zuständigen Behörde.', tags:['Pflicht','Erlaubnis'], wichtig:true },
+            { p:'Abs. 1 S.3', t:'Versagungsgründe', s:'Versagung wenn: Unzuverlässigkeit · ungeordnete Vermögen · fehlende Unterrichtung · fehlende Sachkunde (bei bestimmten Tätigkeiten) · fehlende Haftpflicht.', tags:['Versagung'], wichtig:true },
+            { p:'Abs. 1a S.2', t:'Sachkundepflichtige Tätigkeiten', s:'Sachkundeprüfung statt nur Unterrichtung erforderlich für: Türsteher · Ladendieb-Schutz · bewaffnete Bewachung · Asyl-Unterkünfte · Großveranstaltungen · Detektive.', tags:['Sachkundepflicht'], wichtig:true },
+            { p:'Abs. 2', t:'Zuverlässigkeitsprüfung', s:'Anfragen bei Bundeszentralregister, Gewerbezentralregister, Verfassungsschutz, ggf. Polizei.', tags:['Sicherheitsüberprüfung'] },
+            { p:'Abs. 3', t:'Wachpersonen-Anmeldung', s:'Anmeldung im Bewacherregister vor Beschäftigung erforderlich. Bestätigung der Behörde muss vorliegen.', tags:['Bewacherregister'] },
+            { p:'Abs. 4', t:'Untersagung Beschäftigung', s:'Behörde kann Beschäftigung einer unzuverlässigen Person untersagen.', tags:['Untersagung'] },
+            { p:'Abs. 5', t:'Bewacherregister', s:'Nationales Online-Register mit Bewacher-ID, Datenaktualisierungs-Pflicht. Seit 2019.', tags:['Online-Register'] },
+            { p:'Abs. 6', t:'Hinweis-/Kennzeichnungspflicht', s:'Ausweis + Schild mit Name oder Kennnummer bei sachkundepflichtigen Tätigkeiten.', tags:['Ausweis','Schild'] },
+          ],
+        },
+      ],
+    },
+
+    /* ============= WaffG ============= */
+    {
+      id: 'waffg',
+      short: 'WaffG',
+      title: 'Waffengesetz · Auszug für Wachpersonal',
+      kategorie: 'Waffenrecht',
+      datum: 'Letzte Änderung 2024',
+      farbe: '#dc2626',
+      icon: 'fa-gun',
+      url: 'https://www.gesetze-im-internet.de/waffg_2002/',
+      intro: 'Regelt Erwerb, Besitz, Führen und Aufbewahrung von Waffen. Für bewaffnete Wachpersonen relevant: Sachkunde, Bedürfnis, Aufbewahrung nach EN 14450 / EN 1143-1.',
+      anwender: 'Bewaffnete Wachpersonen, Bewachungsunternehmen',
+      visualisierung: 'waffg-waffenklassen',
+      abschnitte: [
+        {
+          nr: 1, title: 'Allgemeine Grundsätze',
+          paragraphen: [
+            { p:'§ 1', t:'Anwendungsbereich', s:'Umgang mit Waffen und Munition zum Schutz vor Gefahren.', tags:['Anwendung'] },
+            { p:'§ 2', t:'Grundsätze · 3 Klassen', s:'Anlage 1: verbotene / erlaubnispflichtige / freie Waffen. Waffenschein vs. Waffenbesitzkarte (WBK).', tags:['Klassen'], wichtig:true },
+            { p:'§ 4', t:'Voraussetzungen', s:'Alter 18+, Zuverlässigkeit (§ 5), persönliche Eignung (§ 6), Sachkunde (§ 7), Bedürfnis (§ 8), Haftpflicht.', tags:['Voraussetzungen'], wichtig:true },
+            { p:'§ 5', t:'Zuverlässigkeit', s:'Regelmäßige Überprüfung. Unzuverlässig bei Strafen wegen Verbrechen, extremistischer Vereinigungs-Mitgliedschaft, Alkohol-/Drogen-Abhängigkeit.', tags:['Zuverlässigkeit'] },
+            { p:'§ 7', t:'Sachkunde', s:'Praktische + theoretische Prüfung. Für Wachpersonal: DGUV V23 + zusätzliche Schießausbildung pflicht.', tags:['Sachkunde'], wichtig:true },
+            { p:'§ 8', t:'Bedürfnis', s:'Bewacher muss konkrete GEFÄHRDUNG nachweisen (z.B. Geldtransport, Personenschutz). Reine Vorsorge reicht nicht.', tags:['Bedürfnis'], wichtig:true },
+          ],
+        },
+        {
+          nr: 2, title: 'Erlaubnisse und Aufbewahrung',
+          paragraphen: [
+            { p:'§ 10', t:'Waffenbesitzkarte (WBK)', s:'Erforderlich für Erwerb und Besitz. Waffen werden einzeln eingetragen.', tags:['WBK'] },
+            { p:'§ 19', t:'Waffenschein', s:'Pflicht zum FÜHREN außerhalb eigener Wohnung/Geschäftsräume. Für Wachpersonal sehr restriktiv.', tags:['Waffenschein'], wichtig:true },
+            { p:'§ 28', t:'Bewachungsunternehmer', s:'Sondervorschrift: Bewacher können mit Behördenzustimmung Wachpersonen zeitweise Waffen überlassen. Dokumentationspflicht.', tags:['Bewachung','Sondervorschrift'], wichtig:true },
+            { p:'§ 36', t:'Aufbewahrung', s:'Mindeststandards: EN 14450/S1 (Kurzwaffen ≤ 5) · EN 14450/N (Langwaffen ≤ 10) · EN 1143-1 Klasse I (höhere Anzahl). Munition GETRENNT.', tags:['Tresor','EN 14450','EN 1143-1'], wichtig:true },
+          ],
+        },
+        {
+          nr: 3, title: 'Strafen + Bußgeld',
+          paragraphen: [
+            { p:'§ 51', t:'Strafvorschriften', s:'Bis 5 Jahre Freiheitsstrafe bei unerlaubtem Umgang.', tags:['Strafe'] },
+            { p:'§ 53', t:'Bußgeldvorschriften', s:'Bis 10.000 € bei Verstößen.', tags:['Bußgeld'] },
+          ],
+        },
+      ],
+    },
+
+    /* ============= SüG ============= */
+    {
+      id: 'sueg',
+      short: 'SüG',
+      title: 'Sicherheitsüberprüfungsgesetz',
+      kategorie: 'Geheimschutz',
+      datum: 'Letzte Änderung 2024',
+      farbe: '#7c3aed',
+      icon: 'fa-user-secret',
+      url: 'https://www.gesetze-im-internet.de/s_g/',
+      intro: 'Sicherheitsüberprüfung für Personen mit Zugang zu Verschlusssachen (VS) oder sicherheitsempfindlichen Tätigkeiten.',
+      anwender: 'Personen mit VS-Zugang, KRITIS-Personal, Verteidigungs-Sektor',
+      visualisierung: 'sueg-stufen',
+      abschnitte: [
+        {
+          nr: 1, title: 'Allgemeines',
+          paragraphen: [
+            { p:'§ 1', t:'Zweck', s:'Sicherheitsüberprüfung für VS-Zugang oder lebens-/verteidigungswichtige Anlagen.', tags:['VS-Zugang'] },
+            { p:'§ 2', t:'Begriffsbestimmungen', s:'VS-Stufen: VS-NfD · VS-Vertraulich · Geheim · Streng Geheim.', tags:['Definitionen'] },
+            { p:'§ 4', t:'Geltungsbereich', s:'Öffentlicher Dienst + nicht-öffentliche Stellen mit VS-Zugang.', tags:['Geltung'] },
+          ],
+        },
+        {
+          nr: 2, title: 'Arten der Sicherheitsüberprüfung',
+          paragraphen: [
+            { p:'§ 7', t:'Drei Stufen Ü1/Ü2/Ü3', s:'Ü1 einfache SÜ für VS-Vertraulich · Ü2 erweiterte für Geheim · Ü3 mit Sicherheitsermittlungen für Streng Geheim.', tags:['Ü1','Ü2','Ü3'], wichtig:true },
+            { p:'§ 8', t:'Einfache SÜ (Ü1)', s:'Anfragen Bundeszentralregister + Verfassungsschutz + Polizei. Fragebogen.', tags:['Ü1'] },
+            { p:'§ 9', t:'Erweiterte SÜ (Ü2)', s:'Zusätzlich Anhörung von Auskunftspersonen.', tags:['Ü2'] },
+            { p:'§ 10', t:'Ü3 mit Sicherheitsermittlungen', s:'Höchstes Niveau. Umfangreiche Ermittlungen + Sicherheitsgespräch.', tags:['Ü3'], wichtig:true },
+          ],
+        },
+        {
+          nr: 3, title: 'Verfahren',
+          paragraphen: [
+            { p:'§ 14', t:'Verfahren', s:'Sicherheitserklärung + Mitwirkungspflicht. Bei Bedenken: Erörterungsgespräch.', tags:['Verfahren'] },
+            { p:'§ 17', t:'Wiederholung', s:'Ü1 alle 10 Jahre · Ü2 alle 5 Jahre · Ü3 alle 5 Jahre.', tags:['Wiederholung'], wichtig:true },
+            { p:'§ 22', t:'Sicherheitsakte', s:'5 Jahre Speicherung nach Ausscheiden.', tags:['Datenspeicherung'] },
+          ],
+        },
+      ],
+    },
   ];
 
   /* ====== VISUALISIERUNGEN als SVG ====== */
   const VIS = {
+    'gewo-erlaubnis': `
+      <svg viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg" class="ges-vis">
+        <rect width="600" height="280" fill="#0a0f1a"/>
+        <text x="300" y="28" text-anchor="middle" font-size="14" fill="#06b6d4" font-weight="900">§ 34a GewO · Erlaubnis-Prozess</text>
+        ${[['1','Antrag','#06b6d4',60],['2','Unterlagen','#22d3ee',180],['3','Prüfung','#fbbf24',300],['4','Erlaubnis','#22c55e',420],['5','Bewacher-Reg.','#3b82f6',540]].map(([n,l,c,x]) => `
+          <g>
+            <circle cx="${x}" cy="100" r="30" fill="#1e293b" stroke="${c}" stroke-width="2"/>
+            <text x="${x}" y="106" text-anchor="middle" font-size="14" fill="${c}" font-weight="900">${n}</text>
+            <text x="${x}" y="155" text-anchor="middle" font-size="11" fill="${c}" font-weight="700">${l}</text>
+          </g>
+        `).join('')}
+        ${[60,180,300,420].map(x => `<line x1="${x+32}" y1="100" x2="${x+88}" y2="100" stroke="#94a3b8" stroke-dasharray="3 2"/>`).join('')}
+        <text x="300" y="210" text-anchor="middle" font-size="11" fill="#fbbf24" font-weight="800">Versagungsgründe: Unzuverlässigkeit · ungeordnete Vermögen</text>
+        <text x="300" y="228" text-anchor="middle" font-size="11" fill="#fbbf24" font-weight="800">fehlende Unterrichtung/Sachkunde · fehlende Haftpflicht</text>
+        <text x="300" y="260" text-anchor="middle" font-size="11" fill="#22c55e" font-weight="700">→ Bei Erfüllung MUSS die Erlaubnis erteilt werden</text>
+      </svg>`,
+
+    'waffg-waffenklassen': `
+      <svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg" class="ges-vis">
+        <rect width="600" height="320" fill="#0a0f1a"/>
+        <text x="300" y="28" text-anchor="middle" font-size="14" fill="#dc2626" font-weight="900">Waffengesetz · Aufbewahrungs-Klassen § 36</text>
+        ${[['Kurzwaffen ≤ 5','#94a3b8','EN 14450/S1','Klasse 0',90],['Langwaffen ≤ 10','#22c55e','EN 14450/N','Klasse N',230],['Höhere Mengen','#0891b2','EN 1143-1','Klasse I',370],['Munition getrennt','#fbbf24','—','Pflicht!',510]].map(([typ,c,norm,kl,x]) => `
+          <g>
+            <rect x="${x-50}" y="70" width="100" height="160" rx="8" fill="#1e293b" stroke="${c}" stroke-width="2"/>
+            <foreignObject x="${x-25}" y="80" width="50" height="50">
+              <div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;align-items:center;justify-content:center;width:50px;height:50px;color:${c};font-size:30px"><i class="fas fa-vault"></i></div>
+            </foreignObject>
+            <text x="${x}" y="155" text-anchor="middle" font-size="12" fill="${c}" font-weight="800">${kl}</text>
+            <text x="${x}" y="178" text-anchor="middle" font-size="10" fill="#cbd5e1">${typ}</text>
+            <text x="${x}" y="205" text-anchor="middle" font-size="9" fill="#94a3b8">${norm}</text>
+          </g>
+        `).join('')}
+        <text x="300" y="270" text-anchor="middle" font-size="12" fill="#ef4444" font-weight="800">§ 28 WaffG: Bewachungsunternehmer überlassen Wachpersonen Waffen zeitweise</text>
+        <text x="300" y="290" text-anchor="middle" font-size="10" fill="#94a3b8">Mit Behördenzustimmung · Dokumentationspflicht · siehe auch DGUV V23 § 18</text>
+      </svg>`,
+
+    'sueg-stufen': `
+      <svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg" class="ges-vis">
+        <rect width="600" height="320" fill="#0a0f1a"/>
+        <text x="300" y="28" text-anchor="middle" font-size="14" fill="#7c3aed" font-weight="900">SüG · 3 Stufen der Sicherheitsüberprüfung</text>
+        ${[['Ü1','VS-VERTRAULICH','#22c55e','Einfache SÜ','BZR + BfV + Polizei','10 Jahre',100],['Ü2','GEHEIM','#fbbf24','Erweiterte SÜ','+ Auskunftspers.','5 Jahre',300],['Ü3','STRENG GEHEIM','#dc2626','SÜ + Ermittlungen','+ Sich.-Gespräch','5 Jahre',500]].map(([code, vs, c, name, inhalt, wdh, x]) => `
+          <g>
+            <rect x="${x-90}" y="70" width="180" height="190" rx="10" fill="#1e293b" stroke="${c}" stroke-width="3"/>
+            <text x="${x}" y="100" text-anchor="middle" font-size="22" fill="${c}" font-weight="900">${code}</text>
+            <rect x="${x-70}" y="115" width="140" height="22" rx="3" fill="${c}"/>
+            <text x="${x}" y="130" text-anchor="middle" font-size="10" fill="#0b1424" font-weight="900">${vs}</text>
+            <text x="${x}" y="160" text-anchor="middle" font-size="12" fill="#cbd5e1" font-weight="700">${name}</text>
+            <text x="${x}" y="180" text-anchor="middle" font-size="9" fill="#94a3b8">${inhalt}</text>
+            <text x="${x}" y="210" text-anchor="middle" font-size="10" fill="${c}" font-weight="700">Wdh.: ${wdh}</text>
+          </g>
+        `).join('')}
+        <text x="300" y="295" text-anchor="middle" font-size="11" fill="#22d3ee" font-weight="700">Pflicht: Sicherheitserklärung + Mitwirkung · Speicherung 5 Jahre nach Ausscheiden</text>
+      </svg>`,
+
     'bewachv-overview': `
       <svg viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg" class="ges-vis">
         <rect width="600" height="300" fill="#0a0f1a"/>
