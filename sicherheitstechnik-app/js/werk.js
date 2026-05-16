@@ -123,7 +123,10 @@ window.WERK = (() => {
       <div class="werk-mode-row">
         <button class="werk-btn active" data-mode="day"><i class="fas fa-sun"></i> Tag</button>
         <button class="werk-btn" data-mode="night"><i class="fas fa-moon"></i> Nacht</button>
-        <button class="werk-btn" data-mode="alarm"><i class="fas fa-triangle-exclamation"></i> ALARM-Szenario</button>
+        <button class="werk-btn" data-mode="anpr"><i class="fas fa-car"></i> ANPR-Einfahrt</button>
+        <button class="werk-btn" data-mode="patrouille"><i class="fas fa-route"></i> Patrouille</button>
+        <button class="werk-btn" data-mode="fire"><i class="fas fa-fire"></i> Brand-Szenario</button>
+        <button class="werk-btn" data-mode="alarm"><i class="fas fa-triangle-exclamation"></i> ALARM</button>
       </div>
       <div class="werk-legende">
         ${Object.entries(TYPE_COLORS).map(([t, c]) => `
@@ -140,8 +143,11 @@ window.WERK = (() => {
     let mode = 'day';
 
     function render() {
-      const isNight = mode === 'night' || mode === 'alarm';
+      const isNight = mode === 'night' || mode === 'alarm' || mode === 'fire';
       const isAlarm = mode === 'alarm';
+      const isANPR = mode === 'anpr';
+      const isFire = mode === 'fire';
+      const isPatrouille = mode === 'patrouille';
       stage.innerHTML = `
         <svg viewBox="0 0 880 620" xmlns="http://www.w3.org/2000/svg" class="werk-svg ${isAlarm?'alarm-mode':''}">
           <defs>
@@ -325,6 +331,102 @@ window.WERK = (() => {
             ${SPRITES.mitarbeiter('mit-2', 410, 500, 0.45)}
           ` : ''}
 
+          <!-- ANPR-EINFAHRT-Szenario -->
+          ${isANPR ? `
+            <!-- Auto fährt zum Tor -->
+            <g>
+              <animateTransform attributeName="transform" type="translate"
+                values="860 0; 580 0; 580 0; 580 0; 380 0"
+                keyTimes="0; .3; .55; .8; 1" dur="9s" repeatCount="indefinite"/>
+              <rect x="-40" y="540" width="80" height="30" rx="3" fill="#1e293b" stroke="#475569"/>
+              <rect x="-30" y="524" width="50" height="18" rx="6" fill="#0f172a"/>
+              <circle cx="-25" cy="572" r="6" fill="#0a0f1a"/>
+              <circle cx="20" cy="572" r="6" fill="#0a0f1a"/>
+              <rect x="-25" y="555" width="40" height="10" fill="#fef3c7" stroke="#fbbf24"/>
+              <text x="-5" y="563" text-anchor="middle" font-size="7" fill="#0b1424" font-family="monospace" font-weight="900">B-XK 1288</text>
+              <rect x="-42" y="548" width="4" height="6" rx="1" fill="#fef3c7"/>
+            </g>
+            <!-- ANPR-Sichtkegel -->
+            <path d="M 540 524 L 660 540 L 660 580 L 540 540 Z" fill="rgba(34,211,238,.15)" stroke="rgba(34,211,238,.4)" stroke-dasharray="3 2"/>
+            <!-- ANPR-Display -->
+            <rect x="450" y="450" width="180" height="50" rx="6" fill="#0a0f1a" stroke="#22d3ee" stroke-width="2"/>
+            <text x="540" y="470" text-anchor="middle" font-size="11" fill="#22d3ee" font-weight="800">ANPR · B-XK 1288</text>
+            <text x="540" y="486" text-anchor="middle" font-size="9" fill="#22c55e">✓ WHITELIST · MITARBEITER</text>
+            <!-- Schranke öffnet -->
+            <rect x="500" y="490" width="6" height="60" fill="#475569"/>
+            <rect x="500" y="494" width="80" height="4" fill="#dc2626">
+              <animateTransform attributeName="transform" type="rotate" values="0 503 496; -75 503 496; -75 503 496; 0 503 496" keyTimes="0; .4; .8; 1" dur="9s" repeatCount="indefinite"/>
+            </rect>
+          ` : ''}
+
+          <!-- BRAND-Szenario -->
+          ${isFire ? `
+            <!-- Flammen aus Halle Lager -->
+            <g transform="translate(490, 250)">
+              ${Array.from({length: 5}, (_,i) => `
+                <path d="M${-10+i*4} -5 Q${-5+i*4} -25 ${i*4} -10 Q${5+i*4} -28 ${10+i*4} -8 Q${12+i*4} 0 ${5+i*4} 5 Q${-5+i*4} 5 ${-10+i*4} -5 Z"
+                      fill="#dc2626">
+                  <animate attributeName="fill" values="#dc2626;#fbbf24;#ea580c;#dc2626" dur=".4s" begin="${i*0.1}s" repeatCount="indefinite"/>
+                </path>
+              `).join('')}
+            </g>
+            <!-- Rauchsäule -->
+            ${Array.from({length: 10}, (_,i) => `
+              <circle cx="${480 + Math.sin(i*0.7)*15}" cy="${230 - i*22}" r="${12 + i*2}" fill="#475569" opacity="${0.7 - i*0.06}">
+                <animate attributeName="cy" values="${230 - i*22};${100 - i*22}" dur="${4+i*0.2}s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="${0.7 - i*0.06};0" dur="${4+i*0.2}s" repeatCount="indefinite"/>
+              </circle>
+            `).join('')}
+            <!-- Sprinkler-Aktiv-Marker -->
+            <rect x="400" y="190" width="180" height="130" fill="rgba(34,211,238,.15)" stroke="#22d3ee" stroke-width="3" stroke-dasharray="6 3">
+              <animate attributeName="stroke-dashoffset" values="0;-18" dur="1s" repeatCount="indefinite"/>
+            </rect>
+            <text x="490" y="178" text-anchor="middle" font-size="11" fill="#22d3ee" font-weight="900">💧 SPRINKLER AKTIV</text>
+            <!-- Feuerwehr fährt rein -->
+            <g>
+              <animateTransform attributeName="transform" type="translate"
+                values="-150 0; 350 0; 350 0"
+                keyTimes="0; .5; 1" dur="6s" repeatCount="indefinite"/>
+              <rect x="60" y="530" width="110" height="30" rx="3" fill="#dc2626" stroke="#0b1424"/>
+              <rect x="70" y="510" width="60" height="22" rx="4" fill="#dc2626" stroke="#0b1424"/>
+              <text x="100" y="550" text-anchor="middle" font-size="7" fill="white" font-weight="900">FEUERWEHR 112</text>
+              <circle cx="70" cy="565" r="7" fill="#0a0f1a"/>
+              <circle cx="150" cy="565" r="7" fill="#0a0f1a"/>
+              <!-- Blaulicht -->
+              <rect x="80" y="500" width="40" height="6" rx="2" fill="#1e293b"/>
+              <circle cx="90" cy="503" r="4" fill="#22d3ee"><animate attributeName="opacity" values="1;0;1;0;1" dur=".5s" repeatCount="indefinite"/></circle>
+              <circle cx="110" cy="503" r="4" fill="#22d3ee"><animate attributeName="opacity" values="0;1;0;1;0" dur=".5s" repeatCount="indefinite"/></circle>
+            </g>
+            <!-- Brand-Banner -->
+            <rect x="0" y="0" width="880" height="32" fill="#ea580c">
+              <animate attributeName="opacity" values=".7;1;.7" dur=".5s" repeatCount="indefinite"/>
+            </rect>
+            <text x="440" y="22" text-anchor="middle" font-size="14" fill="white" font-weight="900">🔥 BRAND IN LAGER · SPRINKLER AKTIV · FEUERWEHR ALARMIERT (112)</text>
+          ` : ''}
+
+          <!-- PATROUILLE-Modus: detaillierter Wachmann + Hund + Route -->
+          ${isPatrouille ? `
+            <!-- Routen-Linie sichtbar -->
+            <path d="M 450 380 Q 550 400 600 450 Q 500 470 400 450 Q 350 410 450 380 Z"
+                  fill="none" stroke="#3b82f6" stroke-width="2" stroke-dasharray="5 4" opacity=".6"/>
+            <!-- Stempelpunkte -->
+            ${[[450,380],[550,400],[600,450],[500,470],[400,450],[350,410]].map(([x,y], i) => `
+              <circle cx="${x}" cy="${y}" r="6" fill="#fbbf24" stroke="#0a0f1a" stroke-width="1"/>
+              <text x="${x}" y="${y+2}" text-anchor="middle" font-size="8" fill="#0a0f1a" font-weight="900">${i+1}</text>
+            `).join('')}
+            <!-- Wachmann + Hund größer und prominent -->
+            <g>
+              <animateTransform attributeName="transform" type="translate"
+                values="450 380; 550 400; 600 450; 500 470; 400 450; 350 410; 450 380"
+                dur="30s" repeatCount="indefinite"/>
+              ${SPRITES.wachmannWalking('wach-detail', 0, 0, 0.65, 0.5)}
+              ${SPRITES.hund('hund-detail', 25, 45, 0.6)}
+              <!-- NFC-Stempel-Aktion -->
+              <rect x="-30" y="-35" width="60" height="14" rx="2" fill="#22c55e"/>
+              <text x="0" y="-25" text-anchor="middle" font-size="8" fill="#0a0f1a" font-weight="800">NFC-CHECK</text>
+            </g>
+          ` : ''}
+
           <!-- Hotspots -->
           ${HOTSPOTS.map(h => `
             <g class="werk-hotspot" data-id="${h.id}" style="cursor:pointer">
@@ -360,13 +462,15 @@ window.WERK = (() => {
     function openHotspot(h) {
       const c = TYPE_COLORS[h.type] || '#22d3ee';
       const drawer = el('div', { class:'mency-drawer-bg' });
-      const inner = el('div', { class:'mency-drawer' });
+      const inner = el('div', { class:'mency-drawer wide' });
+      const extra = buildHotspotExtra(h);
       inner.innerHTML = `
         <div class="mency-drawer-head" style="--c:${c}">
           <button class="mency-drawer-close"><i class="fas fa-xmark"></i></button>
           <div class="mency-drawer-kat"><i class="fas ${h.icon}"></i> ${h.type.toUpperCase()}</div>
           <h2>${h.name}</h2>
         </div>
+        ${extra}
         <div class="mency-drawer-body">
           <section>
             <h3><i class="fas fa-info-circle"></i> Beschreibung</h3>
@@ -387,6 +491,125 @@ window.WERK = (() => {
       document.addEventListener('keydown', function esc(e) {
         if (e.key === 'Escape') { close(); document.removeEventListener('keydown', esc); }
       });
+    }
+
+    function buildHotspotExtra(h) {
+      // Pförtnerhaus-Innenansicht
+      if (h.id === 'pfoertner') {
+        return `
+          <div class="werk-detail-vis">
+            <svg viewBox="0 0 800 360" class="werk-detail-svg">
+              <defs>
+                <linearGradient id="pf-wall" x2="0" y2="1">
+                  <stop offset="0" stop-color="#cbd5e1"/>
+                  <stop offset="1" stop-color="#475569"/>
+                </linearGradient>
+              </defs>
+              <rect width="800" height="360" fill="url(#pf-wall)"/>
+              <!-- Boden -->
+              <rect y="280" width="800" height="80" fill="#92400e"/>
+              <line x1="0" y1="280" x2="800" y2="280" stroke="#0a0f1a" stroke-width="2"/>
+              <!-- Decke -->
+              <line x1="0" y1="50" x2="800" y2="50" stroke="#0a0f1a" stroke-width="2"/>
+              <!-- Fenster zum Tor -->
+              <rect x="40" y="80" width="140" height="100" fill="rgba(34,211,238,.25)" stroke="#0a0f1a" stroke-width="3"/>
+              <line x1="110" y1="80" x2="110" y2="180" stroke="#0a0f1a" stroke-width="2"/>
+              <line x1="40" y1="130" x2="180" y2="130" stroke="#0a0f1a" stroke-width="2"/>
+              <text x="110" y="200" text-anchor="middle" font-size="9" fill="#0a0f1a" font-weight="700">Sicht zum Tor</text>
+              <!-- Multi-Monitor-Wand -->
+              <rect x="250" y="80" width="320" height="160" rx="4" fill="#0a0f1a" stroke="#1e293b" stroke-width="3"/>
+              ${[0,1,2,3].map(i => {
+                const x = 260 + (i%2)*155;
+                const y = 90 + Math.floor(i/2)*75;
+                return `
+                  <rect x="${x}" y="${y}" width="150" height="70" fill="#1e293b" stroke="#475569"/>
+                  <text x="${x+8}" y="${y+12}" font-size="8" fill="#22d3ee" font-family="monospace">CAM 0${i+1}</text>
+                  <circle cx="${x+140}" cy="${y+10}" r="2" fill="#ef4444"><animate attributeName="opacity" values="1;.3;1" dur="1s" repeatCount="indefinite"/></circle>
+                  <!-- Live-Bild-Inhalt -->
+                  ${i === 0 ? `<rect x="${x+50}" y="${y+25}" width="50" height="30" fill="#475569"/><text x="${x+75}" y="${y+45}" text-anchor="middle" font-size="8" fill="#fbbf24">TOR LIVE</text>` : ''}
+                  ${i === 1 ? `<circle cx="${x+75}" cy="${y+40}" r="10" fill="#fbd7a0"/><rect x="${x+68}" y="${y+48}" width="14" height="18" fill="#1e3a8a"/><text x="${x+75}" y="${y+65}" text-anchor="middle" font-size="6" fill="#22c55e">PERIMETER</text>` : ''}
+                  ${i === 2 ? `<rect x="${x+30}" y="${y+30}" width="90" height="30" fill="#1e293b"/>${Array.from({length: 5}, (_,j) => `<rect x="${x+35+j*16}" y="${y+33}" width="12" height="24" fill="#475569"/>`).join('')}<text x="${x+75}" y="${y+65}" text-anchor="middle" font-size="6" fill="#fbbf24">LAGER</text>` : ''}
+                  ${i === 3 ? `<text x="${x+75}" y="${y+40}" text-anchor="middle" font-size="14" fill="#fbbf24" font-weight="900">TANK</text><text x="${x+75}" y="${y+58}" text-anchor="middle" font-size="6" fill="#22d3ee">THERMAL OK</text>` : ''}
+                `;
+              }).join('')}
+              <!-- Schreibtisch -->
+              <rect x="240" y="260" width="340" height="20" fill="#92400e" stroke="#0a0f1a"/>
+              <rect x="240" y="280" width="340" height="80" fill="#451a03"/>
+              <!-- Wachmann am Schreibtisch -->
+              ${SPRITES.wachmann('pf-wach', 410, 240, 1.2)}
+              <!-- EMA-Bedienteil -->
+              <rect x="620" y="100" width="100" height="140" rx="4" fill="#1e293b" stroke="#fbbf24" stroke-width="2"/>
+              <rect x="630" y="110" width="80" height="32" fill="#0a0f1a"/>
+              <text x="670" y="124" text-anchor="middle" font-size="9" fill="#22c55e" font-family="monospace" font-weight="800">SCHARF</text>
+              <text x="670" y="136" text-anchor="middle" font-size="6" fill="#94a3b8">8 LINIEN OK</text>
+              ${[0,1,2].map(r => [0,1,2].map(c => {
+                const n = r*3+c+1;
+                return `<rect x="${636+c*22}" y="${152+r*22}" width="18" height="16" rx="2" fill="#475569"/><text x="${645+c*22}" y="${164+r*22}" text-anchor="middle" font-size="8" fill="#fbbf24" font-weight="700">${n}</text>`;
+              }).join('')).join('')}
+              <text x="670" y="252" text-anchor="middle" font-size="8" fill="#fbbf24" font-weight="800">EMA-PANEL</text>
+              <!-- Notruf-Knopf rot -->
+              <rect x="240" y="270" width="40" height="12" rx="2" fill="#1e293b"/>
+              <circle cx="260" cy="276" r="6" fill="#dc2626" stroke="white" stroke-width="1.5"><animate attributeName="r" values="5;7;5" dur="2s" repeatCount="indefinite"/></circle>
+              <text x="260" y="298" text-anchor="middle" font-size="7" fill="#dc2626" font-weight="900">NOTRUF</text>
+              <!-- Funkgerät auf Tisch -->
+              <rect x="500" y="266" width="20" height="14" rx="1" fill="#0a0f1a"/>
+              <circle cx="510" cy="269" r="1.5" fill="#22c55e"/>
+              <!-- Kaffee + Notizblock -->
+              <rect x="540" y="266" width="14" height="14" rx="2" fill="#fbf24" stroke="#0a0f1a"/>
+              <text x="547" y="276" text-anchor="middle" font-size="8" fill="#92400e">📋</text>
+              <rect x="560" y="262" width="16" height="18" rx="1" fill="white" stroke="#0a0f1a"/>
+              <line x1="563" y1="268" x2="573" y2="268" stroke="#0a0f1a"/>
+              <line x1="563" y1="272" x2="573" y2="272" stroke="#0a0f1a"/>
+              <line x1="563" y1="276" x2="571" y2="276" stroke="#0a0f1a"/>
+            </svg>
+            <p class="werk-detail-cap">Pförtnerhaus-Innenansicht · Wachmann am Multi-Monitor-Arbeitsplatz · EMA-Panel · Notruf-Knopf · GSM-Funkgerät</p>
+          </div>
+        `;
+      }
+      // Video-Tower Sichtfeld
+      if (h.type === 'turm') {
+        return `
+          <div class="werk-detail-vis">
+            <svg viewBox="0 0 800 360" class="werk-detail-svg">
+              <defs>
+                <linearGradient id="t-sky" x2="0" y2="1">
+                  <stop offset="0" stop-color="#020617"/>
+                  <stop offset="1" stop-color="#1e293b"/>
+                </linearGradient>
+              </defs>
+              <rect width="800" height="300" fill="url(#t-sky)"/>
+              <rect y="300" width="800" height="60" fill="#0a0f1a"/>
+              <!-- Turm -->
+              <rect x="40" y="80" width="10" height="220" fill="#94a3b8"/>
+              <rect x="20" y="70" width="50" height="14" rx="2" fill="#1e293b" stroke="#dc2626"/>
+              <circle cx="30" cy="77" r="3" fill="#0c0a1a" stroke="#dc2626"/>
+              <circle cx="45" cy="77" r="3" fill="#0c0a1a" stroke="#dc2626"/>
+              <circle cx="60" cy="77" r="3" fill="#0c0a1a" stroke="#dc2626"/>
+              <!-- Sichtkegel 25× Zoom -->
+              <path d="M 50 80 L 780 100 L 780 240 L 50 100 Z" fill="rgba(34,211,238,.15)" stroke="rgba(34,211,238,.4)" stroke-dasharray="3 2"/>
+              <!-- Distanz-Marker -->
+              ${[200,500,900].map((d,i) => {
+                const x = 60 + (d/1000)*720;
+                const lab = ['IDENTIFIZIEREN','ERKENNEN','BEOBACHTEN'][i];
+                const col = ['#22c55e','#fbbf24','#06b6d4'][i];
+                return `
+                  <line x1="${x}" y1="80" x2="${x}" y2="300" stroke="${col}" stroke-width="1" stroke-dasharray="3 2"/>
+                  <rect x="${x-50}" y="85" width="100" height="20" rx="3" fill="${col}"/>
+                  <text x="${x}" y="98" text-anchor="middle" font-size="9" fill="#0b1424" font-weight="800">${d}m · ${lab}</text>
+                `;
+              }).join('')}
+              <!-- Person bei 200m -->
+              ${SPRITES.eindringling('t-int', 200, 240, 0.7)}
+              <!-- Bounding Box -->
+              <rect x="180" y="200" width="40" height="80" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="4 2"/>
+              <rect x="160" y="184" width="80" height="14" fill="#ef4444"/>
+              <text x="200" y="194" text-anchor="middle" font-size="8" fill="white" font-family="monospace" font-weight="800">PERSON 97%</text>
+            </svg>
+            <p class="werk-detail-cap">Sichtfeld des Video-Towers · 4 PTZ-Kameras + Thermal · 25× optisches Zoom · Identifizieren > 200m</p>
+          </div>
+        `;
+      }
+      return '';
     }
 
     setTimeout(render, 0);
