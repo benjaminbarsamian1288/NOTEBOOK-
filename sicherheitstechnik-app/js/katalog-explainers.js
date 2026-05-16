@@ -976,7 +976,7 @@
 
       <!-- s4: Raum füllt sich -->
       <g id="s4-flood" opacity="0">
-        ${Array.from({length: 30}, (_,i) => `<circle cx="${210 + (i%6)*60}" cy="${${80} + Math.floor(i/6)*40}" r="${6 + Math.random()*3}" fill="#22d3ee" opacity=".3"><animate attributeName="opacity" values=".1;.5;.1" dur="1s" begin="${i*0.04}s" repeatCount="indefinite"/></circle>`).join('')}
+        ${Array.from({length: 30}, (_,i) => `<circle cx="${210 + (i%6)*60}" cy="${80 + Math.floor(i/6)*40}" r="${6 + Math.random()*3}" fill="#22d3ee" opacity=".3"><animate attributeName="opacity" values=".1;.5;.1" dur="1s" begin="${i*0.04}s" repeatCount="indefinite"/></circle>`).join('')}
       </g>
 
       <!-- s5: gelöscht -->
