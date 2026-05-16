@@ -29,6 +29,7 @@
 <link rel="stylesheet" href="css/mechanik.css?v=30">
 <link rel="stylesheet" href="css/mech-ency.css?v=32">
 <link rel="stylesheet" href="css/katalog.css?v=33">
+<link rel="stylesheet" href="css/lab.css?v=34">
 <link rel="stylesheet" href="css/hersteller.css?v=31">
 <link rel="stylesheet" href="css/modern-refresh.css?v=31">
 <link rel="stylesheet" href="css/modern.css">
@@ -59,8 +60,10 @@
 <!-- ============== SIDEBAR ============== -->
 <aside id="sidebar" class="sidebar">
   <nav class="navlist">
+    <button class="global-search-trigger" id="gs-trigger"><i class="fas fa-search"></i> <span>Suche · alles…</span><kbd>Ctrl K</kbd></button>
     <button class="navitem active" data-view="home"><i class="fas fa-house"></i><span>Übersicht</span></button>
     <button class="navitem" data-view="katalog" style="background:linear-gradient(135deg, rgba(34,211,238,.22), rgba(168,85,247,.16), rgba(220,38,38,.12)); border-color:rgba(168,85,247,.4); position:relative"><i class="fas fa-folder-tree" style="color:#a855f7"></i><span><strong>KATALOG · Alles sortiert</strong></span></button>
+    <button class="navitem" data-view="lab" style="background:linear-gradient(135deg, rgba(34,211,238,.18), rgba(59,130,246,.12), rgba(168,85,247,.10)); border-color:rgba(34,211,238,.4)"><i class="fas fa-calculator" style="color:#22d3ee"></i><span><strong>🧮 Engineering-Lab</strong></span></button>
     <button class="navitem" data-view="konzept"><i class="fas fa-layer-group"></i><span>Schutzkonzept</span></button>
     <button class="navitem" data-view="klassen"><i class="fas fa-medal"></i><span>SÜ · Grade · RC</span></button>
     <button class="navitem" data-view="perimeter"><i class="fas fa-tower-broadcast"></i><span>Perimeter · Zone 1</span></button>
@@ -150,6 +153,15 @@
 <script src="js/mech-ency-view.js?v=32"></script>
 <script src="js/katalog-data.js?v=33"></script>
 <script src="js/katalog-view.js?v=33"></script>
+<script src="js/lab.js?v=34"></script>
+<script src="js/global-search.js?v=34"></script>
+<script>
+  // Wire global-search trigger after DOM ready
+  window.addEventListener('load', () => {
+    const t = document.getElementById('gs-trigger');
+    if (t) t.onclick = () => window.GSEARCH && GSEARCH.open();
+  });
+</script>
 <script src="js/tools.js"></script>
 <script src="js/wizard.js"></script>
 <script src="js/views.js"></script>
