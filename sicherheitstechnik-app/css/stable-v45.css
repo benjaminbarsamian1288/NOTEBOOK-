@@ -1,0 +1,210 @@
+/* ====================================================================
+   STABILE LAYOUTS v45 — verhindert jedes Wackeln bei Karten-/Video-Klicks
+   Lädt zuletzt
+   ==================================================================== */
+
+/* ============ MASTER-DRAWER · FESTE GRÖSSEN ============ */
+.mency-drawer-bg {
+  contain: layout;
+}
+.mency-drawer {
+  overflow-y: scroll;       /* immer Scrollbar reserviert → kein Sprung */
+  scrollbar-gutter: stable;
+}
+.mency-drawer-head {
+  flex-shrink: 0;
+  min-height: 180px;
+}
+.mency-drawer-tabs {
+  flex-shrink: 0;
+  height: 56px;
+}
+
+/* Bilder-Container FEST */
+.mency-drawer-img {
+  width: 100%;
+  height: 280px !important;
+  min-height: 280px !important;
+  max-height: 280px !important;
+  background: linear-gradient(135deg, #0a0f1a, #1e293b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  contain: strict;
+  flex-shrink: 0;
+}
+.mency-drawer-img svg {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  display: block !important;
+  object-fit: contain;
+}
+.mency-drawer-img svg[preserveAspectRatio="xMidYMid meet"],
+.mency-drawer-img > svg {
+  width: auto !important;
+  max-width: 80% !important;
+  height: 100% !important;
+}
+
+/* Animations-Mount fest */
+#me-anim-mount, #cat-anim-mount, #mency-anim-mount {
+  min-height: 0;
+  display: block;
+}
+.mency-anim-section {
+  margin: 0 24px 18px !important;
+  padding: 14px 16px !important;
+}
+.mency-anim-section .expl-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.mency-anim-section .expl-head {
+  flex-shrink: 0;
+  min-height: 50px;
+}
+.mency-anim-section .expl-stage {
+  height: 280px !important;
+  min-height: 280px !important;
+  max-height: 280px !important;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #020617, #1e293b);
+  border-radius: 10px;
+  overflow: hidden;
+  contain: strict;
+  position: relative;
+}
+.mency-anim-section .expl-stage svg.expl-svg {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  display: block !important;
+  position: absolute;
+  inset: 0;
+}
+.mency-anim-section .expl-narration {
+  min-height: 84px !important;
+  max-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 6px;
+  padding: 8px 0;
+}
+.mency-anim-section .expl-text {
+  height: 60px !important;
+  min-height: 60px;
+  max-height: 60px;
+  overflow: hidden;
+  line-height: 1.5;
+  font-size: 13.5px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+.mency-anim-section .expl-bar {
+  height: 4px;
+  flex-shrink: 0;
+}
+.mency-anim-section .expl-controls {
+  height: 44px !important;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Tab-Panels: feste Höhe verhindert Sprung */
+.mency-dpanel {
+  min-height: 280px;
+  contain: layout;
+}
+
+/* Card-Hover: nur transform, nicht border-width (kein Reflow) */
+.mency-card {
+  border-top-width: 5px !important;
+  transition: transform .25s, box-shadow .25s !important;
+}
+
+/* Mediathek-Karten ebenso */
+.mtk-card {
+  contain: layout;
+}
+.mtk-photo {
+  height: 200px !important;
+  min-height: 200px !important;
+  max-height: 200px !important;
+  contain: strict;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mtk-photo svg {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 90% !important;
+  max-height: 95% !important;
+  display: block !important;
+  object-fit: contain;
+}
+
+/* Drawer-Body: scroll innerhalb, äußerer Drawer scrollt nicht mit Step */
+.mency-drawer-body {
+  min-height: 200px;
+  contain: layout;
+}
+
+/* Verhindern: animierte SVG-Elemente schubsen Layout */
+.expl-svg, .ges-vis, .werk-svg, .lab-svg, .mtk-photo svg {
+  shape-rendering: geometricPrecision;
+  vector-effect: non-scaling-stroke;
+}
+.expl-svg g[id] {
+  will-change: opacity;
+  transform-origin: center;
+}
+
+/* Active-Highlight nicht mit Border-Width sondern Outline */
+.expl-active {
+  outline: 2px solid #fbbf24;
+  outline-offset: 2px;
+}
+
+/* Karten in Master-Ency: keine wackelnden Heights */
+.mency-card-img {
+  height: 200px !important;
+  min-height: 200px !important;
+  max-height: 200px !important;
+  contain: strict;
+}
+.mency-card-img svg {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 95% !important;
+  max-height: 95% !important;
+  display: block;
+}
+
+/* Body: feste max-height für Drawer-Body verhindert Layout-Sprung beim Video laden */
+.mency-drawer-body {
+  padding-bottom: 60px;
+}
+
+/* iframe in Video-Galerie */
+.wwd-player iframe, .wwd-player video {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+.wwd-player {
+  aspect-ratio: 16/9 !important;
+  contain: strict;
+}
