@@ -99,6 +99,7 @@ window.V = (() => {
       { v:'zwiebel3d',    icon:'fa-circle-dot',          t:'3D-Zwiebelmodell',      d:'Interaktives 4-Zonen-Schutzkonzept' },
       { v:'haus3d',       icon:'fa-house-chimney',       t:'Sicherheits-Haus 3D',   d:'Vom Außenzaun bis zum Tresor · alle 4 Zonen' },
       { v:'wwd',          icon:'fa-tower-cell',          t:'WWD Video-Türme',       d:'KWS Video Control · KI · 24/7-Leitstelle' },
+      { v:'mechency',     icon:'fa-flask-vial',          t:'Mechanik-Enzyklopädie', d:'50+ Komponenten · Bilder · Filter · Vergleich' },
       { v:'mechanik',     icon:'fa-shield-halved',       t:'Mechanik · 6 Kategorien', d:'Türen · Tore · Zäune · Poller · Tresore · Fenster' },
       { v:'gesetze',      icon:'fa-gavel',               t:'Gesetze · KRITIS · NIS2', d:'BewachV · DGUV · VdS · KRITIS-DachG' },
       { v:'konfigurator', icon:'fa-sliders',             t:'Konfigurator',          d:'Komplette Stack-Empfehlung mit Preis' },

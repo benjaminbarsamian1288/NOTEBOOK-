@@ -1,4 +1,4 @@
-const CACHE = 'st-katalog-v31';
+const CACHE = 'st-katalog-v32';
 const ASSETS = [
   './',
   './index.html',
@@ -18,6 +18,7 @@ const ASSETS = [
   './css/wwd.css',
   './css/wwd-interactive.css',
   './css/mechanik.css',
+  './css/mech-ency.css',
   './css/hersteller.css',
   './css/modern-refresh.css',
   './css/modern.css',
@@ -49,6 +50,8 @@ const ASSETS = [
   './js/wwd-interactive.js',
   './js/mechanik.js',
   './js/hersteller.js',
+  './js/mech-ency-data.js',
+  './js/mech-ency-view.js',
   './js/tools.js',
   './js/wizard.js',
   './js/views.js',

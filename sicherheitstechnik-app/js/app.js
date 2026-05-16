@@ -23,6 +23,7 @@
     haus3d: (d) => HAUS3D.view(d),
     wwd: (d) => WWD.view(d),
     mechanik: (d) => MECHANIK.view(d),
+    mechency: (d) => MECH_ENCY_VIEW.view(d),
     gesetze: (d) => GESETZE.view(d),
     mediathek: (d) => MEDIATHEK.view(d),
     vergleich: V.vergleich,
