@@ -209,6 +209,116 @@
 .me-ap-pill.aktiv i { color: #22d3ee; }
 .me-ap-pill strong { color: var(--text); font-size: 14px; font-variant-numeric: tabular-nums; }
 
+/* === DRAWER TABS + Panels === */
+.mency-drawer-tabs {
+  display: flex;
+  gap: 2px;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--m-stroke);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.mency-dtab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  padding: 12px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  transition: all .15s;
+  border-bottom: 3px solid transparent;
+}
+.mency-dtab:hover { color: var(--text); background: rgba(255,255,255,.04); }
+.mency-dtab.active {
+  color: #22d3ee;
+  border-bottom-color: #22d3ee;
+}
+.mency-dpanel { display: none; }
+.mency-dpanel.active { display: block; animation: dpanelIn .25s ease-out; }
+@keyframes dpanelIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* === Einfach erklärt Card === */
+.me-simple-card {
+  background: linear-gradient(135deg, rgba(251,191,36,.12), rgba(251,191,36,.04)) !important;
+  border-left: 4px solid #fbbf24 !important;
+}
+.me-simple-card h3 i { color: #fbbf24 !important; }
+.me-simple-text {
+  font-size: 15px !important;
+  line-height: 1.65 !important;
+  color: var(--text) !important;
+}
+.me-vergleich {
+  background: linear-gradient(135deg, rgba(34,211,238,.1), rgba(34,211,238,.03)) !important;
+  border-left: 4px solid #22d3ee !important;
+}
+.me-vergleich h3 i { color: #22d3ee !important; }
+.me-vergleich p {
+  font-style: italic;
+  font-size: 14.5px !important;
+}
+.me-tipp {
+  background: linear-gradient(135deg, rgba(34,197,94,.1), rgba(34,197,94,.03)) !important;
+  border-left: 4px solid #22c55e !important;
+}
+.me-tipp h3 i { color: #22c55e !important; }
+
+/* === Praxis-Beispiele === */
+.me-praxis-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.me-praxis-item {
+  background: var(--bg-2);
+  border: 1px solid var(--m-stroke);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+/* === Steckbrief-Tabelle === */
+.me-stecktbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.me-stecktbl tr { border-bottom: 1px solid var(--m-stroke); }
+.me-stecktbl tr:last-child { border-bottom: none; }
+.me-stecktbl th {
+  text-align: left;
+  padding: 8px 12px;
+  color: var(--text-dim);
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  width: 35%;
+}
+.me-stecktbl td {
+  padding: 8px 12px;
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* === Karten in der Master-View klarer === */
+.mency-card-prinz {
+  -webkit-line-clamp: 2 !important;
+  line-clamp: 2 !important;
+}
+
 /* === Aktiv/Passiv Intro (alte, jetzt unused aber lass drin für Fallback) === */
 .me-ap {
   display: grid;

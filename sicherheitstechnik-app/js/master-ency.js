@@ -359,6 +359,7 @@ window.MASTER_ENCY = (() => {
       const drawer = el('div', { class:'mency-drawer-bg' });
       const inner = el('div', { class:'mency-drawer' });
       const hasVideo = window.EXPL && EXPL.hasExplainer(m.key);
+      const simple = window.SIMPLE_EXPLAIN ? SIMPLE_EXPLAIN.get(m) : null;
 
       inner.innerHTML = `
         <div class="mency-drawer-head" style="--c:${info.c}">
@@ -373,33 +374,100 @@ window.MASTER_ENCY = (() => {
           </div>
         </div>
 
+        <!-- TABS -->
+        <div class="mency-drawer-tabs">
+          <button class="mency-dtab active" data-tab="einfach"><i class="fas fa-lightbulb"></i> Einfach erklärt</button>
+          <button class="mency-dtab" data-tab="technik"><i class="fas fa-microchip"></i> Technik</button>
+          <button class="mency-dtab" data-tab="praxis"><i class="fas fa-briefcase"></i> Praxis</button>
+        </div>
+
         <div class="mency-drawer-img">${m.svg || svgFromPhotoOrIcon(m, info)}</div>
 
         <div id="me-anim-mount"></div>
 
+        <!-- TAB-PANELS -->
         <div class="mency-drawer-body">
-          ${m.principle ? `<section><h3><i class="fas fa-atom"></i> Wirkprinzip</h3><p>${m.principle}</p></section>` : ''}
-          ${m.physik ? `<section><h3><i class="fas fa-microscope"></i> Aufbau & Physik</h3><p>${m.physik}</p></section>` : ''}
-          ${(m.staerken && m.staerken.length) || (m.schwaechen && m.schwaechen.length) ? `
-            <div class="mency-drawer-grid">
-              ${m.staerken && m.staerken.length ? `<section class="ok"><h3><i class="fas fa-circle-check"></i> Stärken</h3><ul>${m.staerken.map(s=>`<li>${s}</li>`).join('')}</ul></section>` : ''}
-              ${m.schwaechen && m.schwaechen.length ? `<section class="warn"><h3><i class="fas fa-triangle-exclamation"></i> Schwächen</h3><ul>${m.schwaechen.map(s=>`<li>${s}</li>`).join('')}</ul></section>` : ''}
-            </div>
-          ` : ''}
-          ${m.angriffe && m.angriffe.length ? `<section><h3><i class="fas fa-hammer"></i> Typische Angriffe / Fehlalarme</h3><div class="mency-drawer-angriffe">${m.angriffe.map(a=>`<span class="mency-angriff-chip"><i class="fas fa-bolt"></i> ${a}</span>`).join('')}</div></section>` : ''}
-          ${m.hersteller && m.hersteller.length ? `<section><h3><i class="fas fa-industry"></i> Hersteller</h3><div class="mency-drawer-hst">${m.hersteller.map(h=>`<span class="mency-hst-chip">${h}</span>`).join('')}</div></section>` : ''}
-          <section>
-            <h3><i class="fas fa-scroll"></i> Norm & Einsatzgebiet</h3>
-            <div class="mency-drawer-meta">
-              <div><strong>Norm:</strong> ${m.norm || '—'}</div>
-              <div><strong>Einsatz:</strong> ${m.einsatz || '—'}</div>
-            </div>
-          </section>
+          <!-- EINFACH ERKLÄRT -->
+          <div class="mency-dpanel active" data-panel="einfach">
+            ${simple ? `
+              <section class="me-simple-card">
+                <h3><i class="fas fa-lightbulb"></i> Was ist das einfach erklärt?</h3>
+                <p class="me-simple-text">${simple.einfach}</p>
+              </section>
+              ${simple.vergleich ? `<section class="me-vergleich">
+                <h3><i class="fas fa-equals"></i> Vergleich</h3>
+                <p>${simple.vergleich}</p>
+              </section>` : ''}
+              ${simple.tipp ? `<section class="me-tipp">
+                <h3><i class="fas fa-circle-info"></i> Profi-Tipp</h3>
+                <p>${simple.tipp}</p>
+              </section>` : ''}
+            ` : `<p class="muted">Keine vereinfachte Erklärung verfügbar.</p>`}
+          </div>
+
+          <!-- TECHNIK -->
+          <div class="mency-dpanel" data-panel="technik">
+            ${m.principle ? `<section><h3><i class="fas fa-atom"></i> Wirkprinzip</h3><p>${m.principle}</p></section>` : ''}
+            ${m.physik ? `<section><h3><i class="fas fa-microscope"></i> Aufbau & Physik</h3><p>${m.physik}</p></section>` : ''}
+            ${(m.staerken && m.staerken.length) || (m.schwaechen && m.schwaechen.length) ? `
+              <div class="mency-drawer-grid">
+                ${m.staerken && m.staerken.length ? `<section class="ok"><h3><i class="fas fa-circle-check"></i> Stärken</h3><ul>${m.staerken.map(s=>`<li>${s}</li>`).join('')}</ul></section>` : ''}
+                ${m.schwaechen && m.schwaechen.length ? `<section class="warn"><h3><i class="fas fa-triangle-exclamation"></i> Schwächen</h3><ul>${m.schwaechen.map(s=>`<li>${s}</li>`).join('')}</ul></section>` : ''}
+              </div>
+            ` : ''}
+            ${m.angriffe && m.angriffe.length ? `<section><h3><i class="fas fa-hammer"></i> Typische Angriffe / Fehlalarme</h3><div class="mency-drawer-angriffe">${m.angriffe.map(a=>`<span class="mency-angriff-chip"><i class="fas fa-bolt"></i> ${a}</span>`).join('')}</div></section>` : ''}
+            <section>
+              <h3><i class="fas fa-scroll"></i> Norm & Einsatzgebiet</h3>
+              <div class="mency-drawer-meta">
+                <div><strong>Norm:</strong> ${m.norm || '—'}</div>
+                <div><strong>Einsatz:</strong> ${m.einsatz || '—'}</div>
+              </div>
+            </section>
+          </div>
+
+          <!-- PRAXIS -->
+          <div class="mency-dpanel" data-panel="praxis">
+            ${simple && simple.beispiele && simple.beispiele.length ? `
+              <section>
+                <h3><i class="fas fa-list-check"></i> Praxis-Beispiele</h3>
+                <div class="me-praxis-list">
+                  ${simple.beispiele.map(b => `<div class="me-praxis-item">${b}</div>`).join('')}
+                </div>
+              </section>
+            ` : ''}
+            ${m.hersteller && m.hersteller.length ? `
+              <section>
+                <h3><i class="fas fa-industry"></i> Hersteller (bewährt)</h3>
+                <div class="mency-drawer-hst">${m.hersteller.map(h => `<span class="mency-hst-chip">${h}</span>`).join('')}</div>
+              </section>
+            ` : ''}
+            <section class="me-fakten">
+              <h3><i class="fas fa-table-list"></i> Steckbrief</h3>
+              <table class="me-stecktbl">
+                <tr><th>Kategorie</th><td>${m.kategorie}</td></tr>
+                <tr><th>Typ</th><td>${m.typ}</td></tr>
+                <tr><th>Klasse</th><td>${m.klasse}</td></tr>
+                ${m.wzeit ? `<tr><th>Widerstand</th><td>${m.wzeit}</td></tr>` : ''}
+                <tr><th>Norm</th><td>${m.norm || '—'}</td></tr>
+                <tr><th>Preisrahmen</th><td>${m.preis || '—'}</td></tr>
+                <tr><th>Einsatz</th><td>${m.einsatz || '—'}</td></tr>
+              </table>
+            </section>
+          </div>
         </div>
       `;
       drawer.appendChild(inner);
       document.body.appendChild(drawer);
       requestAnimationFrame(() => drawer.classList.add('open'));
+
+      // Tab-Switch
+      inner.querySelectorAll('.mency-dtab').forEach(btn => {
+        btn.onclick = () => {
+          const t = btn.dataset.tab;
+          inner.querySelectorAll('.mency-dtab').forEach(b => b.classList.toggle('active', b === btn));
+          inner.querySelectorAll('.mency-dpanel').forEach(p => p.classList.toggle('active', p.dataset.panel === t));
+        };
+      });
 
       if (hasVideo) {
         const mount = inner.querySelector('#me-anim-mount');
