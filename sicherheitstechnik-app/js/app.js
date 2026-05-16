@@ -30,6 +30,7 @@
     'kat-zka':  (d) => KATALOG_VIEW.zkaView(d),
     'kat-ema':  (d) => KATALOG_VIEW.emaView(d),
     lab:        (d) => LAB.view(d),
+    fp:         (d) => FLOORPLAN.view(d),
     gesetze: (d) => GESETZE.view(d),
     mediathek: (d) => MEDIATHEK.view(d),
     vergleich: V.vergleich,
