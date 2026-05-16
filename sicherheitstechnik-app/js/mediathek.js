@@ -4,6 +4,13 @@
 window.MEDIATHEK = (() => {
   const { el, drawer } = U;
 
+  const KAT_COLOR = {
+    'Türen':'#7c3aed', 'Fenster':'#0891b2', 'Verglasung':'#22d3ee',
+    'Tresore':'#a855f7', 'Zäune':'#22c55e', 'Tore':'#0891b2',
+    'Poller':'#ea580c', 'Beschläge':'#3b82f6',
+    'Video':'#06b6d4', 'Brandschutz':'#ea580c', 'Zutritt':'#7c3aed', 'Alarmierung':'#dc2626',
+  };
+
   function view(d) {
     const root = el('div');
     root.appendChild(el('div', { class:'view-head' }, [
@@ -12,8 +19,10 @@ window.MEDIATHEK = (() => {
       el('p', { text:'Alle Produktbilder und Animationsvideos der Sensoren in einer Übersicht. Filter nach Typ oder Kategorie. Klick für Detail-Player.' })
     ]));
 
-    // Build complete item list
+    // Build complete item list — alle Komponenten aus allen DBs
     const items = [];
+
+    // 1) Melder (ENCY)
     if (window.ENCY && window.PHOTOS && window.EXPL) {
       ENCY.list.forEach(m => {
         const hasPhoto = PHOTOS.MAP[m.key] != null;
@@ -23,8 +32,60 @@ window.MEDIATHEK = (() => {
             sensor: m,
             hasPhoto, hasVideo,
             color: getSensorColor(m),
+            kategorie: m.kat || 'Melder',
+            source: 'melder',
           });
         }
+      });
+    }
+
+    // 2) Mechanik (MECH_ENCY)
+    if (window.MECH_ENCY && MECH_ENCY.LIST) {
+      MECH_ENCY.LIST.forEach(m => {
+        const hasVideo = window.EXPL && EXPL.hasExplainer(m.key);
+        items.push({
+          sensor: {
+            key: m.key, kat: m.kat, name: m.name,
+            type: m.typ, principle: m.principle, physik: m.physik,
+            range: m.klasse, sue: '', preis: m.preis,
+          },
+          hasPhoto: !!m.svg,
+          hasVideo,
+          color: KAT_COLOR[m.kat] || '#a855f7',
+          kategorie: m.kat,
+          source: 'mechanik',
+          svgInline: m.svg,
+        });
+      });
+    }
+
+    // 3) Katalog (Video/Brand/ZKA/EMA)
+    if (window.KATALOG) {
+      const dbs = [
+        { key:'VIDEO_DB',  kat:'Video',         color:'#06b6d4' },
+        { key:'BRAND_DB',  kat:'Brandschutz',   color:'#ea580c' },
+        { key:'ZKA_DB',    kat:'Zutritt',       color:'#7c3aed' },
+        { key:'EMA_DB',    kat:'Alarmierung',   color:'#dc2626' },
+      ];
+      dbs.forEach(({ key, kat, color }) => {
+        const db = KATALOG[key];
+        if (!db) return;
+        db.forEach(m => {
+          const hasVideo = window.EXPL && EXPL.hasExplainer(m.key);
+          items.push({
+            sensor: {
+              key: m.key, kat: kat, name: m.name,
+              type: m.typ, principle: m.principle, physik: m.physik,
+              range: m.klasse, sue: '', preis: m.preis,
+            },
+            hasPhoto: !!m.svg,
+            hasVideo,
+            color: color,
+            kategorie: kat,
+            source: kat.toLowerCase(),
+            svgInline: m.svg,
+          });
+        });
       });
     }
 
@@ -81,6 +142,7 @@ window.MEDIATHEK = (() => {
       <div class="mtk-stat"><i class="fas fa-image"></i> <strong>${photoCount}</strong> Produktbilder</div>
       <div class="mtk-stat"><i class="fas fa-circle-play"></i> <strong>${videoCount}</strong> Animationsvideos</div>
       <div class="mtk-stat"><i class="fas fa-layer-group"></i> <strong>${cats.length - 1}</strong> Kategorien</div>
+      <div class="mtk-stat"><i class="fas fa-cubes"></i> <strong>${items.length}</strong> Komponenten gesamt</div>
     `;
     root.appendChild(stats);
 
@@ -124,8 +186,13 @@ window.MEDIATHEK = (() => {
 
     // Photo
     const photo = el('div', { class:'mtk-photo' });
-    if (it.hasPhoto) photo.innerHTML = PHOTOS.render(m.key);
-    else photo.innerHTML = `<i class="fas fa-image-slash" style="font-size:48px; opacity:.3"></i>`;
+    if (it.svgInline) {
+      photo.innerHTML = it.svgInline;
+    } else if (it.hasPhoto && window.PHOTOS && PHOTOS.MAP[m.key]) {
+      photo.innerHTML = PHOTOS.render(m.key);
+    } else {
+      photo.innerHTML = `<i class="fas fa-image-slash" style="font-size:48px; opacity:.3"></i>`;
+    }
     c.appendChild(photo);
 
     // Badges
@@ -151,7 +218,9 @@ window.MEDIATHEK = (() => {
     const m = it.sensor;
     const body = el('div');
     // Big photo
-    if (it.hasPhoto) {
+    if (it.svgInline) {
+      body.appendChild(el('div', { class:'mtk-detail-photo', html: it.svgInline }));
+    } else if (it.hasPhoto && window.PHOTOS && PHOTOS.MAP[m.key]) {
       body.appendChild(el('div', { class:'mtk-detail-photo', html: PHOTOS.render(m.key) }));
     }
     // Tab header

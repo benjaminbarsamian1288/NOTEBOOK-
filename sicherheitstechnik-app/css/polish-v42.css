@@ -326,6 +326,93 @@
   letter-spacing: .3px;
 }
 
+/* === ANIMATION-PLAYER · KEIN WACKELN === */
+.expl-wrap {
+  contain: layout style;
+}
+.expl-stage {
+  /* fixe Höhe verhindert Layout-Shift bei Step-Wechsel */
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0a0f1a, #1e293b);
+  border-radius: 12px;
+  overflow: hidden;
+  contain: strict;
+}
+.expl-svg {
+  width: 100% !important;
+  height: auto !important;
+  max-height: 360px;
+  aspect-ratio: 5/3;
+  display: block !important;
+}
+.expl-narration {
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.expl-text {
+  min-height: 56px;
+  transition: opacity .25s;
+  line-height: 1.55;
+}
+.expl-controls {
+  min-height: 48px;
+  flex-shrink: 0;
+}
+/* Bessere Übergänge in Steps */
+.expl-svg g[id] {
+  transition: opacity .5s ease-in-out !important;
+}
+
+/* In Mech-Ency Drawer */
+.mency-anim-section .expl-wrap { contain: layout style; }
+.mency-anim-section .expl-stage { min-height: 240px; }
+.mency-anim-section .expl-svg { max-height: 280px; }
+
+/* Bilder-Container im Drawer fix */
+.mency-drawer-img,
+.mtk-detail-photo {
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.mency-drawer-img svg,
+.mtk-detail-photo svg {
+  max-height: 280px;
+  width: auto;
+  height: auto;
+}
+
+/* Mediathek-Karten Photo-Bereich fix */
+.mtk-card {
+  display: flex;
+  flex-direction: column;
+}
+.mtk-photo {
+  min-height: 180px;
+  max-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0a0f1a, #1e293b);
+  border-radius: 10px;
+}
+.mtk-photo svg {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto !important;
+  height: auto !important;
+  display: block;
+}
+.mtk-info { flex: 1; }
+
 /* === GESETZE: noch ein bisschen klarer === */
 .gv-para-row {
   padding: 16px 20px !important;
