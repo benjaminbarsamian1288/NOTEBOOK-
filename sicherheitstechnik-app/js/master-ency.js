@@ -150,8 +150,8 @@ window.MASTER_ENCY = (() => {
     const passivCntStat = all.filter(x => x.typ === 'passiv').length;
     const aktivCntStat = all.filter(x => x.typ === 'aktiv').length;
     const videoCntStat = all.filter(x => window.EXPL && EXPL.hasExplainer(x.key)).length;
-    const stats = el('div', { class:'me-mini-charts' });
-    stats.innerHTML = `
+    const miniCharts = el('div', { class:'me-mini-charts' });
+    miniCharts.innerHTML = `
       <div class="me-mini-chart" style="--c:#22d3ee">
         <div class="me-mini-chart-icon"><i class="fas fa-cubes"></i></div>
         <div class="me-mini-chart-body">
@@ -181,7 +181,7 @@ window.MASTER_ENCY = (() => {
         </div>
       </div>
     `;
-    root.appendChild(stats);
+    root.appendChild(miniCharts);
 
     // === FEATURED-Bereich · Top-Highlights ===
     const featured = pickFeatured(all);
