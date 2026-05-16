@@ -451,10 +451,16 @@ window.MASTER_ENCY = (() => {
       const hasVideo = window.EXPL && EXPL.hasExplainer(m.key);
       const c = el('div', { class:'mency-card', style:`--c:${info.c}` });
       const svgContent = m.svg || svgFromPhotoOrIcon(m, info);
+      const userPhotos = window.COMP_PHOTOS ? COMP_PHOTOS.getPhotos(m.key) : [];
+      const hasPhoto = userPhotos.length > 0;
+      const imgContent = hasPhoto
+        ? `<img src="${userPhotos[0]}" alt="${m.name}">`
+        : svgContent;
       c.innerHTML = `
         ${hasVideo ? '<div class="mency-video-badge"><i class="fas fa-circle-play"></i> Video</div>' : ''}
+        ${hasPhoto ? '<div class="mency-card-photo-overlay"><i class="fas fa-camera"></i> Foto</div>' : ''}
         <div class="mency-card-typebadge ${m.typ}">${m.typ}</div>
-        <div class="mency-card-img">${svgContent}</div>
+        <div class="mency-card-img ${hasPhoto ? 'has-photo' : ''}">${imgContent}</div>
         <div class="mency-card-body">
           <div class="mency-card-kat"><i class="fas ${info.icon}"></i> ${m.kategorie}</div>
           <h4>${m.name}</h4>
@@ -605,6 +611,17 @@ window.MASTER_ENCY = (() => {
           inner.querySelectorAll('.mency-dpanel').forEach(p => p.classList.toggle('active', p.dataset.panel === t));
         };
       });
+
+      // Foto-Sektion einhängen (in Praxis-Tab)
+      if (window.COMP_PHOTOS) {
+        const praxisPanel = inner.querySelector('.mency-dpanel[data-panel="praxis"]');
+        if (praxisPanel) {
+          // an erste Stelle einfügen
+          const photoBox = document.createElement('div');
+          praxisPanel.insertBefore(photoBox, praxisPanel.firstChild);
+          COMP_PHOTOS.renderSection(m, photoBox);
+        }
+      }
 
       if (hasVideo) {
         const mount = inner.querySelector('#me-anim-mount');

@@ -1,0 +1,214 @@
+/* Foto-Sektion im Drawer */
+
+.comp-photo-section {
+  background: var(--bg-2);
+  border: 1px solid var(--m-stroke);
+  border-radius: 12px;
+  padding: 14px;
+  margin: 12px 0;
+}
+
+.cps-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.cps-head h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cps-head h3 i { color: #22d3ee; }
+
+.cps-google {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #4285F4, #DB4437);
+  color: white !important;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform .15s;
+}
+.cps-google:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(66,133,244,.4); }
+
+.cps-empty {
+  background: var(--bg);
+  border: 2px dashed var(--m-stroke);
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  color: var(--text-dim);
+}
+.cps-empty i {
+  font-size: 28px;
+  color: var(--text-dim);
+  opacity: .4;
+  display: block;
+  margin-bottom: 8px;
+}
+.cps-empty p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.cps-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.cps-thumb {
+  position: relative;
+  aspect-ratio: 1/1;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--bg);
+  border: 1px solid var(--m-stroke);
+  cursor: pointer;
+  transition: all .15s;
+}
+.cps-thumb:hover {
+  border-color: #22d3ee;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,.4);
+}
+.cps-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.cps-rm {
+  position: absolute;
+  top: 4px; right: 4px;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: rgba(0,0,0,.7);
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 10px;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transition: opacity .15s, background .15s;
+}
+.cps-thumb:hover .cps-rm { opacity: 1; }
+.cps-rm:hover { background: #ef4444; }
+
+.cps-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.cps-upload {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #22d3ee, #3b82f6);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all .15s;
+  border: none;
+}
+.cps-upload:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(34,211,238,.4); }
+.cps-hint {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+/* Lightbox */
+.cps-lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.92);
+  backdrop-filter: blur(10px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity .2s;
+}
+.cps-lightbox.open { opacity: 1; }
+.cps-lightbox img {
+  max-width: 95%;
+  max-height: 85%;
+  object-fit: contain;
+  box-shadow: 0 20px 60px rgba(0,0,0,.6);
+  border-radius: 12px;
+}
+.cps-lb-close {
+  position: absolute;
+  top: 20px; right: 20px;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.15);
+  border: 1px solid rgba(255,255,255,.3);
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.cps-lb-close:hover { background: #ef4444; }
+.cps-lb-title {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  background: rgba(0,0,0,.6);
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* Foto-Overlay auf den Master-Karten wenn echtes Foto vorhanden */
+.mency-card-photo-overlay {
+  position: absolute;
+  top: 12px; right: 12px;
+  z-index: 3;
+  background: rgba(0,0,0,.7);
+  backdrop-filter: blur(6px);
+  color: #22d3ee;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  border: 1px solid rgba(34,211,238,.4);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Wenn User-Foto vorhanden, zeige es im Card-Img-Bereich */
+.mency-card-img.has-photo {
+  padding: 0 !important;
+}
+.mency-card-img.has-photo img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: 0;
+}
