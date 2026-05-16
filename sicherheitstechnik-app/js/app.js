@@ -22,6 +22,7 @@
     zwiebel3d: (d) => ZWIEBEL3D.view(d),
     haus3d: (d) => HAUS3D.view(d),
     wwd: (d) => WWD.view(d),
+    mechanik: (d) => MECHANIK.view(d),
     gesetze: (d) => GESETZE.view(d),
     mediathek: (d) => MEDIATHEK.view(d),
     vergleich: V.vergleich,
