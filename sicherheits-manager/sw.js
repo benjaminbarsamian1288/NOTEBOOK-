@@ -2,16 +2,18 @@
  * Sicherheits-Manager Service Worker
  * Offline-Support und Caching
  */
-const CACHE_NAME = 'sima-v1';
+const CACHE_NAME = 'sima-v2';
 
 const ASSETS = [
     './',
     './index.html',
     './manifest.json',
     './css/style.css',
+    './css/ai.css',
     './js/storage.js',
     './js/data.js',
     './js/search.js',
+    './js/ai.js',
     './js/ui.js',
     './js/app.js',
     './data/index.json',
@@ -30,7 +32,8 @@ const ASSETS = [
 ];
 
 const EXTERNAL = [
-    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css'
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css',
+    'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap'
 ];
 
 self.addEventListener('install', (event) => {
