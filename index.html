@@ -24,6 +24,7 @@
             <button class="tab active" data-tab="write">Schreiben</button>
             <button class="tab" data-tab="entries">Eintraege</button>
             <button class="tab" data-tab="stats">Statistik</button>
+            <button class="tab" data-tab="ai">KI-Assistentin</button>
         </nav>
 
         <main>
@@ -99,6 +100,44 @@
                         <div class="empty-icon">&#128202;</div>
                         <p>Noch keine Daten fuer Statistiken.</p>
                         <p>Schreib ein paar Eintraege, um deine Stimmungsuebersicht zu sehen!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI Assistant Tab -->
+            <section class="tab-content" id="tab-ai">
+                <div class="ai-container">
+                    <div class="ai-header">
+                        <div class="ai-avatar">&#129302;</div>
+                        <div>
+                            <h3>Deine KI-Assistentin</h3>
+                            <p class="ai-subtitle">Ich helfe dir beim Reflektieren und Schreiben</p>
+                        </div>
+                    </div>
+                    <div class="ai-chat" id="ai-chat">
+                        <div class="ai-message ai-bot">
+                            <p>Hallo! Ich bin deine Tagebuch-Assistentin. Ich kann dir helfen mit:</p>
+                            <ul>
+                                <li>Schreibimpulse und Inspiration</li>
+                                <li>Reflexionsfragen zu deinem Tag</li>
+                                <li>Analyse deiner Stimmungsmuster</li>
+                                <li>Zusammenfassung deiner Eintraege</li>
+                                <li>Tipps fuer mehr Achtsamkeit</li>
+                            </ul>
+                            <p>Schreib mir einfach oder nutze die Schnelltasten unten!</p>
+                        </div>
+                    </div>
+                    <div class="ai-quick-actions">
+                        <button class="ai-quick-btn" data-action="prompt">Schreibimpuls</button>
+                        <button class="ai-quick-btn" data-action="reflect">Reflexionsfrage</button>
+                        <button class="ai-quick-btn" data-action="mood-analysis">Stimmungsanalyse</button>
+                        <button class="ai-quick-btn" data-action="summary">Zusammenfassung</button>
+                        <button class="ai-quick-btn" data-action="gratitude">Dankbarkeit</button>
+                        <button class="ai-quick-btn" data-action="motivation">Motivation</button>
+                    </div>
+                    <div class="ai-input-bar">
+                        <input type="text" id="ai-input" placeholder="Frag mich etwas..." />
+                        <button id="ai-send-btn">Senden</button>
                     </div>
                 </div>
             </section>
