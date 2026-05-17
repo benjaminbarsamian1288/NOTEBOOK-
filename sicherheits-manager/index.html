@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#1e293b">
-    <meta name="description" content="Interaktiver Sicherheits-Manager fuer DGUV, BewachV, DIN 77200">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="description" content="Interaktiver Sicherheits-Manager mit KI-Assistentin fuer DGUV, BewachV, DIN 77200">
 
     <title>Sicherheits-Manager</title>
 
@@ -12,7 +12,11 @@
     <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/ai.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
@@ -42,10 +46,10 @@
 
     <nav class="nav-list">
         <button class="nav-item active" data-view="home">
-            <i class="fas fa-home"></i> Startseite
+            <i class="fas fa-house"></i> Startseite
         </button>
         <button class="nav-item" data-view="search">
-            <i class="fas fa-search"></i> Suche
+            <i class="fas fa-magnifying-glass"></i> Suche
         </button>
         <button class="nav-item" data-view="favoriten">
             <i class="fas fa-star"></i> Favoriten
@@ -61,11 +65,12 @@
     <div class="sidebar-divider"></div>
 
     <div id="regelwerke-list" class="regelwerke-list">
-        <!-- Wird per JS gefuellt -->
+        <!-- per JS -->
     </div>
 
     <div class="sidebar-footer">
-        <small>Version 1.0.0</small>
+        <small>v2.0 mit KI</small>
+        <small>✨</small>
     </div>
 </aside>
 
@@ -74,24 +79,43 @@
 <!-- ============== MAIN ============== -->
 <main class="main-content">
 
-    <!-- Suchleiste -->
     <div class="search-bar">
-        <i class="fas fa-search search-icon"></i>
-        <input type="search" id="search-input" placeholder="Paragraph, Stichwort, Tag suchen..." autocomplete="off">
+        <i class="fas fa-magnifying-glass search-icon"></i>
+        <input type="search" id="search-input" placeholder="Suche Paragraphen, Stichworte, Tags..." autocomplete="off">
         <button id="btn-clear-search" class="icon-btn" aria-label="Loeschen" style="display:none">
             <i class="fas fa-times"></i>
         </button>
     </div>
 
-    <!-- Filter-Chips -->
     <div id="filter-chips" class="filter-chips"></div>
-
-    <!-- Inhaltsbereich -->
-    <div id="content-area" class="content-area">
-        <!-- Wird per JS gefuellt -->
-    </div>
+    <div id="content-area" class="content-area"></div>
 
 </main>
+
+<!-- ============== BOTTOM NAVIGATION (Mobile) ============== -->
+<nav class="bottom-nav">
+    <button class="bottom-nav-item active" data-view="home" aria-label="Start">
+        <i class="fas fa-house"></i>
+        <span>Start</span>
+    </button>
+    <button class="bottom-nav-item" data-view="search" aria-label="Suche">
+        <i class="fas fa-magnifying-glass"></i>
+        <span>Suche</span>
+    </button>
+    <div class="bottom-nav-item fab-slot">
+        <button id="btn-ai" class="bottom-nav-fab" aria-label="KI Assistentin">
+            <i class="fas fa-sparkles"></i>
+        </button>
+    </div>
+    <button class="bottom-nav-item" data-view="favoriten" aria-label="Favoriten">
+        <i class="fas fa-star"></i>
+        <span>Favoriten</span>
+    </button>
+    <button class="bottom-nav-item" data-view="notizen" aria-label="Notizen">
+        <i class="fas fa-pen-to-square"></i>
+        <span>Notizen</span>
+    </button>
+</nav>
 
 <!-- ============== PARAGRAPH-DETAIL DIALOG ============== -->
 <div id="paragraph-dialog" class="dialog" hidden>
@@ -107,9 +131,7 @@
             </button>
         </header>
 
-        <div class="dialog-body" id="dialog-body">
-            <!-- Wird per JS gefuellt -->
-        </div>
+        <div class="dialog-body" id="dialog-body"></div>
 
         <footer class="dialog-footer">
             <button id="btn-edit-notes" class="primary-btn">
@@ -135,9 +157,58 @@
                 <i class="fas fa-check"></i>
             </button>
         </header>
-
         <div class="dialog-body">
             <textarea id="notes-textarea" placeholder="Deine persoenliche Notiz zu diesem Paragraphen..."></textarea>
+        </div>
+    </article>
+</div>
+
+<!-- ============== KI-ASSISTENTIN DIALOG ============== -->
+<div id="ai-dialog" class="dialog ai-dialog" hidden>
+    <div class="dialog-overlay" data-close></div>
+    <article class="dialog-content">
+
+        <header class="ai-header">
+            <div class="ai-avatar">
+                <i class="fas fa-sparkles"></i>
+            </div>
+            <div class="ai-info">
+                <h3>KI-Assistentin</h3>
+                <div class="ai-status" id="ai-status">Offline-Modus</div>
+            </div>
+            <button id="btn-ai-settings" class="icon-btn" aria-label="Einstellungen">
+                <i class="fas fa-gear"></i>
+            </button>
+            <button class="icon-btn" data-close aria-label="Schliessen">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <div id="ai-settings-panel" class="ai-settings-panel" hidden>
+                <h4>API-Einstellungen</h4>
+                <p>Optional: Eigenen API-Key fuer echte LLM-Antworten. Wird nur in deinem Browser gespeichert.</p>
+                <label>
+                    <input type="radio" name="ai-provider" value="" checked> Nur Offline (regelbasiert)
+                </label>
+                <label>
+                    <input type="radio" name="ai-provider" value="anthropic"> Anthropic Claude
+                </label>
+                <label>
+                    <input type="radio" name="ai-provider" value="openai"> OpenAI ChatGPT
+                </label>
+                <input type="password" id="ai-key" placeholder="API-Key (optional)">
+                <button class="save-btn" id="btn-ai-save">Speichern</button>
+            </div>
+        </header>
+
+        <div id="ai-chat" class="ai-chat"></div>
+
+        <div id="ai-suggestions" class="ai-suggestions"></div>
+
+        <div class="ai-input-bar">
+            <textarea id="ai-input" placeholder="Frag mich was..." rows="1"></textarea>
+            <button id="ai-send" aria-label="Senden">
+                <i class="fas fa-paper-plane"></i>
+            </button>
         </div>
     </article>
 </div>
@@ -149,11 +220,11 @@
 <script src="js/storage.js"></script>
 <script src="js/data.js"></script>
 <script src="js/search.js"></script>
+<script src="js/ai.js"></script>
 <script src="js/ui.js"></script>
 <script src="js/app.js"></script>
 
 <script>
-// Service Worker registrieren
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')

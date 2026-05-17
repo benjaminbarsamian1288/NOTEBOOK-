@@ -73,6 +73,7 @@ const UI = (function() {
     // ============ NAV / VIEWS ============
     function setActiveNav(view) {
         $$('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.view === view));
+        $$('.bottom-nav-item[data-view]').forEach(b => b.classList.toggle('active', b.dataset.view === view));
     }
 
     function showView(view) {
@@ -102,9 +103,7 @@ const UI = (function() {
                 <h2>Sicherheits-Manager</h2>
                 <p>Dein interaktives Nachschlagewerk fuer Sicherheitsvorschriften. Tippe auf ein Regelwerk oder nutze die Suche.</p>
             </section>
-            <h3 style="margin: 20px 4px 8px; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">
-                Regelwerke
-            </h3>
+            <h3 class="section-title">Regelwerke</h3>
             <div class="regelwerke-grid">
                 ${regelwerke.map(rw => `
                     <button class="regelwerk-card"
