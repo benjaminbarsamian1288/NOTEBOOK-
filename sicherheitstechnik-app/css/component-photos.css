@@ -212,3 +212,48 @@
   object-fit: cover !important;
   border-radius: 0;
 }
+
+/* Wikipedia-Bild im Drawer */
+.wiki-img-box {
+  background: var(--bg);
+  border: 1px solid var(--m-stroke);
+  border-radius: 10px;
+  padding: 10px;
+  min-height: 180px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.wiki-img-box img {
+  max-width: 100%;
+  max-height: 320px;
+  width: auto;
+  height: auto;
+  border-radius: 6px;
+  display: block;
+}
+.wiki-loading {
+  font-size: 12px;
+  color: var(--text-dim);
+  font-style: italic;
+}
+.wiki-loading::before {
+  content: '🌐 ';
+  margin-right: 4px;
+}
+
+/* Wiki-Badge auf Karten */
+.mency-card-photo-overlay.wiki {
+  background: rgba(6,182,212,.85);
+  color: white;
+  border-color: rgba(6,182,212,.6);
+}
+.mency-card-photo-overlay.wiki i {
+  font-size: 13px;
+}
+
+.wiki-img-placeholder {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+}

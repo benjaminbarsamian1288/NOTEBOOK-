@@ -452,15 +452,24 @@ window.MASTER_ENCY = (() => {
       const c = el('div', { class:'mency-card', style:`--c:${info.c}` });
       const svgContent = m.svg || svgFromPhotoOrIcon(m, info);
       const userPhotos = window.COMP_PHOTOS ? COMP_PHOTOS.getPhotos(m.key) : [];
-      const hasPhoto = userPhotos.length > 0;
-      const imgContent = hasPhoto
-        ? `<img src="${userPhotos[0]}" alt="${m.name}">`
-        : svgContent;
+      const hasUserPhoto = userPhotos.length > 0;
+      // Wikipedia-Bild als Fallback (asynchron)
+      const wikiCached = window.WIKI_IMG && WIKI_IMG.cache[m.key];
+      const hasWikiPhoto = !hasUserPhoto && !!wikiCached;
+      let imgContent;
+      if (hasUserPhoto) {
+        imgContent = `<img src="${userPhotos[0]}" alt="${m.name}" referrerpolicy="no-referrer">`;
+      } else if (hasWikiPhoto) {
+        imgContent = `<img src="${wikiCached}" alt="${m.name}" loading="lazy" referrerpolicy="no-referrer">`;
+      } else {
+        imgContent = svgContent;
+      }
       c.innerHTML = `
         ${hasVideo ? '<div class="mency-video-badge"><i class="fas fa-circle-play"></i> Video</div>' : ''}
-        ${hasPhoto ? '<div class="mency-card-photo-overlay"><i class="fas fa-camera"></i> Foto</div>' : ''}
+        ${hasUserPhoto ? '<div class="mency-card-photo-overlay"><i class="fas fa-camera"></i> Foto</div>' : ''}
+        ${hasWikiPhoto ? '<div class="mency-card-photo-overlay wiki" style="--c:#06b6d4"><i class="fab fa-wikipedia-w"></i> Wiki</div>' : ''}
         <div class="mency-card-typebadge ${m.typ}">${m.typ}</div>
-        <div class="mency-card-img ${hasPhoto ? 'has-photo' : ''}">${imgContent}</div>
+        <div class="mency-card-img ${(hasUserPhoto||hasWikiPhoto) ? 'has-photo' : ''}">${imgContent}</div>
         <div class="mency-card-body">
           <div class="mency-card-kat"><i class="fas ${info.icon}"></i> ${m.kategorie}</div>
           <h4>${m.name}</h4>
@@ -620,6 +629,32 @@ window.MASTER_ENCY = (() => {
           const photoBox = document.createElement('div');
           praxisPanel.insertBefore(photoBox, praxisPanel.firstChild);
           COMP_PHOTOS.renderSection(m, photoBox);
+
+          // Wikipedia-Bild zusätzlich anzeigen wenn vorhanden
+          if (window.WIKI_IMG) {
+            const wikiBox = document.createElement('section');
+            wikiBox.innerHTML = `
+              <h3><i class="fas fa-globe"></i> Bild aus Wikipedia</h3>
+              <div class="wiki-img-box" id="wiki-drawer-${m.key.replace(/[^\w]/g,'')}">
+                <span class="wiki-loading">Lade Bild von Wikipedia…</span>
+              </div>
+              <p class="muted small" style="margin: 4px 0 0">
+                <i class="fas fa-circle-info"></i>
+                Bild lizenziert unter CC-BY-SA via <a href="https://de.wikipedia.org/wiki/${encodeURIComponent(WIKI_IMG.titleFor(m))}" target="_blank" rel="noopener" style="color:#22d3ee">Wikipedia · ${WIKI_IMG.titleFor(m)}</a>
+              </p>
+            `;
+            praxisPanel.insertBefore(wikiBox, photoBox.nextSibling);
+            // Bild laden
+            WIKI_IMG.getImageUrl(m).then(url => {
+              const box = document.getElementById('wiki-drawer-' + m.key.replace(/[^\w]/g,''));
+              if (!box) return;
+              if (url) {
+                box.innerHTML = `<img src="${url}" alt="${m.name}" loading="lazy" referrerpolicy="no-referrer">`;
+              } else {
+                box.innerHTML = '<span class="muted small">Kein Wikipedia-Bild gefunden — versuche oben „Foto hochladen".</span>';
+              }
+            });
+          }
         }
       }
 
@@ -643,6 +678,17 @@ window.MASTER_ENCY = (() => {
     }
 
     render();
+
+    // Wikipedia-Bilder im Hintergrund vorladen (parallel, 4 Worker)
+    if (window.WIKI_IMG) {
+      setTimeout(() => {
+        WIKI_IMG.preloadFor(all.slice(0, 60)).then(() => {
+          // Re-render damit neue Bilder sichtbar werden
+          if (root.querySelector('.mency-grid')) render();
+        });
+      }, 800);
+    }
+
     return root;
   }
 
