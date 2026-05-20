@@ -142,9 +142,20 @@ window.MASTER_ENCY = (() => {
       <div class="me-hero-content">
         <h1>📚 Komplett-Katalog</h1>
         <p><strong>${all.length}</strong> Komponenten · ${Object.keys(GROUPS).length} Kategorien · ${all.filter(x => window.EXPL && EXPL.hasExplainer(x.key)).length} mit Live-Animation</p>
+        <div class="me-hero-actions">
+          <button class="me-bulk-download-btn" id="me-bulk-dl">
+            <i class="fas fa-download"></i> Alle Animationen für LinkedIn herunterladen
+          </button>
+        </div>
       </div>
     `;
     root.appendChild(hero);
+    setTimeout(() => {
+      const btn = hero.querySelector('#me-bulk-dl');
+      if (btn && window.ANIM_EXPORT) {
+        btn.onclick = () => ANIM_EXPORT.openDownloadModal(null);
+      }
+    }, 0);
 
     // === Mini-Stat-Charts ===
     const passivCntStat = all.filter(x => x.typ === 'passiv').length;
@@ -629,6 +640,22 @@ window.MASTER_ENCY = (() => {
           const photoBox = document.createElement('div');
           praxisPanel.insertBefore(photoBox, praxisPanel.firstChild);
           COMP_PHOTOS.renderSection(m, photoBox);
+
+          // Download-Button für LinkedIn (wenn Animation vorhanden)
+          if (hasVideo && window.ANIM_EXPORT) {
+            const dlBox = document.createElement('section');
+            dlBox.innerHTML = `
+              <h3><i class="fas fa-download"></i> Für LinkedIn herunterladen</h3>
+              <p class="muted small" style="margin: 0 0 8px">5 Schritt-Bilder als PNG (1200×720) + SVG + Text-Vorlage für deinen Post.</p>
+              <button class="me-dl-anim-btn">
+                <i class="fab fa-linkedin"></i> Animation als ZIP herunterladen
+              </button>
+            `;
+            praxisPanel.insertBefore(dlBox, photoBox);
+            dlBox.querySelector('.me-dl-anim-btn').onclick = () => {
+              ANIM_EXPORT.openDownloadModal({ key: m.key, name: m.name });
+            };
+          }
 
           // Wikipedia-Bild zusätzlich anzeigen wenn vorhanden
           if (window.WIKI_IMG) {
