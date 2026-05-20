@@ -135,6 +135,15 @@
   color: #0a66c2;
   margin-bottom: 4px;
 }
+.anim-export-opt.video {
+  border-left: 4px solid #ef4444;
+  background: linear-gradient(135deg, rgba(239,68,68,.08), rgba(220,38,38,.04));
+}
+.anim-export-opt.video i:first-child { color: #ef4444; font-size: 22px; }
+.anim-export-opt.video:hover {
+  border-left-color: #fbbf24;
+  background: linear-gradient(135deg, rgba(239,68,68,.15), rgba(251,191,36,.08));
+}
 .anim-export-opt strong {
   font-size: 14px;
   font-weight: 800;

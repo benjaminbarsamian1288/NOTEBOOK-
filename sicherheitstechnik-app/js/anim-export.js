@@ -268,6 +268,209 @@ ${def.steps.slice(0, 3).map((s, i) => `${i+1}. ${(s.text || '').replace(/<[^>]+>
     saveAs(blob, `${slugify(compName)}-animation.zip`);
   }
 
+  /* === VIDEO-EXPORT als WebM via MediaRecorder + Canvas-Stream === */
+
+  function loadSvgAsImage(svgString) {
+    return new Promise((resolve, reject) => {
+      const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const img = new Image();
+      img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('SVG load failed')); };
+      img.src = url;
+    });
+  }
+
+  function drawAspectFit(ctx, img, w, h) {
+    const aspect = img.width / img.height;
+    let dw, dh, dx, dy;
+    if (aspect > w / h) { dw = w; dh = w / aspect; }
+    else { dh = h; dw = h * aspect; }
+    dx = (w - dw) / 2;
+    dy = (h - dh) / 2;
+    ctx.drawImage(img, dx, dy, dw, dh);
+  }
+
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+  /* Pickt den besten verfügbaren WebM-Codec */
+  function pickVideoMime() {
+    const candidates = [
+      'video/webm;codecs=vp9,opus',
+      'video/webm;codecs=vp9',
+      'video/webm;codecs=vp8,opus',
+      'video/webm;codecs=vp8',
+      'video/webm',
+    ];
+    for (const c of candidates) {
+      if (window.MediaRecorder && MediaRecorder.isTypeSupported(c)) return c;
+    }
+    return 'video/webm';
+  }
+
+  async function exportVideo(key, name, options = {}) {
+    if (!window.EXPL || !EXPL.EXPLAINERS[key]) {
+      alert('Keine Animation für diese Komponente gefunden.');
+      return;
+    }
+    if (!window.MediaRecorder) {
+      alert('Dein Browser unterstützt MediaRecorder nicht. Nutze Chrome, Edge oder Firefox.');
+      return;
+    }
+    const def = EXPL.EXPLAINERS[key];
+    const compName = name || def.title || key;
+    const W = 1280, H = 720;
+    const FPS = 30;
+    const STEP_DURATION_MS = options.stepDuration || 3000;
+    const FADE_FRAMES = 10;          // Crossfade-Frames pro Übergang
+    const onProgress = options.onProgress || (() => {});
+
+    // Vorab alle Step-SVGs als Image laden
+    onProgress({ phase: 'prepare', percent: 0 });
+    const images = [];
+    for (let i = 0; i < def.steps.length; i++) {
+      const svgStr = buildStepSVG(def, i, 'Sicherheitstechnik · ' + compName);
+      const img = await loadSvgAsImage(svgStr);
+      images.push(img);
+      onProgress({ phase: 'prepare', percent: ((i + 1) / def.steps.length) * 30 });
+    }
+
+    // Canvas + Stream einrichten
+    const canvas = document.createElement('canvas');
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#0a0f1a';
+    ctx.fillRect(0, 0, W, H);
+
+    const stream = canvas.captureStream(FPS);
+    const mimeType = pickVideoMime();
+    const recorder = new MediaRecorder(stream, {
+      mimeType,
+      videoBitsPerSecond: 4_000_000, // 4 Mbit/s ist gut für 720p
+    });
+    const chunks = [];
+    recorder.ondataavailable = (e) => { if (e.data && e.data.size > 0) chunks.push(e.data); };
+
+    const recordingDone = new Promise((resolve) => {
+      recorder.onstop = () => resolve(new Blob(chunks, { type: mimeType }));
+    });
+
+    recorder.start();
+    onProgress({ phase: 'record', percent: 30 });
+
+    // Intro: 600 ms Titel-Fade-In
+    ctx.fillStyle = '#0a0f1a';
+    ctx.fillRect(0, 0, W, H);
+    drawIntroTitle(ctx, W, H, compName, def.intro);
+    await sleep(800);
+
+    // Render-Loop für jeden Step
+    let prevImg = null;
+    for (let i = 0; i < images.length; i++) {
+      const img = images[i];
+      // Crossfade von prev zu neu
+      const frameMs = 1000 / FPS;
+      for (let f = 0; f < FADE_FRAMES; f++) {
+        const alpha = (f + 1) / FADE_FRAMES;
+        ctx.fillStyle = '#0a0f1a';
+        ctx.fillRect(0, 0, W, H);
+        if (prevImg) {
+          ctx.globalAlpha = 1 - alpha;
+          drawAspectFit(ctx, prevImg, W, H);
+        }
+        ctx.globalAlpha = alpha;
+        drawAspectFit(ctx, img, W, H);
+        ctx.globalAlpha = 1;
+        await sleep(frameMs);
+      }
+      // Hold
+      const holdMs = STEP_DURATION_MS - FADE_FRAMES * frameMs;
+      await sleep(holdMs);
+
+      prevImg = img;
+      const stepPct = 30 + ((i + 1) / images.length) * 60;
+      onProgress({ phase: 'record', percent: stepPct });
+    }
+
+    // Outro: 800 ms Outro-Card
+    for (let f = 0; f < FADE_FRAMES; f++) {
+      const alpha = (f + 1) / FADE_FRAMES;
+      ctx.fillStyle = '#0a0f1a';
+      ctx.fillRect(0, 0, W, H);
+      if (prevImg) {
+        ctx.globalAlpha = 1 - alpha;
+        drawAspectFit(ctx, prevImg, W, H);
+      }
+      ctx.globalAlpha = alpha;
+      drawOutroCard(ctx, W, H, compName);
+      ctx.globalAlpha = 1;
+      await sleep(33);
+    }
+    await sleep(1000);
+
+    recorder.stop();
+    onProgress({ phase: 'finalize', percent: 95 });
+    const blob = await recordingDone;
+    onProgress({ phase: 'done', percent: 100 });
+
+    saveAs(blob, `${slugify(compName)}-animation.webm`);
+  }
+
+  function drawIntroTitle(ctx, W, H, title, sub) {
+    ctx.fillStyle = '#0a0f1a';
+    ctx.fillRect(0, 0, W, H);
+    // Gradient-Hintergrund
+    const grad = ctx.createLinearGradient(0, 0, W, H);
+    grad.addColorStop(0, '#0b1424');
+    grad.addColorStop(0.5, '#1e1b4b');
+    grad.addColorStop(1, '#312e81');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+    // Subtle radial
+    const rg = ctx.createRadialGradient(W * 0.85, H * 0.2, 0, W * 0.85, H * 0.2, W * 0.6);
+    rg.addColorStop(0, 'rgba(34,211,238,.25)');
+    rg.addColorStop(1, 'rgba(34,211,238,0)');
+    ctx.fillStyle = rg;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.fillStyle = 'rgba(34,211,238,1)';
+    ctx.font = 'bold 18px system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('SICHERHEITSTECHNIK · LIVE-ANIMATION', W / 2, H / 2 - 80);
+
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 52px system-ui, sans-serif';
+    ctx.fillText(title.slice(0, 50), W / 2, H / 2);
+
+    if (sub) {
+      ctx.fillStyle = 'rgba(255,255,255,.7)';
+      ctx.font = '20px system-ui, sans-serif';
+      ctx.fillText(sub.slice(0, 80), W / 2, H / 2 + 50);
+    }
+  }
+
+  function drawOutroCard(ctx, W, H, name) {
+    const grad = ctx.createLinearGradient(0, 0, W, H);
+    grad.addColorStop(0, '#0b1424');
+    grad.addColorStop(1, '#1e1b4b');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.fillStyle = 'rgba(34,211,238,.9)';
+    ctx.font = 'bold 30px system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Mehr Komponenten + Live-Animationen', W / 2, H / 2 - 40);
+
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 22px system-ui, sans-serif';
+    ctx.fillText('Sicherheitstechnik-App · Komplett-Katalog', W / 2, H / 2);
+
+    ctx.fillStyle = 'rgba(255,255,255,.6)';
+    ctx.font = '16px system-ui, sans-serif';
+    ctx.fillText(name, W / 2, H / 2 + 50);
+  }
+
   /* === Bulk · alle Animationen exportieren === */
   async function exportAll(progressCallback) {
     if (!window.EXPL) return;
@@ -341,17 +544,29 @@ ${def.steps.slice(0, 3).map((s, i) => `${i+1}. ${(s.text || '').replace(/<[^>]+>
         <p class="muted small">${comp ? comp.name : 'Alle Animationen'}</p>
         <div class="anim-export-options">
           ${comp ? `
+            <button class="anim-export-opt video" data-act="video">
+              <i class="fas fa-film"></i>
+              <strong>🎬 Als Video (WebM, ~15 Sek)</strong>
+              <span>Echtes animiertes Video 1280×720 mit Crossfade-Übergängen · perfekt für LinkedIn-Posts</span>
+            </button>
             <button class="anim-export-opt" data-act="single">
               <i class="fas fa-image"></i>
-              <strong>Diese Animation (ZIP)</strong>
+              <strong>Als ZIP mit Bildern</strong>
               <span>5 Step-Bilder als PNG (1200×720) + SVG + LinkedIn-Tipps</span>
             </button>
           ` : ''}
           <button class="anim-export-opt" data-act="bulk">
             <i class="fas fa-layer-group"></i>
-            <strong>ALLE Animationen (großes ZIP)</strong>
-            <span>~100+ Komponenten × 5 PNGs in Kategorie-Ordnern · kann mehrere Minuten dauern</span>
+            <strong>ALLE Animationen als Bilder-ZIP</strong>
+            <span>~100+ Komponenten · kann mehrere Minuten dauern</span>
           </button>
+          ${comp ? `
+            <button class="anim-export-opt" data-act="bulk-video">
+              <i class="fas fa-video"></i>
+              <strong>ALLE Animationen als Videos (WebM)</strong>
+              <span>Jede Komponente als eigenes Video · sehr lange Laufzeit (~30 Sek/Video × 100)</span>
+            </button>
+          ` : ''}
         </div>
         <div class="anim-export-progress" id="ae-progress" style="display:none">
           <div class="ae-bar"><div class="ae-fill"></div></div>
@@ -379,13 +594,34 @@ ${def.steps.slice(0, 3).map((s, i) => `${i+1}. ${(s.text || '').replace(/<[^>]+>
         progress.style.display = '';
 
         try {
-          if (act === 'single' && comp) {
+          if (act === 'video' && comp) {
+            stat.textContent = 'Rendere Video… ~20 Sek';
+            await exportVideo(comp.key, comp.name, {
+              onProgress: ({ phase, percent }) => {
+                fill.style.width = `${percent}%`;
+                if (phase === 'prepare') stat.textContent = 'Bilder vorbereiten…';
+                else if (phase === 'record') stat.textContent = `Recording läuft… ${percent.toFixed(0)} %`;
+                else if (phase === 'finalize') stat.textContent = 'Finalisiere Video…';
+                else if (phase === 'done') stat.textContent = '✓ Video heruntergeladen';
+              },
+            });
+            setTimeout(close, 1500);
+          } else if (act === 'single' && comp) {
             stat.textContent = 'Erstelle Bilder…';
             fill.style.width = '30%';
             await exportSingle(comp.key, comp.name);
             fill.style.width = '100%';
             stat.textContent = '✓ Download fertig';
             setTimeout(close, 1500);
+          } else if (act === 'bulk-video' && comp) {
+            stat.textContent = 'Starte Bulk-Video-Export…';
+            await exportAllVideos(({ done, total, current, phase, percent }) => {
+              const overall = ((done + (percent || 0) / 100) / total) * 100;
+              fill.style.width = `${overall}%`;
+              stat.textContent = `${done}/${total} · ${current}${phase ? ` (${phase})` : ''}`;
+            });
+            stat.textContent = '✓ Alle Videos heruntergeladen';
+            setTimeout(close, 2500);
           } else if (act === 'bulk') {
             await exportAll(({ total, done, current }) => {
               fill.style.width = `${(done / total) * 100}%`;
@@ -403,8 +639,47 @@ ${def.steps.slice(0, 3).map((s, i) => `${i+1}. ${(s.text || '').replace(/<[^>]+>
     });
   }
 
+  /* Bulk-Video-Export */
+  async function exportAllVideos(progressCallback) {
+    if (!window.MediaRecorder) {
+      alert('MediaRecorder nicht unterstützt');
+      return;
+    }
+    const allComps = [];
+    if (window.MECH_ENCY && MECH_ENCY.LIST) {
+      MECH_ENCY.LIST.forEach(m => {
+        if (EXPL.hasExplainer(m.key)) allComps.push({ key: m.key, name: m.name });
+      });
+    }
+    if (window.KATALOG) {
+      ['VIDEO_DB','BRAND_DB','ZKA_DB','EMA_DB'].forEach(db => {
+        (KATALOG[db] || []).forEach(m => {
+          if (EXPL.hasExplainer(m.key)) allComps.push({ key: m.key, name: m.name });
+        });
+      });
+    }
+    if (window.ENCY && ENCY.list) {
+      ENCY.list.forEach(m => {
+        if (EXPL.hasExplainer(m.key)) allComps.push({ key: m.key, name: m.name });
+      });
+    }
+
+    for (let i = 0; i < allComps.length; i++) {
+      const c = allComps[i];
+      progressCallback({ done: i, total: allComps.length, current: c.name, phase: 'start', percent: 0 });
+      await exportVideo(c.key, c.name, {
+        stepDuration: 2500,
+        onProgress: ({ phase, percent }) => {
+          progressCallback({ done: i, total: allComps.length, current: c.name, phase, percent });
+        },
+      });
+      // Etwas Pause damit Browser nicht erstickt
+      await sleep(500);
+    }
+  }
+
   return {
-    exportSingle, exportAll,
+    exportSingle, exportAll, exportVideo, exportAllVideos,
     openDownloadModal,
     buildStepSVG, svgToPng,
   };
