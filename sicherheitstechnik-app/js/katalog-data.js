@@ -707,6 +707,34 @@ window.KATALOG = (() => {
       `),
     },
     {
+      key:'zka-aufbau', name:'ZKA · Gesamtsystem-Aufbau', kat:'Zutritt', typ:'übersicht',
+      klasse:'DIN EN 60839-11 · Grade 1—4', wzeit:'< 100 ms Gesamt-Reaktion',
+      norm:'DIN EN 60839-11 / EN 50133', preis:'1.500 — 50.000+ € (pro Tür-Set)',
+      einsatz:'Vollständiges Zutrittssystem: Identmedium → Reader → Controller → Türtechnik → Software',
+      principle:'Schichtenmodell aus 5 Ebenen: (1) Medium (RFID/NFC/Biometrie/PIN), (2) Reader, (3) Controller mit Berechtigungsmatrix + Zeitprofilen, (4) Türtechnik (Magnet-/Motor-/Türöffner-Schloss + Türkontakt + Exit-Taster), (5) Verwaltungssoftware mit Audit-Log.',
+      physik:'Datenfluss: Karte ↔ Reader (13,56 MHz NFC, AES-Mutual-Auth) · Reader → Controller (OSDPv2 / RS-485, verschlüsselt) · Controller → Schloss (12 V Impuls, fail-safe oder fail-secure) · Controller → Software (TCP/IP, Audit-Log, Echtzeit-Events). Frequenzen: 125 kHz LF (alt, klonbar), 13,56 MHz HF (modern), UHF 860—960 MHz (Fahrzeuge).',
+      staerken:['Lückenloses Audit-Log','Zeit-/Zonenprofile','Offline-Fallback im Controller','Skalierbar 1—1000+ Türen','MFA möglich (Karte + PIN + Biometrie)','Integration EMA/Video/BMS'],
+      schwaechen:['Mifare Classic noch klonbar (DESFire wechseln)','Fail-safe-Schlösser bei Stromausfall offen','PIN beobachtbar/teilbar','Cyber-Risk bei Server-Anbindung'],
+      angriffe:['RFID-Skimming (LF/125 kHz besonders)','Wiegand-Replay bei Alt-Anlagen','Tailgating (Anti-Passback nötig)','Social Engineering der Karte','Magnet-Demontage außen'],
+      hersteller:['dormakaba','HID Mercury','Bosch AMS','Suprema BioStar','Genetec Synergis','SimonsVoss','PCS Intus','Salto','Honeywell Pro-Watch'],
+      svg: svg(`
+        <rect x="20" y="30" width="160" height="140" rx="6" fill="#1e293b" stroke="#a855f7" stroke-width="2"/>
+        <rect x="30" y="40" width="50" height="32" rx="3" fill="#fbbf24"/>
+        <text x="55" y="60" text-anchor="middle" font-size="8" fill="#0b1424" font-weight="800">Karte</text>
+        <rect x="90" y="40" width="40" height="32" rx="3" fill="#22d3ee"/>
+        <text x="110" y="60" text-anchor="middle" font-size="8" fill="#0b1424" font-weight="800">Reader</text>
+        <rect x="140" y="40" width="30" height="32" rx="3" fill="#a855f7"/>
+        <text x="155" y="60" text-anchor="middle" font-size="8" fill="#fff" font-weight="800">CTRL</text>
+        <line x1="30" y1="92" x2="170" y2="92" stroke="#475569" stroke-dasharray="3 2"/>
+        <text x="100" y="110" text-anchor="middle" font-size="9" fill="#94a3b8" font-weight="700">5 Layer · DIN EN 60839-11</text>
+        <text x="100" y="128" text-anchor="middle" font-size="8" fill="#22c55e">Grade 1 — 4</text>
+        <rect x="30" y="138" width="35" height="14" rx="2" fill="#64748b"/><text x="47" y="148" text-anchor="middle" font-size="8" fill="#0b1424" font-weight="900">1</text>
+        <rect x="70" y="138" width="35" height="14" rx="2" fill="#3b82f6"/><text x="87" y="148" text-anchor="middle" font-size="8" fill="#fff" font-weight="900">2</text>
+        <rect x="110" y="138" width="35" height="14" rx="2" fill="#a855f7"/><text x="127" y="148" text-anchor="middle" font-size="8" fill="#fff" font-weight="900">3</text>
+        <rect x="150" y="138" width="35" height="14" rx="2" fill="#ef4444"/><text x="167" y="148" text-anchor="middle" font-size="8" fill="#fff" font-weight="900">4</text>
+      `),
+    },
+    {
       key:'zka-zentrale', name:'ZKA-Zentrale (Access Controller)', kat:'Zutritt', typ:'aktiv',
       klasse:'EN 50133 Grad 1—3', wzeit:'&lt; 100 ms Entscheidung',
       norm:'EN 50133 / EN 60839', preis:'500 — 5.000 €',

@@ -1795,6 +1795,217 @@
   };
 
   /* =========================================================
+     ZKA · Gesamtsystem-Aufbau (Medium → Reader → Controller → Tür → Software)
+     ========================================================= */
+  ANIMS['zka-aufbau'] = {
+    title: 'Zutrittskontrollsystem · Kompletter Aufbau',
+    intro: 'Identmedium → Reader → Controller → Türtechnik → Software · DIN EN 60839-11',
+    cycle: 16000,
+    svg: wrap('0 0 900 480', `
+      <defs>
+        <linearGradient id="zk-bg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#0b1424"/><stop offset="1" stop-color="#0a0f1a"/>
+        </linearGradient>
+        <linearGradient id="zk-door" x2="0" y2="1">
+          <stop offset="0" stop-color="#a16207"/><stop offset="1" stop-color="#78350f"/>
+        </linearGradient>
+        <filter id="zk-glow"><feGaussianBlur stdDeviation="3"/></filter>
+      </defs>
+      <rect width="900" height="480" fill="url(#zk-bg)"/>
+
+      <!-- Layer-Labels oben -->
+      <text x="80"  y="28" font-size="10" fill="#64748b" font-weight="700">① MEDIUM</text>
+      <text x="240" y="28" font-size="10" fill="#64748b" font-weight="700">② READER</text>
+      <text x="430" y="28" font-size="10" fill="#64748b" font-weight="700">③ CONTROLLER</text>
+      <text x="640" y="28" font-size="10" fill="#64748b" font-weight="700">④ TÜR</text>
+      <text x="780" y="28" font-size="10" fill="#64748b" font-weight="700">⑤ SOFTWARE</text>
+      <line x1="40" y1="38" x2="860" y2="38" stroke="#1e293b"/>
+
+      <!-- ===== ① MEDIUM ===== -->
+      <g id="m-card">
+        <rect x="40" y="180" width="120" height="76" rx="8" fill="#fbbf24" stroke="#0b1424" stroke-width="2"/>
+        <rect x="52" y="194" width="96" height="8" fill="#0b1424"/>
+        <text x="100" y="222" text-anchor="middle" font-size="10" fill="#0b1424" font-weight="900">MIFARE DESFire</text>
+        <text x="100" y="236" text-anchor="middle" font-size="8.5" fill="#0b1424">13,56 MHz · AES</text>
+        <text x="100" y="248" text-anchor="middle" font-size="8" fill="#0b1424" font-family="monospace">UID: 04 A2 5F 8B</text>
+      </g>
+      <!-- Alternative Medien (klein, drunter) -->
+      <g id="m-phone" opacity=".35">
+        <rect x="50" y="280" width="34" height="56" rx="5" fill="#1e293b" stroke="#22d3ee"/>
+        <rect x="55" y="288" width="24" height="36" fill="#0a0f1a"/>
+        <text x="67" y="312" text-anchor="middle" font-size="7" fill="#22d3ee" font-weight="800">NFC</text>
+      </g>
+      <g id="m-bio" opacity=".35">
+        <circle cx="110" cy="308" r="20" fill="#1e293b" stroke="#a855f7"/>
+        <path d="M 100 308 q 0 -10 10 -10 q 10 0 10 10 M 105 308 q 0 -6 5 -6 q 5 0 5 6 M 108 308 q 0 -3 2 -3 q 2 0 2 3" stroke="#a855f7" fill="none" stroke-width="1.2"/>
+        <text x="110" y="345" text-anchor="middle" font-size="8" fill="#a855f7" font-weight="700">Biometrie</text>
+      </g>
+      <g id="m-pin" opacity=".35">
+        <rect x="140" y="282" width="44" height="52" rx="4" fill="#1e293b" stroke="#64748b"/>
+        <g font-size="8" fill="#94a3b8" font-family="monospace" text-anchor="middle">
+          <text x="151" y="296">1</text><text x="162" y="296">2</text><text x="173" y="296">3</text>
+          <text x="151" y="308">4</text><text x="162" y="308">5</text><text x="173" y="308">6</text>
+          <text x="151" y="320">7</text><text x="162" y="320">8</text><text x="173" y="320">9</text>
+        </g>
+        <text x="162" y="345" text-anchor="middle" font-size="8" fill="#64748b" font-weight="700">PIN</text>
+      </g>
+
+      <!-- s1: Karte bewegt sich zum Reader -->
+      <g id="s1-move" opacity="0">
+        <g>
+          <animateTransform attributeName="transform" type="translate" values="0 0;160 0;160 0" keyTimes="0;.6;1" dur="2.5s" repeatCount="indefinite"/>
+          <rect x="40" y="180" width="120" height="76" rx="8" fill="#fbbf24" stroke="#0b1424" stroke-width="2"/>
+          <text x="100" y="222" text-anchor="middle" font-size="10" fill="#0b1424" font-weight="900">MIFARE DESFire</text>
+        </g>
+      </g>
+
+      <!-- ===== ② READER ===== -->
+      <g>
+        <rect x="220" y="170" width="120" height="120" rx="10" fill="#1e293b" stroke="#22d3ee" stroke-width="2"/>
+        <rect x="232" y="184" width="96" height="36" rx="3" fill="#0a0f1a"/>
+        <text x="280" y="205" text-anchor="middle" font-size="11" fill="#22d3ee" font-weight="900">READER</text>
+        <text x="280" y="217" text-anchor="middle" font-size="8" fill="#94a3b8">13,56 MHz · ISO 14443</text>
+        <!-- Antennen-Spule -->
+        <circle cx="280" cy="252" r="20" fill="none" stroke="#22d3ee" stroke-width="1.5" opacity=".4"/>
+        <circle cx="280" cy="252" r="14" fill="none" stroke="#22d3ee" stroke-width="1.5" opacity=".6"/>
+        <circle cx="280" cy="252" r="8"  fill="none" stroke="#22d3ee" stroke-width="1.5"/>
+        <!-- LED -->
+        <circle id="rd-led" cx="320" cy="180" r="4" fill="#fbbf24">
+          <animate attributeName="opacity" values="1;.3;1" dur="1.5s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+
+      <!-- s2: Welle vom Reader -->
+      <g id="s2-rf" opacity="0">
+        ${[1,2,3,4].map(i => `<path d="M 270 ${230+i*8} q -10 4 0 8" stroke="#22d3ee" stroke-width="2" fill="none"><animate attributeName="opacity" values="0;1;0" dur="1.2s" begin="${i*.18}s" repeatCount="indefinite"/></path>`).join('')}
+        <text x="195" y="335" font-size="9" fill="#22d3ee" font-weight="700">RF-Energie</text>
+        <text x="195" y="347" font-size="8" fill="#94a3b8">Karte antwortet mit UID</text>
+      </g>
+
+      <!-- Datenleitung Reader → Controller (RS-485 / OSDP) -->
+      <line x1="340" y1="230" x2="420" y2="230" stroke="#475569" stroke-width="2" stroke-dasharray="4 3"/>
+      <text x="350" y="222" font-size="7.5" fill="#64748b" font-family="monospace">OSDPv2 / RS-485</text>
+
+      <!-- ===== ③ CONTROLLER ===== -->
+      <g>
+        <rect x="420" y="140" width="190" height="200" rx="10" fill="#0f172a" stroke="#a855f7" stroke-width="2"/>
+        <rect x="432" y="152" width="166" height="22" rx="3" fill="#0a0f1a"/>
+        <text x="515" y="167" text-anchor="middle" font-size="10" fill="#a855f7" font-weight="900">ZUTRITTS-CONTROLLER</text>
+        <!-- Berechtigungs-Matrix -->
+        <text x="432" y="190" font-size="8.5" fill="#94a3b8" font-weight="700">BERECHTIGUNGSMATRIX</text>
+        ${[
+          ['UID 04 A2 5F 8B','Zone A · Mo–Fr 06–20'],
+          ['UID 04 9C 11 F2','Zone A,B · 24/7'],
+          ['UID 04 7E A1 03','Zone B · Mo–Fr 08–17']
+        ].map((row,i) => `
+          <rect x="432" y="${198 + i*22}" width="166" height="20" rx="2" fill="${i===0?'rgba(168,85,247,.12)':'#0a0f1a'}" stroke="#1e293b"/>
+          <text x="438" y="${211 + i*22}" font-size="7.5" fill="#cbd5e1" font-family="monospace">${row[0]}</text>
+          <text x="438" y="${220 + i*22}" font-size="7" fill="#94a3b8">${row[1]}</text>
+        `).join('')}
+        <!-- Zeitprofil-Indikator -->
+        <rect x="432" y="278" width="166" height="50" rx="3" fill="#0a0f1a"/>
+        <text x="438" y="291" font-size="7.5" fill="#94a3b8" font-weight="700">ZEITPROFIL · 12:45 Di</text>
+        ${Array.from({length:24}, (_,h) => `<rect x="${438 + h*6.7}" y="298" width="5.5" height="10" fill="${h>=6 && h<=20 ? '#22c55e' : '#1e293b'}"/>`).join('')}
+        <text x="438" y="322" font-size="7" fill="#22c55e">✓ aktuelle Zeit in Profil</text>
+      </g>
+
+      <!-- s3: Crypto-Challenge -->
+      <g id="s3-crypto" opacity="0">
+        <rect x="245" y="110" width="170" height="50" rx="6" fill="rgba(168,85,247,.15)" stroke="#a855f7"/>
+        <text x="330" y="128" text-anchor="middle" font-size="10" fill="#a855f7" font-weight="900">AES-128 Mutual Auth</text>
+        <text x="330" y="142" text-anchor="middle" font-size="8" fill="#cbd5e1" font-family="monospace">Challenge → Response</text>
+        <text x="330" y="154" text-anchor="middle" font-size="7.5" fill="#22c55e">✓ Sektor-Key OK</text>
+      </g>
+
+      <!-- s4: Berechtigung geprüft (Highlight) -->
+      <g id="s4-grant" opacity="0">
+        <rect x="430" y="195" width="170" height="24" rx="2" fill="rgba(34,197,94,.25)" stroke="#22c55e" stroke-width="2"/>
+        <text x="608" y="211" font-size="11" fill="#22c55e" font-weight="900">✓</text>
+      </g>
+
+      <!-- Steuerleitung Controller → Türtechnik -->
+      <line x1="610" y1="240" x2="660" y2="240" stroke="#475569" stroke-width="2" stroke-dasharray="4 3"/>
+      <text x="612" y="232" font-size="7.5" fill="#64748b" font-family="monospace">12 V Impuls</text>
+
+      <!-- ===== ④ TÜR ===== -->
+      <g>
+        <!-- Zarge -->
+        <rect x="660" y="80" width="120" height="320" fill="#1e293b" stroke="#334155"/>
+        <!-- Türblatt (Standardposition) -->
+        <g id="door-blade">
+          <rect x="668" y="88" width="104" height="304" fill="url(#zk-door)" stroke="#451a03"/>
+          <circle cx="765" cy="240" r="3" fill="#fbbf24"/>
+          <rect x="752" y="244" width="18" height="4" rx="2" fill="#cbd5e1"/>
+        </g>
+        <!-- Schließblech / Magnetschloss -->
+        <rect x="770" y="225" width="10" height="30" fill="#0a0f1a" stroke="#22d3ee"/>
+        <text x="785" y="245" font-size="8" fill="#22d3ee" font-weight="700">Magnet-</text>
+        <text x="785" y="256" font-size="8" fill="#22d3ee" font-weight="700">schloss</text>
+        <text x="785" y="270" font-size="7" fill="#94a3b8">fail-safe</text>
+        <!-- Türkontakt oben -->
+        <rect x="668" y="92" width="14" height="6" fill="#1e293b" stroke="#22c55e"/>
+        <text x="690" y="98" font-size="7" fill="#22c55e">Türkontakt</text>
+        <!-- Anforderungstaster innen -->
+        <circle cx="800" cy="350" r="8" fill="#22c55e" stroke="#0a0f1a" stroke-width="2"/>
+        <text x="800" y="370" text-anchor="middle" font-size="7" fill="#22c55e">Exit</text>
+      </g>
+
+      <!-- s5: Tür öffnet -->
+      <g id="s5-open" opacity="0">
+        <rect x="668" y="88" width="104" height="304" fill="url(#zk-door)" stroke="#451a03">
+          <animateTransform attributeName="transform" type="rotate" values="0 772 240;-22 772 240;-22 772 240;0 772 240" keyTimes="0;.4;.7;1" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <text x="720" y="430" text-anchor="middle" font-size="10" fill="#22c55e" font-weight="800">Tür entriegelt · 1 s</text>
+      </g>
+
+      <!-- ===== ⑤ SOFTWARE / Audit ===== -->
+      <g>
+        <rect x="800" y="80" width="80" height="180" rx="6" fill="#0a0f1a" stroke="#fbbf24" stroke-width="1.5"/>
+        <text x="840" y="100" text-anchor="middle" font-size="9" fill="#fbbf24" font-weight="900">AUDIT-LOG</text>
+        <line x1="808" y1="108" x2="872" y2="108" stroke="#1e293b"/>
+        <g id="log-lines" font-size="6.5" fill="#94a3b8" font-family="monospace">
+          <text x="808" y="120">12:45 ✓ UID 04A2..</text>
+          <text x="808" y="132">12:42 ✓ UID 049C..</text>
+          <text x="808" y="144">12:38 ✗ unkn UID</text>
+          <text x="808" y="156">12:30 ✓ UID 047E..</text>
+          <text x="808" y="168">12:15 ✓ UID 04A2..</text>
+        </g>
+      </g>
+
+      <!-- s6: neuer Log-Eintrag -->
+      <g id="s6-log" opacity="0">
+        <rect x="804" y="265" width="72" height="28" rx="3" fill="rgba(251,191,36,.18)" stroke="#fbbf24"/>
+        <text x="808" y="277" font-size="6.5" fill="#fbbf24" font-family="monospace">12:46 ✓ GRANT</text>
+        <text x="808" y="287" font-size="6.5" fill="#fbbf24" font-family="monospace">UID 04A2 · Zone A</text>
+      </g>
+
+      <!-- Sicherheitsklassen-Leiste unten -->
+      <g>
+        <line x1="40" y1="425" x2="860" y2="425" stroke="#1e293b"/>
+        <text x="40" y="445" font-size="9" fill="#64748b" font-weight="700">DIN EN 60839-11 · GRADE:</text>
+        <rect x="200" y="436" width="40" height="14" rx="2" fill="#64748b"/>
+        <text x="220" y="446" text-anchor="middle" font-size="9" fill="#0b1424" font-weight="900">1</text>
+        <rect x="245" y="436" width="40" height="14" rx="2" fill="#3b82f6"/>
+        <text x="265" y="446" text-anchor="middle" font-size="9" fill="#fff" font-weight="900">2</text>
+        <rect x="290" y="436" width="40" height="14" rx="2" fill="#a855f7"/>
+        <text x="310" y="446" text-anchor="middle" font-size="9" fill="#fff" font-weight="900">3</text>
+        <rect x="335" y="436" width="40" height="14" rx="2" fill="#ef4444"/>
+        <text x="355" y="446" text-anchor="middle" font-size="9" fill="#fff" font-weight="900">4</text>
+        <text x="385" y="446" font-size="9" fill="#94a3b8">niedrig · mittel · hoch · sehr hoch</text>
+        <text x="650" y="446" font-size="9" fill="#cbd5e1">aktuell: <tspan fill="#a855f7" font-weight="900">Grade 3</tspan> (DESFire + AES, Zeitprofil, Audit)</text>
+      </g>
+    `),
+    steps: [
+      { t: 0,    h: [],                                        text: '① Identmedium: RFID-Karte (Mifare DESFire EV2, 13,56 MHz, AES-128) trägt die UID. Alternativen: Smartphone-NFC, Biometrie (kein Verlust-Risiko), PIN (schwächste Variante).' },
+      { t: 2000, h: ['s1-move'],                               text: '② Annäherung: Lesedistanz 2—10 cm. Reader baut RF-Feld auf (13,56 MHz, ISO 14443) und energetisiert die passive Karte.' },
+      { t: 4500, h: ['s2-rf','s3-crypto'],                     text: '③ Mutual Authentication: Reader sendet AES-Challenge → Karte verschlüsselt mit Sektor-Schlüssel → Reader prüft Response. Klonschutz durch wechselnde Nonce.' },
+      { t: 7500, h: ['s3-crypto','s4-grant'],                  text: '④ Controller prüft Berechtigungsmatrix: Ist UID bekannt? Zone berechtigt? Zeitprofil aktiv? Antipassback? Entscheidung in <100 ms.' },
+      { t: 10000, h: ['s4-grant','s5-open','s6-log'],          text: '⑤ 12 V Impuls auf Magnetschloss (fail-safe) für 1 s · Türkontakt meldet Öffnen · Audit-Log schreibt Zeitstempel + UID + Zone in lückenlose Historie.' },
+      { t: 13500, h: ['s6-log'],                               text: '⑥ Software-Layer: zentrale Verwaltung aller Türen + Nutzer + Zeitprofile · Echtzeit-Alarmierung bei Tür-auf-Alarm, Sabotage, unberechtigtem Versuch · Schnittstellen zu EMA, Video, BMS.' },
+    ],
+  };
+
+  /* =========================================================
      REGISTER · alle Animationen in EXPL einhängen
      ========================================================= */
   Object.keys(ANIMS).forEach(key => {
