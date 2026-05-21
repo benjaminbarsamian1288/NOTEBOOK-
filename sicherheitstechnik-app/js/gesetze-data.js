@@ -494,10 +494,423 @@ window.GESETZE_DB = (() => {
         },
       ],
     },
+
+    /* ============= BGB ============= */
+    {
+      id: 'bgb',
+      short: 'BGB',
+      title: 'Bürgerliches Gesetzbuch',
+      kategorie: 'Zivilrecht',
+      datum: 'In Kraft seit 01.01.1900 · zahlreiche Änderungen',
+      farbe: '#0891b2',
+      icon: 'fa-balance-scale',
+      url: 'https://www.gesetze-im-internet.de/bgb/',
+      intro: '2.385 Paragraphen in 5 Büchern. Regelt das gesamte deutsche Privatrecht. Für Sicherheitsdienste hochrelevant: Notwehr/Selbsthilfe (§§ 227—231), Besitz/Hausrecht (§§ 858—862, 1004) und Schadensersatz (§ 823). Pflichtstoff der § 7 BeWachV-Unterrichtung.',
+      anwender: 'Jeder Bürger · Sicherheitsdienste · Vertragsparteien · Eigentümer/Besitzer',
+      visualisierung: 'bgb-buecher',
+      abschnitte: [
+        {
+          nr: 1, title: '📕 Buch 1 · Allgemeiner Teil (§§ 1—240)',
+          paragraphen: [
+            { p:'§ 1',   t:'Beginn der Rechtsfähigkeit',           s:'Rechtsfähigkeit des Menschen beginnt mit der Vollendung der Geburt. Ende mit dem Tod.', tags:['Person','Rechtsfähigkeit'] },
+            { p:'§ 104', t:'Geschäftsunfähigkeit',                  s:'Nicht geschäftsfähig: unter 7 Jahre · dauerhaft krankhafte Störung der Geistestätigkeit.', tags:['Geschäftsfähigkeit'] },
+            { p:'§ 116', t:'Geheimer Vorbehalt',                    s:'Willenserklärung ist nicht deshalb nichtig, weil der Erklärende sich insgeheim vorbehält, das Erklärte nicht zu wollen.', tags:['Willenserklärung'] },
+            { p:'§ 119', t:'Anfechtbarkeit wegen Irrtums',          s:'Wer bei Abgabe der Willenserklärung über deren Inhalt im Irrtum war, kann diese anfechten.', tags:['Irrtum','Anfechtung'] },
+            { p:'§ 145', t:'Bindung an den Antrag',                 s:'Wer einen Vertrag anbietet, ist an seinen Antrag gebunden — außer er hat das ausgeschlossen.', tags:['Vertrag','Antrag'], wichtig:true },
+            { p:'§ 147', t:'Annahmefrist',                          s:'Antrag unter Anwesenden nur sofort annehmbar · unter Abwesenden binnen üblicher Frist.', tags:['Vertragsschluss'] },
+          ],
+        },
+        {
+          nr: 2, title: '📗 Buch 2 · Schuldrecht (§§ 241—853) — KERN für Sicherheitsdienste',
+          paragraphen: [
+            { p:'§ 226', t:'Schikaneverbot',                         s:'Die Ausübung eines Rechts ist unzulässig, wenn sie nur den Zweck haben kann, einem anderen Schaden zuzufügen.', tags:['Rechtsmissbrauch'] },
+            { p:'§ 227', t:'Notwehr (zivilrechtlich)',               s:'Eine durch Notwehr gebotene Handlung ist nicht widerrechtlich. Notwehr = Verteidigung gegen einen gegenwärtigen rechtswidrigen Angriff. Erforderlich + geboten.', tags:['Notwehr','Verteidigung'], wichtig:true },
+            { p:'§ 228', t:'Defensiver Notstand (Sachen)',           s:'Wer eine fremde Sache beschädigt, um eine durch sie drohende Gefahr abzuwenden, handelt nicht widerrechtlich (z. B. fremden Hund abwehren).', tags:['Notstand'], wichtig:true },
+            { p:'§ 229', t:'Selbsthilfe',                            s:'Wer zum Zwecke der Selbsthilfe eine Sache wegnimmt, zerstört oder beschädigt, oder wer einen Verpflichteten festnimmt, handelt nicht widerrechtlich — wenn obrigkeitliche Hilfe nicht rechtzeitig zu erlangen ist und Vereitelung droht.', tags:['Selbsthilfe','Festnahme'], wichtig:true },
+            { p:'§ 230', t:'Grenzen der Selbsthilfe',                s:'Selbsthilfe darf nicht weiter gehen als zur Abwendung der Gefahr erforderlich. Bei Festnahme: dinglicher/persönlicher Arrest beim Amtsgericht beantragen.', tags:['Grenzen'], wichtig:true },
+            { p:'§ 231', t:'Irrtum über Voraussetzungen',            s:'Wer eine der in § 229 bezeichneten Handlungen in der irrigen Annahme vornimmt, dass die erforderlichen Voraussetzungen vorhanden seien, ist zum Schadensersatz verpflichtet.', tags:['Putativ-Selbsthilfe'], wichtig:true },
+            { p:'§ 241', t:'Pflichten aus Schuldverhältnis',         s:'Schuldner schuldet Leistung · Schuldverhältnis kann zur Rücksicht auf Rechte, Rechtsgüter und Interessen verpflichten.', tags:['Pflichten'] },
+            { p:'§ 433', t:'Kaufvertrag · Pflichten',                s:'Verkäufer: Sache übergeben + Eigentum verschaffen, frei von Mängeln. Käufer: Kaufpreis zahlen + Sache abnehmen.', tags:['Kauf'] },
+            { p:'§ 535', t:'Mietvertrag · Pflichten',                s:'Vermieter: Mietsache in vertragsgemäßem Zustand überlassen. Mieter: Miete zahlen.', tags:['Miete'] },
+            { p:'§ 611', t:'Dienstvertrag',                          s:'Pflicht zur Leistung versprochener Dienste · Gegenpartei zur Zahlung der vergüteten Vergütung. Grundlage für Bewachungs-Dienstverträge.', tags:['Dienstvertrag'], wichtig:true },
+            { p:'§ 631', t:'Werkvertrag',                            s:'Werkunternehmer schuldet Herstellung eines Werkes (Erfolg) · Besteller schuldet Vergütung.', tags:['Werkvertrag'] },
+            { p:'§ 823', t:'Schadensersatzpflicht',                  s:'Wer vorsätzlich oder fahrlässig Leben, Körper, Gesundheit, Freiheit, Eigentum oder ein sonstiges Recht eines anderen widerrechtlich verletzt, ist zum Ersatz verpflichtet.', tags:['Schadensersatz','Haftung'], wichtig:true },
+            { p:'§ 826', t:'Sittenwidrige Schädigung',               s:'Wer in einer gegen die guten Sitten verstoßenden Weise einem anderen vorsätzlich Schaden zufügt, ist verpflichtet zum Ersatz.', tags:['Sittenwidrig'] },
+            { p:'§ 858', t:'Verbotene Eigenmacht',                   s:'Wer dem Besitzer ohne dessen Willen den Besitz entzieht oder ihn stört, handelt — soweit nicht das Gesetz die Entziehung gestattet — widerrechtlich (verbotene Eigenmacht).', tags:['Besitzstörung','Hausrecht'], wichtig:true },
+            { p:'§ 859', t:'Selbsthilfe des Besitzers',              s:'Der Besitzer darf sich verbotener Eigenmacht mit Gewalt erwehren. Bei beweglicher Sache darf er sie dem auf frischer Tat Betroffenen wieder abnehmen.', tags:['Besitzwehr','Besitzkehr'], wichtig:true },
+            { p:'§ 860', t:'Selbsthilfe des Besitzdieners',          s:'Auch der Besitzdiener (z. B. der Sicherheitsmitarbeiter für den Besitzer!) darf die Rechte aus § 859 ausüben.', tags:['Besitzdiener'], wichtig:true },
+            { p:'§ 861', t:'Anspruch auf Wiedereinräumung',          s:'Bei Besitzentziehung durch verbotene Eigenmacht: Anspruch auf Wiedereinräumung des Besitzes.', tags:['Besitzschutz'] },
+            { p:'§ 862', t:'Anspruch wegen Besitzstörung',           s:'Wird der Besitzer durch verbotene Eigenmacht im Besitz gestört, kann er Beseitigung verlangen.', tags:['Störungsbeseitigung'] },
+            { p:'§ 904', t:'Aggressiver Notstand',                   s:'Eigentümer einer Sache ist nicht berechtigt, die Einwirkung eines anderen auf die Sache zu verbieten, wenn die Einwirkung zur Abwendung einer gegenwärtigen Gefahr notwendig + der drohende Schaden gegenüber dem aus der Einwirkung entstehenden unverhältnismäßig groß ist.', tags:['Notstand','aggressiv'], wichtig:true },
+          ],
+        },
+        {
+          nr: 3, title: '📘 Buch 3 · Sachenrecht (§§ 854—1296)',
+          paragraphen: [
+            { p:'§ 854', t:'Erwerb des Besitzes',                    s:'Der Besitz einer Sache wird durch die Erlangung der tatsächlichen Gewalt über die Sache erworben.', tags:['Besitz'] },
+            { p:'§ 855', t:'Besitzdiener',                           s:'Übt jemand die tatsächliche Gewalt über eine Sache für einen anderen aus, ist nur der andere Besitzer (Besitzdiener-Verhältnis). Wichtig: Sicherheitsmitarbeiter sind oft Besitzdiener!', tags:['Besitzdiener'], wichtig:true },
+            { p:'§ 903', t:'Befugnisse des Eigentümers',             s:'Der Eigentümer einer Sache kann, soweit nicht das Gesetz oder Rechte Dritter entgegenstehen, mit der Sache nach Belieben verfahren und andere von jeder Einwirkung ausschließen.', tags:['Eigentum'], wichtig:true },
+            { p:'§ 1004', t:'Beseitigungs- und Unterlassungsanspruch', s:'Eigentümer kann Beseitigung der Beeinträchtigung verlangen. Bei Wiederholungsgefahr: Unterlassung. → Rechtliche Grundlage des Hausverbots!', tags:['Hausverbot','Unterlassung'], wichtig:true },
+          ],
+        },
+        {
+          nr: 4, title: '📙 Buch 4 · Familienrecht (§§ 1297—1921)',
+          paragraphen: [
+            { p:'§ 1297', t:'Übersicht',                              s:'Verlöbnis · Ehe · Verwandtschaft · elterliche Sorge · Vormundschaft · Pflegschaft. Für Sicherheitsdienste nur am Rande relevant — z. B. bei Notwehr für Familienangehörige (Nothilfe).', tags:['Familie','Übersicht'] },
+          ],
+        },
+        {
+          nr: 5, title: '📓 Buch 5 · Erbrecht (§§ 1922—2385)',
+          paragraphen: [
+            { p:'§ 1922', t:'Gesamtrechtsnachfolge',                  s:'Mit dem Tod einer Person geht deren Vermögen als Ganzes auf den/die Erben über. Für Sicherheitsdienste: Hausrecht erbt sich mit dem Eigentum.', tags:['Erbrecht','Übersicht'] },
+          ],
+        },
+      ],
+    },
+
+    /* ============= StGB ============= */
+    {
+      id: 'stgb',
+      short: 'StGB',
+      title: 'Strafgesetzbuch',
+      kategorie: 'Strafrecht',
+      datum: 'In Kraft seit 01.01.1872 (RStGB) · zahlreiche Novellen',
+      farbe: '#dc2626',
+      icon: 'fa-gavel',
+      url: 'https://www.gesetze-im-internet.de/stgb/',
+      intro: '358 Paragraphen in 2 Teilen (Allgemeiner Teil §§ 1—79b · Besonderer Teil §§ 80—358). Für Sicherheitsdienste essenziell: Notwehr/Notstand (§§ 32—35), Hausfriedensbruch (§ 123), Körperverletzung (§ 223), Freiheitsberaubung (§ 239), Nötigung (§ 240). Pflichtstoff der § 7 BeWachV.',
+      anwender: 'Strafverfolgungsbehörden · jeder Bürger · Sicherheitsdienste · Wachpersonen',
+      visualisierung: 'stgb-aufbau',
+      abschnitte: [
+        {
+          nr: 1, title: '⚖️ Allgemeiner Teil · Notwehr & Notstand (§§ 32—35) — HERZSTÜCK',
+          paragraphen: [
+            { p:'§ 13', t:'Begehen durch Unterlassen',               s:'Wer es unterlässt, einen Erfolg abzuwenden, ist nur strafbar, wenn er rechtlich dafür einzustehen hat (Garantenstellung).', tags:['Unterlassen','Garant'] },
+            { p:'§ 15', t:'Vorsätzliches/fahrlässiges Handeln',      s:'Strafbar ist nur vorsätzliches Handeln, wenn nicht das Gesetz fahrlässiges Handeln ausdrücklich mit Strafe bedroht.', tags:['Vorsatz','Fahrlässigkeit'] },
+            { p:'§ 17', t:'Verbotsirrtum',                            s:'Fehlt dem Täter bei Begehung die Einsicht, Unrecht zu tun, so handelt er ohne Schuld, wenn er diesen Irrtum nicht vermeiden konnte.', tags:['Verbotsirrtum'] },
+            { p:'§ 20', t:'Schuldunfähigkeit · seelische Störung',   s:'Ohne Schuld handelt, wer wegen krankhafter seelischer Störung oder Bewusstseinsstörung unfähig ist, das Unrecht der Tat einzusehen.', tags:['Schuldunfähig'] },
+            { p:'§ 32', t:'Notwehr',                                  s:'(1) Wer eine Tat begeht, die durch Notwehr geboten ist, handelt nicht rechtswidrig. (2) Notwehr ist die Verteidigung, die erforderlich ist, um einen gegenwärtigen rechtswidrigen Angriff von sich oder einem anderen abzuwenden.', tags:['Notwehr','Rechtfertigung'], wichtig:true },
+            { p:'§ 33', t:'Überschreitung der Notwehr',               s:'Überschreitet der Täter die Grenzen der Notwehr aus Verwirrung, Furcht oder Schrecken, so wird er nicht bestraft.', tags:['Notwehrexzess'], wichtig:true },
+            { p:'§ 34', t:'Rechtfertigender Notstand',                s:'Wer in einer gegenwärtigen, nicht anders abwendbaren Gefahr für Leben, Leib, Freiheit, Ehre, Eigentum oder ein anderes Rechtsgut eine Tat begeht, um die Gefahr abzuwenden, handelt nicht rechtswidrig — wenn bei Abwägung das geschützte Interesse wesentlich überwiegt.', tags:['Notstand','Abwägung'], wichtig:true },
+            { p:'§ 35', t:'Entschuldigender Notstand',                s:'Wer in einer gegenwärtigen, nicht anders abwendbaren Gefahr für Leben, Leib oder Freiheit eine rechtswidrige Tat begeht, um die Gefahr von sich, einem Angehörigen oder einer ihm nahestehenden Person abzuwenden, handelt ohne Schuld.', tags:['Entschuldigung'] },
+          ],
+        },
+        {
+          nr: 2, title: '🏠 Besonderer Teil · Hausfriedensbruch & Beleidigung (§§ 123—202)',
+          paragraphen: [
+            { p:'§ 123', t:'Hausfriedensbruch',                       s:'Wer in die Wohnung, in die Geschäftsräume oder in das befriedete Besitztum eines anderen widerrechtlich eindringt oder, wenn er ohne Befugnis darin verweilt und auf die Aufforderung des Berechtigten sich nicht entfernt, wird mit Freiheitsstrafe bis zu 1 Jahr oder mit Geldstrafe bestraft. Antragsdelikt!', tags:['Hausrecht','Antragsdelikt'], wichtig:true },
+            { p:'§ 124', t:'Schwerer Hausfriedensbruch',              s:'Wenn sich eine Menschenmenge öffentlich zusammenrottet und in gewalttätiger Absicht in fremde Räume eindringt: bis zu 2 Jahre oder Geldstrafe.', tags:['Menschenmenge'] },
+            { p:'§ 132', t:'Amtsanmaßung',                            s:'Wer unbefugt sich mit der Ausübung eines öffentlichen Amtes befasst oder eine Handlung vornimmt, welche nur Inhaber eines öffentlichen Amtes verrichten dürfen — bis zu 2 Jahre. WICHTIG: Sicherheitsmitarbeiter dürfen sich NICHT als Polizei ausgeben!', tags:['Polizei-Verbot'], wichtig:true },
+            { p:'§ 138', t:'Nichtanzeige geplanter Straftaten',       s:'Wer von dem Vorhaben oder der Ausführung bestimmter Straftaten (Hochverrat, Mord, Raub, schwere Brandstiftung) glaubhaft erfährt und es unterlässt, der Behörde rechtzeitig Anzeige zu machen, wird bestraft.', tags:['Anzeigepflicht'] },
+            { p:'§ 185', t:'Beleidigung',                              s:'Bis zu 1 Jahr Freiheitsstrafe oder Geldstrafe. Antragsdelikt.', tags:['Ehrdelikt'] },
+            { p:'§ 186', t:'Üble Nachrede',                            s:'Wer eine ehrenrührige Tatsache über einen anderen behauptet oder verbreitet, ohne dass sie erweislich wahr ist — bis zu 1 Jahr.', tags:['Ehrdelikt'] },
+            { p:'§ 187', t:'Verleumdung',                              s:'Wer wider besseres Wissen eine ehrenrührige unwahre Tatsache behauptet oder verbreitet — bis zu 2 Jahre.', tags:['Verleumdung'] },
+            { p:'§ 201', t:'Verletzung der Vertraulichkeit des Wortes', s:'Wer unbefugt das nichtöffentlich gesprochene Wort eines anderen aufnimmt — bis zu 3 Jahre.', tags:['Aufnahme-Verbot'], wichtig:true },
+            { p:'§ 202a', t:'Ausspähen von Daten',                    s:'Wer unbefugt sich oder einem anderen Zugang zu Daten verschafft, die nicht für ihn bestimmt und gegen unberechtigten Zugang besonders gesichert sind — bis zu 3 Jahre.', tags:['Hacking','IT-Sec'] },
+            { p:'§ 203', t:'Verletzung von Privatgeheimnissen',       s:'Schweigepflicht für Berufsgeheimnisträger — auch Sicherheitsmitarbeiter (z. B. Werkschutz) unterliegen vertraglich der Schweigepflicht.', tags:['Schweigepflicht'], wichtig:true },
+          ],
+        },
+        {
+          nr: 3, title: '🩸 Besonderer Teil · Tötung & Körperverletzung (§§ 211—229)',
+          paragraphen: [
+            { p:'§ 211', t:'Mord',                                    s:'Lebenslange Freiheitsstrafe. Mordmerkmale: Mordlust, Befriedigung des Geschlechtstriebs, Habgier, sonst niedrige Beweggründe · heimtückisch, grausam, gemeingefährlich · Verdeckungs-/Ermöglichungsabsicht.', tags:['Mordmerkmale'], wichtig:true },
+            { p:'§ 212', t:'Totschlag',                                s:'Wer einen Menschen tötet, ohne Mörder zu sein — Freiheitsstrafe nicht unter 5 Jahren. Im besonders schweren Fall lebenslang.', tags:['Tötungsdelikt'] },
+            { p:'§ 222', t:'Fahrlässige Tötung',                      s:'Bis zu 5 Jahre Freiheitsstrafe oder Geldstrafe.', tags:['Fahrlässigkeit'] },
+            { p:'§ 223', t:'Körperverletzung',                         s:'Wer eine andere Person körperlich misshandelt oder an der Gesundheit schädigt — bis zu 5 Jahre. Versuch strafbar. Antragsdelikt (Ausnahme: besonderes öffentl. Interesse).', tags:['KV','Antragsdelikt'], wichtig:true },
+            { p:'§ 224', t:'Gefährliche Körperverletzung',             s:'Körperverletzung mittels Waffe, gefährlichem Werkzeug, Gift, hinterlistigem Überfall, mit anderen gemeinschaftlich, lebensgefährdender Behandlung — 6 Monate bis 10 Jahre.', tags:['gefährlich'], wichtig:true },
+            { p:'§ 226', t:'Schwere Körperverletzung',                s:'Verlust eines wichtigen Glieds, Sehvermögens, Sprechvermögens etc. — Freiheitsstrafe von 1 bis 10 Jahren.', tags:['schwer'] },
+            { p:'§ 227', t:'Körperverletzung mit Todesfolge',         s:'Wenn der Täter durch die Körperverletzung den Tod des Verletzten verursacht — nicht unter 3 Jahren Freiheitsstrafe.', tags:['Todesfolge'] },
+            { p:'§ 229', t:'Fahrlässige Körperverletzung',            s:'Bis zu 3 Jahre Freiheitsstrafe oder Geldstrafe.', tags:['Fahrlässigkeit'] },
+          ],
+        },
+        {
+          nr: 4, title: '🔒 Besonderer Teil · Freiheitsdelikte & Eigentum (§§ 239—263)',
+          paragraphen: [
+            { p:'§ 239', t:'Freiheitsberaubung',                      s:'Wer einen Menschen einsperrt oder auf andere Weise der Freiheit beraubt — bis zu 5 Jahre. WICHTIG bei Festnahme durch Sicherheitsdienst — nur § 127 StPO als Rechtfertigung!', tags:['Festnahme','Vorsicht'], wichtig:true },
+            { p:'§ 240', t:'Nötigung',                                 s:'Wer einen Menschen rechtswidrig mit Gewalt oder durch Drohung mit einem empfindlichen Übel zu einer Handlung, Duldung oder Unterlassung nötigt — bis zu 3 Jahre.', tags:['Nötigung'], wichtig:true },
+            { p:'§ 241', t:'Bedrohung',                                s:'Wer einen Menschen mit der Begehung einer gegen ihn gerichteten rechtswidrigen Tat gegen die sexuelle Selbstbestimmung, die körperliche Unversehrtheit, die persönliche Freiheit oder gegen eine Sache von bedeutendem Wert bedroht — bis zu 1 Jahr.', tags:['Bedrohung'] },
+            { p:'§ 242', t:'Diebstahl',                                s:'Wer eine fremde bewegliche Sache einem anderen in der Absicht wegnimmt, die Sache sich oder einem Dritten rechtswidrig zuzueignen — bis zu 5 Jahre.', tags:['Diebstahl'], wichtig:true },
+            { p:'§ 243', t:'Besonders schwerer Diebstahl',             s:'Einbruch, Einsteigen, Aufbrechen, verschlossene Sachen, gewerbsmäßig — 3 Monate bis 10 Jahre.', tags:['Einbruch'] },
+            { p:'§ 244', t:'Diebstahl mit Waffen · Bandendiebstahl',  s:'Mit Waffe/gefährl. Werkzeug oder als Bandenmitglied — 6 Monate bis 10 Jahre.', tags:['Waffe'], wichtig:true },
+            { p:'§ 246', t:'Unterschlagung',                           s:'Wer eine fremde bewegliche Sache sich oder einem Dritten rechtswidrig zueignet — bis zu 3 Jahre.', tags:['Unterschlagung'] },
+            { p:'§ 249', t:'Raub',                                     s:'Wer mit Gewalt gegen eine Person oder unter Drohung mit gegenwärtiger Gefahr für Leib oder Leben eine fremde bewegliche Sache wegnimmt — nicht unter 1 Jahr.', tags:['Raub'], wichtig:true },
+            { p:'§ 252', t:'Räuberischer Diebstahl',                  s:'Wer auf frischer Tat eines Diebstahls betroffen Gewalt anwendet, um sich im Besitz des Diebesguts zu erhalten — wie Räuber bestraft. WICHTIG: Häufig bei Ladendetektiv-Einsatz!', tags:['Ladendieb'], wichtig:true },
+            { p:'§ 253', t:'Erpressung',                               s:'Wer einen Menschen rechtswidrig mit Gewalt oder durch Drohung mit einem empfindlichen Übel zu einer Handlung, Duldung oder Unterlassung nötigt und dadurch dem Vermögen des Genötigten Nachteil zufügt — bis zu 5 Jahre.', tags:['Erpressung'] },
+            { p:'§ 263', t:'Betrug',                                   s:'Wer in der Absicht, sich oder einem Dritten einen rechtswidrigen Vermögensvorteil zu verschaffen, durch Vorspiegelung falscher Tatsachen den Irrtum eines anderen erregt — bis zu 5 Jahre.', tags:['Betrug'] },
+          ],
+        },
+        {
+          nr: 5, title: '🔥 Besonderer Teil · Gemeingefährliche & Hilfeleistung (§§ 303—323c)',
+          paragraphen: [
+            { p:'§ 303', t:'Sachbeschädigung',                         s:'Wer rechtswidrig eine fremde Sache beschädigt oder zerstört — bis zu 2 Jahre. Antragsdelikt.', tags:['Sachbeschädigung'] },
+            { p:'§ 306', t:'Brandstiftung',                            s:'Wer fremde Sachen (Gebäude, Hütten, Anlagen) in Brand setzt oder durch Brandlegung ganz oder teilweise zerstört — 1 bis 10 Jahre.', tags:['Brandstiftung'] },
+            { p:'§ 315', t:'Gefährliche Eingriffe in den Straßenverkehr', s:'Wer die Sicherheit des Straßenverkehrs beeinträchtigt — 6 Monate bis 10 Jahre.', tags:['Verkehr'] },
+            { p:'§ 323a', t:'Vollrausch',                              s:'Wer sich vorsätzlich oder fahrlässig durch alkoholische Getränke in einen Rausch versetzt und in diesem Zustand eine rechtswidrige Tat begeht — bis zu 5 Jahre.', tags:['Alkohol'] },
+            { p:'§ 323c', t:'Unterlassene Hilfeleistung',              s:'Wer bei Unglücksfällen oder gemeiner Gefahr nicht Hilfe leistet, obwohl dies erforderlich und ihm zumutbar ist — bis zu 1 Jahr. ABSOLUTE PFLICHT auch für Sicherheitsmitarbeiter!', tags:['Hilfspflicht'], wichtig:true },
+          ],
+        },
+      ],
+    },
   ];
 
   /* ====== VISUALISIERUNGEN als SVG ====== */
   const VIS = {
+
+    /* ===== BGB · 5 Bücher als interaktive Übersicht ===== */
+    'bgb-buecher': `
+      <svg viewBox="0 0 720 480" xmlns="http://www.w3.org/2000/svg" class="ges-vis">
+        <defs>
+          <linearGradient id="bgb-bg" x2="0" y2="1"><stop offset="0" stop-color="#0b1424"/><stop offset="1" stop-color="#060a14"/></linearGradient>
+          <filter id="bgb-glow"><feGaussianBlur stdDeviation="2"/></filter>
+        </defs>
+        <rect width="720" height="480" fill="url(#bgb-bg)"/>
+        <text x="360" y="30" text-anchor="middle" font-size="16" fill="#0891b2" font-weight="900">BGB · Bürgerliches Gesetzbuch · 5 Bücher · 2.385 §§</text>
+        <text x="360" y="50" text-anchor="middle" font-size="11" fill="#94a3b8">Pandektensystem · seit 01.01.1900</text>
+
+        ${[
+          {n:1, ti:'Allg. Teil',     b:'Buch 1', p:'§§ 1—240',   col:'#06b6d4', x:60,  topic:'Personen · Sachen · Rechtsgeschäfte', wichtig:'§ 145 Antrag'},
+          {n:2, ti:'Schuldrecht',     b:'Buch 2', p:'§§ 241—853', col:'#22c55e', x:200, topic:'Verträge · Schadensersatz · NOTWEHR', wichtig:'§ 227 · § 823 · § 859'},
+          {n:3, ti:'Sachenrecht',     b:'Buch 3', p:'§§ 854—1296',col:'#fbbf24', x:340, topic:'Besitz · Eigentum · Hausrecht', wichtig:'§ 903 · § 1004'},
+          {n:4, ti:'Familienrecht',   b:'Buch 4', p:'§§ 1297—1921',col:'#a855f7',x:480, topic:'Ehe · Verwandtschaft · Sorge', wichtig:'Übersicht'},
+          {n:5, ti:'Erbrecht',        b:'Buch 5', p:'§§ 1922—2385',col:'#ef4444',x:620, topic:'Erbfolge · Testament · Pflichtteil', wichtig:'§ 1922'},
+        ].map(B => `
+          <g>
+            <rect x="${B.x-50}" y="80" width="100" height="240" rx="10" fill="#1e293b" stroke="${B.col}" stroke-width="2.5"/>
+            <!-- Buchrücken -->
+            <rect x="${B.x-46}" y="84" width="92" height="16" rx="3" fill="${B.col}"/>
+            <text x="${B.x}" y="96" text-anchor="middle" font-size="9" fill="#0b1424" font-weight="900">${B.b}</text>
+            <!-- Nr-Kreis -->
+            <circle cx="${B.x}" cy="140" r="22" fill="#0a0f1a" stroke="${B.col}" stroke-width="2"/>
+            <text x="${B.x}" y="148" text-anchor="middle" font-size="20" fill="${B.col}" font-weight="900">${B.n}</text>
+            <!-- Titel -->
+            <text x="${B.x}" y="195" text-anchor="middle" font-size="12" fill="${B.col}" font-weight="800">${B.ti}</text>
+            <text x="${B.x}" y="215" text-anchor="middle" font-size="9" fill="#94a3b8" font-family="monospace">${B.p}</text>
+            <!-- Topic -->
+            <foreignObject x="${B.x-45}" y="225" width="90" height="50">
+              <div xmlns="http://www.w3.org/1999/xhtml" style="font:10px sans-serif;color:#cbd5e1;text-align:center;line-height:1.3">${B.topic}</div>
+            </foreignObject>
+            <!-- Wichtige §§ -->
+            <rect x="${B.x-44}" y="285" width="88" height="28" rx="3" fill="${B.col}" opacity=".2" stroke="${B.col}" stroke-width="1"/>
+            <text x="${B.x}" y="303" text-anchor="middle" font-size="9" fill="${B.col}" font-weight="700">${B.wichtig}</text>
+          </g>
+        `).join('')}
+
+        <!-- Hervorhebung: für Sicherheitsdienste -->
+        <rect x="40" y="350" width="640" height="115" rx="8" fill="rgba(8,145,178,.1)" stroke="#0891b2" stroke-width="1.5"/>
+        <text x="60" y="375" font-size="13" fill="#0891b2" font-weight="900">⚡ Für Sicherheitsdienste essenziell:</text>
+        <g font-size="10.5" fill="#cbd5e1">
+          <text x="60" y="398"><tspan fill="#22c55e" font-weight="800">§ 227 BGB Notwehr</tspan> · zivilrechtliche Rechtfertigung von Verteidigungshandlungen</text>
+          <text x="60" y="416"><tspan fill="#22c55e" font-weight="800">§ 229 BGB Selbsthilfe</tspan> · Wegnahme/Festnahme wenn obrigkeitliche Hilfe zu spät kommt</text>
+          <text x="60" y="434"><tspan fill="#fbbf24" font-weight="800">§ 859 BGB Besitzwehr/-kehr</tspan> · Schutzrechte des Besitzers (auch Sicherheitsmitarbeiter als Besitzdiener!)</text>
+          <text x="60" y="452"><tspan fill="#ef4444" font-weight="800">§ 823 BGB Schadensersatz</tspan> · Haftung bei Verletzung von Leben/Körper/Eigentum</text>
+        </g>
+      </svg>`,
+
+    /* ===== StGB · Aufbau Allg. + Bes. Teil ===== */
+    'stgb-aufbau': `
+      <svg viewBox="0 0 720 520" xmlns="http://www.w3.org/2000/svg" class="ges-vis">
+        <rect width="720" height="520" fill="#0a0f1a"/>
+        <text x="360" y="30" text-anchor="middle" font-size="16" fill="#dc2626" font-weight="900">StGB · Strafgesetzbuch · Aufbau</text>
+        <text x="360" y="50" text-anchor="middle" font-size="11" fill="#94a3b8">358 Paragraphen · 2 Teile · seit 01.01.1872</text>
+
+        <!-- Allgemeiner Teil -->
+        <g>
+          <rect x="40" y="80" width="290" height="400" rx="10" fill="#1e293b" stroke="#fbbf24" stroke-width="2.5"/>
+          <rect x="40" y="80" width="290" height="36" rx="10" fill="#fbbf24"/>
+          <text x="185" y="105" text-anchor="middle" font-size="14" fill="#0b1424" font-weight="900">⚖️ ALLGEMEINER TEIL</text>
+          <text x="185" y="132" text-anchor="middle" font-size="10" fill="#fbbf24" font-family="monospace">§§ 1 — 79b</text>
+          <text x="185" y="148" text-anchor="middle" font-size="10" fill="#94a3b8">Grundregeln · Rechtfertigung · Schuld · Strafe</text>
+
+          ${[
+            {p:'§§ 1—12', t:'Anwendungsbereich · Geltung'},
+            {p:'§§ 13—21', t:'Vorsatz · Fahrlässigkeit · Schuld'},
+            {p:'§ 32', t:'NOTWEHR · ⭐', hl:'#22c55e'},
+            {p:'§ 33', t:'Notwehrexzess'},
+            {p:'§ 34', t:'rechtfertigender Notstand ⭐', hl:'#22c55e'},
+            {p:'§ 35', t:'entschuldigender Notstand'},
+            {p:'§§ 38—45', t:'Strafarten · Geld- + Freiheitsstrafe'},
+            {p:'§§ 46—51', t:'Strafzumessung'},
+            {p:'§§ 56—58', t:'Bewährung'},
+            {p:'§§ 78—79b', t:'Verjährung'},
+          ].map((row,i) => `
+            <rect x="56" y="${172 + i*28}" width="258" height="22" rx="3" fill="${row.hl?'rgba(34,197,94,.15)':'#0a0f1a'}" stroke="${row.hl||'#334155'}"/>
+            <text x="64" y="${187 + i*28}" font-size="10" font-family="monospace" fill="${row.hl||'#94a3b8'}" font-weight="700">${row.p}</text>
+            <text x="125" y="${187 + i*28}" font-size="10" fill="${row.hl||'#cbd5e1'}">${row.t}</text>
+          `).join('')}
+        </g>
+
+        <!-- Besonderer Teil -->
+        <g>
+          <rect x="350" y="80" width="330" height="400" rx="10" fill="#1e293b" stroke="#dc2626" stroke-width="2.5"/>
+          <rect x="350" y="80" width="330" height="36" rx="10" fill="#dc2626"/>
+          <text x="515" y="105" text-anchor="middle" font-size="14" fill="#fff" font-weight="900">🎯 BESONDERER TEIL</text>
+          <text x="515" y="132" text-anchor="middle" font-size="10" fill="#dc2626" font-family="monospace">§§ 80 — 358</text>
+          <text x="515" y="148" text-anchor="middle" font-size="10" fill="#94a3b8">Einzelne Straftatbestände (Mord, Diebstahl ...)</text>
+
+          ${[
+            {p:'§ 123', t:'Hausfriedensbruch ⭐', hl:'#fbbf24'},
+            {p:'§ 132', t:'Amtsanmaßung ⚠️', hl:'#ef4444'},
+            {p:'§ 185', t:'Beleidigung'},
+            {p:'§ 201', t:'unbefugte Tonaufnahme ⭐', hl:'#fbbf24'},
+            {p:'§ 211', t:'Mord (lebenslang)'},
+            {p:'§ 223', t:'Körperverletzung ⭐', hl:'#fbbf24'},
+            {p:'§ 224', t:'Gefährliche KV (Waffen!)'},
+            {p:'§ 239', t:'Freiheitsberaubung ⚠️', hl:'#ef4444'},
+            {p:'§ 240', t:'Nötigung'},
+            {p:'§ 242', t:'Diebstahl'},
+            {p:'§ 252', t:'Räuber. Diebstahl ⭐ (Ladendetektiv)', hl:'#fbbf24'},
+            {p:'§ 303', t:'Sachbeschädigung'},
+            {p:'§ 323c', t:'unterl. Hilfeleistung ⭐', hl:'#22c55e'},
+          ].map((row,i) => `
+            <rect x="368" y="${172 + i*22}" width="294" height="18" rx="3" fill="${row.hl?'rgba(220,38,38,.12)':'#0a0f1a'}" stroke="${row.hl||'#334155'}"/>
+            <text x="376" y="${185 + i*22}" font-size="9.5" font-family="monospace" fill="${row.hl||'#94a3b8'}" font-weight="700">${row.p}</text>
+            <text x="430" y="${185 + i*22}" font-size="9.5" fill="${row.hl||'#cbd5e1'}">${row.t}</text>
+          `).join('')}
+        </g>
+
+        <text x="360" y="505" text-anchor="middle" font-size="10" fill="#22d3ee" font-weight="700">⭐ = häufig im Sicherheitsdienst-Alltag · ⚠️ = Achtung Strafbarkeitsrisiko für Wachpersonen</text>
+      </svg>`,
+
+    /* ===== Notwehr-Flowchart · § 32 StGB ===== */
+    'stgb-notwehr': `
+      <svg viewBox="0 0 760 540" xmlns="http://www.w3.org/2000/svg" class="ges-vis">
+        <rect width="760" height="540" fill="#0a0f1a"/>
+        <text x="380" y="30" text-anchor="middle" font-size="16" fill="#22c55e" font-weight="900">§ 32 StGB · Notwehr-Prüfung · 4-Stufen-Schema</text>
+        <text x="380" y="50" text-anchor="middle" font-size="11" fill="#94a3b8">Wer eine durch Notwehr gebotene Tat begeht, handelt nicht rechtswidrig.</text>
+
+        ${[
+          {n:1, label:'ANGRIFF', q:'Liegt ein Angriff auf ein rechtlich geschütztes Gut vor?', ja:'Person, Eigentum, Freiheit, Ehre — JA', nein:'kein Angriff → keine Notwehr', y:85, col:'#22c55e'},
+          {n:2, label:'GEGENWÄRTIG', q:'Steht der Angriff unmittelbar bevor, dauert er an oder noch nicht beendet?', ja:'unmittelbar/dauernd → JA', nein:'in Zukunft / vorbei → keine Notwehr', y:185, col:'#22c55e'},
+          {n:3, label:'RECHTSWIDRIG', q:'Ist der Angriff selbst nicht durch Rechtfertigung gedeckt?', ja:'Angreifer hat keine Rechtfertigung → JA', nein:'(z. B. Polizei greift rechtmäßig zu) → keine Notwehr', y:285, col:'#22c55e'},
+          {n:4, label:'ERFORDERLICH + GEBOTEN', q:'Ist Verteidigung das mildeste wirksame Mittel UND nicht rechtsmissbräuchlich?', ja:'mildestes Mittel + sozial geboten → ✓ NOTWEHR', nein:'unverhältnismäßig → Notwehrexzess (§ 33)', y:385, col:'#22c55e'},
+        ].map(S => `
+          <g>
+            <!-- Stufenkreis -->
+            <circle cx="60" cy="${S.y+30}" r="26" fill="#1e293b" stroke="${S.col}" stroke-width="3"/>
+            <text x="60" y="${S.y+38}" text-anchor="middle" font-size="20" fill="${S.col}" font-weight="900">${S.n}</text>
+            <!-- Label -->
+            <rect x="100" y="${S.y}" width="170" height="60" rx="6" fill="${S.col}" opacity=".18" stroke="${S.col}" stroke-width="1.5"/>
+            <text x="185" y="${S.y+25}" text-anchor="middle" font-size="13" fill="${S.col}" font-weight="900">${S.label}</text>
+            <foreignObject x="105" y="${S.y+30}" width="160" height="28">
+              <div xmlns="http://www.w3.org/1999/xhtml" style="font:9px sans-serif;color:#cbd5e1;text-align:center;line-height:1.3">${S.q}</div>
+            </foreignObject>
+            <!-- JA-Pfeil -->
+            <rect x="290" y="${S.y+5}" width="220" height="22" rx="3" fill="rgba(34,197,94,.18)" stroke="#22c55e"/>
+            <text x="298" y="${S.y+20}" font-size="10" fill="#22c55e" font-weight="700">✓ ${S.ja}</text>
+            <!-- NEIN-Pfeil -->
+            <rect x="290" y="${S.y+33}" width="220" height="22" rx="3" fill="rgba(239,68,68,.12)" stroke="#ef4444"/>
+            <text x="298" y="${S.y+48}" font-size="10" fill="#ef4444" font-weight="700">✗ ${S.nein}</text>
+            ${S.n<4 ? `<line x1="60" y1="${S.y+60}" x2="60" y2="${S.y+95}" stroke="#22c55e" stroke-width="2"/>
+            <polygon points="56,${S.y+92} 60,${S.y+100} 64,${S.y+92}" fill="#22c55e"/>` : ''}
+            <!-- §§-Verweis -->
+            <text x="540" y="${S.y+32}" font-size="9" fill="#94a3b8" font-family="monospace">vgl. § 32 II StGB</text>
+            <text x="540" y="${S.y+48}" font-size="9" fill="#94a3b8" font-family="monospace">+ § 227 BGB</text>
+          </g>
+        `).join('')}
+
+        <!-- Ergebnis -->
+        <rect x="40" y="480" width="680" height="48" rx="8" fill="rgba(34,197,94,.18)" stroke="#22c55e" stroke-width="2"/>
+        <text x="380" y="500" text-anchor="middle" font-size="13" fill="#22c55e" font-weight="900">✓ Alle 4 Stufen JA → NOTWEHR · keine Rechtswidrigkeit · keine Strafe · kein Schadensersatz</text>
+        <text x="380" y="518" text-anchor="middle" font-size="10" fill="#94a3b8">Nothilfe = Notwehr zugunsten Dritter — selbe Voraussetzungen</text>
+      </svg>`,
+
+    /* ===== Hausrecht & Festnahme (BGB + StGB + StPO) ===== */
+    'bgb-hausrecht': `
+      <svg viewBox="0 0 720 460" xmlns="http://www.w3.org/2000/svg" class="ges-vis">
+        <rect width="720" height="460" fill="#0a0f1a"/>
+        <text x="360" y="30" text-anchor="middle" font-size="16" fill="#fbbf24" font-weight="900">Hausrecht & Festnahme · Rechtsgrundlagen-Karte</text>
+        <text x="360" y="50" text-anchor="middle" font-size="11" fill="#94a3b8">BGB · StGB · StPO im Zusammenspiel</text>
+
+        <!-- Eigentümer/Besitzer-Kreis -->
+        <g>
+          <circle cx="170" cy="170" r="80" fill="rgba(8,145,178,.15)" stroke="#0891b2" stroke-width="2.5"/>
+          <text x="170" y="155" text-anchor="middle" font-size="14" fill="#0891b2" font-weight="900">EIGENTÜMER /</text>
+          <text x="170" y="175" text-anchor="middle" font-size="14" fill="#0891b2" font-weight="900">BESITZER</text>
+          <text x="170" y="200" text-anchor="middle" font-size="10" fill="#94a3b8">§ 903 BGB · § 854 BGB</text>
+        </g>
+
+        <!-- Sicherheitsmitarbeiter-Kreis -->
+        <g>
+          <circle cx="550" cy="170" r="80" fill="rgba(34,211,238,.15)" stroke="#22d3ee" stroke-width="2.5"/>
+          <text x="550" y="155" text-anchor="middle" font-size="14" fill="#22d3ee" font-weight="900">SICHERHEITS-</text>
+          <text x="550" y="175" text-anchor="middle" font-size="14" fill="#22d3ee" font-weight="900">MITARBEITER</text>
+          <text x="550" y="200" text-anchor="middle" font-size="10" fill="#94a3b8">§ 855 BGB · Besitzdiener</text>
+        </g>
+
+        <!-- Verbindung: Dienstvertrag -->
+        <line x1="250" y1="170" x2="470" y2="170" stroke="#fbbf24" stroke-width="2" stroke-dasharray="6 4"/>
+        <rect x="290" y="155" width="140" height="30" rx="4" fill="#0a0f1a" stroke="#fbbf24"/>
+        <text x="360" y="174" text-anchor="middle" font-size="11" fill="#fbbf24" font-weight="800">§ 611 BGB Dienstvertrag</text>
+
+        <!-- Befugnisse-Boxen -->
+        <g>
+          <text x="360" y="285" text-anchor="middle" font-size="13" fill="#22c55e" font-weight="900">↓ ÜBERTRAGENE BEFUGNISSE ↓</text>
+        </g>
+
+        ${[
+          {x:40,  ti:'Hausverbot',      g:'§ 1004 BGB',        beschreibung:'aussprechen + durchsetzen', col:'#22c55e'},
+          {x:200, ti:'Besitzwehr',      g:'§ 859 I BGB',       beschreibung:'aktive Verteidigung gegen Eindringen', col:'#22c55e'},
+          {x:360, ti:'Besitzkehr',      g:'§ 859 II BGB',      beschreibung:'frische Tat: Sache zurückholen', col:'#22c55e'},
+          {x:520, ti:'Selbsthilfe',     g:'§ 229 BGB',         beschreibung:'wenn obrigkeitl. Hilfe zu spät', col:'#fbbf24'},
+        ].map(B => `
+          <g>
+            <rect x="${B.x}" y="305" width="160" height="80" rx="8" fill="#1e293b" stroke="${B.col}" stroke-width="2"/>
+            <text x="${B.x+80}" y="328" text-anchor="middle" font-size="12" fill="${B.col}" font-weight="900">${B.ti}</text>
+            <text x="${B.x+80}" y="346" text-anchor="middle" font-size="10" fill="#94a3b8" font-family="monospace">${B.g}</text>
+            <foreignObject x="${B.x+8}" y="350" width="144" height="32">
+              <div xmlns="http://www.w3.org/1999/xhtml" style="font:9.5px sans-serif;color:#cbd5e1;text-align:center;line-height:1.3">${B.beschreibung}</div>
+            </foreignObject>
+          </g>
+        `).join('')}
+
+        <!-- Festnahme-Sonderbox -->
+        <rect x="40" y="400" width="640" height="50" rx="8" fill="rgba(239,68,68,.12)" stroke="#ef4444" stroke-width="2"/>
+        <text x="60" y="421" font-size="11" fill="#ef4444" font-weight="900">⚠️ JEDERMANNS-FESTNAHME · § 127 I StPO:</text>
+        <text x="60" y="440" font-size="10" fill="#cbd5e1">Bei frischer Tat + Fluchtgefahr ODER unbekannter Identität · NUR Festhalten bis Polizei kommt · sonst § 239 StGB Freiheitsberaubung!</text>
+      </svg>`,
+
+    /* ===== Strafmaß-Skala ===== */
+    'stgb-strafmass': `
+      <svg viewBox="0 0 720 360" xmlns="http://www.w3.org/2000/svg" class="ges-vis">
+        <rect width="720" height="360" fill="#0a0f1a"/>
+        <text x="360" y="30" text-anchor="middle" font-size="16" fill="#dc2626" font-weight="900">StGB · Strafmaß-Skala mit typischen Sicherheits-Delikten</text>
+        <text x="360" y="50" text-anchor="middle" font-size="11" fill="#94a3b8">Geldstrafe (§ 40) bis lebenslange Freiheitsstrafe (§ 38)</text>
+
+        <!-- Skala -->
+        <line x1="60" y1="220" x2="680" y2="220" stroke="#475569" stroke-width="3"/>
+        ${[
+          {x:80,  col:'#94a3b8', label:'Geldstrafe', d:'5—360 Tagessätze', delikte:'§ 123 HF · § 185 Beleid.'},
+          {x:200, col:'#22c55e', label:'bis 1 Jahr', d:'§ 38 II FS', delikte:'§ 123 · § 185 · § 241'},
+          {x:320, col:'#fbbf24', label:'bis 5 Jahre', d:'mittlere Krim.', delikte:'§ 223 KV · § 240 Nötig. · § 242 Diebst.'},
+          {x:450, col:'#fb923c', label:'bis 10 Jahre', d:'schwere Krim.', delikte:'§ 224 · § 243 · § 249 Raub'},
+          {x:570, col:'#ef4444', label:'> 10 Jahre', d:'Verbrechen', delikte:'§ 212 Totschlag · § 226'},
+          {x:670, col:'#7c2d12', label:'lebenslang', d:'§ 38 I StGB', delikte:'§ 211 Mord'},
+        ].map(S => `
+          <g>
+            <line x1="${S.x}" y1="220" x2="${S.x}" y2="210" stroke="${S.col}" stroke-width="2"/>
+            <rect x="${S.x-50}" y="90" width="100" height="115" rx="6" fill="#1e293b" stroke="${S.col}" stroke-width="2"/>
+            <text x="${S.x}" y="115" text-anchor="middle" font-size="11" fill="${S.col}" font-weight="900">${S.label}</text>
+            <text x="${S.x}" y="132" text-anchor="middle" font-size="9" fill="#94a3b8">${S.d}</text>
+            <line x1="${S.x-40}" y1="140" x2="${S.x+40}" y2="140" stroke="#334155"/>
+            <foreignObject x="${S.x-46}" y="145" width="92" height="55">
+              <div xmlns="http://www.w3.org/1999/xhtml" style="font:9px sans-serif;color:#cbd5e1;text-align:center;line-height:1.4">${S.delikte}</div>
+            </foreignObject>
+            <!-- Marker -->
+            <circle cx="${S.x}" cy="220" r="6" fill="${S.col}"/>
+          </g>
+        `).join('')}
+
+        <text x="60" y="260" font-size="11" fill="#fbbf24" font-weight="700">Verbrechen (§ 12 I StGB):</text>
+        <text x="200" y="260" font-size="11" fill="#cbd5e1">Mindestmaß ≥ 1 Jahr Freiheitsstrafe (Mord, Raub, schwere KV, Brandstiftung)</text>
+        <text x="60" y="282" font-size="11" fill="#22c55e" font-weight="700">Vergehen (§ 12 II StGB):</text>
+        <text x="200" y="282" font-size="11" fill="#cbd5e1">Mindestmaß &lt; 1 Jahr ODER nur Geldstrafe (HF, KV, Diebstahl, Nötigung)</text>
+
+        <rect x="60" y="305" width="600" height="40" rx="6" fill="rgba(220,38,38,.12)" stroke="#dc2626"/>
+        <text x="80" y="320" font-size="11" fill="#dc2626" font-weight="900">⚠️ Versuch beim Verbrechen IMMER strafbar (§ 23 I) — beim Vergehen nur wenn ausdrücklich (z. B. § 223 II KV)</text>
+        <text x="80" y="338" font-size="10" fill="#cbd5e1">Beihilfe & Anstiftung (§§ 26, 27) ebenfalls strafbar — auch bloßes „Zuhalten der Tür" reicht!</text>
+      </svg>`,
+
+    /* ===== Bestehende ===== */
     'gewo-erlaubnis': `
       <svg viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg" class="ges-vis">
         <rect width="600" height="280" fill="#0a0f1a"/>
