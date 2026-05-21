@@ -508,6 +508,7 @@ window.GESETZE_DB = (() => {
       intro: '2.385 Paragraphen in 5 Büchern. Regelt das gesamte deutsche Privatrecht. Für Sicherheitsdienste hochrelevant: Notwehr/Selbsthilfe (§§ 227—231), Besitz/Hausrecht (§§ 858—862, 1004) und Schadensersatz (§ 823). Pflichtstoff der § 7 BeWachV-Unterrichtung.',
       anwender: 'Jeder Bürger · Sicherheitsdienste · Vertragsparteien · Eigentümer/Besitzer',
       visualisierung: 'bgb-buecher',
+      visualisierung2: 'praxis-faelle',
       abschnitte: [
         {
           nr: 1, title: '📕 Buch 1 · Allgemeiner Teil (§§ 1—240)',
@@ -524,21 +525,37 @@ window.GESETZE_DB = (() => {
           nr: 2, title: '📗 Buch 2 · Schuldrecht (§§ 241—853) — KERN für Sicherheitsdienste',
           paragraphen: [
             { p:'§ 226', t:'Schikaneverbot',                         s:'Die Ausübung eines Rechts ist unzulässig, wenn sie nur den Zweck haben kann, einem anderen Schaden zuzufügen.', tags:['Rechtsmissbrauch'] },
-            { p:'§ 227', t:'Notwehr (zivilrechtlich)',               s:'Eine durch Notwehr gebotene Handlung ist nicht widerrechtlich. Notwehr = Verteidigung gegen einen gegenwärtigen rechtswidrigen Angriff. Erforderlich + geboten.', tags:['Notwehr','Verteidigung'], wichtig:true },
-            { p:'§ 228', t:'Defensiver Notstand (Sachen)',           s:'Wer eine fremde Sache beschädigt, um eine durch sie drohende Gefahr abzuwenden, handelt nicht widerrechtlich (z. B. fremden Hund abwehren).', tags:['Notstand'], wichtig:true },
-            { p:'§ 229', t:'Selbsthilfe',                            s:'Wer zum Zwecke der Selbsthilfe eine Sache wegnimmt, zerstört oder beschädigt, oder wer einen Verpflichteten festnimmt, handelt nicht widerrechtlich — wenn obrigkeitliche Hilfe nicht rechtzeitig zu erlangen ist und Vereitelung droht.', tags:['Selbsthilfe','Festnahme'], wichtig:true },
-            { p:'§ 230', t:'Grenzen der Selbsthilfe',                s:'Selbsthilfe darf nicht weiter gehen als zur Abwendung der Gefahr erforderlich. Bei Festnahme: dinglicher/persönlicher Arrest beim Amtsgericht beantragen.', tags:['Grenzen'], wichtig:true },
-            { p:'§ 231', t:'Irrtum über Voraussetzungen',            s:'Wer eine der in § 229 bezeichneten Handlungen in der irrigen Annahme vornimmt, dass die erforderlichen Voraussetzungen vorhanden seien, ist zum Schadensersatz verpflichtet.', tags:['Putativ-Selbsthilfe'], wichtig:true },
+            { p:'§ 227', t:'Notwehr (zivilrechtlich)',               s:'Eine durch Notwehr gebotene Handlung ist nicht widerrechtlich. Notwehr = Verteidigung gegen einen gegenwärtigen rechtswidrigen Angriff. Erforderlich + geboten.', tags:['Notwehr','Verteidigung'], wichtig:true,
+              beispiel:'Ein angetrunkener Clubgast holt zum Schlag gegen den Türsteher aus. Der Türsteher pariert den Schlag, dreht den Arm zur Seite und drückt ihn gegen die Wand, bis er aufhört. → § 227 BGB rechtfertigt das. Folge: kein Schadensersatz an den Angreifer, selbst wenn er sich dabei den Ellbogen prellt.',
+              merksatz:'Verteidigung muss erforderlich (mildestes Mittel) und geboten (nicht rechtsmissbräuchlich) sein. Sobald der Angriff vorbei ist, ist auch die Notwehr vorbei.',
+              fehler:['„Bestrafung" nach beendetem Angriff — das ist keine Notwehr mehr.','Verteidigung gegen Wort-Provokation: keine Notwehr (Beleidigung ist Angriff auf Ehre — aber nur sehr eingeschränkt mit körperlicher Gegenwehr).','Schlagstock zücken, obwohl ein „Schritt zurück" gereicht hätte → unverhältnismäßig.'] },
+            { p:'§ 228', t:'Defensiver Notstand (Sachen)',           s:'Wer eine fremde Sache beschädigt, um eine durch sie drohende Gefahr abzuwenden, handelt nicht widerrechtlich (z. B. fremden Hund abwehren).', tags:['Notstand'], wichtig:true,
+              beispiel:'Auf dem Werksgelände rennt ein freilaufender Hund knurrend auf einen Mitarbeiter zu. Der Wachmann tritt den Hund weg, dabei wird das Tier leicht verletzt. → § 228 BGB rechtfertigt, weil die Gefahr von der Sache (hier: vom Tier) selbst ausgeht.' },
+            { p:'§ 229', t:'Selbsthilfe',                            s:'Wer zum Zwecke der Selbsthilfe eine Sache wegnimmt, zerstört oder beschädigt, oder wer einen Verpflichteten festnimmt, handelt nicht widerrechtlich — wenn obrigkeitliche Hilfe nicht rechtzeitig zu erlangen ist und Vereitelung droht.', tags:['Selbsthilfe','Festnahme'], wichtig:true,
+              beispiel:'Ein Ladendieb läuft mit gestohlener Ware aus dem Geschäft. Bis die Polizei kommt, wäre er längst weg. → Der Ladendetektiv darf ihn festhalten UND die Ware zurücknehmen (§ 229 BGB + § 127 StPO). Er muss sich aber unverzüglich bei der Polizei melden.',
+              merksatz:'Drei Voraussetzungen: (1) Anspruch existiert · (2) obrigkeitliche Hilfe zu spät · (3) Vereitelung des Anspruchs droht.',
+              fehler:['Festhalten „auf Verdacht" ohne konkrete Anhaltspunkte → keine § 229-Lage.','Nicht direkt die Polizei verständigen → § 230 II verletzt.','Gewalt anwenden, obwohl Festhalten am Arm gereicht hätte.'] },
+            { p:'§ 230', t:'Grenzen der Selbsthilfe',                s:'Selbsthilfe darf nicht weiter gehen als zur Abwendung der Gefahr erforderlich. Bei Festnahme: dinglicher/persönlicher Arrest beim Amtsgericht beantragen.', tags:['Grenzen'], wichtig:true,
+              beispiel:'Detektiv hat Dieb festgenommen. Er fesselt ihn nicht und sperrt ihn nicht in den Schrank, sondern führt ihn ins Büro und verständigt sofort 110. → § 230 BGB wahrt die Verhältnismäßigkeit.' },
+            { p:'§ 231', t:'Irrtum über Voraussetzungen',            s:'Wer eine der in § 229 bezeichneten Handlungen in der irrigen Annahme vornimmt, dass die erforderlichen Voraussetzungen vorhanden seien, ist zum Schadensersatz verpflichtet.', tags:['Putativ-Selbsthilfe'], wichtig:true,
+              beispiel:'Ein Kunde steckt sein eigenes Smartphone in die Tasche. Der Detektiv hält ihn fälschlich für einen Dieb und fesselt ihn am Boden. → Selbst bei gutem Glauben haftet der Sicherheitsdienst nach § 231 BGB auf Schadensersatz!' },
             { p:'§ 241', t:'Pflichten aus Schuldverhältnis',         s:'Schuldner schuldet Leistung · Schuldverhältnis kann zur Rücksicht auf Rechte, Rechtsgüter und Interessen verpflichten.', tags:['Pflichten'] },
             { p:'§ 433', t:'Kaufvertrag · Pflichten',                s:'Verkäufer: Sache übergeben + Eigentum verschaffen, frei von Mängeln. Käufer: Kaufpreis zahlen + Sache abnehmen.', tags:['Kauf'] },
             { p:'§ 535', t:'Mietvertrag · Pflichten',                s:'Vermieter: Mietsache in vertragsgemäßem Zustand überlassen. Mieter: Miete zahlen.', tags:['Miete'] },
             { p:'§ 611', t:'Dienstvertrag',                          s:'Pflicht zur Leistung versprochener Dienste · Gegenpartei zur Zahlung der vergüteten Vergütung. Grundlage für Bewachungs-Dienstverträge.', tags:['Dienstvertrag'], wichtig:true },
             { p:'§ 631', t:'Werkvertrag',                            s:'Werkunternehmer schuldet Herstellung eines Werkes (Erfolg) · Besteller schuldet Vergütung.', tags:['Werkvertrag'] },
-            { p:'§ 823', t:'Schadensersatzpflicht',                  s:'Wer vorsätzlich oder fahrlässig Leben, Körper, Gesundheit, Freiheit, Eigentum oder ein sonstiges Recht eines anderen widerrechtlich verletzt, ist zum Ersatz verpflichtet.', tags:['Schadensersatz','Haftung'], wichtig:true },
+            { p:'§ 823', t:'Schadensersatzpflicht',                  s:'Wer vorsätzlich oder fahrlässig Leben, Körper, Gesundheit, Freiheit, Eigentum oder ein sonstiges Recht eines anderen widerrechtlich verletzt, ist zum Ersatz verpflichtet.', tags:['Schadensersatz','Haftung'], wichtig:true,
+              beispiel:'Der Türsteher reißt einen Gast am Kragen aus dem Club und schubst ihn zu Boden. Gast bricht sich das Handgelenk. → § 823 BGB: Sicherheitsdienst (und Türsteher persönlich) haften auf Schmerzensgeld + Heilkosten. Versicherungspflicht nach § 14 BeWachV: 1 Mio. € Personenschäden — genau dafür.',
+              merksatz:'Jede Verletzung von Körper, Gesundheit, Freiheit oder Eigentum löst Haftung aus — außer es greift eine Rechtfertigung (Notwehr, § 229 etc.).' },
             { p:'§ 826', t:'Sittenwidrige Schädigung',               s:'Wer in einer gegen die guten Sitten verstoßenden Weise einem anderen vorsätzlich Schaden zufügt, ist verpflichtet zum Ersatz.', tags:['Sittenwidrig'] },
-            { p:'§ 858', t:'Verbotene Eigenmacht',                   s:'Wer dem Besitzer ohne dessen Willen den Besitz entzieht oder ihn stört, handelt — soweit nicht das Gesetz die Entziehung gestattet — widerrechtlich (verbotene Eigenmacht).', tags:['Besitzstörung','Hausrecht'], wichtig:true },
-            { p:'§ 859', t:'Selbsthilfe des Besitzers',              s:'Der Besitzer darf sich verbotener Eigenmacht mit Gewalt erwehren. Bei beweglicher Sache darf er sie dem auf frischer Tat Betroffenen wieder abnehmen.', tags:['Besitzwehr','Besitzkehr'], wichtig:true },
-            { p:'§ 860', t:'Selbsthilfe des Besitzdieners',          s:'Auch der Besitzdiener (z. B. der Sicherheitsmitarbeiter für den Besitzer!) darf die Rechte aus § 859 ausüben.', tags:['Besitzdiener'], wichtig:true },
+            { p:'§ 858', t:'Verbotene Eigenmacht',                   s:'Wer dem Besitzer ohne dessen Willen den Besitz entzieht oder ihn stört, handelt — soweit nicht das Gesetz die Entziehung gestattet — widerrechtlich (verbotene Eigenmacht).', tags:['Besitzstörung','Hausrecht'], wichtig:true,
+              beispiel:'Ein Demonstrant kettet sich an das Werkstor des Chemiewerks. → Verbotene Eigenmacht gegen den Besitz des Werks. Der Werkschutz darf die Kette lösen und den Demonstranten vom Gelände führen (Besitzwehr nach § 859).' },
+            { p:'§ 859', t:'Selbsthilfe des Besitzers',              s:'Der Besitzer darf sich verbotener Eigenmacht mit Gewalt erwehren. Bei beweglicher Sache darf er sie dem auf frischer Tat Betroffenen wieder abnehmen.', tags:['Besitzwehr','Besitzkehr'], wichtig:true,
+              beispiel:'Besitzwehr (Abs. 1): Hooligan will über den Zaun ins Stadion klettern. Der Wachmann zieht ihn zurück, bevor er drüber ist.\nBesitzkehr (Abs. 2): Ein Dieb schnappt sich eine Tasche und rennt los — der Detektiv holt ihn auf frischer Tat ein und nimmt die Tasche zurück.',
+              merksatz:'Besitzwehr = präventiv (Angriff abwehren). Besitzkehr = reaktiv (Sache zurückholen — aber nur auf frischer Tat).',
+              fehler:['Besitzkehr 3 Tage später → unzulässig, nicht mehr „auf frischer Tat".','Verfolgung über kilometerweite Distanz → ab einem Punkt nicht mehr „frische Tat".'] },
+            { p:'§ 860', t:'Selbsthilfe des Besitzdieners',          s:'Auch der Besitzdiener (z. B. der Sicherheitsmitarbeiter für den Besitzer!) darf die Rechte aus § 859 ausüben.', tags:['Besitzdiener'], wichtig:true,
+              beispiel:'Der Werkschutzmitarbeiter ist NICHT Besitzer des Werks — aber Besitzdiener (§ 855 BGB) seines Arbeitgebers. § 860 BGB überträgt ihm das Recht, das Hausrecht aktiv durchzusetzen. So funktioniert die ganze Branche.' },
             { p:'§ 861', t:'Anspruch auf Wiedereinräumung',          s:'Bei Besitzentziehung durch verbotene Eigenmacht: Anspruch auf Wiedereinräumung des Besitzes.', tags:['Besitzschutz'] },
             { p:'§ 862', t:'Anspruch wegen Besitzstörung',           s:'Wird der Besitzer durch verbotene Eigenmacht im Besitz gestört, kann er Beseitigung verlangen.', tags:['Störungsbeseitigung'] },
             { p:'§ 904', t:'Aggressiver Notstand',                   s:'Eigentümer einer Sache ist nicht berechtigt, die Einwirkung eines anderen auf die Sache zu verbieten, wenn die Einwirkung zur Abwendung einer gegenwärtigen Gefahr notwendig + der drohende Schaden gegenüber dem aus der Einwirkung entstehenden unverhältnismäßig groß ist.', tags:['Notstand','aggressiv'], wichtig:true },
@@ -550,7 +567,9 @@ window.GESETZE_DB = (() => {
             { p:'§ 854', t:'Erwerb des Besitzes',                    s:'Der Besitz einer Sache wird durch die Erlangung der tatsächlichen Gewalt über die Sache erworben.', tags:['Besitz'] },
             { p:'§ 855', t:'Besitzdiener',                           s:'Übt jemand die tatsächliche Gewalt über eine Sache für einen anderen aus, ist nur der andere Besitzer (Besitzdiener-Verhältnis). Wichtig: Sicherheitsmitarbeiter sind oft Besitzdiener!', tags:['Besitzdiener'], wichtig:true },
             { p:'§ 903', t:'Befugnisse des Eigentümers',             s:'Der Eigentümer einer Sache kann, soweit nicht das Gesetz oder Rechte Dritter entgegenstehen, mit der Sache nach Belieben verfahren und andere von jeder Einwirkung ausschließen.', tags:['Eigentum'], wichtig:true },
-            { p:'§ 1004', t:'Beseitigungs- und Unterlassungsanspruch', s:'Eigentümer kann Beseitigung der Beeinträchtigung verlangen. Bei Wiederholungsgefahr: Unterlassung. → Rechtliche Grundlage des Hausverbots!', tags:['Hausverbot','Unterlassung'], wichtig:true },
+            { p:'§ 1004', t:'Beseitigungs- und Unterlassungsanspruch', s:'Eigentümer kann Beseitigung der Beeinträchtigung verlangen. Bei Wiederholungsgefahr: Unterlassung. → Rechtliche Grundlage des Hausverbots!', tags:['Hausverbot','Unterlassung'], wichtig:true,
+              beispiel:'Ein Hooligan wirft im Stadion eine Bierflasche. Der Verein spricht ein bundesweites Hausverbot für 3 Jahre aus (gestützt auf § 1004 BGB + § 903 BGB). Betritt er trotzdem das Stadion: § 123 StGB Hausfriedensbruch — sofortige Festnahme nach § 127 StPO.',
+              merksatz:'Hausverbot = Ausübung des Eigentumsrechts. Schriftlich + mit klarer Dauer + Begründung — sonst angreifbar.' },
           ],
         },
         {
@@ -581,6 +600,8 @@ window.GESETZE_DB = (() => {
       intro: '358 Paragraphen in 2 Teilen (Allgemeiner Teil §§ 1—79b · Besonderer Teil §§ 80—358). Für Sicherheitsdienste essenziell: Notwehr/Notstand (§§ 32—35), Hausfriedensbruch (§ 123), Körperverletzung (§ 223), Freiheitsberaubung (§ 239), Nötigung (§ 240). Pflichtstoff der § 7 BeWachV.',
       anwender: 'Strafverfolgungsbehörden · jeder Bürger · Sicherheitsdienste · Wachpersonen',
       visualisierung: 'stgb-aufbau',
+      visualisierung2: 'praxis-faelle',
+      visualisierung3: 'stgb-notwehr',
       abschnitte: [
         {
           nr: 1, title: '⚖️ Allgemeiner Teil · Notwehr & Notstand (§§ 32—35) — HERZSTÜCK',
@@ -589,23 +610,36 @@ window.GESETZE_DB = (() => {
             { p:'§ 15', t:'Vorsätzliches/fahrlässiges Handeln',      s:'Strafbar ist nur vorsätzliches Handeln, wenn nicht das Gesetz fahrlässiges Handeln ausdrücklich mit Strafe bedroht.', tags:['Vorsatz','Fahrlässigkeit'] },
             { p:'§ 17', t:'Verbotsirrtum',                            s:'Fehlt dem Täter bei Begehung die Einsicht, Unrecht zu tun, so handelt er ohne Schuld, wenn er diesen Irrtum nicht vermeiden konnte.', tags:['Verbotsirrtum'] },
             { p:'§ 20', t:'Schuldunfähigkeit · seelische Störung',   s:'Ohne Schuld handelt, wer wegen krankhafter seelischer Störung oder Bewusstseinsstörung unfähig ist, das Unrecht der Tat einzusehen.', tags:['Schuldunfähig'] },
-            { p:'§ 32', t:'Notwehr',                                  s:'(1) Wer eine Tat begeht, die durch Notwehr geboten ist, handelt nicht rechtswidrig. (2) Notwehr ist die Verteidigung, die erforderlich ist, um einen gegenwärtigen rechtswidrigen Angriff von sich oder einem anderen abzuwenden.', tags:['Notwehr','Rechtfertigung'], wichtig:true },
-            { p:'§ 33', t:'Überschreitung der Notwehr',               s:'Überschreitet der Täter die Grenzen der Notwehr aus Verwirrung, Furcht oder Schrecken, so wird er nicht bestraft.', tags:['Notwehrexzess'], wichtig:true },
-            { p:'§ 34', t:'Rechtfertigender Notstand',                s:'Wer in einer gegenwärtigen, nicht anders abwendbaren Gefahr für Leben, Leib, Freiheit, Ehre, Eigentum oder ein anderes Rechtsgut eine Tat begeht, um die Gefahr abzuwenden, handelt nicht rechtswidrig — wenn bei Abwägung das geschützte Interesse wesentlich überwiegt.', tags:['Notstand','Abwägung'], wichtig:true },
-            { p:'§ 35', t:'Entschuldigender Notstand',                s:'Wer in einer gegenwärtigen, nicht anders abwendbaren Gefahr für Leben, Leib oder Freiheit eine rechtswidrige Tat begeht, um die Gefahr von sich, einem Angehörigen oder einer ihm nahestehenden Person abzuwenden, handelt ohne Schuld.', tags:['Entschuldigung'] },
+            { p:'§ 32', t:'Notwehr',                                  s:'(1) Wer eine Tat begeht, die durch Notwehr geboten ist, handelt nicht rechtswidrig. (2) Notwehr ist die Verteidigung, die erforderlich ist, um einen gegenwärtigen rechtswidrigen Angriff von sich oder einem anderen abzuwenden.', tags:['Notwehr','Rechtfertigung'], wichtig:true,
+              beispiel:'Ein Randalierer schwingt ein Messer in Richtung Türsteher. Der Türsteher tritt ihm gegen das Bein, der Mann fällt, das Messer fällt zu Boden, er wird festgehalten. → § 32 StGB rechtfertigt das. Auch die Sachbeschädigung an Kleidung/Brille des Angreifers ist gerechtfertigt.',
+              merksatz:'4-Stufen-Prüfung: ANGRIFF → GEGENWÄRTIG → RECHTSWIDRIG → ERFORDERLICH + GEBOTEN. Sobald nur eine Stufe fehlt: keine Notwehr.',
+              fehler:['Verteidigung nach beendetem Angriff (Rache, Strafe) → keine Notwehr.','Notwehr gegen Polizei, die rechtmäßig handelt → unzulässig (kein rechtswidriger Angriff).','„Trutzwehr" mit Waffen, obwohl Festhalten am Arm möglich war → unverhältnismäßig.'] },
+            { p:'§ 33', t:'Überschreitung der Notwehr',               s:'Überschreitet der Täter die Grenzen der Notwehr aus Verwirrung, Furcht oder Schrecken, so wird er nicht bestraft.', tags:['Notwehrexzess'], wichtig:true,
+              beispiel:'Der Wachmann wird von zwei Männern überfallen und in Panik versetzt. Er schlägt aus reiner Angst auch noch zu, als die Angreifer schon am Boden liegen. → § 33 StGB: keine Strafe, weil aus Furcht/Schrecken überzogen. Aber: zivilrechtliche Haftung (§ 823 BGB) bleibt möglich!' },
+            { p:'§ 34', t:'Rechtfertigender Notstand',                s:'Wer in einer gegenwärtigen, nicht anders abwendbaren Gefahr für Leben, Leib, Freiheit, Ehre, Eigentum oder ein anderes Rechtsgut eine Tat begeht, um die Gefahr abzuwenden, handelt nicht rechtswidrig — wenn bei Abwägung das geschützte Interesse wesentlich überwiegt.', tags:['Notstand','Abwägung'], wichtig:true,
+              beispiel:'Der Wachmann findet eine bewusstlose Person hinter einer verschlossenen Tür. Er tritt die Tür ein, um zu helfen, bis der Rettungsdienst eintrifft. → § 34 StGB rechtfertigt die Sachbeschädigung — Leben überwiegt das Eigentum am Türschloss klar.' },
+            { p:'§ 35', t:'Entschuldigender Notstand',                s:'Wer in einer gegenwärtigen, nicht anders abwendbaren Gefahr für Leben, Leib oder Freiheit eine rechtswidrige Tat begeht, um die Gefahr von sich, einem Angehörigen oder einer ihm nahestehenden Person abzuwenden, handelt ohne Schuld.', tags:['Entschuldigung'],
+              beispiel:'Wachmann wird mit der Pistole bedroht und gezwungen, den Tresorcode zu nennen, sonst wird seine Familie bedroht. → § 35 StGB entschuldigt die Geheimnisverletzung — er handelt rechtswidrig, aber ohne Schuld.' },
           ],
         },
         {
           nr: 2, title: '🏠 Besonderer Teil · Hausfriedensbruch & Beleidigung (§§ 123—202)',
           paragraphen: [
-            { p:'§ 123', t:'Hausfriedensbruch',                       s:'Wer in die Wohnung, in die Geschäftsräume oder in das befriedete Besitztum eines anderen widerrechtlich eindringt oder, wenn er ohne Befugnis darin verweilt und auf die Aufforderung des Berechtigten sich nicht entfernt, wird mit Freiheitsstrafe bis zu 1 Jahr oder mit Geldstrafe bestraft. Antragsdelikt!', tags:['Hausrecht','Antragsdelikt'], wichtig:true },
+            { p:'§ 123', t:'Hausfriedensbruch',                       s:'Wer in die Wohnung, in die Geschäftsräume oder in das befriedete Besitztum eines anderen widerrechtlich eindringt oder, wenn er ohne Befugnis darin verweilt und auf die Aufforderung des Berechtigten sich nicht entfernt, wird mit Freiheitsstrafe bis zu 1 Jahr oder mit Geldstrafe bestraft. Antragsdelikt!', tags:['Hausrecht','Antragsdelikt'], wichtig:true,
+              beispiel:'Variante 1 (Eindringen): Jemand schleicht sich am Pförtner vorbei aufs Werksgelände.\nVariante 2 (Nicht-Entfernen): Im Einkaufszentrum wird einem Kunden Hausverbot erteilt. Er weigert sich zu gehen und wird laut. Nach klarer Aufforderung „Bitte verlassen Sie sofort das Gebäude" liegt § 123 II Alt. 2 StGB vor.',
+              merksatz:'Antragsdelikt — nur auf Antrag des Hausrechtsinhabers (§ 123 II StGB). Strafantrag binnen 3 Monaten (§ 77b StGB)!',
+              fehler:['„Bitte gehen Sie" reicht nicht — die Aufforderung muss eindeutig vom Hausrechtsinhaber oder dessen Bevollmächtigtem kommen.','Festnahme nach § 127 StPO nur, wenn Fluchtgefahr oder unbekannte Identität.'] },
             { p:'§ 124', t:'Schwerer Hausfriedensbruch',              s:'Wenn sich eine Menschenmenge öffentlich zusammenrottet und in gewalttätiger Absicht in fremde Räume eindringt: bis zu 2 Jahre oder Geldstrafe.', tags:['Menschenmenge'] },
-            { p:'§ 132', t:'Amtsanmaßung',                            s:'Wer unbefugt sich mit der Ausübung eines öffentlichen Amtes befasst oder eine Handlung vornimmt, welche nur Inhaber eines öffentlichen Amtes verrichten dürfen — bis zu 2 Jahre. WICHTIG: Sicherheitsmitarbeiter dürfen sich NICHT als Polizei ausgeben!', tags:['Polizei-Verbot'], wichtig:true },
+            { p:'§ 132', t:'Amtsanmaßung',                            s:'Wer unbefugt sich mit der Ausübung eines öffentlichen Amtes befasst oder eine Handlung vornimmt, welche nur Inhaber eines öffentlichen Amtes verrichten dürfen — bis zu 2 Jahre. WICHTIG: Sicherheitsmitarbeiter dürfen sich NICHT als Polizei ausgeben!', tags:['Polizei-Verbot'], wichtig:true,
+              beispiel:'Verboten: „Polizei! Ausweis!" oder „Stehenbleiben, Polizeikontrolle!"\nErlaubt: „Werkschutz/Sicherheitsdienst — darf ich Ihren Ausweis sehen?"\nErlaubt: Person nach § 127 StPO festhalten — aber immer mit klarer Eigen-Identifikation.',
+              merksatz:'Dunkelblaue Uniform mit Schriftzug „Security" ist okay — aber NIE „Police", „Polizei" oder Sterne/Hoheitszeichen, die mit Polizei verwechselbar sind. Auch verlangt § 19 BeWachV deutliche Unterscheidbarkeit.' },
             { p:'§ 138', t:'Nichtanzeige geplanter Straftaten',       s:'Wer von dem Vorhaben oder der Ausführung bestimmter Straftaten (Hochverrat, Mord, Raub, schwere Brandstiftung) glaubhaft erfährt und es unterlässt, der Behörde rechtzeitig Anzeige zu machen, wird bestraft.', tags:['Anzeigepflicht'] },
             { p:'§ 185', t:'Beleidigung',                              s:'Bis zu 1 Jahr Freiheitsstrafe oder Geldstrafe. Antragsdelikt.', tags:['Ehrdelikt'] },
             { p:'§ 186', t:'Üble Nachrede',                            s:'Wer eine ehrenrührige Tatsache über einen anderen behauptet oder verbreitet, ohne dass sie erweislich wahr ist — bis zu 1 Jahr.', tags:['Ehrdelikt'] },
             { p:'§ 187', t:'Verleumdung',                              s:'Wer wider besseres Wissen eine ehrenrührige unwahre Tatsache behauptet oder verbreitet — bis zu 2 Jahre.', tags:['Verleumdung'] },
-            { p:'§ 201', t:'Verletzung der Vertraulichkeit des Wortes', s:'Wer unbefugt das nichtöffentlich gesprochene Wort eines anderen aufnimmt — bis zu 3 Jahre.', tags:['Aufnahme-Verbot'], wichtig:true },
+            { p:'§ 201', t:'Verletzung der Vertraulichkeit des Wortes', s:'Wer unbefugt das nichtöffentlich gesprochene Wort eines anderen aufnimmt — bis zu 3 Jahre.', tags:['Aufnahme-Verbot'], wichtig:true,
+              beispiel:'Detektiv zeichnet heimlich das Gespräch mit einem Dieb auf, um „Beweise" zu haben. → § 201 StGB strafbar! Auch wenn Polizei oder Gericht die Aufnahme als Beweis verwenden würde, hat der Detektiv sich bereits strafbar gemacht.\nErlaubt: schriftliche Notiz, was gesagt wurde.',
+              fehler:['Heimliche Videoaufnahme mit Ton im Privatbereich → fast immer strafbar.','Aufnahme im öffentlichen Raum mit gut hörbaren Stimmen → Grenzfall; im Zweifel: Finger weg.'] },
             { p:'§ 202a', t:'Ausspähen von Daten',                    s:'Wer unbefugt sich oder einem anderen Zugang zu Daten verschafft, die nicht für ihn bestimmt und gegen unberechtigten Zugang besonders gesichert sind — bis zu 3 Jahre.', tags:['Hacking','IT-Sec'] },
             { p:'§ 203', t:'Verletzung von Privatgeheimnissen',       s:'Schweigepflicht für Berufsgeheimnisträger — auch Sicherheitsmitarbeiter (z. B. Werkschutz) unterliegen vertraglich der Schweigepflicht.', tags:['Schweigepflicht'], wichtig:true },
           ],
@@ -616,8 +650,12 @@ window.GESETZE_DB = (() => {
             { p:'§ 211', t:'Mord',                                    s:'Lebenslange Freiheitsstrafe. Mordmerkmale: Mordlust, Befriedigung des Geschlechtstriebs, Habgier, sonst niedrige Beweggründe · heimtückisch, grausam, gemeingefährlich · Verdeckungs-/Ermöglichungsabsicht.', tags:['Mordmerkmale'], wichtig:true },
             { p:'§ 212', t:'Totschlag',                                s:'Wer einen Menschen tötet, ohne Mörder zu sein — Freiheitsstrafe nicht unter 5 Jahren. Im besonders schweren Fall lebenslang.', tags:['Tötungsdelikt'] },
             { p:'§ 222', t:'Fahrlässige Tötung',                      s:'Bis zu 5 Jahre Freiheitsstrafe oder Geldstrafe.', tags:['Fahrlässigkeit'] },
-            { p:'§ 223', t:'Körperverletzung',                         s:'Wer eine andere Person körperlich misshandelt oder an der Gesundheit schädigt — bis zu 5 Jahre. Versuch strafbar. Antragsdelikt (Ausnahme: besonderes öffentl. Interesse).', tags:['KV','Antragsdelikt'], wichtig:true },
-            { p:'§ 224', t:'Gefährliche Körperverletzung',             s:'Körperverletzung mittels Waffe, gefährlichem Werkzeug, Gift, hinterlistigem Überfall, mit anderen gemeinschaftlich, lebensgefährdender Behandlung — 6 Monate bis 10 Jahre.', tags:['gefährlich'], wichtig:true },
+            { p:'§ 223', t:'Körperverletzung',                         s:'Wer eine andere Person körperlich misshandelt oder an der Gesundheit schädigt — bis zu 5 Jahre. Versuch strafbar. Antragsdelikt (Ausnahme: besonderes öffentl. Interesse).', tags:['KV','Antragsdelikt'], wichtig:true,
+              beispiel:'Türsteher schubst aus Wut einen Gast in die Brust. Gast taumelt, fällt nicht. → Bereits Körperverletzung (Misshandlung)! Auch ohne sichtbare Verletzung. „Nur ein Schubser" ist juristisch eine Tat.',
+              merksatz:'Körperliche Misshandlung = jede üble, unangemessene Behandlung. Gesundheitsschädigung = Erzeugen/Steigern eines pathologischen Zustands.',
+              fehler:['Annahme „solange kein Blut, keine KV" → falsch. Schmerz reicht.','Erlaubt sind nur Eingriffe, die durch Notwehr/§ 229/Einwilligung gerechtfertigt sind.'] },
+            { p:'§ 224', t:'Gefährliche Körperverletzung',             s:'Körperverletzung mittels Waffe, gefährlichem Werkzeug, Gift, hinterlistigem Überfall, mit anderen gemeinschaftlich, lebensgefährdender Behandlung — 6 Monate bis 10 Jahre.', tags:['gefährlich'], wichtig:true,
+              beispiel:'Zwei Wachleute halten gemeinsam einen Mann gewaltsam am Boden fest und drücken ihn länger als nötig in den Boden. → § 224 I Nr. 4 (gemeinschaftlich) + Nr. 5 (lebensgefährdende Behandlung möglich). Schon das Risiko zählt — auch ohne tatsächliche Lebensgefahr.' },
             { p:'§ 226', t:'Schwere Körperverletzung',                s:'Verlust eines wichtigen Glieds, Sehvermögens, Sprechvermögens etc. — Freiheitsstrafe von 1 bis 10 Jahren.', tags:['schwer'] },
             { p:'§ 227', t:'Körperverletzung mit Todesfolge',         s:'Wenn der Täter durch die Körperverletzung den Tod des Verletzten verursacht — nicht unter 3 Jahren Freiheitsstrafe.', tags:['Todesfolge'] },
             { p:'§ 229', t:'Fahrlässige Körperverletzung',            s:'Bis zu 3 Jahre Freiheitsstrafe oder Geldstrafe.', tags:['Fahrlässigkeit'] },
@@ -626,15 +664,20 @@ window.GESETZE_DB = (() => {
         {
           nr: 4, title: '🔒 Besonderer Teil · Freiheitsdelikte & Eigentum (§§ 239—263)',
           paragraphen: [
-            { p:'§ 239', t:'Freiheitsberaubung',                      s:'Wer einen Menschen einsperrt oder auf andere Weise der Freiheit beraubt — bis zu 5 Jahre. WICHTIG bei Festnahme durch Sicherheitsdienst — nur § 127 StPO als Rechtfertigung!', tags:['Festnahme','Vorsicht'], wichtig:true },
-            { p:'§ 240', t:'Nötigung',                                 s:'Wer einen Menschen rechtswidrig mit Gewalt oder durch Drohung mit einem empfindlichen Übel zu einer Handlung, Duldung oder Unterlassung nötigt — bis zu 3 Jahre.', tags:['Nötigung'], wichtig:true },
+            { p:'§ 239', t:'Freiheitsberaubung',                      s:'Wer einen Menschen einsperrt oder auf andere Weise der Freiheit beraubt — bis zu 5 Jahre. WICHTIG bei Festnahme durch Sicherheitsdienst — nur § 127 StPO als Rechtfertigung!', tags:['Festnahme','Vorsicht'], wichtig:true,
+              beispiel:'Ladendetektiv sperrt Dieb in den Lagerraum und ruft erst 90 Minuten später die Polizei. → § 239 StGB Freiheitsberaubung! Die Festhaltedauer war unverhältnismäßig.\nRichtig: Polizei sofort verständigen + Festgehaltenen in offener Tür/Sichtkontakt halten.',
+              merksatz:'Festhalten nach § 127 StPO ist erlaubt — aber JEDE Sekunde länger als zur Übergabe an die Polizei nötig kippt ins § 239 StGB.',
+              fehler:['Festnahme „auf Verdacht" ohne Anhaltspunkte → ungerechtfertigt.','Fesselung mit Kabelbinder ohne medizinische Kontrolle → eigene Strafbarkeit.','Hinterzimmer mit verriegelter Tür → klassisches Beispiel für § 239.'] },
+            { p:'§ 240', t:'Nötigung',                                 s:'Wer einen Menschen rechtswidrig mit Gewalt oder durch Drohung mit einem empfindlichen Übel zu einer Handlung, Duldung oder Unterlassung nötigt — bis zu 3 Jahre.', tags:['Nötigung'], wichtig:true,
+              beispiel:'„Wenn Sie nicht jetzt Ihre Taschen leeren, rufe ich die Polizei und Sie haben einen Eintrag." → Drohung mit empfindlichem Übel, um zur Handlung zu zwingen → § 240 StGB.\nRichtig: „Ich bitte Sie um eine freiwillige Taschenkontrolle. Wenn Sie ablehnen, halte ich Sie nach § 127 StPO fest und rufe die Polizei."' },
             { p:'§ 241', t:'Bedrohung',                                s:'Wer einen Menschen mit der Begehung einer gegen ihn gerichteten rechtswidrigen Tat gegen die sexuelle Selbstbestimmung, die körperliche Unversehrtheit, die persönliche Freiheit oder gegen eine Sache von bedeutendem Wert bedroht — bis zu 1 Jahr.', tags:['Bedrohung'] },
             { p:'§ 242', t:'Diebstahl',                                s:'Wer eine fremde bewegliche Sache einem anderen in der Absicht wegnimmt, die Sache sich oder einem Dritten rechtswidrig zuzueignen — bis zu 5 Jahre.', tags:['Diebstahl'], wichtig:true },
             { p:'§ 243', t:'Besonders schwerer Diebstahl',             s:'Einbruch, Einsteigen, Aufbrechen, verschlossene Sachen, gewerbsmäßig — 3 Monate bis 10 Jahre.', tags:['Einbruch'] },
             { p:'§ 244', t:'Diebstahl mit Waffen · Bandendiebstahl',  s:'Mit Waffe/gefährl. Werkzeug oder als Bandenmitglied — 6 Monate bis 10 Jahre.', tags:['Waffe'], wichtig:true },
             { p:'§ 246', t:'Unterschlagung',                           s:'Wer eine fremde bewegliche Sache sich oder einem Dritten rechtswidrig zueignet — bis zu 3 Jahre.', tags:['Unterschlagung'] },
             { p:'§ 249', t:'Raub',                                     s:'Wer mit Gewalt gegen eine Person oder unter Drohung mit gegenwärtiger Gefahr für Leib oder Leben eine fremde bewegliche Sache wegnimmt — nicht unter 1 Jahr.', tags:['Raub'], wichtig:true },
-            { p:'§ 252', t:'Räuberischer Diebstahl',                  s:'Wer auf frischer Tat eines Diebstahls betroffen Gewalt anwendet, um sich im Besitz des Diebesguts zu erhalten — wie Räuber bestraft. WICHTIG: Häufig bei Ladendetektiv-Einsatz!', tags:['Ladendieb'], wichtig:true },
+            { p:'§ 252', t:'Räuberischer Diebstahl',                  s:'Wer auf frischer Tat eines Diebstahls betroffen Gewalt anwendet, um sich im Besitz des Diebesguts zu erhalten — wie Räuber bestraft. WICHTIG: Häufig bei Ladendetektiv-Einsatz!', tags:['Ladendieb'], wichtig:true,
+              beispiel:'Der Detektiv hält den Ladendieb am Ausgang an. Der Dieb schlägt nach dem Detektiv, um die Ware zu behalten, und versucht zu fliehen. → § 252 StGB: aus dem einfachen Diebstahl (§ 242) wird automatisch Raub-Strafmaß (1—15 Jahre)!\nKonsequenz: Detektiv sollte Notwehr-Lage (§ 32 StGB) erkennen — er darf jetzt aktiv verteidigen.' },
             { p:'§ 253', t:'Erpressung',                               s:'Wer einen Menschen rechtswidrig mit Gewalt oder durch Drohung mit einem empfindlichen Übel zu einer Handlung, Duldung oder Unterlassung nötigt und dadurch dem Vermögen des Genötigten Nachteil zufügt — bis zu 5 Jahre.', tags:['Erpressung'] },
             { p:'§ 263', t:'Betrug',                                   s:'Wer in der Absicht, sich oder einem Dritten einen rechtswidrigen Vermögensvorteil zu verschaffen, durch Vorspiegelung falscher Tatsachen den Irrtum eines anderen erregt — bis zu 5 Jahre.', tags:['Betrug'] },
           ],
@@ -646,7 +689,9 @@ window.GESETZE_DB = (() => {
             { p:'§ 306', t:'Brandstiftung',                            s:'Wer fremde Sachen (Gebäude, Hütten, Anlagen) in Brand setzt oder durch Brandlegung ganz oder teilweise zerstört — 1 bis 10 Jahre.', tags:['Brandstiftung'] },
             { p:'§ 315', t:'Gefährliche Eingriffe in den Straßenverkehr', s:'Wer die Sicherheit des Straßenverkehrs beeinträchtigt — 6 Monate bis 10 Jahre.', tags:['Verkehr'] },
             { p:'§ 323a', t:'Vollrausch',                              s:'Wer sich vorsätzlich oder fahrlässig durch alkoholische Getränke in einen Rausch versetzt und in diesem Zustand eine rechtswidrige Tat begeht — bis zu 5 Jahre.', tags:['Alkohol'] },
-            { p:'§ 323c', t:'Unterlassene Hilfeleistung',              s:'Wer bei Unglücksfällen oder gemeiner Gefahr nicht Hilfe leistet, obwohl dies erforderlich und ihm zumutbar ist — bis zu 1 Jahr. ABSOLUTE PFLICHT auch für Sicherheitsmitarbeiter!', tags:['Hilfspflicht'], wichtig:true },
+            { p:'§ 323c', t:'Unterlassene Hilfeleistung',              s:'Wer bei Unglücksfällen oder gemeiner Gefahr nicht Hilfe leistet, obwohl dies erforderlich und ihm zumutbar ist — bis zu 1 Jahr. ABSOLUTE PFLICHT auch für Sicherheitsmitarbeiter!', tags:['Hilfspflicht'], wichtig:true,
+              beispiel:'Streifengänger findet bewusstlose Person im Hinterhof, geht weiter, weil „nicht mein Bereich". → § 323c StGB strafbar.\nRichtig: 112 wählen, Erste Hilfe leisten (mindestens Lage prüfen, freie Atemwege, bei Bedarf stabile Seitenlage), bis Rettungsdienst eintrifft.',
+              merksatz:'Sicherheitsmitarbeiter haben durch ihre Stellung (Sachkunde nach § 7 BeWachV, Erste-Hilfe-Schein!) eine erhöhte Pflicht — Untätigkeit ist nie eine Option.' },
           ],
         },
       ],
@@ -908,6 +953,99 @@ window.GESETZE_DB = (() => {
         <rect x="60" y="305" width="600" height="40" rx="6" fill="rgba(220,38,38,.12)" stroke="#dc2626"/>
         <text x="80" y="320" font-size="11" fill="#dc2626" font-weight="900">⚠️ Versuch beim Verbrechen IMMER strafbar (§ 23 I) — beim Vergehen nur wenn ausdrücklich (z. B. § 223 II KV)</text>
         <text x="80" y="338" font-size="10" fill="#cbd5e1">Beihilfe & Anstiftung (§§ 26, 27) ebenfalls strafbar — auch bloßes „Zuhalten der Tür" reicht!</text>
+      </svg>`,
+
+    /* ===== Praxisfälle Sicherheitsdienst · 8 Szenarios ===== */
+    'praxis-faelle': `
+      <svg viewBox="0 0 900 720" xmlns="http://www.w3.org/2000/svg" class="ges-vis">
+        <rect width="900" height="720" fill="#0a0f1a"/>
+        <text x="450" y="30" text-anchor="middle" font-size="16" fill="#fbbf24" font-weight="900">8 Praxisfälle aus dem Sicherheitsdienst-Alltag</text>
+        <text x="450" y="50" text-anchor="middle" font-size="11" fill="#94a3b8">Mit Rechtsgrundlage · richtigem Vorgehen · und typischen Fallstricken</text>
+
+        ${[
+          {
+            x: 30, y: 80, col: '#22c55e', icon: '🚪',
+            ti: '1 · Hausverbot durchsetzen',
+            sit: 'Kunde mit Hausverbot betritt erneut das Geschäft.',
+            tun: 'Klar identifizieren · Aufforderung zum Verlassen · 5 Min Frist · bei Weigerung: § 127 StPO Festhalten + Polizei rufen.',
+            laws: ['§ 1004 BGB', '§ 123 StGB', '§ 127 StPO'],
+          },
+          {
+            x: 460, y: 80, col: '#22c55e', icon: '🛍️',
+            ti: '2 · Ladendieb gestellt',
+            sit: 'Dieb verlässt mit Ware den Kassenbereich.',
+            tun: 'Direkt nach Ausgang ansprechen („Ich bin Detektiv des Hauses") · ins Büro begleiten · Polizei rufen · Festhalten max. bis Übergabe.',
+            laws: ['§ 242 StGB', '§ 229 BGB', '§ 127 StPO'],
+          },
+          {
+            x: 30, y: 245, col: '#ef4444', icon: '🥊',
+            ti: '3 · Angriff auf Wachperson',
+            sit: 'Randalierer holt zum Schlag aus.',
+            tun: 'Distanz schaffen · verbal deeskalieren · Schlag abwehren (Notwehr) · mildestes wirksames Mittel · sobald Angreifer am Boden: Festhalten, NICHT weiter schlagen.',
+            laws: ['§ 32 StGB', '§ 227 BGB', '§ 33 (Exzess)'],
+          },
+          {
+            x: 460, y: 245, col: '#ef4444', icon: '🚨',
+            ti: '4 · Räuberischer Diebstahl',
+            sit: 'Dieb schlägt nach Detektiv, um die Beute zu behalten.',
+            tun: 'Jetzt liegt § 252 vor (Raub-Strafmaß!) · Notwehr-Recht entsteht zusätzlich · Festnahme rechtlich klar · Beweissicherung wichtig.',
+            laws: ['§ 252 StGB', '§ 32 StGB', '§ 127 StPO'],
+          },
+          {
+            x: 30, y: 410, col: '#fbbf24', icon: '🆘',
+            ti: '5 · Bewusstlose Person',
+            sit: 'Streifengänger findet zusammengebrochenen Mann.',
+            tun: '112 wählen · stabile Seitenlage · Atmung prüfen · ggf. Reanimation · NICHT weggehen, NICHT „nicht mein Bereich".',
+            laws: ['§ 323c StGB', '§ 34 StGB (Notstand)'],
+          },
+          {
+            x: 460, y: 410, col: '#fbbf24', icon: '🐕',
+            ti: '6 · Fremder Hund greift an',
+            sit: 'Auf Werksgelände läuft knurrender Hund auf Mitarbeiter zu.',
+            tun: 'Hund mit Schlagstock/Tritt abwehren ist erlaubt (Gefahr geht von der Sache aus) · Tier möglichst nicht töten · Halter ermitteln.',
+            laws: ['§ 228 BGB', '§ 32 StGB (für Tier-Halter)'],
+          },
+          {
+            x: 30, y: 575, col: '#a855f7', icon: '👮',
+            ti: '7 · „Stehenbleiben! Polizei!"',
+            sit: 'Wachmann ruft das einer fliehenden Person zu, um sie zu stoppen.',
+            tun: 'STRAFBAR — § 132 StGB Amtsanmaßung! Richtig: „Werkschutz! Stehenbleiben, bitte ausweisen!" — Eigen-Identifikation klar.',
+            laws: ['§ 132 StGB', '§ 19 BeWachV'],
+          },
+          {
+            x: 460, y: 575, col: '#06b6d4', icon: '📹',
+            ti: '8 · Tonaufnahme als „Beweis"',
+            sit: 'Detektiv schaltet heimlich Diktiergerät an.',
+            tun: 'STRAFBAR — § 201 StGB. Richtig: schriftliche Notiz, Zeugen, Videoaufnahme nach DSGVO mit Beschilderung.',
+            laws: ['§ 201 StGB', 'DSGVO/BDSG'],
+          },
+        ].map(C => `
+          <g>
+            <rect x="${C.x}" y="${C.y}" width="410" height="150" rx="10" fill="#1e293b" stroke="${C.col}" stroke-width="2"/>
+            <!-- Icon -->
+            <text x="${C.x+30}" y="${C.y+45}" font-size="32">${C.icon}</text>
+            <!-- Titel -->
+            <text x="${C.x+70}" y="${C.y+30}" font-size="14" fill="${C.col}" font-weight="900">${C.ti}</text>
+            <foreignObject x="${C.x+70}" y="${C.y+38}" width="330" height="32">
+              <div xmlns="http://www.w3.org/1999/xhtml" style="font:10.5px sans-serif;color:#cbd5e1;line-height:1.4;font-style:italic">${C.sit}</div>
+            </foreignObject>
+            <!-- Vorgehen -->
+            <rect x="${C.x+12}" y="${C.y+75}" width="386" height="50" rx="5" fill="#0a0f1a"/>
+            <text x="${C.x+18}" y="${C.y+88}" font-size="9.5" fill="${C.col}" font-weight="800">▸ RICHTIGES VORGEHEN</text>
+            <foreignObject x="${C.x+18}" y="${C.y+91}" width="378" height="36">
+              <div xmlns="http://www.w3.org/1999/xhtml" style="font:10px sans-serif;color:#e2e8f0;line-height:1.45">${C.tun}</div>
+            </foreignObject>
+            <!-- Rechtsgrundlagen -->
+            ${C.laws.map((l,i) => `
+              <rect x="${C.x+12 + i*100}" y="${C.y+128}" width="92" height="16" rx="3" fill="${C.col}" opacity=".25" stroke="${C.col}" stroke-width="1"/>
+              <text x="${C.x+58 + i*100}" y="${C.y+139}" text-anchor="middle" font-size="9" fill="${C.col}" font-weight="800" font-family="monospace">${l}</text>
+            `).join('')}
+          </g>
+        `).join('')}
+
+        <!-- Goldene Regel unten -->
+        <rect x="30" y="690" width="840" height="22" rx="4" fill="rgba(251,191,36,.15)" stroke="#fbbf24"/>
+        <text x="450" y="706" text-anchor="middle" font-size="11" fill="#fbbf24" font-weight="800">🛡️ GOLDENE REGEL: Sicherheitsdienst ≠ Polizei. Mildestes Mittel · Verhältnismäßigkeit · klare Eigen-Identifikation · sofort Polizei rufen · alles dokumentieren.</text>
       </svg>`,
 
     /* ===== Bestehende ===== */

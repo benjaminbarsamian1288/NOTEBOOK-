@@ -87,6 +87,18 @@ window.GESETZE_VIEW = (() => {
               ${GESETZE_DB.VIS[g.visualisierung]}
             </div>
           ` : ''}
+          ${g.visualisierung2 && GESETZE_DB.VIS[g.visualisierung2] ? `
+            <div class="gv-vis-wrap gv-vis-praxis">
+              <div class="gv-vis-title"><i class="fas fa-lightbulb"></i> Praxis-Beispiele</div>
+              ${GESETZE_DB.VIS[g.visualisierung2]}
+            </div>
+          ` : ''}
+          ${g.visualisierung3 && GESETZE_DB.VIS[g.visualisierung3] ? `
+            <div class="gv-vis-wrap">
+              <div class="gv-vis-title"><i class="fas fa-shield-halved"></i> Notwehr-Prüfschema</div>
+              ${GESETZE_DB.VIS[g.visualisierung3]}
+            </div>
+          ` : ''}
 
           ${g.abschnitte.map(a => `
             <details class="gv-abschnitt" ${a.nr === 1 ? 'open' : ''}>
@@ -103,6 +115,7 @@ window.GESETZE_VIEW = (() => {
                     <div class="gv-para-content">
                       <div class="gv-para-title">${p.t} ${p.wichtig ? '<i class="fas fa-star gv-star" title="Wichtig"></i>' : ''}</div>
                       <div class="gv-para-sum">${p.s}</div>
+                      ${p.beispiel ? `<div class="gv-para-beispiel"><i class="fas fa-lightbulb"></i><div><strong>Praxisfall:</strong> ${p.beispiel}</div></div>` : ''}
                       ${p.tags && p.tags.length ? `<div class="gv-para-tags">${p.tags.map(t => `<span class="gv-tag-chip">${t}</span>`).join('')}</div>` : ''}
                     </div>
                     <i class="fas fa-chevron-right gv-para-go"></i>
@@ -157,6 +170,24 @@ window.GESETZE_VIEW = (() => {
             <h3><i class="fas fa-file-alt"></i> Zusammenfassung</h3>
             <p>${paragraph.s}</p>
           </section>
+          ${paragraph.beispiel ? `
+            <section class="gv-drawer-beispiel-section">
+              <h3><i class="fas fa-lightbulb"></i> Praxisfall · Sicherheitsdienst</h3>
+              <div class="gv-drawer-beispiel">${paragraph.beispiel}</div>
+            </section>
+          ` : ''}
+          ${paragraph.merksatz ? `
+            <section class="gv-drawer-merksatz-section">
+              <h3><i class="fas fa-bookmark"></i> Merksatz</h3>
+              <div class="gv-drawer-merksatz">${paragraph.merksatz}</div>
+            </section>
+          ` : ''}
+          ${paragraph.fehler ? `
+            <section class="gv-drawer-fehler-section">
+              <h3><i class="fas fa-triangle-exclamation"></i> Typische Fehler</h3>
+              <ul class="gv-drawer-fehler">${paragraph.fehler.map(f => `<li>${f}</li>`).join('')}</ul>
+            </section>
+          ` : ''}
           <section>
             <h3><i class="fas fa-list-check"></i> Schlagworte</h3>
             <div class="gv-drawer-tags">
