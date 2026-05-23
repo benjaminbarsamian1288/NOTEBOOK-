@@ -19,13 +19,15 @@ window.V = (() => {
     const cta = el('div', { class: 'hero-cta' });
     const ctaA = el('button', { class:'btn primary', html:'<i class="fas fa-wand-magic-sparkles"></i> Sicherheitsassistent' });
     ctaA.addEventListener('click', () => location.hash = '#wizard');
+    const ctaP = el('button', { class:'btn primary', html:'<i class="fas fa-atom"></i> Physik Live' });
+    ctaP.addEventListener('click', () => location.hash = '#physik');
     const ctaB = el('button', { class:'btn', html:'<i class="fas fa-sliders"></i> Konfigurator' });
     ctaB.addEventListener('click', () => location.hash = '#konfigurator');
     const ctaC = el('button', { class:'btn', html:'<i class="fas fa-vector-square"></i> Simulator' });
     ctaC.addEventListener('click', () => location.hash = '#simulator');
     const ctaD = el('button', { class:'btn', html:'<i class="fas fa-calculator"></i> Rechner' });
     ctaD.addEventListener('click', () => location.hash = '#calculators');
-    cta.appendChild(ctaA); cta.appendChild(ctaB); cta.appendChild(ctaC); cta.appendChild(ctaD);
+    cta.appendChild(ctaA); cta.appendChild(ctaP); cta.appendChild(ctaB); cta.appendChild(ctaC); cta.appendChild(ctaD);
     heroLeft.appendChild(cta);
     heroGrid.appendChild(heroLeft);
 
@@ -89,6 +91,7 @@ window.V = (() => {
     // --- Quick-Action Tiles (kompaktes Feature-Grid) ---
     const qa = el('div', { class:'quick-actions' });
     [
+      { v:'physik',       icon:'fa-atom',                t:'Physik Live',           d:'5 Echtzeit-Sims: PIR · Radar · Reed · Glas · Beam' },
       { v:'wizard',       icon:'fa-wand-magic-sparkles', t:'Sicherheits-Assistent', d:'7-Schritte-Analyse → SÜ-Empfehlung' },
       { v:'simulator',    icon:'fa-vector-square',       t:'Floor-Plan Simulator',  d:'Sensoren drehen, verschieben, planen' },
       { v:'building3d',   icon:'fa-cube',                t:'3D-Gebäudeplaner',     d:'Isometrisches 3D-Haus · Etagen · rotierbar' },

@@ -18,6 +18,7 @@
     simulator: V.simulator,
     building3d: (d) => BLDG3D.view(d),
     spektrum: () => SPEK.view(),
+    physik: () => PHYSIK.view(),
     galerie: (d) => GALLERY.view(d),
     zwiebel3d: (d) => ZWIEBEL3D.view(d),
     haus3d: (d) => HAUS3D.view(d),

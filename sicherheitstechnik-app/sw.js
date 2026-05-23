@@ -1,8 +1,10 @@
-const CACHE = 'st-katalog-v59';
+const CACHE = 'st-katalog-v60';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
+  './css/physik.css',
+  './js/physik-live.js',
   './css/style.css',
   './css/visuals.css',
   './css/tools.css',
