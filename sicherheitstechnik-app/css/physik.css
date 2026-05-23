@@ -107,6 +107,11 @@
 .sb-stats { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
 .sb-sel { font-size: 13px; color: #94a3b8; }
 
+/* Handy als Sensor */
+.sens-status { font-size: 13px; font-weight: 700; color: #94a3b8; align-self: center; }
+.sens-status.ok { color: #22c55e; } .sens-status.bad { color: #ef4444; }
+.sens-warn { margin-top: 14px; background: rgba(251,191,36,0.12); border: 1px solid rgba(251,191,36,0.35); color: #fde68a; border-radius: 10px; padding: 10px 14px; font-size: 13px; line-height: 1.5; }
+
 .phys-card {
   background: #0f1b2e;
   border: 1px solid rgba(148,163,184,0.14);
