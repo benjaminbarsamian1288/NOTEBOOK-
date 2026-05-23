@@ -57,6 +57,24 @@
 .sl-dot.on { background: #ef4444; box-shadow: 0 0 9px #ef4444; }
 .scene-log { font-size: 12px; line-height: 1.7; color: #94a3b8; background: rgba(15,23,42,0.6); border-radius: 8px; padding: 8px 11px; min-height: 96px; }
 .scene-log b { color: #7dd3fc; font-variant-numeric: tabular-nums; }
+.scene-status.unscharf { background: rgba(100,116,139,0.15); color: #94a3b8; border: 1px solid rgba(148,163,184,0.4); }
+.scene-nsl { font-size: 12.5px; font-weight: 600; color: #94a3b8; padding: 7px 12px; border-radius: 8px; background: rgba(15,23,42,0.6); border: 1px solid rgba(148,163,184,0.18); }
+.scene-nsl.on { color: #fca5a5; border-color: rgba(239,68,68,0.5); background: rgba(239,68,68,0.1); }
+.scene-ctrls { display: flex; flex-wrap: wrap; gap: 7px; }
+.scene-ctrls .btn { padding: 7px 11px; font-size: 12.5px; }
+
+/* Zutritts-Tastenfeld */
+.zk-wrap { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 4px; }
+.zk-pad { display: grid; grid-template-columns: repeat(3, 56px); gap: 8px; }
+.zk-side { flex: 1; min-width: 180px; display: flex; flex-direction: column; gap: 8px; justify-content: center; }
+.zk-key {
+  height: 48px; border-radius: 10px; cursor: pointer; font-size: 18px; font-weight: 700;
+  background: #1e293b; color: #e2e8f0; border: 1px solid rgba(148,163,184,0.2);
+}
+.zk-key:hover { background: #273449; }
+.zk-key:active { transform: scale(0.95); }
+.zk-key.ok { background: linear-gradient(135deg,#22d3ee,#10b981); color: #0b1424; }
+.zk-key.clr { background: #3f1d2e; color: #fca5a5; }
 
 .phys-card {
   background: #0f1b2e;
