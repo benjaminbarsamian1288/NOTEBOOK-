@@ -25,6 +25,24 @@ window.PHYSIK = (() => {
     };
   }
 
+  // Eisen-Farbpalette für Wärmebild (t = 0..1)
+  function iron(t) {
+    t = Math.max(0, Math.min(1, t));
+    const s = [[0, 4, 2, 18], [0.25, 70, 0, 100], [0.45, 170, 25, 70], [0.62, 232, 75, 20], [0.8, 255, 175, 35], [1, 255, 255, 235]];
+    for (let i = 1; i < s.length; i++) {
+      if (t <= s[i][0]) { const a = s[i - 1], b = s[i], f = (t - a[0]) / (b[0] - a[0]); return [a[1] + (b[1] - a[1]) * f, a[2] + (b[2] - a[2]) * f, a[3] + (b[3] - a[3]) * f]; }
+    }
+    return [255, 255, 235];
+  }
+
+  // Abstand Punkt → Strecke
+  function distSeg(px, py, x1, y1, x2, y2) {
+    const dx = x2 - x1, dy = y2 - y1, l2 = dx * dx + dy * dy;
+    let t = l2 ? ((px - x1) * dx + (py - y1) * dy) / l2 : 0;
+    t = Math.max(0, Math.min(1, t));
+    return Math.hypot(px - (x1 + t * dx), py - (y1 + t * dy));
+  }
+
   /* Baukasten für eine Simulationskarte: Kopf + Erklärbox + Body. */
   function simCard(opts) {
     const c = el('div', { class: 'phys-card' });
@@ -718,6 +736,375 @@ window.PHYSIK = (() => {
   }
 
   /* ============================================================
+     10) Wärmebildkamera (Thermal / IR)
+     ============================================================ */
+  function thermalSim() {
+    const W = 720, H = 320;
+    const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H });
+    const ctx = canvas.getContext('2d');
+    const SW = 160, SH = 72;
+    const off = document.createElement('canvas'); off.width = SW; off.height = SH;
+    const octx = off.getContext('2d'); const img = octx.createImageData(SW, SH);
+    const person = { x: 0.6, y: 0.5, temp: 1, r: 0.16, auto: true, dir: 1, dragging: false };
+    const fixed = [{ x: 0.86, y: 0.72, temp: 0.55, r: 0.1 }, { x: 0.2, y: 0.8, temp: 0.4, r: 0.09 }];
+
+    const roMax = readout('Heißester Punkt');
+    const roStat = readout('Status');
+
+    function down(e) { person.dragging = true; person.auto = false; move(e); }
+    function move(e) { if (!person.dragging) return; e.preventDefault(); const p = pos(canvas, e); person.x = p.x / W; person.y = p.y / H; }
+    function up() { person.dragging = false; }
+    canvas.addEventListener('mousedown', down); canvas.addEventListener('mousemove', move); window.addEventListener('mouseup', up);
+    canvas.addEventListener('touchstart', down, { passive: false }); canvas.addEventListener('touchmove', move, { passive: false }); window.addEventListener('touchend', up);
+
+    function draw() {
+      if (person.auto) { person.x += person.dir * 0.004; if (person.x > 0.9 || person.x < 0.1) person.dir *= -1; }
+      const src = [person, ...fixed];
+      let maxT = 0;
+      for (let j = 0; j < SH; j++) {
+        for (let i = 0; i < SW; i++) {
+          const nx = i / SW, ny = j / SH; let t = 0.08;
+          for (const s of src) { const dx = nx - s.x, dy = ny - s.y; t += s.temp * Math.exp(-(dx * dx + dy * dy) / (2 * s.r * s.r)); }
+          if (t > maxT) maxT = t;
+          const [r, g, b] = iron(t); const k = (j * SW + i) * 4;
+          img.data[k] = r; img.data[k + 1] = g; img.data[k + 2] = b; img.data[k + 3] = 255;
+        }
+      }
+      octx.putImageData(img, 0, 0);
+      ctx.imageSmoothingEnabled = true; ctx.drawImage(off, 0, 0, W, H);
+      // Fadenkreuz auf Person
+      const px = person.x * W, py = person.y * H;
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.strokeRect(px - 16, py - 26, 32, 52);
+      ctx.fillStyle = '#fff'; ctx.font = '11px monospace'; ctx.textAlign = 'center';
+      ctx.fillText((20 + Math.min(1, maxT) * 17).toFixed(1) + '°C', px, py - 32);
+
+      roMax.set((20 + Math.min(1, maxT) * 17).toFixed(1) + ' °C');
+      roStat.set(maxT > 0.45 ? 'Wärmequelle erkannt' : 'nur Umgebung', maxT > 0.45 ? 'bad' : 'ok');
+    }
+    loop(canvas, draw);
+
+    const body = el('div', {}, [
+      canvas,
+      el('div', { class: 'phys-hint', text: '⟶ Zieh die warme Person durchs Bild. Die Kamera sieht nicht Licht, sondern Temperatur.' }),
+      el('div', { class: 'phys-ros' }, [roMax.wrap, roStat.wrap]),
+    ]);
+    return simCard({
+      icon: 'fa-temperature-three-quarters', title: 'Wärmebildkamera · Thermal', sub: 'Sieht Temperatur statt Licht',
+      was: 'Jeder Körper strahlt Infrarot ab – je wärmer, desto stärker. Der Sensor übersetzt die <b>Wärmeabstrahlung</b> in ein Falschfarbenbild (dunkel = kalt, weiß = heiß).',
+      warum: 'Funktioniert in <b>völliger Dunkelheit</b> und durch Rauch/Nebel – deshalb top für Perimeter bei Nacht. Verrät Personen, die optische Kameras nicht sehen.',
+      body,
+    });
+  }
+
+  /* ============================================================
+     11) Radar-Sweep-Scope
+     ============================================================ */
+  function radarSim() {
+    const W = 720, H = 360;
+    const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H });
+    const ctx = canvas.getContext('2d');
+    const cx = W / 2, cy = H / 2, R = H / 2 - 16;
+    let sweep = 0;
+    const targets = [];
+    for (let i = 0; i < 5; i++) targets.push({ a: Math.random() * 7, r: 0.3 + Math.random() * 0.65, va: (Math.random() - 0.5) * 0.004, lit: 0 });
+
+    const roCount = readout('Ziele im Bild');
+    const roStat = readout('Status');
+
+    canvas.addEventListener('click', (e) => {
+      const p = pos(canvas, e); const dx = p.x - cx, dy = p.y - cy; const r = Math.hypot(dx, dy) / R;
+      if (r <= 1) targets.push({ a: Math.atan2(dy, dx), r, va: (Math.random() - 0.5) * 0.004, lit: 0 });
+    });
+
+    function draw() {
+      sweep = (sweep + 0.03) % (Math.PI * 2);
+      ctx.fillStyle = '#04140a'; ctx.fillRect(0, 0, W, H);
+      // Ringe + Speichen
+      ctx.strokeStyle = 'rgba(34,197,94,0.35)'; ctx.lineWidth = 1;
+      for (let i = 1; i <= 4; i++) { ctx.beginPath(); ctx.arc(cx, cy, R * i / 4, 0, 7); ctx.stroke(); }
+      for (let a = 0; a < 12; a++) { ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.cos(a / 12 * 7) * R, cy + Math.sin(a / 12 * 7) * R); ctx.stroke(); }
+      // Sweep-Sektor
+      const grad = ctx.createConicGradient ? null : null;
+      ctx.save(); ctx.beginPath(); ctx.moveTo(cx, cy);
+      for (let k = 0; k <= 20; k++) { const a = sweep - 0.5 + k / 20 * 0.5; ctx.lineTo(cx + Math.cos(a) * R, cy + Math.sin(a) * R); }
+      ctx.closePath(); const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, R);
+      g.addColorStop(0, 'rgba(34,197,94,0.4)'); g.addColorStop(1, 'rgba(34,197,94,0)'); ctx.fillStyle = g; ctx.fill(); ctx.restore();
+      // Sweep-Linie
+      ctx.strokeStyle = '#4ade80'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.cos(sweep) * R, cy + Math.sin(sweep) * R); ctx.stroke();
+      // Ziele
+      let lit = 0;
+      targets.forEach(t => {
+        t.a += t.va; const x = cx + Math.cos(t.a) * R * t.r, y = cy + Math.sin(t.a) * R * t.r;
+        let da = ((sweep - t.a) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
+        if (da < 0.25) t.lit = 1;
+        t.lit *= 0.97;
+        if (t.lit > 0.05) lit++;
+        ctx.fillStyle = `rgba(74,222,128,${0.15 + t.lit * 0.85})`;
+        ctx.beginPath(); ctx.arc(x, y, 4 + t.lit * 5, 0, 7); ctx.fill();
+      });
+      roCount.set(String(targets.length));
+      roStat.set(lit > 0 ? lit + ' aktiv erfasst' : 'scannt…', lit > 0 ? 'bad' : 'ok');
+    }
+    loop(canvas, draw);
+
+    const body = el('div', {}, [
+      canvas,
+      el('div', { class: 'phys-hint', text: '⟶ Klick irgendwo ins Bild, um ein Ziel zu setzen. Der Sweep „beleuchtet" es bei jeder Umdrehung.' }),
+      el('div', { class: 'phys-ros' }, [roCount.wrap, roStat.wrap]),
+    ]);
+    return simCard({
+      icon: 'fa-satellite-dish', title: 'Radar-Sweep · Flächenüberwachung', sub: 'Rundum-Erfassung mit Abstand',
+      was: 'Eine rotierende Keule tastet die Fläche ab. Reflexionen von Objekten erscheinen als <b>Blips</b> – die Entfernung steckt in der Laufzeit (Ring = Reichweite), die Richtung im Winkel.',
+      warum: 'So überwacht ein einzelner Sensor große Freiflächen (Bodenradar, Hafen, Flughafen) und liefert Position <b>und</b> Entfernung – anders als ein simpler Bewegungsmelder.',
+      body,
+    });
+  }
+
+  /* ============================================================
+     12) Laser-Gitter (Tripwire-Raum)
+     ============================================================ */
+  function laserSim() {
+    const W = 720, H = 320;
+    const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H });
+    const ctx = canvas.getContext('2d');
+    const M = 30;
+    const beams = [
+      [M, 60, W - M, 110], [M, 150, W - M, 90], [M, 240, W - M, 200],
+      [M, 100, W - M, 260], [W - M, 50, M, 200], [M, 280, W - M, 150],
+    ];
+    const obj = { x: W / 2, y: H / 2, r: 18, auto: true, dragging: false };
+    let ta = 0;
+
+    const roBroken = readout('Unterbrochene Strahlen');
+    const roStat = readout('Status');
+
+    function down(e) { obj.dragging = true; obj.auto = false; move(e); }
+    function move(e) { if (!obj.dragging) return; e.preventDefault(); const p = pos(canvas, e); obj.x = p.x; obj.y = p.y; }
+    function up() { obj.dragging = false; }
+    canvas.addEventListener('mousedown', down); canvas.addEventListener('mousemove', move); window.addEventListener('mouseup', up);
+    canvas.addEventListener('touchstart', down, { passive: false }); canvas.addEventListener('touchmove', move, { passive: false }); window.addEventListener('touchend', up);
+
+    function draw() {
+      if (obj.auto) { ta += 0.015; obj.x = W / 2 + Math.cos(ta) * 240; obj.y = H / 2 + Math.sin(ta * 1.6) * 110; }
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      let broken = 0;
+      beams.forEach(b => {
+        const hit = distSeg(obj.x, obj.y, b[0], b[1], b[2], b[3]) < obj.r;
+        if (hit) broken++;
+        ctx.strokeStyle = hit ? 'rgba(239,68,68,0.95)' : 'rgba(248,113,113,0.8)';
+        ctx.lineWidth = hit ? 3 : 2; ctx.shadowColor = hit ? '#ef4444' : '#f87171'; ctx.shadowBlur = 8;
+        ctx.beginPath(); ctx.moveTo(b[0], b[1]); ctx.lineTo(b[2], b[3]); ctx.stroke();
+        ctx.shadowBlur = 0;
+        [[b[0], b[1]], [b[2], b[3]]].forEach(p => { ctx.fillStyle = '#475569'; ctx.fillRect(p[0] - 5, p[1] - 5, 10, 10); });
+      });
+      ctx.fillStyle = broken ? 'rgba(239,68,68,0.9)' : '#e2e8f0';
+      ctx.beginPath(); ctx.arc(obj.x, obj.y, obj.r, 0, 7); ctx.fill();
+      ctx.fillStyle = '#0b1424'; ctx.font = '16px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('🥷', obj.x, obj.y + 5);
+
+      roBroken.set(broken + ' / ' + beams.length);
+      roStat.set(broken ? 'ALARM (Strahl unterbrochen)' : 'alle Strahlen frei', broken ? 'bad' : 'ok');
+    }
+    loop(canvas, draw);
+
+    const body = el('div', {}, [
+      canvas,
+      el('div', { class: 'phys-hint', text: '⟶ Zieh den Eindringling durch den Raum – jeder gekreuzte Strahl löst aus (wie im Tresorraum).' }),
+      el('div', { class: 'phys-ros' }, [roBroken.wrap, roStat.wrap]),
+    ]);
+    return simCard({
+      icon: 'fa-bahai', title: 'Laser-Gitter · Tripwire', sub: 'Gekreuzte Strahlen im Raum',
+      was: 'Viele gebündelte Strahlen spannen ein unsichtbares Netz auf. Jeder Strahl hat einen Empfänger – wird auch nur <b>einer</b> unterbrochen, schlägt die Anlage an.',
+      warum: 'Lückenloser Raum-/Objektschutz (Museen, Tresorräume). Je dichter das Gitter, desto schwerer „durchzuschlängeln".',
+      body,
+    });
+  }
+
+  /* ============================================================
+     13) Dual-Melder · UND-Verknüpfung (Fehlalarm-Immunität)
+     ============================================================ */
+  function dualSim() {
+    const W = 720, H = 300;
+    const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H });
+    const ctx = canvas.getContext('2d');
+    let scenario = null, t = 0;   // 'einbrecher' | 'waerme' | 'funk'
+
+    const roPir = readout('PIR (Wärme-Bewegung)');
+    const roMw = readout('Mikrowelle (Doppler)');
+    const roStat = readout('UND-Ergebnis');
+
+    function trigger(s) { scenario = s; t = 0; }
+
+    function draw() {
+      t += 1;
+      if (t > 220) scenario = null;
+      let pir = false, mw = false, mover = null;
+      if (scenario === 'einbrecher') { pir = true; mw = true; mover = { x: 120 + (t % 200) * 2, y: H / 2, kind: '🥷' }; }
+      else if (scenario === 'waerme') { pir = true; mw = false; mover = { x: 360, y: H / 2, kind: '🔥' }; }
+      else if (scenario === 'funk') { mw = true; pir = false; mover = { x: 360, y: H / 2, kind: '📡' }; }
+      const alarm = pir && mw;
+
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      // Raum
+      ctx.strokeStyle = 'rgba(148,163,184,0.25)'; ctx.strokeRect(40, 40, W - 80, H - 110);
+      // Melder oben mittig
+      ctx.fillStyle = alarm ? '#ef4444' : '#22d3ee'; ctx.fillRect(W / 2 - 22, 30, 44, 22);
+      ctx.fillStyle = '#94a3b8'; ctx.font = '11px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('Dual-Melder', W / 2, 24);
+      // Beweger
+      if (mover) { ctx.font = '30px sans-serif'; ctx.fillText(mover.kind, mover.x, mover.y); }
+      // Zwei Kanäle + UND-Gatter
+      const ly = H - 48;
+      ctx.font = '13px sans-serif'; ctx.textAlign = 'left';
+      ctx.fillStyle = pir ? '#22c55e' : '#475569'; ctx.beginPath(); ctx.arc(150, ly, 12, 0, 7); ctx.fill();
+      ctx.fillStyle = '#cbd5e1'; ctx.fillText('PIR', 170, ly + 4);
+      ctx.fillStyle = mw ? '#22c55e' : '#475569'; ctx.beginPath(); ctx.arc(330, ly, 12, 0, 7); ctx.fill();
+      ctx.fillStyle = '#cbd5e1'; ctx.fillText('Mikrowelle', 350, ly + 4);
+      ctx.fillStyle = '#fbbf24'; ctx.fillText('&', 500, ly + 6); ctx.font = '20px sans-serif'; ctx.fillText('&', 498, ly + 7);
+      ctx.font = '13px sans-serif'; ctx.fillStyle = alarm ? '#ef4444' : '#475569';
+      ctx.beginPath(); ctx.arc(560, ly, 12, 0, 7); ctx.fill();
+      ctx.fillStyle = '#cbd5e1'; ctx.fillText(alarm ? 'ALARM' : 'kein Alarm', 580, ly + 4);
+
+      roPir.set(pir ? 'erkennt' : '—', pir ? 'warn' : '');
+      roMw.set(mw ? 'erkennt' : '—', mw ? 'warn' : '');
+      roStat.set(alarm ? 'ALARM (beide!)' : 'unterdrückt', alarm ? 'bad' : 'ok');
+    }
+    loop(canvas, draw);
+
+    const b1 = el('button', { class: 'btn primary', html: '<i class="fas fa-user-ninja"></i> Einbrecher' });
+    b1.addEventListener('click', () => trigger('einbrecher'));
+    const b2 = el('button', { class: 'btn', html: '<i class="fas fa-fire"></i> Heizung / Zugluft' });
+    b2.addEventListener('click', () => trigger('waerme'));
+    const b3 = el('button', { class: 'btn', html: '<i class="fas fa-tower-broadcast"></i> Funkstörung' });
+    b3.addEventListener('click', () => trigger('funk'));
+    const body = el('div', {}, [
+      canvas,
+      el('div', { class: 'phys-ctrl phys-ctrl-btns' }, [b1, b2, b3]),
+      el('div', { class: 'phys-ros' }, [roPir.wrap, roMw.wrap, roStat.wrap]),
+    ]);
+    return simCard({
+      icon: 'fa-link', title: 'Dual-Melder · UND-Logik', sub: 'Zwei Prinzipien gegen Fehlalarm',
+      was: 'Ein Dual-Melder kombiniert PIR <b>und</b> Mikrowelle. Erst wenn <b>beide</b> gleichzeitig auslösen, kommt Alarm. Probiere die Störfälle: Wärme reizt nur den PIR, Funkstörung nur die Mikrowelle.',
+      warum: 'Eine einzelne Störung (warmer Luftzug, Funk, bewegter Vorhang) reicht nicht mehr → drastisch <b>weniger Fehlalarme</b>, gefordert ab höheren EMA-Graden.',
+      body,
+    });
+  }
+
+  /* ============================================================
+     14) Funkübertragung · RSSI / Reichweite
+     ============================================================ */
+  function funkSim() {
+    const W = 720, H = 300;
+    const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H });
+    const ctx = canvas.getContext('2d');
+    let dist = 25, walls = 1, phase = 0;
+
+    const roRssi = readout('Signalpegel');
+    const roDist = readout('Distanz / Wände');
+    const roStat = readout('Verbindung');
+
+    function draw() {
+      phase += 0.05;
+      const rssi = -40 - 20 * Math.log10(Math.max(1, dist)) - walls * 11;   // dBm
+      const quality = Math.max(0, Math.min(1, (rssi + 95) / 55));
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      const panel = { x: 70, y: H / 2 }, sensor = { x: 70 + 60 + (W - 220) * (dist / 100), y: H / 2 };
+      // Wellen vom Sensor zur Zentrale
+      ctx.strokeStyle = `rgba(34,211,238,${0.2 + quality * 0.6})`;
+      for (let i = 0; i < 6; i++) { const r = ((phase * 14 + i * 26) % 200); ctx.beginPath(); ctx.arc(sensor.x, sensor.y, r, Math.PI - 1.2, Math.PI + 1.2); ctx.stroke(); }
+      // Wände
+      for (let w = 0; w < walls; w++) { const wx = panel.x + 70 + (sensor.x - panel.x - 90) * (w + 1) / (walls + 1); ctx.fillStyle = 'rgba(148,163,184,0.5)'; ctx.fillRect(wx - 5, 60, 10, H - 130); }
+      // Zentrale + Sensor
+      ctx.fillStyle = '#10b981'; ctx.fillRect(panel.x - 20, panel.y - 26, 40, 52);
+      ctx.fillStyle = quality > 0.15 ? '#22d3ee' : '#ef4444'; ctx.fillRect(sensor.x - 14, sensor.y - 18, 28, 36);
+      ctx.fillStyle = '#94a3b8'; ctx.font = '11px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('Zentrale', panel.x, panel.y + 44); ctx.fillText('Funk-Melder', sensor.x, sensor.y + 44);
+      // Balken
+      for (let i = 0; i < 5; i++) { ctx.fillStyle = (i / 5 < quality) ? '#22c55e' : 'rgba(148,163,184,0.2)'; ctx.fillRect(W - 130 + i * 18, H - 40 - i * 7, 12, 12 + i * 7); }
+
+      roRssi.set(rssi.toFixed(0) + ' dBm');
+      roDist.set(dist + ' m · ' + walls + ' Wand/Wände');
+      roStat.set(quality > 0.45 ? 'stabil' : quality > 0.15 ? 'schwach' : 'verloren', quality > 0.45 ? 'ok' : quality > 0.15 ? 'warn' : 'bad');
+    }
+    loop(canvas, draw);
+
+    const sd = el('input', { type: 'range', min: '1', max: '100', value: '25', class: 'phys-slider' });
+    sd.addEventListener('input', () => { dist = +sd.value; });
+    const sw = el('input', { type: 'range', min: '0', max: '4', value: '1', class: 'phys-slider' });
+    sw.addEventListener('input', () => { walls = +sw.value; });
+    const body = el('div', {}, [
+      canvas,
+      el('div', { class: 'phys-ctrl' }, [el('label', { text: 'Distanz' }), sd]),
+      el('div', { class: 'phys-ctrl' }, [el('label', { text: 'Wände dazwischen' }), sw]),
+      el('div', { class: 'phys-ros' }, [roRssi.wrap, roDist.wrap, roStat.wrap]),
+    ]);
+    return simCard({
+      icon: 'fa-wifi', title: 'Funkübertragung · RSSI', sub: 'Wie weit trägt der Funk-Melder?',
+      was: 'Ein Funk-Melder sendet zur Zentrale. Der Pegel (RSSI in dBm) fällt mit der <b>Distanz</b> (≈ 20 dB je Verzehnfachung) und mit jeder <b>Wand</b> zusätzlich ab.',
+      warum: 'Erklärt, warum Funkanlagen Reichweitengrenzen haben und dicke Wände/Metall stören. Darum: Repeater einsetzen und Pegel bei der Montage messen.',
+      body,
+    });
+  }
+
+  /* ============================================================
+     15) Akustische Triangulation (Schuss-/Glasortung)
+     ============================================================ */
+  function triSim() {
+    const W = 720, H = 340;
+    const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H });
+    const ctx = canvas.getContext('2d');
+    const mics = [{ x: 90, y: 70 }, { x: W - 90, y: 90 }, { x: W / 2, y: H - 60 }];
+    const src = { x: W / 2, y: H / 2, dragging: false };
+    const SPEED = 150; // px/s "Schall"
+    let pulse = null;  // {t0}
+
+    const roTimes = readout('Eintreffzeiten Δt');
+    const roStat = readout('Status');
+
+    function down(e) { const p = pos(canvas, e); if (Math.hypot(p.x - src.x, p.y - src.y) < 40) { src.dragging = true; } move(e); }
+    function move(e) { if (!src.dragging) return; e.preventDefault(); const p = pos(canvas, e); src.x = Math.max(20, Math.min(W - 20, p.x)); src.y = Math.max(20, Math.min(H - 20, p.y)); }
+    function up() { src.dragging = false; }
+    canvas.addEventListener('mousedown', down); canvas.addEventListener('mousemove', move); window.addEventListener('mouseup', up);
+    canvas.addEventListener('touchstart', down, { passive: false }); canvas.addEventListener('touchmove', move, { passive: false }); window.addEventListener('touchend', up);
+
+    function draw(now) {
+      if (!pulse || (now - pulse.start) / 1000 * SPEED > Math.hypot(W, H)) pulse = { start: now };
+      const radius = Math.max(0, (now - pulse.start) / 1000 * SPEED);
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      // Schall-Wellenfront
+      ctx.strokeStyle = 'rgba(251,191,36,0.7)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(src.x, src.y, radius, 0, 7); ctx.stroke();
+      ctx.strokeStyle = 'rgba(251,191,36,0.25)'; ctx.beginPath(); ctx.arc(src.x, src.y, Math.max(0, radius - 18), 0, 7); ctx.stroke();
+      // Mikrofone + Distanzlinien + Eintreffmarker
+      const ds = mics.map(m => Math.hypot(m.x - src.x, m.y - src.y));
+      const dmin = Math.min(...ds);
+      const times = mics.map((m, i) => {
+        const reached = radius >= ds[i];
+        ctx.strokeStyle = 'rgba(148,163,184,0.25)'; ctx.beginPath(); ctx.moveTo(src.x, src.y); ctx.lineTo(m.x, m.y); ctx.stroke();
+        ctx.fillStyle = reached ? '#22c55e' : '#64748b'; ctx.beginPath(); ctx.arc(m.x, m.y, 12, 0, 7); ctx.fill();
+        ctx.fillStyle = '#0b1424'; ctx.font = '11px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('M' + (i + 1), m.x, m.y + 4);
+        return ((ds[i] - dmin) / SPEED * 1000); // ms relativ zum ersten
+      });
+      // Quelle
+      ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(src.x, src.y, 10, 0, 7); ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.font = '16px sans-serif'; ctx.fillText('💥', src.x, src.y - 16);
+
+      roTimes.set('M1 ' + times[0].toFixed(0) + ' · M2 ' + times[1].toFixed(0) + ' · M3 ' + times[2].toFixed(0) + ' ms');
+      roStat.set('Quelle lokalisiert', 'ok');
+    }
+    loop(canvas, draw);
+
+    const body = el('div', {}, [
+      canvas,
+      el('div', { class: 'phys-hint', text: '⟶ Zieh die Schallquelle (💥). Jedes Mikrofon hört sie zu einem anderen Zeitpunkt – aus den Differenzen folgt die Position.' }),
+      el('div', { class: 'phys-ros' }, [roTimes.wrap, roStat.wrap]),
+    ]);
+    return simCard({
+      icon: 'fa-tower-cell', title: 'Akustische Triangulation', sub: 'Schuss- & Glasbruch-Ortung',
+      was: 'Mehrere Mikrofone hören dasselbe Geräusch zu <b>leicht verschiedenen Zeiten</b> (Schall ist langsam). Aus den Zeitdifferenzen (TDOA) lässt sich die Quelle eindeutig orten.',
+      warum: 'Prinzip hinter Schussortung und großflächiger Glasbruch-Erkennung – ein Vorfall wird nicht nur erkannt, sondern <b>verortet</b>.',
+      body,
+    });
+  }
+
+  /* ============================================================
      Ansicht
      ============================================================ */
   function view() {
@@ -727,8 +1114,8 @@ window.PHYSIK = (() => {
     intro.innerHTML = `
       <span class="tag">Verstehen · Live-Physik</span>
       <h1>Physik Live – wie Sensoren wirklich „sehen"</h1>
-      <p class="lead">Jeder Melder nutzt ein physikalisches Prinzip. Hier läuft jedes davon als Echtzeit-Simulation zum Anfassen –
-      mit kurzer Erklärung <b>was</b> passiert und <b>warum</b> es für die Sicherheitstechnik wichtig ist.</p>
+      <p class="lead">15 Echtzeit-Simulationen zum Anfassen, sortiert nach Wirkprinzip. Jede zeigt in Klartext
+      <b>was</b> passiert und <b>warum</b> es für die Sicherheitstechnik wichtig ist – ziehen, schieben, klicken.</p>
       <div class="phys-legend">
         <span><i class="fas fa-hand-pointer"></i> ziehen / schieben / klicken</span>
         <span><i class="fas fa-circle" style="color:#22c55e"></i> Ruhe</span>
@@ -736,10 +1123,19 @@ window.PHYSIK = (() => {
       </div>`;
     root.appendChild(intro);
 
-    const grid = el('div', { class: 'phys-grid' });
-    [pirSim(), dopplerSim(), ultraschallSim(), reedSim(), beamSim(), glassSim(), seismikSim(), lockSim(), kapazitivSim()]
-      .forEach(s => grid.appendChild(s));
-    root.appendChild(grid);
+    const cats = [
+      { label: 'Bewegung & Präsenz', sims: [pirSim, dopplerSim, ultraschallSim, radarSim, thermalSim, dualSim] },
+      { label: 'Öffnung & Mechanik', sims: [reedSim, lockSim, seismikSim, kapazitivSim] },
+      { label: 'Licht & Laser', sims: [beamSim, laserSim] },
+      { label: 'Akustik', sims: [glassSim, triSim] },
+      { label: 'Funk & Übertragung', sims: [funkSim] },
+    ];
+    cats.forEach(c => {
+      root.appendChild(el('div', { class: 'phys-cat', text: c.label }));
+      const grid = el('div', { class: 'phys-grid' });
+      c.sims.forEach(fn => grid.appendChild(fn()));
+      root.appendChild(grid);
+    });
 
     return root;
   }
