@@ -1145,21 +1145,454 @@ window.LAB = (() => {
     return card;
   }
 
+  /* ============ MELDER 1: Magnetkontakt (Reed) · Schaltabstand ============ */
+  function calcReed() {
+    const card = el('div', { class:'lab-card' });
+    card.innerHTML = `
+      <div class="lab-head" style="--c:#22c55e">
+        <div class="lab-icon"><i class="fas fa-magnet"></i></div>
+        <div>
+          <h3>Magnetkontakt · Schaltabstand</h3>
+          <span>Reed-Sensor · Magnetfeld-Abfall mit Distanz</span>
+        </div>
+      </div>
+      <div class="lab-formula">
+        <em>B(d)</em> = <em>B₀</em> · (<em>r</em>/(<em>r</em>+<em>d</em>))³ &nbsp;·&nbsp; Alarm wenn <em>B</em> &lt; <em>B<sub>schalt</sub></em>
+      </div>
+      <div class="lab-body">
+        <div class="lab-controls">
+          ${slider('reed-b0', 'Magnet-Remanenz B₀', 50, 600, 10, 200, ' mT', 0)}
+          ${slider('reed-r',  'Magnet-Radius', 2, 20, 1, 6, ' mm', 0)}
+          ${slider('reed-th', 'Reed-Schaltschwelle', 1, 30, 0.5, 8, ' mT', 1)}
+          <div class="lab-cls-toggle" id="reed-typ">
+            <button data-th="8" class="active">Standard</button>
+            <button data-th="3">Hochsicher (eng)</button>
+            <button data-th="15">Tor/Garage (weit)</button>
+          </div>
+        </div>
+        <div class="lab-vis" id="reed-vis"></div>
+        <div class="lab-result" id="reed-result"></div>
+      </div>
+    `;
+    function update() {
+      const B0 = +card.querySelector('#reed-b0').value;
+      const r = +card.querySelector('#reed-r').value;
+      const th = +card.querySelector('#reed-th').value;
+      // Schaltabstand: löse B0*(r/(r+d))^3 = th  → d = r*((B0/th)^(1/3) - 1)
+      const dSchalt = r * (Math.pow(B0 / th, 1/3) - 1);
+      const ok = dSchalt < 8 ? 'sehr eng (manipulationssicher)' : dSchalt < 25 ? 'normal (Tür/Fenster)' : 'weit (Tor)';
+      const c = dSchalt < 8 ? '#22c55e' : dSchalt < 25 ? '#06b6d4' : '#fbbf24';
+
+      const scale = Math.min(6, 220 / Math.max(dSchalt, 5));
+      const gapPx = Math.min(220, dSchalt * scale);
+      card.querySelector('#reed-vis').innerHTML = `
+        <svg viewBox="0 0 400 200" class="lab-svg">
+          <rect width="400" height="200" fill="#0a0f1a"/>
+          <line x1="0" y1="150" x2="400" y2="150" stroke="#1e293b" stroke-width="2"/>
+          <!-- Reed (Rahmen) -->
+          <rect x="40" y="95" width="50" height="50" rx="5" fill="#1e293b" stroke="${c}" stroke-width="2"/>
+          <text x="65" y="125" text-anchor="middle" font-size="9" fill="${c}" font-weight="800">REED</text>
+          <line x1="48" y1="120" x2="82" y2="120" stroke="${c}" stroke-width="1.5"/>
+          <!-- Magnet (Türflügel) -->
+          <g transform="translate(${90 + gapPx}, 0)">
+            <rect x="0" y="95" width="50" height="50" rx="5" fill="#7f1d1d" stroke="#ef4444" stroke-width="2"/>
+            <rect x="0" y="95" width="25" height="50" rx="5" fill="#dc2626"/>
+            <text x="12" y="125" text-anchor="middle" font-size="11" fill="#fff" font-weight="900">N</text>
+            <text x="38" y="125" text-anchor="middle" font-size="11" fill="#fff" font-weight="900">S</text>
+          </g>
+          <!-- Feldlinien -->
+          ${[0,1,2].map(i => `<path d="M ${90+gapPx} ${108+i*12} Q ${65+gapPx/2} ${70+i*20} ${90} ${108+i*12}" fill="none" stroke="#ef4444" stroke-width="1" opacity="${0.5-i*0.12}"/>`).join('')}
+          <!-- Gap-Maß -->
+          <line x1="90" y1="170" x2="${90+gapPx}" y2="170" stroke="${c}" stroke-width="1.5"/>
+          <text x="${90+gapPx/2}" y="185" text-anchor="middle" font-size="11" fill="${c}" font-weight="800">${dSchalt.toFixed(1)} mm Schaltabstand</text>
+        </svg>
+      `;
+      card.querySelector('#reed-result').innerHTML = `
+        <div class="lab-result-row">
+          <div class="lab-result-stat" style="--c:${c}"><strong>${dSchalt.toFixed(1)} mm</strong><span>Schaltabstand</span></div>
+          <div class="lab-result-stat" style="--c:#ef4444"><strong>${B0} mT</strong><span>am Magneten</span></div>
+          <div class="lab-result-stat" style="--c:#22c55e"><strong>${th} mT</strong><span>Schaltschwelle</span></div>
+          <div class="lab-result-stat" style="--c:${c}"><strong>${ok}</strong><span>Bewertung</span></div>
+        </div>
+        <p class="lab-info"><i class="fas fa-circle-info"></i> Alarm löst aus, sobald die Tür weiter als der Schaltabstand öffnet (Feld &lt; Schwelle). VdS verlangt enge Abstände + Sabotage-Überwachung; bei Tor-Magneten größere Abstände tolerierbar.</p>
+      `;
+    }
+    setTimeout(() => {
+      card.querySelectorAll('#reed-typ button').forEach(b => b.onclick = () => {
+        card.querySelector('#reed-th').value = b.dataset.th;
+        card.querySelector('#reed-th-v').textContent = (+b.dataset.th).toFixed(1) + ' mT';
+        card.querySelectorAll('#reed-typ button').forEach(x => x.classList.remove('active'));
+        b.classList.add('active'); update();
+      });
+    }, 0);
+    attachSliders(card, update);
+    setTimeout(update, 0);
+    return card;
+  }
+
+  /* ============ MELDER 2: Rauchmelder · Obscuration & Abdeckung ============ */
+  function calcSmoke() {
+    const card = el('div', { class:'lab-card' });
+    card.innerHTML = `
+      <div class="lab-head" style="--c:#94a3b8">
+        <div class="lab-icon"><i class="fas fa-smog"></i></div>
+        <div>
+          <h3>Rauchmelder · Ansprechen & Abdeckung</h3>
+          <span>Optische Trübung (Obscuration) · DIN 14676 / EN 14604</span>
+        </div>
+      </div>
+      <div class="lab-formula">
+        <em>m</em> = (1 − <em>I</em>/<em>I₀</em>)·100 %/m &nbsp;·&nbsp; <em>n</em> = ⌈<em>A<sub>Raum</sub></em> / <em>A<sub>Melder</sub></em>⌉
+      </div>
+      <div class="lab-body">
+        <div class="lab-controls">
+          ${slider('smk-obs', 'Aktuelle Trübung', 0, 15, 0.1, 3, ' %/m', 1)}
+          ${slider('smk-th',  'Ansprechschwelle', 1, 8, 0.1, 3.5, ' %/m', 1)}
+          ${slider('smk-area','Raumfläche', 10, 200, 5, 60, ' m²', 0)}
+          <div class="lab-cls-toggle" id="smk-typ">
+            <button data-cov="60" data-name="Wohnraum (60 m²)" class="active">Wohnraum</button>
+            <button data-cov="40" data-name="Flur ≤ 40 m²">Flur</button>
+            <button data-cov="20" data-name="Industrie (eng)">Industrie</button>
+          </div>
+        </div>
+        <div class="lab-vis" id="smk-vis"></div>
+        <div class="lab-result" id="smk-result"></div>
+      </div>
+    `;
+    let cov = 60;
+    function update() {
+      const obs = +card.querySelector('#smk-obs').value;
+      const th = +card.querySelector('#smk-th').value;
+      const area = +card.querySelector('#smk-area').value;
+      const alarm = obs >= th;
+      const n = Math.ceil(area / cov);
+      const fillRatio = Math.min(1, obs / th);
+      const c = alarm ? '#ef4444' : obs > th * 0.6 ? '#fbbf24' : '#22c55e';
+
+      card.querySelector('#smk-vis').innerHTML = `
+        <svg viewBox="0 0 400 200" class="lab-svg">
+          <rect width="400" height="200" fill="#0a0f1a"/>
+          <!-- Decke + Melder -->
+          <line x1="40" y1="30" x2="360" y2="30" stroke="#475569" stroke-width="3"/>
+          <rect x="180" y="30" width="40" height="16" rx="8" fill="#1e293b" stroke="${c}" stroke-width="2"/>
+          <circle cx="200" cy="38" r="4" fill="${c}">${alarm ? '<animate attributeName="opacity" values="1;.2;1" dur=".6s" repeatCount="indefinite"/>' : ''}</circle>
+          <!-- Rauch (steigt) -->
+          ${[0,1,2,3].map(i => `<ellipse cx="${150+i*30}" cy="${150-fillRatio*90}" rx="${18+i*4}" ry="${10+fillRatio*8}" fill="#94a3b8" opacity="${0.1+fillRatio*0.3}"><animate attributeName="cy" values="${160-fillRatio*60};${60};${160-fillRatio*60}" dur="${3+i}s" repeatCount="indefinite"/></ellipse>`).join('')}
+          <!-- Feuerquelle -->
+          <path d="M 190 175 Q 180 150 200 140 Q 220 150 210 175 Z" fill="#f97316"/>
+          <path d="M 196 175 Q 192 158 200 150 Q 208 158 204 175 Z" fill="#fbbf24"/>
+          <!-- Trübungsbalken -->
+          <rect x="40" y="60" width="100" height="14" rx="3" fill="#1e293b"/>
+          <rect x="40" y="60" width="${Math.min(100, obs/15*100)}" height="14" rx="3" fill="${c}"/>
+          <line x1="${40+th/15*100}" y1="56" x2="${40+th/15*100}" y2="78" stroke="#fff" stroke-width="1.5" stroke-dasharray="2 2"/>
+          <text x="40" y="92" font-size="9" fill="#94a3b8">Trübung ${obs.toFixed(1)} %/m · Schwelle ${th.toFixed(1)}</text>
+          ${alarm ? '<text x="280" y="70" font-size="14" fill="#ef4444" font-weight="900">🔔 ALARM</text>' : '<text x="280" y="70" font-size="12" fill="#22c55e" font-weight="800">überwacht</text>'}
+        </svg>
+      `;
+      card.querySelector('#smk-result').innerHTML = `
+        <div class="lab-result-row">
+          <div class="lab-result-stat" style="--c:${c}"><strong>${obs.toFixed(1)} %/m</strong><span>Trübung</span></div>
+          <div class="lab-result-stat" style="--c:${alarm?'#ef4444':'#22c55e'}"><strong>${alarm?'ALARM':'OK'}</strong><span>Status</span></div>
+          <div class="lab-result-stat" style="--c:#06b6d4"><strong>${n}</strong><span>Melder nötig</span></div>
+          <div class="lab-result-stat" style="--c:#06b6d4"><strong>${cov} m²</strong><span>pro Melder</span></div>
+        </div>
+        <p class="lab-info"><i class="fas fa-circle-info"></i> Optische Melder sprechen bei 2—4 %/m an (Schwelbrand). DIN 14676: max. 60 m²/Melder, Abstand ≤ 0,5 m von Wand fern, Mindestabstand zu Leuchten. Pflicht in Schlaf-/Kinderzimmern + Fluren.</p>
+      `;
+    }
+    setTimeout(() => {
+      card.querySelectorAll('#smk-typ button').forEach(b => b.onclick = () => {
+        cov = +b.dataset.cov;
+        card.querySelectorAll('#smk-typ button').forEach(x => x.classList.remove('active'));
+        b.classList.add('active'); update();
+      });
+    }, 0);
+    attachSliders(card, update);
+    setTimeout(update, 0);
+    return card;
+  }
+
+  /* ============ MELDER 3: Wärmemelder · Maximal vs Differential ============ */
+  function calcHeat() {
+    const card = el('div', { class:'lab-card' });
+    card.innerHTML = `
+      <div class="lab-head" style="--c:#f97316">
+        <div class="lab-icon"><i class="fas fa-temperature-arrow-up"></i></div>
+        <div>
+          <h3>Wärmemelder · Ansprechzeit</h3>
+          <span>Maximalmelder vs Differentialmelder (Rate-of-Rise)</span>
+        </div>
+      </div>
+      <div class="lab-formula">
+        <em>t</em> = (<em>θ<sub>max</sub></em> − <em>θ₀</em>) / <em>ṙ</em> &nbsp;·&nbsp; Diff. löst bei <em>ṙ</em> &gt; <em>ṙ<sub>th</sub></em>
+      </div>
+      <div class="lab-body">
+        <div class="lab-controls">
+          ${slider('heat-t0',  'Raumtemperatur θ₀', 0, 40, 1, 21, ' °C', 0)}
+          ${slider('heat-rate','Temperaturanstieg ṙ', 1, 60, 1, 12, ' K/min', 0)}
+          <div class="lab-cls-toggle" id="heat-cls">
+            <button data-max="58" data-name="A1" class="active">A1 (58 °C)</button>
+            <button data-max="54" data-name="A2">A2 (54 °C)</button>
+            <button data-max="69" data-name="B">B (69 °C)</button>
+          </div>
+        </div>
+        <div class="lab-vis" id="heat-vis"></div>
+        <div class="lab-result" id="heat-result"></div>
+      </div>
+    `;
+    let thetaMax = 58, clsName = 'A1';
+    const rateTh = 10; // K/min Differential-Schwelle
+    function update() {
+      const t0 = +card.querySelector('#heat-t0').value;
+      const rate = +card.querySelector('#heat-rate').value;
+      const tMax = (thetaMax - t0) / rate; // min bis Maximalmelder
+      const diffTrig = rate > rateTh;
+      const tDiff = diffTrig ? Math.max(0.3, 5 / rate) : null; // grobe Reaktionszeit Differential
+      const c = diffTrig ? '#22c55e' : '#fbbf24';
+
+      const maxH = 150;
+      const pts = [];
+      for (let i = 0; i <= 20; i++) {
+        const tm = (tMax * 1.2) * i / 20;
+        const temp = t0 + rate * tm;
+        const x = 50 + (i/20) * 300;
+        const y = 170 - Math.min(maxH, (temp - 0) * 1.6);
+        pts.push(`${x},${y}`);
+      }
+      const yMax = 170 - Math.min(maxH, thetaMax * 1.6);
+      card.querySelector('#heat-vis').innerHTML = `
+        <svg viewBox="0 0 400 200" class="lab-svg">
+          <rect width="400" height="200" fill="#0a0f1a"/>
+          <line x1="50" y1="170" x2="360" y2="170" stroke="#475569"/>
+          <line x1="50" y1="20" x2="50" y2="170" stroke="#475569"/>
+          <text x="30" y="25" font-size="8" fill="#64748b">°C</text>
+          <text x="350" y="185" font-size="8" fill="#64748b">t</text>
+          <!-- Maximal-Schwelle -->
+          <line x1="50" y1="${yMax}" x2="360" y2="${yMax}" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <text x="355" y="${yMax-4}" text-anchor="end" font-size="9" fill="#ef4444" font-weight="700">${thetaMax}°C (${clsName})</text>
+          <!-- Temperaturkurve -->
+          <polyline points="${pts.join(' ')}" fill="none" stroke="#f97316" stroke-width="2.5"/>
+          <!-- Ansprechpunkt -->
+          ${tMax < tMax*1.2 ? `<circle cx="${50 + (tMax/(tMax*1.2))*300}" cy="${yMax}" r="5" fill="#ef4444"/>` : ''}
+          <text x="60" y="40" font-size="10" fill="${c}" font-weight="800">${diffTrig ? 'Differential: SOFORT-Alarm ('+rate+' K/min)' : 'nur Maximal-Melder spricht an'}</text>
+        </svg>
+      `;
+      card.querySelector('#heat-result').innerHTML = `
+        <div class="lab-result-row">
+          <div class="lab-result-stat" style="--c:#ef4444"><strong>${tMax.toFixed(1)} min</strong><span>bis Maximal (${thetaMax}°C)</span></div>
+          <div class="lab-result-stat" style="--c:${c}"><strong>${diffTrig ? tDiff.toFixed(1)+' min' : '—'}</strong><span>Differential</span></div>
+          <div class="lab-result-stat" style="--c:#f97316"><strong>${rate} K/min</strong><span>Anstieg</span></div>
+          <div class="lab-result-stat" style="--c:${c}"><strong>${diffTrig?'aktiv':'inaktiv'}</strong><span>Rate-of-Rise</span></div>
+        </div>
+        <p class="lab-info"><i class="fas fa-circle-info"></i> Maximalmelder lösen erst bei fester Temperatur aus (A1 58 °C). Differentialmelder erkennen schnellen Anstieg (&gt;10 K/min) und sind viel früher — ideal wo keine schnellen Temperatursprünge normal sind (nicht in Küche/Heizraum!).</p>
+      `;
+    }
+    setTimeout(() => {
+      card.querySelectorAll('#heat-cls button').forEach(b => b.onclick = () => {
+        thetaMax = +b.dataset.max; clsName = b.dataset.name;
+        card.querySelectorAll('#heat-cls button').forEach(x => x.classList.remove('active'));
+        b.classList.add('active'); update();
+      });
+    }, 0);
+    attachSliders(card, update);
+    setTimeout(update, 0);
+    return card;
+  }
+
+  /* ============ MELDER 4: Glasbruchmelder · akustische Abdeckung ============ */
+  function calcGlass() {
+    const card = el('div', { class:'lab-card' });
+    card.innerHTML = `
+      <div class="lab-head" style="--c:#3b82f6">
+        <div class="lab-icon"><i class="fas fa-wine-glass-crack"></i></div>
+        <div>
+          <h3>Glasbruchmelder · Erfassungsradius</h3>
+          <span>Akustische 2-Phasen-Detektion · Flächenabdeckung</span>
+        </div>
+      </div>
+      <div class="lab-formula">
+        <em>A</em> = π·<em>r</em>² &nbsp;·&nbsp; Erkennung: Tiefton (Biegen) + Hochton (Splittern ≈ 5 kHz)
+      </div>
+      <div class="lab-body">
+        <div class="lab-controls">
+          ${slider('gls-r',   'Erfassungsradius', 1, 12, 0.5, 7.6, ' m', 1)}
+          ${slider('gls-w',   'Raumbreite', 2, 20, 0.5, 8, ' m', 1)}
+          ${slider('gls-h',   'Raumtiefe', 2, 20, 0.5, 6, ' m', 1)}
+          <div class="lab-cls-toggle" id="gls-typ">
+            <button data-r="7.6" data-name="Standard akustisch" class="active">Akustisch</button>
+            <button data-r="4" data-name="Körperschall (Klebe)">Körperschall</button>
+            <button data-r="9" data-name="Passiv-IR-Glas">Weit</button>
+          </div>
+        </div>
+        <div class="lab-vis" id="gls-vis"></div>
+        <div class="lab-result" id="gls-result"></div>
+      </div>
+    `;
+    function update() {
+      const r = +card.querySelector('#gls-r').value;
+      const w = +card.querySelector('#gls-w').value;
+      const h = +card.querySelector('#gls-h').value;
+      const A = Math.PI * r * r;
+      const roomA = w * h;
+      const diag = Math.sqrt(w*w + h*h) / 2;
+      const covered = r >= diag;
+      const c = covered ? '#22c55e' : '#fbbf24';
+
+      const scale = Math.min(160/Math.max(w,h), 14);
+      const rw = w*scale, rh = h*scale;
+      const ox = 200 - rw/2, oy = 110 - rh/2;
+      const detPx = r*scale;
+      card.querySelector('#gls-vis').innerHTML = `
+        <svg viewBox="0 0 400 200" class="lab-svg">
+          <rect width="400" height="200" fill="#0a0f1a"/>
+          <!-- Raum -->
+          <rect x="${ox}" y="${oy}" width="${rw}" height="${rh}" fill="rgba(59,130,246,.05)" stroke="#475569" stroke-width="1.5"/>
+          <!-- Erfassungskreis (Melder an Decke Mitte) -->
+          <circle cx="200" cy="110" r="${detPx}" fill="rgba(59,130,246,.18)" stroke="#3b82f6" stroke-width="1.5"/>
+          <rect x="192" y="102" width="16" height="16" rx="3" fill="#1e293b" stroke="#3b82f6" stroke-width="2"/>
+          <!-- Glasbruch-Symbol Ecke -->
+          <text x="${ox+8}" y="${oy+18}" font-size="14">🪟</text>
+          <text x="200" y="${oy-6}" text-anchor="middle" font-size="10" fill="${c}" font-weight="800">r = ${r.toFixed(1)} m · ${covered?'Raum abgedeckt':'Lücken!'}</text>
+        </svg>
+      `;
+      card.querySelector('#gls-result').innerHTML = `
+        <div class="lab-result-row">
+          <div class="lab-result-stat" style="--c:#3b82f6"><strong>${A.toFixed(1)} m²</strong><span>Erfassungsfläche</span></div>
+          <div class="lab-result-stat" style="--c:#3b82f6"><strong>${roomA.toFixed(1)} m²</strong><span>Raumfläche</span></div>
+          <div class="lab-result-stat" style="--c:${c}"><strong>${covered?'JA':'NEIN'}</strong><span>komplett?</span></div>
+          <div class="lab-result-stat" style="--c:${c}"><strong>${Math.ceil(roomA/A)}</strong><span>Melder min.</span></div>
+        </div>
+        <p class="lab-info"><i class="fas fa-circle-info"></i> Akustische Glasbruchmelder (Radius ~7,6 m) brauchen freie „Sicht" zur Scheibe. Körperschallmelder werden auf die Scheibe geklebt (kleiner Radius, sehr sicher). Dual-Auswertung Tiefton+Hochton verhindert Fehlalarme durch Schlüsselklirren.</p>
+      `;
+    }
+    setTimeout(() => {
+      card.querySelectorAll('#gls-typ button').forEach(b => b.onclick = () => {
+        card.querySelector('#gls-r').value = b.dataset.r;
+        card.querySelector('#gls-r-v').textContent = (+b.dataset.r).toFixed(1) + ' m';
+        card.querySelectorAll('#gls-typ button').forEach(x => x.classList.remove('active'));
+        b.classList.add('active'); update();
+      });
+    }, 0);
+    attachSliders(card, update);
+    setTimeout(update, 0);
+    return card;
+  }
+
+  /* ============ MELDER 5: Dual-Melder · Fehlalarm-Wahrscheinlichkeit ============ */
+  function calcDual() {
+    const card = el('div', { class:'lab-card' });
+    card.innerHTML = `
+      <div class="lab-head" style="--c:#a855f7">
+        <div class="lab-icon"><i class="fas fa-layer-group"></i></div>
+        <div>
+          <h3>Dual-Melder · Fehlalarm-Analyse</h3>
+          <span>PIR + Mikrowelle · UND-Verknüpfung senkt Fehlalarme</span>
+        </div>
+      </div>
+      <div class="lab-formula">
+        UND: <em>P<sub>falsch</sub></em> = <em>p₁</em>·<em>p₂</em> &nbsp;·&nbsp; <em>P<sub>detekt</sub></em> = <em>d₁</em>·<em>d₂</em>
+      </div>
+      <div class="lab-body">
+        <div class="lab-controls">
+          ${slider('dual-p1', 'Fehlalarm PIR /Monat', 0, 30, 1, 8, '', 0)}
+          ${slider('dual-p2', 'Fehlalarm Mikrowelle /Monat', 0, 30, 1, 6, '', 0)}
+          ${slider('dual-corr', 'Gemeinsame Ursache', 0, 50, 1, 5, ' %', 0)}
+          <div class="lab-cls-toggle" id="dual-logic">
+            <button data-l="and" class="active">UND (Dual)</button>
+            <button data-l="or">ODER (parallel)</button>
+          </div>
+        </div>
+        <div class="lab-vis" id="dual-vis"></div>
+        <div class="lab-result" id="dual-result"></div>
+      </div>
+    `;
+    let logic = 'and';
+    function update() {
+      const p1m = +card.querySelector('#dual-p1').value;
+      const p2m = +card.querySelector('#dual-p2').value;
+      const corr = +card.querySelector('#dual-corr').value / 100;
+      // Wahrscheinlichkeit pro "Ereignisfenster" (normiert auf Monat=720h → grobe Rate)
+      const p1 = p1m / 720, p2 = p2m / 720;
+      let combined;
+      if (logic === 'and') {
+        // unabhängiger Teil + korrelierter Teil
+        combined = (p1 * p2) * (1 - corr) + Math.min(p1, p2) * corr;
+      } else {
+        combined = p1 + p2 - p1 * p2;
+      }
+      const perMonth = combined * 720;
+      const reduction = p1m > 0 ? (1 - perMonth / p1m) * 100 : 0;
+      const c = logic === 'and' ? '#22c55e' : '#ef4444';
+
+      const bar = (val, max, col, y, lbl) => `
+        <rect x="120" y="${y}" width="${Math.min(240, val/max*240)}" height="22" rx="3" fill="${col}"/>
+        <text x="115" y="${y+15}" text-anchor="end" font-size="9" fill="#94a3b8">${lbl}</text>
+        <text x="${125+Math.min(240, val/max*240)}" y="${y+15}" font-size="10" fill="${col}" font-weight="800">${val.toFixed(1)}/Mon</text>`;
+      const maxV = Math.max(p1m, p2m, perMonth, 1);
+      card.querySelector('#dual-vis').innerHTML = `
+        <svg viewBox="0 0 400 200" class="lab-svg">
+          <rect width="400" height="200" fill="#0a0f1a"/>
+          ${bar(p1m, maxV, '#22d3ee', 30, 'PIR allein')}
+          ${bar(p2m, maxV, '#fbbf24', 70, 'MW allein')}
+          ${bar(perMonth, maxV, c, 120, logic==='and'?'DUAL (UND)':'DUAL (ODER)')}
+          <text x="200" y="180" text-anchor="middle" font-size="11" fill="${c}" font-weight="800">${logic==='and' ? `−${reduction.toFixed(0)}% Fehlalarme vs. PIR allein` : 'mehr Fehlalarme — nur für Detektionssicherheit'}</text>
+        </svg>
+      `;
+      card.querySelector('#dual-result').innerHTML = `
+        <div class="lab-result-row">
+          <div class="lab-result-stat" style="--c:#22d3ee"><strong>${p1m}/Mon</strong><span>PIR Fehlalarm</span></div>
+          <div class="lab-result-stat" style="--c:#fbbf24"><strong>${p2m}/Mon</strong><span>MW Fehlalarm</span></div>
+          <div class="lab-result-stat" style="--c:${c}"><strong>${perMonth.toFixed(1)}/Mon</strong><span>Dual ${logic==='and'?'UND':'ODER'}</span></div>
+          <div class="lab-result-stat" style="--c:${c}"><strong>${logic==='and'?'−'+reduction.toFixed(0)+'%':'+'+Math.abs(reduction).toFixed(0)+'%'}</strong><span>Änderung</span></div>
+        </div>
+        <p class="lab-info"><i class="fas fa-circle-info"></i> Dual-Melder (PIR UND Mikrowelle) lösen nur aus, wenn BEIDE Sensoren ansprechen → drastisch weniger Fehlalarme (Sonne, Heizung, Zugluft). Nachteil: minimal geringere Detektionsrate. Korrelierte Störungen (z. B. Erschütterung) begrenzen den Effekt.</p>
+      `;
+    }
+    setTimeout(() => {
+      card.querySelectorAll('#dual-logic button').forEach(b => b.onclick = () => {
+        logic = b.dataset.l;
+        card.querySelectorAll('#dual-logic button').forEach(x => x.classList.remove('active'));
+        b.classList.add('active'); update();
+      });
+    }, 0);
+    attachSliders(card, update);
+    setTimeout(update, 0);
+    return card;
+  }
+
   /* ============ MAIN VIEW ============ */
+
+  /* Kategorie-Definition: jeder Rechner gehört zu einer Gruppe */
+  const CATEGORIES = [
+    { id:'melder', label:'Melder & Alarm', icon:'fa-bell', color:'#22c55e',
+      desc:'Detektions-Physik: Magnetkontakt, Rauch, Wärme, Glasbruch, Bewegung, Dual-Technik.',
+      calcs:[ ['Magnetkontakt', calcReed], ['PIR-Bewegung', calcPIR], ['Rauchmelder', calcSmoke], ['Wärmemelder', calcHeat], ['Glasbruch', calcGlass], ['Dual-Melder', calcDual] ] },
+    { id:'video', label:'Video & Optik', icon:'fa-video', color:'#06b6d4',
+      desc:'CCTV-Speicher, Wärmebild-Reichweite und Beleuchtungsstärke.',
+      calcs:[ ['Wärmebild', calcThermal], ['CCTV-Speicher', calcStorage], ['Beleuchtung', calcLux] ] },
+    { id:'brand', label:'Brandschutz', icon:'fa-fire', color:'#f97316',
+      desc:'Sprinkler-Auslegung und Brandlast-Berechnung.',
+      calcs:[ ['Sprinkler', calcSprinkler], ['Brandlast', calcFireLoad] ] },
+    { id:'funk', label:'Funk, Schall & EM', icon:'fa-tower-broadcast', color:'#a855f7',
+      desc:'Schalldruck, Funkreichweite (Friis), EM-Schirmung, Radar.',
+      calcs:[ ['Schalldruck', calcSchall], ['Funkreichweite', calcRadio], ['EM-Schirmung', calcShielding], ['Radar', calcRadar] ] },
+    { id:'risk', label:'Wirtschaft & Risiko', icon:'fa-chart-line', color:'#fbbf24',
+      desc:'Tresor-Versicherung und Risiko-Index.',
+      calcs:[ ['Versicherung', calcInsurance], ['Risiko-Index', calcRisk] ] },
+  ];
 
   function view(d) {
     const root = el('div');
+    const totalCalcs = CATEGORIES.reduce((s,c) => s + c.calcs.length, 0);
 
     const hero = el('div', { class:'lab-hero' });
     hero.innerHTML = `
       <div class="lab-hero-bg"></div>
       <div class="lab-hero-content">
         <div class="lab-hero-tag">ENGINEERING-LAB · LIVE-FORMELN</div>
-        <h1>🧮 12 physikalische Live-Rechner</h1>
+        <h1>🧮 ${totalCalcs} physikalische Live-Rechner</h1>
         <p>
-          Echte Physik-Formeln mit Live-Berechnung. Schalldruck, PIR-Geometrie, Wärmestrahlung,
-          CCTV-Speicher, Beleuchtung, Tresor-Versicherung, Risiko-Index, Sprinkler-Auslegung,
-          Funkreichweite (Friis), Brandlast, EM-Schirmung, Radar-Reichweite.
+          Echte Physik-Formeln mit Live-Berechnung — in ${CATEGORIES.length} Kategorien sortiert.
+          Schwerpunkt <strong>Melder &amp; Alarm</strong>: Magnetkontakt, Rauch-, Wärme-, Glasbruch- und Dual-Melder.
         </p>
         <div class="lab-hero-actions">
           <button class="lab-print-btn" onclick="window.print()">
@@ -1170,20 +1603,54 @@ window.LAB = (() => {
     `;
     root.appendChild(hero);
 
-    const grid = el('div', { class:'lab-grid' });
-    grid.appendChild(calcSchall());
-    grid.appendChild(calcPIR());
-    grid.appendChild(calcThermal());
-    grid.appendChild(calcStorage());
-    grid.appendChild(calcLux());
-    grid.appendChild(calcInsurance());
-    grid.appendChild(calcRisk());
-    grid.appendChild(calcSprinkler());
-    grid.appendChild(calcRadio());
-    grid.appendChild(calcFireLoad());
-    grid.appendChild(calcShielding());
-    grid.appendChild(calcRadar());
-    root.appendChild(grid);
+    // ===== Filter-Leiste =====
+    const filter = el('div', { class:'lab-filter' });
+    filter.innerHTML = `
+      <button class="lab-filter-btn active" data-cat="all"><i class="fas fa-border-all"></i> Alle (${totalCalcs})</button>
+      ${CATEGORIES.map(c => `
+        <button class="lab-filter-btn" data-cat="${c.id}" style="--fc:${c.color}">
+          <i class="fas ${c.icon}"></i> ${c.label} (${c.calcs.length})
+        </button>
+      `).join('')}
+    `;
+    root.appendChild(filter);
+
+    // ===== Kategorie-Sektionen =====
+    const sectionsWrap = el('div', { class:'lab-sections' });
+    CATEGORIES.forEach(cat => {
+      const section = el('div', { class:'lab-section' });
+      section.dataset.cat = cat.id;
+      const header = el('div', { class:'lab-section-head' });
+      header.style.setProperty('--c', cat.color);
+      header.innerHTML = `
+        <div class="lab-section-icon"><i class="fas ${cat.icon}"></i></div>
+        <div>
+          <h2>${cat.label}</h2>
+          <p>${cat.desc}</p>
+        </div>
+        <span class="lab-section-count">${cat.calcs.length} Rechner</span>
+      `;
+      section.appendChild(header);
+
+      const grid = el('div', { class:'lab-grid' });
+      cat.calcs.forEach(([, fn]) => grid.appendChild(fn()));
+      section.appendChild(grid);
+      sectionsWrap.appendChild(section);
+    });
+    root.appendChild(sectionsWrap);
+
+    // ===== Filter-Logik =====
+    filter.querySelectorAll('.lab-filter-btn').forEach(btn => {
+      btn.onclick = () => {
+        const cat = btn.dataset.cat;
+        filter.querySelectorAll('.lab-filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        sectionsWrap.querySelectorAll('.lab-section').forEach(sec => {
+          sec.style.display = (cat === 'all' || sec.dataset.cat === cat) ? '' : 'none';
+        });
+        window.scrollTo({ top: sectionsWrap.offsetTop - 80, behavior: 'smooth' });
+      };
+    });
 
     return root;
   }

@@ -52,6 +52,97 @@
 }
 @media (max-width: 720px) { .lab-grid { grid-template-columns: 1fr; } }
 
+/* ===== Filter-Leiste ===== */
+.lab-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 18px 0 8px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding: 10px 0;
+  background: linear-gradient(180deg, var(--bg-1) 70%, transparent);
+  backdrop-filter: blur(6px);
+}
+.lab-filter-btn {
+  --fc: #22d3ee;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--m-stroke);
+  background: var(--bg-2);
+  color: var(--text-dim);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .18s;
+  white-space: nowrap;
+}
+.lab-filter-btn i { color: var(--fc); font-size: 12px; }
+.lab-filter-btn:hover {
+  border-color: var(--fc);
+  color: var(--text);
+  transform: translateY(-1px);
+}
+.lab-filter-btn.active {
+  background: color-mix(in srgb, var(--fc) 18%, transparent);
+  border-color: var(--fc);
+  color: var(--text);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--fc) 25%, transparent);
+}
+
+/* ===== Kategorie-Sektionen ===== */
+.lab-sections { display: flex; flex-direction: column; gap: 30px; }
+.lab-section { scroll-margin-top: 80px; }
+.lab-section-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0 16px;
+  border-bottom: 2px solid color-mix(in srgb, var(--c) 35%, transparent);
+  margin-bottom: 18px;
+}
+.lab-section-icon {
+  width: 48px; height: 48px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--c) 18%, transparent);
+  color: var(--c);
+  display: grid; place-items: center;
+  font-size: 22px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--c) 28%, transparent);
+}
+.lab-section-head h2 {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 900;
+  color: var(--c);
+  letter-spacing: -.3px;
+}
+.lab-section-head p {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.lab-section-count {
+  margin-left: auto;
+  align-self: flex-start;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--c);
+  background: color-mix(in srgb, var(--c) 14%, transparent);
+  padding: 4px 12px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+@media (max-width: 720px) {
+  .lab-section-count { display: none; }
+  .lab-section-head h2 { font-size: 18px; }
+}
+
 .lab-card {
   background: var(--bg-2);
   border: 1px solid var(--m-stroke);
