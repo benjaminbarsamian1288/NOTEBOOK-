@@ -102,7 +102,7 @@ window.V = (() => {
         { v:'wizard',       icon:'fa-wand-magic-sparkles', t:'Sicherheits-Assistent', d:'Fragen beantworten → SÜ-Empfehlung' },
         { v:'konfigurator', icon:'fa-sliders',         t:'Konfigurator',           d:'Schutz-Stack mit Richtpreis' },
         { v:'calculators',  icon:'fa-calculator',      t:'Calculator-Suite',       d:'Live-Rechner für Mengen + Preis' },
-        { v:'simulator',    icon:'fa-vector-square',   t:'Plan-Simulator',         d:'Sensoren platzieren & planen' },
+        { v:'sandbox',      icon:'fa-vector-square',   t:'Objekt-Planer (Sandbox)', d:'Sensoren setzen → Abdeckungs-Heatmap' },
         { v:'vergleich',    icon:'fa-table-cells-large', t:'Melder-Vergleich',     d:'PIR vs MW vs Dual vs Schranke' },
       ]},
       { label:'In 3D ansehen', tiles:[
