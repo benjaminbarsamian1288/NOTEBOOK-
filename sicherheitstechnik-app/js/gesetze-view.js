@@ -87,6 +87,12 @@ window.GESETZE_VIEW = (() => {
               ${GESETZE_DB.VIS[g.visualisierung]}
             </div>
           ` : ''}
+          ${g.visualisierung4 && GESETZE_DB.VIS[g.visualisierung4] ? `
+            <div class="gv-vis-wrap gv-vis-jedermann">
+              <div class="gv-vis-title"><i class="fas fa-hand"></i> Jedermannsrechte — hervorgehoben</div>
+              ${GESETZE_DB.VIS[g.visualisierung4]}
+            </div>
+          ` : ''}
           ${g.visualisierung2 && GESETZE_DB.VIS[g.visualisierung2] ? `
             <div class="gv-vis-wrap gv-vis-praxis">
               <div class="gv-vis-title"><i class="fas fa-lightbulb"></i> Praxis-Beispiele</div>
@@ -110,10 +116,10 @@ window.GESETZE_VIEW = (() => {
               </summary>
               <div class="gv-para-list">
                 ${a.paragraphen.map(p => `
-                  <div class="gv-para-row ${p.wichtig?'wichtig':''}" data-pkey="${g.id}-${(p.p||'').replace(/\\s/g,'')}">
-                    <div class="gv-para-num">${p.p}</div>
+                  <div class="gv-para-row ${p.wichtig?'wichtig':''} ${p.jedermann?'jedermann':''}" data-pkey="${g.id}-${(p.p||'').replace(/\\s/g,'')}">
+                    <div class="gv-para-num">${p.p}${p.jedermann ? '<span class="gv-jedermann-dot" title="Jedermannsrecht"><i class="fas fa-hand"></i></span>' : ''}</div>
                     <div class="gv-para-content">
-                      <div class="gv-para-title">${p.t} ${p.wichtig ? '<i class="fas fa-star gv-star" title="Wichtig"></i>' : ''}</div>
+                      <div class="gv-para-title">${p.t} ${p.wichtig ? '<i class="fas fa-star gv-star" title="Wichtig"></i>' : ''}${p.jedermann ? '<span class="gv-jedermann-badge"><i class="fas fa-hand"></i> JEDERMANNSRECHT</span>' : ''}</div>
                       <div class="gv-para-sum">${p.s}</div>
                       ${p.beispiel ? `<div class="gv-para-beispiel"><i class="fas fa-lightbulb"></i><div><strong>Praxisfall:</strong> ${p.beispiel}</div></div>` : ''}
                       ${p.tags && p.tags.length ? `<div class="gv-para-tags">${p.tags.map(t => `<span class="gv-tag-chip">${t}</span>`).join('')}</div>` : ''}
@@ -163,9 +169,18 @@ window.GESETZE_VIEW = (() => {
           <div class="gv-drawer-meta">
             <span>${gesetz.title}</span>
             ${paragraph.wichtig ? '<span class="gv-drawer-wichtig"><i class="fas fa-star"></i> WICHTIG</span>' : ''}
+            ${paragraph.jedermann ? '<span class="gv-drawer-jedermann"><i class="fas fa-hand"></i> JEDERMANNSRECHT</span>' : ''}
           </div>
         </div>
         <div class="mency-drawer-body">
+          ${paragraph.jedermann ? `
+            <section class="gv-drawer-jedermann-section">
+              <h3><i class="fas fa-hand"></i> Jedermannsrecht</h3>
+              <div class="gv-drawer-jedermann-box">
+                Dieses Recht steht <strong>jeder Person</strong> zu — auch dem Sicherheitsmitarbeiter, der keine hoheitlichen Polizei-Befugnisse hat. Es ist eine der wichtigsten Rechtsgrundlagen für Eingriffe im Dienst. <em>Grenze: stets nur das mildeste erforderliche Mittel + Verhältnismäßigkeit.</em>
+              </div>
+            </section>
+          ` : ''}
           <section>
             <h3><i class="fas fa-file-alt"></i> Zusammenfassung</h3>
             <p>${paragraph.s}</p>
@@ -253,7 +268,7 @@ window.GESETZE_VIEW = (() => {
           </div>
           ${matches.length === 0 ? '<p class="muted">Keine Paragraphen gefunden.</p>' :
             matches.map(({ gesetz, abschnitt, paragraph }) => `
-              <div class="gv-result-item" style="--c:${gesetz.farbe}" data-pkey="${gesetz.id}-${(paragraph.p||'').replace(/\\s/g,'')}">
+              <div class="gv-result-item ${paragraph.jedermann?'jedermann':''}" style="--c:${gesetz.farbe}" data-pkey="${gesetz.id}-${(paragraph.p||'').replace(/\\s/g,'')}">
                 <div class="gv-result-meta">
                   <span class="gv-result-short"><i class="fas ${gesetz.icon}"></i> ${gesetz.short}</span>
                   <span class="gv-result-abs">Abschnitt ${abschnitt.nr}</span>
@@ -261,6 +276,7 @@ window.GESETZE_VIEW = (() => {
                 <div class="gv-result-title">
                   <strong>${paragraph.p}</strong> ${highlight(paragraph.t, q)}
                   ${paragraph.wichtig ? '<i class="fas fa-star gv-star" title="Wichtig"></i>' : ''}
+                  ${paragraph.jedermann ? '<span class="gv-jedermann-badge"><i class="fas fa-hand"></i> JEDERMANNSRECHT</span>' : ''}
                 </div>
                 <p>${highlight(paragraph.s, q)}</p>
                 <div class="gv-para-tags">

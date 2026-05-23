@@ -594,3 +594,70 @@
   margin-top: 10px;
   overflow: hidden;
 }
+.gv-vis-jedermann {
+  background: linear-gradient(180deg, rgba(34,197,94,.06), transparent);
+  border: 1px solid rgba(34,197,94,.3);
+  border-radius: 10px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+.gv-vis-jedermann .gv-vis-title { color: #22c55e; }
+.gv-vis-jedermann .gv-vis-title i { color: #22c55e; }
+
+/* ============ Jedermannsrecht-Hervorhebung ============ */
+.gv-para-row.jedermann {
+  background: linear-gradient(90deg, rgba(34,197,94,.10), rgba(34,197,94,.02));
+  border-left: 3px solid #22c55e;
+  box-shadow: inset 0 0 0 1px rgba(34,197,94,.15);
+}
+.gv-para-row.jedermann:hover {
+  background: linear-gradient(90deg, rgba(34,197,94,.16), rgba(34,197,94,.04));
+}
+.gv-jedermann-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #22c55e;
+  color: #04210f;
+  font-size: 9.5px;
+  font-weight: 900;
+  letter-spacing: .5px;
+  vertical-align: middle;
+}
+.gv-jedermann-dot {
+  display: inline-flex;
+  margin-left: 5px;
+  color: #22c55e;
+  font-size: 10px;
+}
+.gv-drawer-jedermann {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #22c55e;
+  color: #04210f;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+.gv-drawer-jedermann-section h3 i { color: #22c55e; }
+.gv-drawer-jedermann-box {
+  padding: 14px 16px;
+  background: linear-gradient(90deg, rgba(34,197,94,.14), rgba(34,197,94,.03));
+  border-left: 4px solid #22c55e;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #bbf7d0;
+  line-height: 1.6;
+}
+.gv-drawer-jedermann-box strong { color: #22c55e; }
+.gv-drawer-jedermann-box em { color: #fde68a; font-style: italic; }
+.gv-result-item.jedermann {
+  border-left: 3px solid #22c55e;
+  background: linear-gradient(90deg, rgba(34,197,94,.07), transparent);
+}

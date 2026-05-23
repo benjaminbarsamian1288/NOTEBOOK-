@@ -509,6 +509,7 @@ window.GESETZE_DB = (() => {
       anwender: 'Jeder Bürger · Sicherheitsdienste · Vertragsparteien · Eigentümer/Besitzer',
       visualisierung: 'bgb-buecher',
       visualisierung2: 'praxis-faelle',
+      visualisierung4: 'jedermannsrechte',
       abschnitte: [
         {
           nr: 1, title: '📕 Buch 1 · Allgemeiner Teil (§§ 1—240)',
@@ -525,17 +526,17 @@ window.GESETZE_DB = (() => {
           nr: 2, title: '📗 Buch 2 · Schuldrecht (§§ 241—853) — KERN für Sicherheitsdienste',
           paragraphen: [
             { p:'§ 226', t:'Schikaneverbot',                         s:'Die Ausübung eines Rechts ist unzulässig, wenn sie nur den Zweck haben kann, einem anderen Schaden zuzufügen.', tags:['Rechtsmissbrauch'] },
-            { p:'§ 227', t:'Notwehr (zivilrechtlich)',               s:'Eine durch Notwehr gebotene Handlung ist nicht widerrechtlich. Notwehr = Verteidigung gegen einen gegenwärtigen rechtswidrigen Angriff. Erforderlich + geboten.', tags:['Notwehr','Verteidigung'], wichtig:true,
+            { p:'§ 227', t:'Notwehr (zivilrechtlich)',               s:'Eine durch Notwehr gebotene Handlung ist nicht widerrechtlich. Notwehr = Verteidigung gegen einen gegenwärtigen rechtswidrigen Angriff. Erforderlich + geboten.', tags:['Notwehr','Verteidigung'], wichtig:true, jedermann:true,
               beispiel:'Ein angetrunkener Clubgast holt zum Schlag gegen den Türsteher aus. Der Türsteher pariert den Schlag, dreht den Arm zur Seite und drückt ihn gegen die Wand, bis er aufhört. → § 227 BGB rechtfertigt das. Folge: kein Schadensersatz an den Angreifer, selbst wenn er sich dabei den Ellbogen prellt.',
               merksatz:'Verteidigung muss erforderlich (mildestes Mittel) und geboten (nicht rechtsmissbräuchlich) sein. Sobald der Angriff vorbei ist, ist auch die Notwehr vorbei.',
               fehler:['„Bestrafung" nach beendetem Angriff — das ist keine Notwehr mehr.','Verteidigung gegen Wort-Provokation: keine Notwehr (Beleidigung ist Angriff auf Ehre — aber nur sehr eingeschränkt mit körperlicher Gegenwehr).','Schlagstock zücken, obwohl ein „Schritt zurück" gereicht hätte → unverhältnismäßig.'] },
-            { p:'§ 228', t:'Defensiver Notstand (Sachen)',           s:'Wer eine fremde Sache beschädigt, um eine durch sie drohende Gefahr abzuwenden, handelt nicht widerrechtlich (z. B. fremden Hund abwehren).', tags:['Notstand'], wichtig:true,
+            { p:'§ 228', t:'Defensiver Notstand (Sachen)',           s:'Wer eine fremde Sache beschädigt, um eine durch sie drohende Gefahr abzuwenden, handelt nicht widerrechtlich (z. B. fremden Hund abwehren).', tags:['Notstand'], wichtig:true, jedermann:true,
               beispiel:'Auf dem Werksgelände rennt ein freilaufender Hund knurrend auf einen Mitarbeiter zu. Der Wachmann tritt den Hund weg, dabei wird das Tier leicht verletzt. → § 228 BGB rechtfertigt, weil die Gefahr von der Sache (hier: vom Tier) selbst ausgeht.' },
-            { p:'§ 229', t:'Selbsthilfe',                            s:'Wer zum Zwecke der Selbsthilfe eine Sache wegnimmt, zerstört oder beschädigt, oder wer einen Verpflichteten festnimmt, handelt nicht widerrechtlich — wenn obrigkeitliche Hilfe nicht rechtzeitig zu erlangen ist und Vereitelung droht.', tags:['Selbsthilfe','Festnahme'], wichtig:true,
+            { p:'§ 229', t:'Selbsthilfe',                            s:'Wer zum Zwecke der Selbsthilfe eine Sache wegnimmt, zerstört oder beschädigt, oder wer einen Verpflichteten festnimmt, handelt nicht widerrechtlich — wenn obrigkeitliche Hilfe nicht rechtzeitig zu erlangen ist und Vereitelung droht.', tags:['Selbsthilfe','Festnahme'], wichtig:true, jedermann:true,
               beispiel:'Ein Ladendieb läuft mit gestohlener Ware aus dem Geschäft. Bis die Polizei kommt, wäre er längst weg. → Der Ladendetektiv darf ihn festhalten UND die Ware zurücknehmen (§ 229 BGB + § 127 StPO). Er muss sich aber unverzüglich bei der Polizei melden.',
               merksatz:'Drei Voraussetzungen: (1) Anspruch existiert · (2) obrigkeitliche Hilfe zu spät · (3) Vereitelung des Anspruchs droht.',
               fehler:['Festhalten „auf Verdacht" ohne konkrete Anhaltspunkte → keine § 229-Lage.','Nicht direkt die Polizei verständigen → § 230 II verletzt.','Gewalt anwenden, obwohl Festhalten am Arm gereicht hätte.'] },
-            { p:'§ 230', t:'Grenzen der Selbsthilfe',                s:'Selbsthilfe darf nicht weiter gehen als zur Abwendung der Gefahr erforderlich. Bei Festnahme: dinglicher/persönlicher Arrest beim Amtsgericht beantragen.', tags:['Grenzen'], wichtig:true,
+            { p:'§ 230', t:'Grenzen der Selbsthilfe',                s:'Selbsthilfe darf nicht weiter gehen als zur Abwendung der Gefahr erforderlich. Bei Festnahme: dinglicher/persönlicher Arrest beim Amtsgericht beantragen.', tags:['Grenzen'], wichtig:true, jedermann:true,
               beispiel:'Detektiv hat Dieb festgenommen. Er fesselt ihn nicht und sperrt ihn nicht in den Schrank, sondern führt ihn ins Büro und verständigt sofort 110. → § 230 BGB wahrt die Verhältnismäßigkeit.' },
             { p:'§ 231', t:'Irrtum über Voraussetzungen',            s:'Wer eine der in § 229 bezeichneten Handlungen in der irrigen Annahme vornimmt, dass die erforderlichen Voraussetzungen vorhanden seien, ist zum Schadensersatz verpflichtet.', tags:['Putativ-Selbsthilfe'], wichtig:true,
               beispiel:'Ein Kunde steckt sein eigenes Smartphone in die Tasche. Der Detektiv hält ihn fälschlich für einen Dieb und fesselt ihn am Boden. → Selbst bei gutem Glauben haftet der Sicherheitsdienst nach § 231 BGB auf Schadensersatz!' },
@@ -550,15 +551,15 @@ window.GESETZE_DB = (() => {
             { p:'§ 826', t:'Sittenwidrige Schädigung',               s:'Wer in einer gegen die guten Sitten verstoßenden Weise einem anderen vorsätzlich Schaden zufügt, ist verpflichtet zum Ersatz.', tags:['Sittenwidrig'] },
             { p:'§ 858', t:'Verbotene Eigenmacht',                   s:'Wer dem Besitzer ohne dessen Willen den Besitz entzieht oder ihn stört, handelt — soweit nicht das Gesetz die Entziehung gestattet — widerrechtlich (verbotene Eigenmacht).', tags:['Besitzstörung','Hausrecht'], wichtig:true,
               beispiel:'Ein Demonstrant kettet sich an das Werkstor des Chemiewerks. → Verbotene Eigenmacht gegen den Besitz des Werks. Der Werkschutz darf die Kette lösen und den Demonstranten vom Gelände führen (Besitzwehr nach § 859).' },
-            { p:'§ 859', t:'Selbsthilfe des Besitzers',              s:'Der Besitzer darf sich verbotener Eigenmacht mit Gewalt erwehren. Bei beweglicher Sache darf er sie dem auf frischer Tat Betroffenen wieder abnehmen.', tags:['Besitzwehr','Besitzkehr'], wichtig:true,
+            { p:'§ 859', t:'Selbsthilfe des Besitzers',              s:'Der Besitzer darf sich verbotener Eigenmacht mit Gewalt erwehren. Bei beweglicher Sache darf er sie dem auf frischer Tat Betroffenen wieder abnehmen.', tags:['Besitzwehr','Besitzkehr'], wichtig:true, jedermann:true,
               beispiel:'Besitzwehr (Abs. 1): Hooligan will über den Zaun ins Stadion klettern. Der Wachmann zieht ihn zurück, bevor er drüber ist.\nBesitzkehr (Abs. 2): Ein Dieb schnappt sich eine Tasche und rennt los — der Detektiv holt ihn auf frischer Tat ein und nimmt die Tasche zurück.',
               merksatz:'Besitzwehr = präventiv (Angriff abwehren). Besitzkehr = reaktiv (Sache zurückholen — aber nur auf frischer Tat).',
               fehler:['Besitzkehr 3 Tage später → unzulässig, nicht mehr „auf frischer Tat".','Verfolgung über kilometerweite Distanz → ab einem Punkt nicht mehr „frische Tat".'] },
-            { p:'§ 860', t:'Selbsthilfe des Besitzdieners',          s:'Auch der Besitzdiener (z. B. der Sicherheitsmitarbeiter für den Besitzer!) darf die Rechte aus § 859 ausüben.', tags:['Besitzdiener'], wichtig:true,
+            { p:'§ 860', t:'Selbsthilfe des Besitzdieners',          s:'Auch der Besitzdiener (z. B. der Sicherheitsmitarbeiter für den Besitzer!) darf die Rechte aus § 859 ausüben.', tags:['Besitzdiener'], wichtig:true, jedermann:true,
               beispiel:'Der Werkschutzmitarbeiter ist NICHT Besitzer des Werks — aber Besitzdiener (§ 855 BGB) seines Arbeitgebers. § 860 BGB überträgt ihm das Recht, das Hausrecht aktiv durchzusetzen. So funktioniert die ganze Branche.' },
             { p:'§ 861', t:'Anspruch auf Wiedereinräumung',          s:'Bei Besitzentziehung durch verbotene Eigenmacht: Anspruch auf Wiedereinräumung des Besitzes.', tags:['Besitzschutz'] },
             { p:'§ 862', t:'Anspruch wegen Besitzstörung',           s:'Wird der Besitzer durch verbotene Eigenmacht im Besitz gestört, kann er Beseitigung verlangen.', tags:['Störungsbeseitigung'] },
-            { p:'§ 904', t:'Aggressiver Notstand',                   s:'Eigentümer einer Sache ist nicht berechtigt, die Einwirkung eines anderen auf die Sache zu verbieten, wenn die Einwirkung zur Abwendung einer gegenwärtigen Gefahr notwendig + der drohende Schaden gegenüber dem aus der Einwirkung entstehenden unverhältnismäßig groß ist.', tags:['Notstand','aggressiv'], wichtig:true },
+            { p:'§ 904', t:'Aggressiver Notstand',                   s:'Eigentümer einer Sache ist nicht berechtigt, die Einwirkung eines anderen auf die Sache zu verbieten, wenn die Einwirkung zur Abwendung einer gegenwärtigen Gefahr notwendig + der drohende Schaden gegenüber dem aus der Einwirkung entstehenden unverhältnismäßig groß ist.', tags:['Notstand','aggressiv'], wichtig:true, jedermann:true },
           ],
         },
         {
@@ -602,6 +603,7 @@ window.GESETZE_DB = (() => {
       visualisierung: 'stgb-aufbau',
       visualisierung2: 'praxis-faelle',
       visualisierung3: 'stgb-notwehr',
+      visualisierung4: 'jedermannsrechte',
       abschnitte: [
         {
           nr: 1, title: '⚖️ Allgemeiner Teil · Notwehr & Notstand (§§ 32—35) — HERZSTÜCK',
@@ -610,15 +612,15 @@ window.GESETZE_DB = (() => {
             { p:'§ 15', t:'Vorsätzliches/fahrlässiges Handeln',      s:'Strafbar ist nur vorsätzliches Handeln, wenn nicht das Gesetz fahrlässiges Handeln ausdrücklich mit Strafe bedroht.', tags:['Vorsatz','Fahrlässigkeit'] },
             { p:'§ 17', t:'Verbotsirrtum',                            s:'Fehlt dem Täter bei Begehung die Einsicht, Unrecht zu tun, so handelt er ohne Schuld, wenn er diesen Irrtum nicht vermeiden konnte.', tags:['Verbotsirrtum'] },
             { p:'§ 20', t:'Schuldunfähigkeit · seelische Störung',   s:'Ohne Schuld handelt, wer wegen krankhafter seelischer Störung oder Bewusstseinsstörung unfähig ist, das Unrecht der Tat einzusehen.', tags:['Schuldunfähig'] },
-            { p:'§ 32', t:'Notwehr',                                  s:'(1) Wer eine Tat begeht, die durch Notwehr geboten ist, handelt nicht rechtswidrig. (2) Notwehr ist die Verteidigung, die erforderlich ist, um einen gegenwärtigen rechtswidrigen Angriff von sich oder einem anderen abzuwenden.', tags:['Notwehr','Rechtfertigung'], wichtig:true,
+            { p:'§ 32', t:'Notwehr',                                  s:'(1) Wer eine Tat begeht, die durch Notwehr geboten ist, handelt nicht rechtswidrig. (2) Notwehr ist die Verteidigung, die erforderlich ist, um einen gegenwärtigen rechtswidrigen Angriff von sich oder einem anderen abzuwenden.', tags:['Notwehr','Rechtfertigung'], wichtig:true, jedermann:true,
               beispiel:'Ein Randalierer schwingt ein Messer in Richtung Türsteher. Der Türsteher tritt ihm gegen das Bein, der Mann fällt, das Messer fällt zu Boden, er wird festgehalten. → § 32 StGB rechtfertigt das. Auch die Sachbeschädigung an Kleidung/Brille des Angreifers ist gerechtfertigt.',
               merksatz:'4-Stufen-Prüfung: ANGRIFF → GEGENWÄRTIG → RECHTSWIDRIG → ERFORDERLICH + GEBOTEN. Sobald nur eine Stufe fehlt: keine Notwehr.',
               fehler:['Verteidigung nach beendetem Angriff (Rache, Strafe) → keine Notwehr.','Notwehr gegen Polizei, die rechtmäßig handelt → unzulässig (kein rechtswidriger Angriff).','„Trutzwehr" mit Waffen, obwohl Festhalten am Arm möglich war → unverhältnismäßig.'] },
             { p:'§ 33', t:'Überschreitung der Notwehr',               s:'Überschreitet der Täter die Grenzen der Notwehr aus Verwirrung, Furcht oder Schrecken, so wird er nicht bestraft.', tags:['Notwehrexzess'], wichtig:true,
               beispiel:'Der Wachmann wird von zwei Männern überfallen und in Panik versetzt. Er schlägt aus reiner Angst auch noch zu, als die Angreifer schon am Boden liegen. → § 33 StGB: keine Strafe, weil aus Furcht/Schrecken überzogen. Aber: zivilrechtliche Haftung (§ 823 BGB) bleibt möglich!' },
-            { p:'§ 34', t:'Rechtfertigender Notstand',                s:'Wer in einer gegenwärtigen, nicht anders abwendbaren Gefahr für Leben, Leib, Freiheit, Ehre, Eigentum oder ein anderes Rechtsgut eine Tat begeht, um die Gefahr abzuwenden, handelt nicht rechtswidrig — wenn bei Abwägung das geschützte Interesse wesentlich überwiegt.', tags:['Notstand','Abwägung'], wichtig:true,
+            { p:'§ 34', t:'Rechtfertigender Notstand',                s:'Wer in einer gegenwärtigen, nicht anders abwendbaren Gefahr für Leben, Leib, Freiheit, Ehre, Eigentum oder ein anderes Rechtsgut eine Tat begeht, um die Gefahr abzuwenden, handelt nicht rechtswidrig — wenn bei Abwägung das geschützte Interesse wesentlich überwiegt.', tags:['Notstand','Abwägung'], wichtig:true, jedermann:true,
               beispiel:'Der Wachmann findet eine bewusstlose Person hinter einer verschlossenen Tür. Er tritt die Tür ein, um zu helfen, bis der Rettungsdienst eintrifft. → § 34 StGB rechtfertigt die Sachbeschädigung — Leben überwiegt das Eigentum am Türschloss klar.' },
-            { p:'§ 35', t:'Entschuldigender Notstand',                s:'Wer in einer gegenwärtigen, nicht anders abwendbaren Gefahr für Leben, Leib oder Freiheit eine rechtswidrige Tat begeht, um die Gefahr von sich, einem Angehörigen oder einer ihm nahestehenden Person abzuwenden, handelt ohne Schuld.', tags:['Entschuldigung'],
+            { p:'§ 35', t:'Entschuldigender Notstand',                s:'Wer in einer gegenwärtigen, nicht anders abwendbaren Gefahr für Leben, Leib oder Freiheit eine rechtswidrige Tat begeht, um die Gefahr von sich, einem Angehörigen oder einer ihm nahestehenden Person abzuwenden, handelt ohne Schuld.', tags:['Entschuldigung'], jedermann:true,
               beispiel:'Wachmann wird mit der Pistole bedroht und gezwungen, den Tresorcode zu nennen, sonst wird seine Familie bedroht. → § 35 StGB entschuldigt die Geheimnisverletzung — er handelt rechtswidrig, aber ohne Schuld.' },
           ],
         },
@@ -953,6 +955,97 @@ window.GESETZE_DB = (() => {
         <rect x="60" y="305" width="600" height="40" rx="6" fill="rgba(220,38,38,.12)" stroke="#dc2626"/>
         <text x="80" y="320" font-size="11" fill="#dc2626" font-weight="900">⚠️ Versuch beim Verbrechen IMMER strafbar (§ 23 I) — beim Vergehen nur wenn ausdrücklich (z. B. § 223 II KV)</text>
         <text x="80" y="338" font-size="10" fill="#cbd5e1">Beihilfe & Anstiftung (§§ 26, 27) ebenfalls strafbar — auch bloßes „Zuhalten der Tür" reicht!</text>
+      </svg>`,
+
+    /* ===== Jedermannsrechte · Gesamtübersicht ===== */
+    'jedermannsrechte': `
+      <svg viewBox="0 0 900 560" xmlns="http://www.w3.org/2000/svg" class="ges-vis">
+        <defs>
+          <linearGradient id="jr-bg" x2="0" y2="1"><stop offset="0" stop-color="#0b1424"/><stop offset="1" stop-color="#060a14"/></linearGradient>
+        </defs>
+        <rect width="900" height="560" fill="url(#jr-bg)"/>
+        <text x="450" y="34" text-anchor="middle" font-size="18" fill="#22c55e" font-weight="900">✋ Die Jedermannsrechte im Überblick</text>
+        <text x="450" y="56" text-anchor="middle" font-size="11.5" fill="#94a3b8">Rechte, die JEDER hat — die Basis aller Eingriffe im Sicherheitsdienst (keine Polizei-Befugnisse!)</text>
+
+        <!-- Spalte 1: StGB (strafrechtlich) -->
+        <g>
+          <rect x="30" y="80" width="270" height="320" rx="12" fill="rgba(220,38,38,.08)" stroke="#dc2626" stroke-width="2"/>
+          <rect x="30" y="80" width="270" height="34" rx="12" fill="#dc2626"/>
+          <text x="165" y="103" text-anchor="middle" font-size="13" fill="#fff" font-weight="900">⚖️ StGB · strafrechtlich</text>
+          <text x="165" y="130" text-anchor="middle" font-size="9.5" fill="#94a3b8">macht Eingriff straffrei</text>
+          ${[
+            {p:'§ 32', t:'Notwehr / Nothilfe', d:'Verteidigung gegen gegenwärtigen rechtswidrigen Angriff'},
+            {p:'§ 34', t:'Rechtfertigender Notstand', d:'Gefahrenabwehr · geschütztes Interesse überwiegt wesentlich'},
+            {p:'§ 35', t:'Entschuldigender Notstand', d:'Gefahr für Leben/Leib/Freiheit · keine Schuld'},
+          ].map((r,i) => `
+            <rect x="46" y="${145 + i*80}" width="238" height="68" rx="8" fill="#1e293b" stroke="#dc2626" stroke-width="1.2"/>
+            <text x="58" y="${168 + i*80}" font-size="14" fill="#dc2626" font-weight="900" font-family="monospace">${r.p}</text>
+            <text x="110" y="${168 + i*80}" font-size="12" fill="#fff" font-weight="800">${r.t}</text>
+            <foreignObject x="58" y="${175 + i*80}" width="218" height="36">
+              <div xmlns="http://www.w3.org/1999/xhtml" style="font:9.5px sans-serif;color:#cbd5e1;line-height:1.35">${r.d}</div>
+            </foreignObject>
+          `).join('')}
+        </g>
+
+        <!-- Spalte 2: BGB (zivilrechtlich) -->
+        <g>
+          <rect x="315" y="80" width="270" height="450" rx="12" fill="rgba(8,145,178,.08)" stroke="#0891b2" stroke-width="2"/>
+          <rect x="315" y="80" width="270" height="34" rx="12" fill="#0891b2"/>
+          <text x="450" y="103" text-anchor="middle" font-size="13" fill="#fff" font-weight="900">📘 BGB · zivilrechtlich</text>
+          <text x="450" y="130" text-anchor="middle" font-size="9.5" fill="#94a3b8">macht Eingriff nicht widerrechtlich</text>
+          ${[
+            {p:'§ 227', t:'Notwehr', d:'zivilrechtl. Gegenstück zu § 32 StGB'},
+            {p:'§ 228', t:'Defensiver Notstand', d:'Gefahr geht von der Sache aus (z. B. Hund)'},
+            {p:'§ 229', t:'Selbsthilfe', d:'Wegnahme / Festhalten wenn Hilfe zu spät'},
+            {p:'§ 230', t:'Grenzen der Selbsthilfe', d:'nur so weit wie nötig'},
+            {p:'§ 859', t:'Besitzwehr / Besitzkehr', d:'Besitz verteidigen + auf frischer Tat zurückholen'},
+            {p:'§ 860', t:'Recht des Besitzdieners', d:'Sicherheitsmitarbeiter darf § 859 ausüben!'},
+            {p:'§ 904', t:'Aggressiver Notstand', d:'fremde Sache nutzen bei großer Gefahr'},
+          ].map((r,i) => `
+            <rect x="331" y="${142 + i*54}" width="238" height="46" rx="6" fill="#1e293b" stroke="#0891b2" stroke-width="1.2"/>
+            <text x="343" y="${162 + i*54}" font-size="12" fill="#0891b2" font-weight="900" font-family="monospace">${r.p}</text>
+            <text x="398" y="${162 + i*54}" font-size="11" fill="#fff" font-weight="800">${r.t}</text>
+            <foreignObject x="343" y="${167 + i*54}" width="222" height="20">
+              <div xmlns="http://www.w3.org/1999/xhtml" style="font:9px sans-serif;color:#cbd5e1;line-height:1.25">${r.d}</div>
+            </foreignObject>
+          `).join('')}
+        </g>
+
+        <!-- Spalte 3: StPO + Regeln -->
+        <g>
+          <rect x="600" y="80" width="270" height="200" rx="12" fill="rgba(168,85,247,.08)" stroke="#a855f7" stroke-width="2"/>
+          <rect x="600" y="80" width="270" height="34" rx="12" fill="#a855f7"/>
+          <text x="735" y="103" text-anchor="middle" font-size="13" fill="#fff" font-weight="900">🚓 StPO · Festnahme</text>
+          <rect x="616" y="128" width="238" height="135" rx="8" fill="#1e293b" stroke="#a855f7" stroke-width="1.2"/>
+          <text x="628" y="152" font-size="15" fill="#a855f7" font-weight="900" font-family="monospace">§ 127 I</text>
+          <text x="700" y="152" font-size="12" fill="#fff" font-weight="800">Jedermann-Festnahme</text>
+          <foreignObject x="628" y="160" width="214" height="98">
+            <div xmlns="http://www.w3.org/1999/xhtml" style="font:10px sans-serif;color:#cbd5e1;line-height:1.45">Bei <b style="color:#fff">frischer Tat</b> + <b style="color:#fff">Fluchtgefahr</b> ODER <b style="color:#fff">unbekannter Identität</b> darf jeder den Täter <b style="color:#22c55e">vorläufig festhalten</b> — nur bis die Polizei kommt. Sonst: § 239 StGB Freiheitsberaubung!</div>
+          </foreignObject>
+        </g>
+
+        <!-- Goldene Grenzen-Box -->
+        <g>
+          <rect x="600" y="295" width="270" height="235" rx="12" fill="rgba(251,191,36,.08)" stroke="#fbbf24" stroke-width="2"/>
+          <text x="735" y="320" text-anchor="middle" font-size="13" fill="#fbbf24" font-weight="900">🛡️ Grenzen — immer!</text>
+          ${[
+            'Erforderlich: mildestes wirksames Mittel',
+            'Verhältnismäßig: kein Übermaß',
+            'Gegenwärtig: nur während Gefahr/Tat',
+            'Keine Polizei-Befugnisse vortäuschen (§ 132)',
+            'Sofort Polizei rufen + dokumentieren',
+            'Verteidigung endet, wenn Angriff endet',
+          ].map((t,i) => `
+            <circle cx="620" cy="${346 + i*29}" r="3.5" fill="#fbbf24"/>
+            <foreignObject x="632" y="${337 + i*29}" width="228" height="28">
+              <div xmlns="http://www.w3.org/1999/xhtml" style="font:10px sans-serif;color:#fde68a;line-height:1.3">${t}</div>
+            </foreignObject>
+          `).join('')}
+        </g>
+
+        <!-- Verbindungs-Hinweis StGB+BGB -->
+        <line x1="300" y1="240" x2="315" y2="240" stroke="#475569" stroke-width="1.5" stroke-dasharray="3 2"/>
+        <text x="450" y="552" text-anchor="middle" font-size="10.5" fill="#22d3ee" font-weight="700">Merke: Notwehr gibt es doppelt — § 32 StGB (Strafe) UND § 227 BGB (Schadensersatz). Beide prüfen, ob du straffrei + haftungsfrei bleibst.</text>
       </svg>`,
 
     /* ===== Praxisfälle Sicherheitsdienst · 8 Szenarios ===== */
