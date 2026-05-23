@@ -93,6 +93,7 @@ window.V = (() => {
     const qaGroups = [
       { label:'Verstehen', tiles:[
         { v:'physik',       icon:'fa-atom',            t:'Physik Live',            d:'18 Sims: Leitstand, CCTV, Zutritt, Sound u.v.m.' },
+        { v:'spiel',        icon:'fa-gamepad',         t:'Spiel: Einbrecher 🥷',   d:'Tower-Defense: stoppe den Einbrecher!' },
         { v:'gesetze',      icon:'fa-gavel',           t:'Gesetze & Normen',       d:'BeWachV · DGUV · KRITIS · DIN SPEC 14027' },
         { v:'enzyklopaedie',icon:'fa-flask',           t:'Melder-Enzyklopädie',    d:'Detektoren erklärt · aktiv/passiv' },
         { v:'mechency',     icon:'fa-flask-vial',      t:'Mechanik-Enzyklopädie',  d:'50+ Komponenten · Bilder · Vergleich' },

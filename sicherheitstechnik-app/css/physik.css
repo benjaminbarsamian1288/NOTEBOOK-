@@ -76,6 +76,28 @@
 .zk-key.ok { background: linear-gradient(135deg,#22d3ee,#10b981); color: #0b1424; }
 .zk-key.clr { background: #3f1d2e; color: #fca5a5; }
 
+/* Spiel: Stoppe den Einbrecher */
+.spiel-view .phys-intro { margin-bottom: 16px; }
+.spiel-hud { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+.spiel-hud .sh-item {
+  display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; color: #e2e8f0;
+  background: #0f1b2e; border: 1px solid rgba(148,163,184,0.16); border-radius: 10px; padding: 8px 14px;
+}
+.spiel-hud .sh-item i { color: #22d3ee; }
+.spiel-shop { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; align-items: stretch; }
+.spiel-tower {
+  display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer;
+  background: #0f1b2e; border: 2px solid rgba(148,163,184,0.18); border-radius: 12px;
+  padding: 10px 16px; min-width: 92px; color: #e2e8f0; font-weight: 600; font-size: 13px;
+}
+.spiel-tower i { font-size: 19px; color: #22d3ee; }
+.spiel-tower em { font-size: 12px; color: #fbbf24; font-style: normal; }
+.spiel-tower:hover { border-color: rgba(34,211,238,0.5); }
+.spiel-tower.sel { border-color: #22d3ee; background: rgba(34,211,238,0.12); box-shadow: 0 0 0 2px rgba(34,211,238,0.25); }
+.spiel-tower.poor { opacity: 0.45; }
+.spiel-start { align-self: center; margin-left: auto; }
+.spiel-start.disabled { opacity: 0.5; pointer-events: none; }
+
 .phys-card {
   background: #0f1b2e;
   border: 1px solid rgba(148,163,184,0.14);
