@@ -37970,6 +37970,47 @@ window.GESETZE_DB = (() => {
         },
       ],
     },
+
+    /* ============= DIN SPEC 14027 · Corporate Security ============= */
+    {
+      id: 'din14027',
+      short: 'DIN SPEC 14027',
+      title: 'DIN SPEC 14027 · Corporate Security · Unternehmenssicherheit',
+      kategorie: 'Norm · Unternehmenssicherheit',
+      datum: '04/2026',
+      farbe: '#10b981',
+      icon: 'fa-building-shield',
+      url: 'https://www.dinmedia.de/de/technische-regel/din-spec-14027/400565136',
+      intro: 'Erster branchenübergreifender Standard für die physische Unternehmenssicherheit (Corporate Security). Voller Titel: „Anforderungen zur Stärkung physischer Resilienz von Organisationen". Definiert 16 Handlungsfelder und ein abgestuftes Sicherheitslevel-System A–D. Auf Initiative des BMI von über 40 Organisationen erarbeitet (~202 Seiten), kostenlos beziehbar.',
+      anwender: 'Sicherheitsverantwortliche (CSO), Unternehmenssicherheit / Werkschutz, KMU bis Großkonzerne, Fachplaner, Auditoren, Ausschreibende',
+      abschnitte: [
+        {
+          nr: 1, title: 'Grundprinzip · Status · Aufbau',
+          paragraphen: [
+            { p:'Zweck', t:'Corporate Security Grundschutz', s:'Schließt die Lücke eines bislang fehlenden Standards für die physische Sicherheit von Organisationen. Konzept vergleichbar mit dem IT-Grundschutz des BSI – als Orientierungsrahmen, nicht als Pflicht.', tags:['Grundschutz','physische Resilienz'], wichtig:true },
+            { p:'Status', t:'DIN SPEC (PAS-Verfahren) – nicht verbindlich', s:'Im PAS-Verfahren (Publicly Available Specification) entstanden, kein Teil des regulären DIN-Normenwerks und ohne unmittelbare Rechtspflicht. Dient als Referenz für Ausschreibungen, Audits und Benchmarking.', tags:['nicht verbindlich','Referenz'] },
+            { p:'Level', t:'Sicherheitslevel A–D', s:'Abgestuftes System von A (sehr hoch) bis D (niedrig) – unabhängig von Branche und Unternehmensgröße. Ermöglicht eine maßgeschneiderte Balance zwischen Aufwand und individuellem Schutzbedarf.', tags:['A = sehr hoch','D = niedrig'], wichtig:true },
+            { p:'Aufbau', t:'Beschreibung + Anhang A (Checkliste)', s:'Jedes der 16 Handlungsfelder hat im Hauptteil eine Kurzbeschreibung (Was ist es? Wann nötig? Welche Schnittstellen?) und im Anhang A einen detaillierten Anforderungskatalog als Checkliste.', tags:['Hauptteil','Anhang A','Checkliste'] },
+            { p:'Herkunft', t:'BMI-Initiative · 40+ Organisationen', s:'Auf Initiative des Bundesministeriums des Innern (BMI) von über 40 Organisationen aus Behörden und Wirtschaft erarbeitet. Kostenloser Download über DIN Media.', tags:['BMI','kostenlos'] },
+          ],
+        },
+        {
+          nr: 2, title: 'Handlungsfelder der Unternehmenssicherheit',
+          paragraphen: [
+            { p:'HF', t:'Schutzbedarfsermittlung', s:'Werteklassifizierung (Assets) und Bedrohungs-/Risikoanalyse als Ausgangspunkt – bestimmt das anzustrebende Sicherheitslevel.', tags:['Risikoanalyse','Assets'], wichtig:true },
+            { p:'HF', t:'Sicherheitslagebild', s:'Operatives und strategisches Lagebild, ggf. Lagezentrum – kontinuierliche Beobachtung der Sicherheitslage.', tags:['Lagebild','Lagezentrum'] },
+            { p:'HF', t:'Sicherheitskultur & Kommunikation', s:'Security Awareness, Sensibilisierung der Mitarbeitenden und interne Sicherheitskommunikation.', tags:['Awareness','Kultur'] },
+            { p:'HF', t:'Standort- / Liegenschaftssicherheit', s:'Physischer Schutz von Standorten und Liegenschaften (Perimeter, Zutritt, mechanische und elektronische Sicherung).', tags:['Perimeter','Zutritt'] },
+            { p:'HF', t:'Reisesicherheit (Travel Security)', s:'Schutz von Mitarbeitenden auf Dienstreisen, Reiserisiko-Bewertung und Notfallprozesse im Ausland.', tags:['Travel Security'] },
+            { p:'HF', t:'Business Continuity Management', s:'Aufrechterhaltung kritischer Geschäftsprozesse bei Störungen (Schnittstelle zu ISO 22301).', tags:['BCM'] },
+            { p:'HF', t:'Krisenmanagement', s:'Organisation, Stäbe und Abläufe zur Bewältigung von Krisen.', tags:['Krise','Stab'] },
+            { p:'HF', t:'Interne Ermittlungen', s:'Strukturierte interne Untersuchungen (Investigations) bei Verstößen und Vorfällen.', tags:['Investigations'] },
+            { p:'HF', t:'Know-how- & Informationsschutz', s:'Schutz von geistigem Eigentum, Betriebsgeheimnissen und sensiblen Informationen (Schnittstelle zur IT-Sicherheit).', tags:['Know-how','IP'] },
+            { p:'Hinweis', t:'Vollständige 16 Handlungsfelder', s:'Dies sind die in öffentlichen Quellen benannten Schwerpunkte. Die vollständige Liste aller 16 Handlungsfelder samt Anforderungskatalogen steht im kostenlosen DIN-SPEC-14027-Dokument (Anhang A).', tags:['Quelle: DIN Media'] },
+          ],
+        },
+      ],
+    },
   ];
 
   /* ====== VISUALISIERUNGEN als SVG ====== */
