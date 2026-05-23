@@ -11,7 +11,7 @@ on:
       - '.github/workflows/build-windows.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -43,3 +43,19 @@ jobs:
             desktop/dist/*.exe
           if-no-files-found: error
           retention-days: 30
+
+      - name: Auf Releases-Seite veröffentlichen
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: windows-app
+          name: Sicherheitstechnik-Katalog (Windows)
+          body: |
+            Fertige Windows-App. Einfach die .exe unten herunterladen und starten.
+
+            - **Sicherheitstechnik-Katalog-portable.exe** – ohne Installation, direkt doppelklicken
+            - **...Setup....exe** – Installer mit Desktop- und Startmenü-Icon
+
+            Beim ersten Start zeigt Windows ggf. eine SmartScreen-Warnung:
+            „Weitere Informationen" → „Trotzdem ausführen".
+          files: desktop/dist/*.exe
+          make_latest: true
