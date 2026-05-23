@@ -43,6 +43,47 @@ window.PHYSIK = (() => {
     return Math.hypot(px - (x1 + t * dx), py - (y1 + t * dy));
   }
 
+  /* Web-Audio-Soundeffekte – funktioniert auch über file:// (kein Server nötig).
+     Wird erst durch Klick auf den Ton-Schalter freigeschaltet (Autoplay-Regeln). */
+  const SFX = (() => {
+    let actx = null, on = false, siren = null;
+    function ctx() {
+      if (!actx) { try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { actx = null; } }
+      if (actx && actx.state === 'suspended') actx.resume();
+      return actx;
+    }
+    function enable(v) { on = v; if (v) ctx(); else stopSiren(); }
+    function isOn() { return on; }
+    function tone(freq, dur, type = 'sine', vol = 0.06) {
+      const a = ctx(); if (!on || !a) return;
+      const o = a.createOscillator(), g = a.createGain();
+      o.type = type; o.frequency.value = freq;
+      g.gain.setValueAtTime(vol, a.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.0001, a.currentTime + dur);
+      o.connect(g).connect(a.destination); o.start(); o.stop(a.currentTime + dur);
+    }
+    function noise(dur = 0.5, vol = 0.14) {
+      const a = ctx(); if (!on || !a) return;
+      const n = Math.floor(a.sampleRate * dur), buf = a.createBuffer(1, n, a.sampleRate), d = buf.getChannelData(0);
+      for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 1.6);
+      const s = a.createBufferSource(); s.buffer = buf;
+      const hp = a.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 2200;
+      const g = a.createGain(); g.gain.value = vol;
+      s.connect(hp).connect(g).connect(a.destination); s.start();
+    }
+    function startSiren() {
+      const a = ctx(); if (!on || !a || siren) return;
+      const o = a.createOscillator(), g = a.createGain(), lfo = a.createOscillator(), lg = a.createGain();
+      o.type = 'sawtooth'; o.frequency.value = 620;
+      lfo.type = 'sine'; lfo.frequency.value = 3.5; lg.gain.value = 260;
+      lfo.connect(lg).connect(o.frequency);
+      g.gain.value = 0.05; o.connect(g).connect(a.destination);
+      o.start(); lfo.start(); siren = { o, lfo };
+    }
+    function stopSiren() { if (siren) { try { siren.o.stop(); siren.lfo.stop(); } catch (e) {} siren = null; } }
+    return { enable, isOn, tone, noise, startSiren, stopSiren };
+  })();
+
   /* Baukasten für eine Simulationskarte: Kopf + Erklärbox + Body. */
   function simCard(opts) {
     const c = el('div', { class: 'phys-card' });
@@ -340,7 +381,7 @@ window.PHYSIK = (() => {
     const roStage = readout('Erkennungsstufe');
     const roStat = readout('Status');
 
-    function trigger(type) { event = { type, start: performance.now() }; }
+    function trigger(type) { event = { type, start: performance.now() }; SFX.tone(90, 0.16, 'sine', 0.09); }
 
     function draw(now) {
       ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
@@ -352,7 +393,7 @@ window.PHYSIK = (() => {
       if (event) {
         const dt = (now - event.start);
         if (dt < 350) { amp = 60 * Math.exp(-dt / 250); freq = 0.04; stage = 'Stufe 1: Tieffrequenter Schlag (Anprall)'; }
-        else if (dt < 1100 && event.type === 'break') { amp = 80 * Math.exp(-(dt - 350) / 380); freq = 0.55; stage = 'Stufe 2: Hochfrequentes Splittern'; }
+        else if (dt < 1100 && event.type === 'break') { amp = 80 * Math.exp(-(dt - 350) / 380); freq = 0.55; stage = 'Stufe 2: Hochfrequentes Splittern'; if (!event.snd) { event.snd = true; SFX.noise(0.55); } }
         else {
           if (event.type === 'break') { stage = 'Sequenz vollständig'; alarm = true; }
           else stage = 'nur Schlag → verworfen';
@@ -836,7 +877,7 @@ window.PHYSIK = (() => {
       targets.forEach(t => {
         t.a += t.va; const x = cx + Math.cos(t.a) * R * t.r, y = cy + Math.sin(t.a) * R * t.r;
         let da = ((sweep - t.a) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
-        if (da < 0.25) t.lit = 1;
+        if (da < 0.25) { t.lit = 1; if (!t.beep) { t.beep = true; SFX.tone(900, 0.05, 'square', 0.05); } } else { t.beep = false; }
         t.lit *= 0.97;
         if (t.lit > 0.05) lit++;
         ctx.fillStyle = `rgba(74,222,128,${0.15 + t.lit * 0.85})`;
@@ -1066,7 +1107,7 @@ window.PHYSIK = (() => {
     canvas.addEventListener('touchstart', down, { passive: false }); canvas.addEventListener('touchmove', move, { passive: false }); window.addEventListener('touchend', up);
 
     function draw(now) {
-      if (!pulse || (now - pulse.start) / 1000 * SPEED > Math.hypot(W, H)) pulse = { start: now };
+      if (!pulse || (now - pulse.start) / 1000 * SPEED > Math.hypot(W, H)) { pulse = { start: now }; SFX.tone(170, 0.14, 'square', 0.08); }
       const radius = Math.max(0, (now - pulse.start) / 1000 * SPEED);
       ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
       // Schall-Wellenfront
@@ -1105,6 +1146,168 @@ window.PHYSIK = (() => {
   }
 
   /* ============================================================
+     ★ FLAGGSCHIFF: Live-Einsatz – ganzes Objekt, alle Sensoren
+     ============================================================ */
+  function szeneSim() {
+    const W = 1000, H = 440;
+    const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H });
+    const ctx = canvas.getContext('2d');
+    const radar = { x: 80, y: 80, r: 350 };
+    const bld = { x: 380, y: 80, w: 480, h: 300 };
+    const win1 = { x: 480, y: 80 }, win2 = { x: 660, y: 80 };
+    const doorR = { x: 380, y: 300, w: 12, h: 64 };
+    const pir1 = { x: 480, y: 250, r: 78 }, pir2 = { x: 760, y: 185, r: 78 };
+    const laser = [700, 100, 700, 360];
+    const path = [
+      { x: 30, y: 360 }, { x: 180, y: 300 }, { x: 300, y: 200 }, { x: 480, y: 86 },
+      { x: 480, y: 175 }, { x: 480, y: 250 }, { x: 620, y: 300 }, { x: 700, y: 300 },
+      { x: 760, y: 185 }, { x: 840, y: 140 }, { x: 600, y: 405 }, { x: 120, y: 415 }, { x: 30, y: 360 },
+    ];
+    let seg = 0, f = 0, sweep = 0, dragging = false;
+    const it = { x: 30, y: 360 };
+    let glassT = 0, contactT = 0, winLatch = false, doorLatch = false;
+    const prev = {}; let prevState = 'SCHARF';
+    const events = [];
+
+    // --- HTML-Zentrale ---
+    const statusBadge = el('div', { class: 'scene-status scharf', text: 'SCHARF · ruhig' });
+    const lampWrap = el('div', { class: 'scene-lamps' });
+    const lamps = {};
+    [['perimeter', 'Perimeter · Radar + Wärmebild'], ['glass', 'Glasbruch Fenster'], ['contact', 'Magnetkontakt Tür/Fenster'], ['pir', 'Bewegung innen · PIR'], ['laser', 'Laser-Korridor']]
+      .forEach(([k, label]) => {
+        const row = el('div', { class: 'scene-lamp' });
+        const dot = el('span', { class: 'sl-dot' });
+        row.appendChild(dot); row.appendChild(el('span', { text: label }));
+        lampWrap.appendChild(row); lamps[k] = dot;
+      });
+    const logWrap = el('div', { class: 'scene-log' });
+    function renderLog() {
+      logWrap.innerHTML = events.length
+        ? events.map(e => `<div><b>${e.time}</b> · ${e.label}</div>`).join('')
+        : '<div style="opacity:.6">Noch keine Ereignisse …</div>';
+    }
+    renderLog();
+    function pushEvent(label) {
+      const d = new Date(); const time = d.toLocaleTimeString('de-DE', { hour12: false });
+      events.unshift({ time, label }); if (events.length > 7) events.pop(); renderLog();
+    }
+
+    function down(e) { dragging = true; move(e); }
+    function move(e) { if (!dragging) return; e.preventDefault(); const p = pos(canvas, e); it.x = p.x; it.y = p.y; }
+    function up() { dragging = false; }
+    canvas.addEventListener('mousedown', down); canvas.addEventListener('mousemove', move); window.addEventListener('mouseup', up);
+    canvas.addEventListener('touchstart', down, { passive: false }); canvas.addEventListener('touchmove', move, { passive: false }); window.addEventListener('touchend', up);
+
+    function draw() {
+      sweep = (sweep + 0.035) % (Math.PI * 2);
+      // Bewegung entlang Pfad
+      if (!dragging) {
+        const a = path[seg], b = path[seg + 1];
+        const len = Math.hypot(b.x - a.x, b.y - a.y) || 1;
+        f += 2.6 / len;
+        if (f >= 1) { f = 0; seg = (seg + 1) % (path.length - 1); }
+        it.x = a.x + (b.x - a.x) * f; it.y = a.y + (b.y - a.y) * f;
+      }
+      // Fenster/Tür-Auslöser (Latch gegen Dauerfeuer)
+      const dWin = Math.min(Math.hypot(it.x - win1.x, it.y - win1.y), Math.hypot(it.x - win2.x, it.y - win2.y));
+      if (dWin < 30 && !winLatch) { winLatch = true; glassT = 210; contactT = 260; pushEvent('Glasbruch + Fensterkontakt Nord'); }
+      if (dWin > 70) winLatch = false;
+      const inDoor = it.x > doorR.x - 24 && it.x < doorR.x + 24 && it.y > doorR.y - 10 && it.y < doorR.y + doorR.h + 10;
+      if (inDoor && !doorLatch) { doorLatch = true; contactT = 260; pushEvent('Türkontakt geöffnet'); }
+      if (!inDoor) doorLatch = false;
+      if (glassT > 0) glassT--; if (contactT > 0) contactT--;
+
+      // Sensorzustände
+      const inBld = it.x > bld.x && it.x < bld.x + bld.w && it.y > bld.y && it.y < bld.y + bld.h;
+      const act = {
+        perimeter: it.x < bld.x - 5 && Math.hypot(it.x - radar.x, it.y - radar.y) < radar.r,
+        glass: glassT > 0,
+        contact: contactT > 0,
+        pir: inBld && (Math.hypot(it.x - pir1.x, it.y - pir1.y) < pir1.r || Math.hypot(it.x - pir2.x, it.y - pir2.y) < pir2.r),
+        laser: distSeg(it.x, it.y, laser[0], laser[1], laser[2], laser[3]) < 16,
+      };
+      // Flanken → Ereignis + Sound
+      const labels = { perimeter: 'Perimeter: Bewegung erfasst', pir: 'PIR: Bewegung im Innenraum', laser: 'Laser-Korridor unterbrochen' };
+      ['perimeter', 'pir', 'laser'].forEach(k => { if (act[k] && !prev[k]) { pushEvent(labels[k]); SFX.tone(660, 0.06, 'triangle', 0.05); } });
+      Object.assign(prev, act);
+
+      const hard = act.glass || act.contact || act.pir || act.laser;
+      const state = hard ? 'ALARM' : (act.perimeter ? 'VORALARM' : 'SCHARF');
+      if (state !== prevState) {
+        if (state === 'VORALARM') { SFX.tone(880, 0.12, 'square', 0.05); }
+        if (state === 'ALARM') { SFX.tone(1200, 0.1, 'square', 0.07); }
+        prevState = state;
+      }
+      if (state === 'ALARM') SFX.startSiren(); else SFX.stopSiren();
+
+      // ===== Zeichnen =====
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#08111f'; ctx.fillRect(0, 0, W, H);
+      // Zaun
+      ctx.strokeStyle = act.perimeter ? '#fbbf24' : 'rgba(34,211,238,0.5)'; ctx.lineWidth = 2; ctx.setLineDash([8, 5]);
+      ctx.strokeRect(16, 16, W - 32, H - 32); ctx.setLineDash([]);
+      ctx.fillStyle = '#334155'; ctx.font = '12px sans-serif'; ctx.textAlign = 'left'; ctx.fillText('HOF / PERIMETER', 28, 36);
+      // Radar
+      ctx.strokeStyle = 'rgba(34,197,94,0.18)'; for (let i = 1; i <= 3; i++) { ctx.beginPath(); ctx.arc(radar.x, radar.y, radar.r * i / 3, 0, 7); ctx.stroke(); }
+      ctx.save(); ctx.beginPath(); ctx.moveTo(radar.x, radar.y);
+      for (let k = 0; k <= 16; k++) { const a = sweep - 0.4 + k / 16 * 0.4; ctx.lineTo(radar.x + Math.cos(a) * radar.r, radar.y + Math.sin(a) * radar.r); }
+      ctx.closePath(); const g = ctx.createRadialGradient(radar.x, radar.y, 0, radar.x, radar.y, radar.r);
+      g.addColorStop(0, 'rgba(34,197,94,0.32)'); g.addColorStop(1, 'rgba(34,197,94,0)'); ctx.fillStyle = g; ctx.fill(); ctx.restore();
+      ctx.fillStyle = '#22c55e'; ctx.beginPath(); ctx.arc(radar.x, radar.y, 7, 0, 7); ctx.fill();
+      // Gebäude
+      ctx.fillStyle = 'rgba(30,41,59,0.85)'; ctx.fillRect(bld.x, bld.y, bld.w, bld.h);
+      ctx.strokeStyle = '#475569'; ctx.lineWidth = 3; ctx.strokeRect(bld.x, bld.y, bld.w, bld.h);
+      ctx.fillStyle = '#334155'; ctx.fillText('GEBÄUDE', bld.x + 14, bld.y + 24);
+      // PIR-Zonen
+      [pir1, pir2].forEach(p => {
+        const on = inBld && Math.hypot(it.x - p.x, it.y - p.y) < p.r;
+        ctx.fillStyle = on ? 'rgba(251,191,36,0.22)' : 'rgba(34,211,238,0.07)';
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 7); ctx.fill();
+        ctx.fillStyle = on ? '#fbbf24' : '#22d3ee'; ctx.beginPath(); ctx.arc(p.x, p.y - p.r, 5, 0, 7); ctx.fill();
+      });
+      // Laser-Korridor
+      ctx.strokeStyle = act.laser ? '#ef4444' : 'rgba(248,113,113,0.8)'; ctx.lineWidth = act.laser ? 3 : 2;
+      ctx.shadowColor = '#ef4444'; ctx.shadowBlur = 8; ctx.beginPath(); ctx.moveTo(laser[0], laser[1]); ctx.lineTo(laser[2], laser[3]); ctx.stroke(); ctx.shadowBlur = 0;
+      // Fenster / Tür
+      [win1, win2].forEach(w => { ctx.fillStyle = act.glass ? '#ef4444' : '#38bdf8'; ctx.fillRect(w.x - 22, w.y - 4, 44, 8); });
+      ctx.fillStyle = act.contact ? '#ef4444' : '#22c55e'; ctx.fillRect(doorR.x - 6, doorR.y, doorR.w + 12, doorR.h);
+      // Eindringling
+      ctx.fillStyle = hard ? '#ef4444' : (act.perimeter ? '#fbbf24' : '#e2e8f0');
+      ctx.beginPath(); ctx.arc(it.x, it.y, 13, 0, 7); ctx.fill();
+      ctx.font = '15px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('🥷', it.x, it.y + 5);
+      // Roter Overlay-Blitz bei ALARM
+      if (state === 'ALARM') { ctx.fillStyle = `rgba(239,68,68,${0.05 + 0.05 * Math.sin(Date.now() / 120)})`; ctx.fillRect(0, 0, W, H); }
+
+      // Panel aktualisieren
+      Object.keys(lamps).forEach(k => lamps[k].className = 'sl-dot' + (act[k] ? ' on' : ''));
+      statusBadge.className = 'scene-status ' + (state === 'ALARM' ? 'alarm' : state === 'VORALARM' ? 'vor' : 'scharf');
+      statusBadge.textContent = state === 'ALARM' ? '🚨 ALARM – Eindringling im Objekt' : state === 'VORALARM' ? '⚠ VORALARM – Perimeter' : 'SCHARF · ruhig';
+    }
+    // eigener Loop mit Sirenen-Cleanup bei Ansichtswechsel; erster Tick per rAF,
+    // damit das Canvas bis dahin im DOM hängt (sonst stoppt isConnected sofort).
+    function frame() { if (!canvas.isConnected) { SFX.stopSiren(); return; } draw(); requestAnimationFrame(frame); }
+    requestAnimationFrame(frame);
+
+    const reset = el('button', { class: 'btn', html: '<i class="fas fa-rotate-left"></i> Szene neu starten' });
+    reset.addEventListener('click', () => { seg = 0; f = 0; events.length = 0; renderLog(); });
+    const panel = el('div', { class: 'scene-panel' }, [
+      statusBadge,
+      el('div', { class: 'scene-panel-h', text: 'Sensorzustände' }), lampWrap,
+      el('div', { class: 'scene-panel-h', text: 'Ereignis-Log' }), logWrap,
+      reset,
+    ]);
+    const body = el('div', { class: 'scene-body' }, [canvas, panel]);
+
+    const c = simCard({
+      icon: 'fa-shield-halved', title: '★ Live-Einsatz · ganzes Objekt', sub: 'Alle Sensoren gleichzeitig – mit Alarmzentrale',
+      was: 'Ein kompletter Standort: Perimeter-Radar + Wärmebild im Hof, Glasbruch & Magnetkontakte an Fenstern/Tür, PIR-Zonen innen und ein Laser-Korridor. Der Eindringling (🥷) patrouilliert – <b>zieh ihn selbst</b>, um Sensoren auszulösen.',
+      warum: 'So greift Sicherheitstechnik <b>im Verbund</b>: Perimeter meldet früh (Voralarm), eine zweite Zone eskaliert zum scharfen Alarm. Genau diese gestaffelte Logik steckt hinter echten Anlagen.',
+      body,
+    });
+    c.classList.add('phys-card-wide');
+    return c;
+  }
+
+  /* ============================================================
      Ansicht
      ============================================================ */
   function view() {
@@ -1114,14 +1317,24 @@ window.PHYSIK = (() => {
     intro.innerHTML = `
       <span class="tag">Verstehen · Live-Physik</span>
       <h1>Physik Live – wie Sensoren wirklich „sehen"</h1>
-      <p class="lead">15 Echtzeit-Simulationen zum Anfassen, sortiert nach Wirkprinzip. Jede zeigt in Klartext
-      <b>was</b> passiert und <b>warum</b> es für die Sicherheitstechnik wichtig ist – ziehen, schieben, klicken.</p>
+      <p class="lead">16 Echtzeit-Simulationen zum Anfassen, sortiert nach Wirkprinzip – inkl. kompletter
+      <b>Live-Einsatz-Szene</b> mit Alarmzentrale. Ziehen, schieben, klicken. Ton einschalten für Sirene & Effekte.</p>
       <div class="phys-legend">
         <span><i class="fas fa-hand-pointer"></i> ziehen / schieben / klicken</span>
         <span><i class="fas fa-circle" style="color:#22c55e"></i> Ruhe</span>
         <span><i class="fas fa-circle" style="color:#ef4444"></i> Alarm</span>
       </div>`;
+    const sndBtn = el('button', { class: 'phys-snd' + (SFX.isOn() ? ' on' : ''), html: SFX.isOn() ? '<i class="fas fa-volume-high"></i> Ton an' : '<i class="fas fa-volume-xmark"></i> Ton aus' });
+    sndBtn.addEventListener('click', () => {
+      const next = !SFX.isOn(); SFX.enable(next);
+      sndBtn.className = 'phys-snd' + (next ? ' on' : '');
+      sndBtn.innerHTML = next ? '<i class="fas fa-volume-high"></i> Ton an' : '<i class="fas fa-volume-xmark"></i> Ton aus';
+    });
+    intro.appendChild(sndBtn);
     root.appendChild(intro);
+
+    root.appendChild(el('div', { class: 'phys-cat', text: '★ Live-Einsatz · ganzes Objekt' }));
+    const sgrid = el('div', { class: 'phys-grid' }); sgrid.appendChild(szeneSim()); root.appendChild(sgrid);
 
     const cats = [
       { label: 'Bewegung & Präsenz', sims: [pirSim, dopplerSim, ultraschallSim, radarSim, thermalSim, dualSim] },
