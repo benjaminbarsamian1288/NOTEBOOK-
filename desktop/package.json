@@ -1,0 +1,51 @@
+{
+  "name": "sicherheitstechnik-desktop",
+  "version": "1.0.0",
+  "description": "Sicherheitstechnik-Katalog als Windows-Desktop-App",
+  "author": "benjaminbarsamian",
+  "license": "MIT",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win"
+  },
+  "devDependencies": {
+    "electron": "^31.7.6",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "de.sicherheitstechnik.katalog",
+    "productName": "Sicherheitstechnik-Katalog",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "../sicherheitstechnik-app",
+        "to": "app-web"
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "../sicherheitstechnik-app/icons/icon-512.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Sicherheitstechnik-Katalog"
+    },
+    "portable": {
+      "artifactName": "Sicherheitstechnik-Katalog-portable.exe"
+    }
+  }
+}
