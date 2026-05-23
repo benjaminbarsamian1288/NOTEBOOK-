@@ -44,6 +44,45 @@
     dokumente: V.dokumente,
   };
 
+  // Klartext-Erklärung pro Ansicht ("Was ist das? Was kann ich hier?")
+  const VIEW_INFO = {
+    masterency:   { icon:'fa-book-open-reader', t:'Komplett-Katalog', d:'Alle Komponenten der Sicherheitstechnik an einem Ort – durchsuchbar und filterbar. Klick auf einen Eintrag öffnet die Details.' },
+    gesetze:      { icon:'fa-gavel', t:'Gesetze & Normen', d:'Die wichtigsten Gesetze und Normen der Branche, nach Paragraphen sortiert. Oben suchen, ein Gesetz wählen, Paragraph anklicken.' },
+    wizard:       { icon:'fa-wand-magic-sparkles', t:'Sicherheits-Assistent', d:'Beantworte ein paar Fragen zu deinem Objekt – am Ende bekommst du eine passende Schutz-Empfehlung (Sicherungsklasse + Maßnahmen).' },
+    konfigurator: { icon:'fa-sliders', t:'Konfigurator', d:'Stell dir per Schieber dein Schutzniveau zusammen – die App schlägt passende Komponenten mit Richtpreis vor.' },
+    lab:          { icon:'fa-flask', t:'Engineering-Lab', d:'Fach-Rechner für die Planung: Reichweiten, Winkel, Akku, Kabel, Linsen u.v.m. Werte eingeben, Ergebnis sofort.' },
+    fp:           { icon:'fa-vector-square', t:'Plan-Designer', d:'Zeichne einen Grundriss und platziere Melder, Kameras & Zonen per Drag-and-Drop – sieh sofort die Erfassungsbereiche.' },
+    simulator:    { icon:'fa-vector-square', t:'Floor-Plan Simulator', d:'Sensoren drehen, verschieben und planen – die Erfassungsbereiche werden live angezeigt.' },
+    calculators:  { icon:'fa-calculator', t:'Calculator-Suite', d:'Schnelle Live-Rechner für Mengen und Preise – ideal für ein erstes Angebot.' },
+    haus3d:       { icon:'fa-house-chimney', t:'Sicherheits-Haus 3D', d:'Ein Haus in 3D vom Zaun bis zum Tresor – drehen und sehen, wie die 4 Schutzzonen ineinandergreifen.' },
+    zwiebel3d:    { icon:'fa-circle-dot', t:'3D-Zwiebelmodell', d:'Das Zwiebelprinzip interaktiv: 4 Schalen Schutz von außen nach innen. Klick eine Schale für Details.' },
+    building3d:   { icon:'fa-cube', t:'3D-Gebäudeplaner', d:'Isometrisches 3D-Haus mit Etagen, frei rotierbar.' },
+    spektrum:     { icon:'fa-wave-square', t:'Frequenz-Spektrum', d:'Welche Wellen nutzt welche Technik? Vom Infrarot über Funk bis Mikrowelle – als anschauliches Spektrum.' },
+    werk:         { icon:'fa-industry', t:'Sicherheits-Werk', d:'Ein virtueller Industriestandort – sieh, wie alle Gewerke der Sicherheitstechnik zusammenspielen.' },
+    ema:          { icon:'fa-broadcast-tower', t:'EMA · ZKA · NSL', d:'Einbruchmeldeanlage, Zutrittskontrolle und Notruf-Leitstelle erklärt – mit Grade-Stufen nach DIN EN 50131.' },
+    klassen:      { icon:'fa-medal', t:'Klassen & Grade', d:'Die Schutzklassen im Überblick: Sicherungsklassen (SÜ), EMA-Grade und Widerstandsklassen RC 1–6 nach DIN EN 1627.' },
+    wwd:          { icon:'fa-tower-cell', t:'WWD Video-Türme', d:'Mobile Videotürme mit KI-Auswertung und 24/7-Leitstelle – temporäre Überwachung großer Flächen.' },
+    enzyklopaedie:{ icon:'fa-flask', t:'Melder-Enzyklopädie', d:'Alle Detektor-Typen erklärt: aktiv/passiv, Funktionsweise, Einsatz – mit Bildern und Videos.' },
+    mechency:     { icon:'fa-flask-vial', t:'Mechanik-Enzyklopädie', d:'50+ mechanische Komponenten mit Bildern, Filter und Vergleich.' },
+    mechanik:     { icon:'fa-shield-halved', t:'Mechanik', d:'Mechanischer Schutz in 6 Kategorien: Türen, Tore, Zäune, Poller, Tresore, Fenster.' },
+    vergleich:    { icon:'fa-table-cells-large', t:'Melder-Vergleich', d:'PIR, Mikrowelle, Dual und Lichtschranke direkt gegenübergestellt.' },
+    galerie:      { icon:'fa-images', t:'Produkt-Galerie', d:'Echte Produktbilder nach Hersteller und Kategorie – zum Wiedererkennen der Geräte.' },
+    mediathek:    { icon:'fa-photo-film', t:'Mediathek', d:'Alle Bilder und Animationsvideos der App gesammelt an einem Ort.' },
+    quiz:         { icon:'fa-graduation-cap', t:'Quiz · Lernmodus', d:'Teste dein Wissen mit kurzen Fragen – ideal zur Prüfungsvorbereitung.' },
+    glossar:      { icon:'fa-book', t:'Glossar', d:'Fachbegriffe von A–Z kurz und verständlich erklärt.' },
+    preisliste:   { icon:'fa-euro-sign', t:'Preisliste', d:'Richtpreise der Komponenten – durchsuchbar, als Kalkulationsgrundlage.' },
+    projects:     { icon:'fa-folder', t:'Meine Projekte', d:'Speichere Konfigurationen und Pläne lokal, um später weiterzuarbeiten.' },
+    diagramme:    { icon:'fa-chart-column', t:'Diagramme', d:'Kennzahlen und Vergleiche der Sicherheitstechnik als Grafiken.' },
+    dokumente:    { icon:'fa-folder-open', t:'Dokumente · Normen', d:'Übersicht der relevanten Normen und Dokumente mit Kurzbeschreibung.' },
+  };
+
+  function viewIntro(info) {
+    const box = el('div', { class:'view-intro' });
+    box.innerHTML = `<div class="vi-ico"><i class="fas ${info.icon}"></i></div>
+      <div class="vi-body"><div class="vi-t">${info.t}</div><div class="vi-d">${info.d}</div></div>`;
+    return box;
+  }
+
   let currentView = 'home';
 
   function navigate(view) {
@@ -52,6 +91,7 @@
     $$('.navitem').forEach(b => b.classList.toggle('active', b.dataset.view === view));
     const host = $('#view-host');
     host.innerHTML = '';
+    if (VIEW_INFO[view]) host.appendChild(viewIntro(VIEW_INFO[view]));
     const node = ROUTES[view](ST.data);
     host.appendChild(node);
     window.scrollTo({ top: 0, behavior: 'smooth' });

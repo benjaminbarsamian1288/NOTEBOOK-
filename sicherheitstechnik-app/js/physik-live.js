@@ -445,6 +445,279 @@ window.PHYSIK = (() => {
   }
 
   /* ============================================================
+     6) Ultraschall-Bewegungsmelder (Doppler im Schallfeld)
+     ============================================================ */
+  function ultraschallSim() {
+    const W = 720, H = 300;
+    const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H });
+    const ctx = canvas.getContext('2d');
+    let move = 25;                          // Bewegungsstärke 0..100
+    let phase = 0;
+    const cols = 60, rows = 24;
+
+    const roMove = readout('Bewegung im Raum');
+    const roField = readout('Feldänderung');
+    const roStat = readout('Status');
+
+    function draw() {
+      phase += 0.16;
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      const emit = { x: 60, y: H / 2 };
+      const obj = { x: W * 0.6 + Math.sin(phase * 0.3) * move * 1.6, y: H / 2 + Math.cos(phase * 0.2) * move * 0.6 };
+      const cw = W / cols, ch = H / rows;
+      for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+          const x = i * cw + cw / 2, y = j * ch + ch / 2;
+          const d1 = Math.hypot(x - emit.x, y - emit.y);
+          let v = Math.sin(d1 * 0.08 - phase);
+          if (move > 0) {
+            const d2 = Math.hypot(x - obj.x, y - obj.y);
+            v += Math.sin(d2 * 0.12 - phase * 1.4) * (move / 100);
+          }
+          const b = (v + 1.4) / 2.8;
+          ctx.fillStyle = `rgba(34,211,238,${Math.max(0, b * 0.7)})`;
+          ctx.beginPath(); ctx.arc(x, y, 2.4, 0, 7); ctx.fill();
+        }
+      }
+      ctx.fillStyle = '#22d3ee'; ctx.fillRect(emit.x - 14, emit.y - 18, 18, 36);
+      if (move > 0) { ctx.fillStyle = 'rgba(248,113,113,0.9)'; ctx.beginPath(); ctx.arc(obj.x, obj.y, 12, 0, 7); ctx.fill(); }
+      ctx.fillStyle = '#94a3b8'; ctx.font = '11px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('Sender/Empfänger 40 kHz', emit.x + 30, emit.y + 42);
+
+      roMove.set(move + ' %');
+      roField.set(move === 0 ? 'stehendes Feld' : (move < 8 ? 'minimal' : 'stark verändert'));
+      roStat.set(move < 8 ? 'kein Alarm' : 'Bewegung erkannt', move < 8 ? 'ok' : 'bad');
+    }
+    loop(canvas, draw);
+
+    const slider = el('input', { type: 'range', min: '0', max: '100', value: '25', class: 'phys-slider' });
+    slider.addEventListener('input', () => { move = +slider.value; });
+    const body = el('div', {}, [
+      canvas,
+      el('div', { class: 'phys-ctrl' }, [el('label', { text: 'Bewegung im Raum' }), slider]),
+      el('div', { class: 'phys-ros' }, [roMove.wrap, roField.wrap, roStat.wrap]),
+    ]);
+    return simCard({
+      icon: 'fa-volume-high', title: 'Ultraschall-Melder', sub: 'Aktiv: füllt den Raum mit Schallfeld',
+      was: 'Ein Sender erzeugt ein unhörbares Schallfeld (~40 kHz), das den ganzen Raum mit einem stehenden Interferenzmuster füllt. <b>Bewegung</b> verschiebt das Muster (Doppler im Schall).',
+      warum: 'Sehr empfindlich im geschlossenen Raum – reagiert aber auch auf Luftzug/Vorhänge. Daher meist als Ergänzung, nicht allein.',
+      body,
+    });
+  }
+
+  /* ============================================================
+     7) Erschütterungs-/Körperschallmelder (Seismik am Tresor)
+     ============================================================ */
+  function seismikSim() {
+    const W = 720, H = 300;
+    const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H });
+    const ctx = canvas.getContext('2d');
+    const buf = new Array(W).fill(H / 2);
+    let energy = 0, attack = null, alarmHold = 0;
+
+    const roEnergy = readout('Energie im Fenster');
+    const roStat = readout('Status');
+
+    function trigger(type) { attack = { type, start: performance.now() }; }
+
+    function draw(now) {
+      let amp = 0;
+      if (attack) {
+        const dt = now - attack.start;
+        if (attack.type === 'hit') { amp = dt < 220 ? 70 * Math.exp(-dt / 90) : 0; if (dt > 600) attack = null; }
+        else { amp = 38 + Math.sin(dt / 30) * 18; if (dt > 2600) attack = null; }   // Bohren: anhaltend
+      }
+      // Signal
+      const s = (Math.random() - 0.5) * amp + Math.sin(now / 20) * amp * 0.5;
+      buf.push(H / 2 + s); buf.shift();
+      // Energie-Integrator (gleitendes Fenster)
+      energy = energy * 0.96 + Math.abs(s) * 0.04;
+      const THRESH = 1.1;
+      const alarm = energy > THRESH;
+      if (alarm) alarmHold = 30; if (alarmHold > 0) alarmHold--;
+
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      ctx.strokeStyle = 'rgba(148,163,184,0.2)'; ctx.beginPath(); ctx.moveTo(0, H / 2); ctx.lineTo(W, H / 2); ctx.stroke();
+      ctx.strokeStyle = alarmHold > 0 ? '#ef4444' : '#22d3ee'; ctx.lineWidth = 2; ctx.beginPath();
+      for (let x = 0; x < W; x++) { x ? ctx.lineTo(x, buf[x]) : ctx.moveTo(x, buf[x]); }
+      ctx.stroke();
+      // Energiebalken
+      ctx.fillStyle = 'rgba(148,163,184,0.15)'; ctx.fillRect(20, 20, 200, 14);
+      ctx.fillStyle = alarmHold > 0 ? '#ef4444' : '#fbbf24'; ctx.fillRect(20, 20, Math.min(200, energy / THRESH * 200), 14);
+      ctx.strokeStyle = '#ef4444'; ctx.beginPath(); ctx.moveTo(220, 16); ctx.lineTo(220, 38); ctx.stroke();
+
+      roEnergy.set((energy / THRESH * 100).toFixed(0) + ' %');
+      roStat.set(alarmHold > 0 ? 'ALARM (Angriff)' : (attack ? 'misst…' : 'ruhig'), alarmHold > 0 ? 'bad' : (attack ? 'warn' : 'ok'));
+    }
+    loop(canvas, draw);
+
+    const b1 = el('button', { class: 'btn', html: '<i class="fas fa-hand-back-fist"></i> Einzelner Schlag' });
+    b1.addEventListener('click', () => trigger('hit'));
+    const b2 = el('button', { class: 'btn primary', html: '<i class="fas fa-screwdriver-wrench"></i> Bohren / Flexen' });
+    b2.addEventListener('click', () => trigger('drill'));
+    const body = el('div', {}, [
+      canvas,
+      el('div', { class: 'phys-ctrl phys-ctrl-btns' }, [b1, b2]),
+      el('div', { class: 'phys-ros' }, [roEnergy.wrap, roStat.wrap]),
+    ]);
+    return simCard({
+      icon: 'fa-tower-cell', title: 'Erschütterungsmelder · Körperschall', sub: 'An Tresor, Wand & Geldautomat',
+      was: 'Ein Sensor misst Vibrationen im Material. Statt jeder Spitze zählt die <b>Energie über ein Zeitfenster</b>: ein einzelner Schlag verpufft, anhaltendes Bohren/Flexen lädt den Speicher bis zur Schwelle auf.',
+      warum: 'So unterscheidet er einen harmlosen Stoß von einem echten Aufbruchsversuch – wichtig bei Tresoren und Geldautomaten.',
+      body,
+    });
+  }
+
+  /* ============================================================
+     8) Schließzylinder · Pin-Tumbler (Picking)
+     ============================================================ */
+  function lockSim() {
+    const W = 720, H = 300;
+    const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H });
+    const ctx = canvas.getContext('2d');
+    const N = 5;
+    let pins = Array.from({ length: N }, () => ({ set: false, lift: 0 }));
+    let angle = 0, targetAngle = 0, picking = -1;
+
+    const roSet = readout('Stifte gesetzt');
+    const roStat = readout('Zylinder');
+
+    function pickNext() {
+      const i = pins.findIndex(p => !p.set);
+      if (i >= 0) { picking = i; }
+    }
+    function reset() { pins = Array.from({ length: N }, () => ({ set: false, lift: 0 })); targetAngle = 0; }
+
+    function draw() {
+      if (picking >= 0) {
+        pins[picking].lift += 0.08;
+        if (pins[picking].lift >= 1) { pins[picking].lift = 1; pins[picking].set = true; picking = -1; }
+      }
+      if (pins.every(p => p.set)) targetAngle = 0.5;
+      angle += (targetAngle - angle) * 0.12;
+
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      const cx = W / 2, cy = H / 2 + 20, plugR = 70;
+      // Gehäuse
+      ctx.fillStyle = '#1e293b'; ctx.fillRect(cx - 220, cy - 120, 440, 200);
+      // Bohrungen + Stifte
+      const shearY = cy - plugR;
+      const spacing = 60;
+      for (let i = 0; i < N; i++) {
+        const x = cx - (N - 1) / 2 * spacing + i * spacing;
+        // Bohrkanal
+        ctx.fillStyle = '#0b1424'; ctx.fillRect(x - 10, cy - 150, 20, 150);
+        const lift = pins[i].lift * 26;
+        // Treiberstift (oben, silber)
+        ctx.fillStyle = '#94a3b8'; ctx.fillRect(x - 9, cy - 150 + (pins[i].set ? -2 : 0) + lift, 18, 40 - 0);
+        // Kernstift (gold) sitzt am Schließbart
+        ctx.fillStyle = '#fbbf24'; ctx.fillRect(x - 9, shearY - 26 + lift, 18, 30);
+        // Feder
+        ctx.strokeStyle = '#475569'; ctx.beginPath();
+        for (let s = 0; s < 6; s++) { ctx.moveTo(x - 7, cy - 150 + s * 4 + lift); ctx.lineTo(x + 7, cy - 148 + s * 4 + lift); }
+        ctx.stroke();
+      }
+      // Scherlinie
+      ctx.strokeStyle = pins.every(p => p.set) ? '#22c55e' : 'rgba(239,68,68,0.7)';
+      ctx.setLineDash([6, 4]); ctx.lineWidth = 2; ctx.beginPath();
+      ctx.moveTo(cx - 200, shearY); ctx.lineTo(cx + 200, shearY); ctx.stroke(); ctx.setLineDash([]);
+      // Plug (drehbar)
+      ctx.save(); ctx.translate(cx, cy); ctx.rotate(angle);
+      ctx.fillStyle = '#334155'; ctx.beginPath(); ctx.arc(0, 0, plugR, 0, 7); ctx.fill();
+      ctx.fillStyle = '#475569'; ctx.fillRect(-10, -plugR, 20, plugR); // Keilnut
+      ctx.restore();
+      ctx.fillStyle = '#cbd5e1'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('Scherlinie', cx + 250, shearY + 4);
+
+      roSet.set(pins.filter(p => p.set).length + ' / ' + N);
+      roStat.set(pins.every(p => p.set) ? 'GEÖFFNET' : 'gesperrt', pins.every(p => p.set) ? 'bad' : 'ok');
+    }
+    loop(canvas, draw);
+
+    const b1 = el('button', { class: 'btn primary', html: '<i class="fas fa-screwdriver"></i> Nächsten Stift picken' });
+    b1.addEventListener('click', pickNext);
+    const b2 = el('button', { class: 'btn', html: '<i class="fas fa-rotate-left"></i> Zurücksetzen' });
+    b2.addEventListener('click', reset);
+    const body = el('div', {}, [
+      canvas,
+      el('div', { class: 'phys-ctrl phys-ctrl-btns' }, [b1, b2]),
+      el('div', { class: 'phys-ros' }, [roSet.wrap, roStat.wrap]),
+    ]);
+    return simCard({
+      icon: 'fa-key', title: 'Schließzylinder · Pin-Tumbler', sub: 'Warum mechanische Schließung wirkt',
+      was: 'Federn drücken Stiftpaare über die <b>Scherlinie</b> und blockieren den Kern. Erst wenn jeder Kernstift exakt an der Scherlinie steht (durch Schlüssel oder Picking), kann sich der Kern drehen.',
+      warum: 'Je mehr Stifte und je enger die Toleranzen, desto pick-sicherer. Aufbohrschutz und Not-/Gefahrenfunktion sind Themen der RC-Klassen (DIN EN 1627).',
+      body,
+    });
+  }
+
+  /* ============================================================
+     9) Kapazitiver Näherungssensor
+     ============================================================ */
+  function kapazitivSim() {
+    const W = 720, H = 280;
+    const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H });
+    const ctx = canvas.getContext('2d');
+    const plate = { x: 90, y: H / 2 };
+    const hand = { x: W * 0.7, y: H / 2, dragging: false, auto: true };
+    let ta = 0;
+
+    const roDist = readout('Abstand');
+    const roCap = readout('Kapazität');
+    const roStat = readout('Status');
+
+    function down(e) { hand.dragging = true; hand.auto = false; move(e); }
+    function move(e) { if (!hand.dragging) return; e.preventDefault(); const p = pos(canvas, e); hand.x = Math.max(plate.x + 30, p.x); hand.y = p.y; }
+    function up() { hand.dragging = false; }
+    canvas.addEventListener('mousedown', down); canvas.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
+    canvas.addEventListener('touchstart', down, { passive: false });
+    canvas.addEventListener('touchmove', move, { passive: false });
+    window.addEventListener('touchend', up);
+
+    function draw() {
+      if (hand.auto) { ta += 0.018; hand.x = W * 0.55 + Math.sin(ta) * 220; hand.y = H / 2; }
+      const d = Math.max(8, hand.x - plate.x);
+      const C = 1200 / d;                    // C ∝ 1/d (illustrativ, pF)
+      const alarm = d < 120;
+
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      // Feldlinien
+      const strength = Math.min(1, 120 / d);
+      ctx.strokeStyle = `rgba(34,211,238,${0.15 + strength * 0.6})`;
+      for (let i = -3; i <= 3; i++) {
+        ctx.beginPath(); const y = plate.y + i * 16;
+        ctx.moveTo(plate.x + 8, y);
+        ctx.quadraticCurveTo((plate.x + hand.x) / 2, y + i * 10, hand.x - 14, plate.y + i * 8);
+        ctx.stroke();
+      }
+      // Platte (Sensor)
+      ctx.fillStyle = alarm ? '#ef4444' : '#22d3ee'; ctx.fillRect(plate.x - 10, plate.y - 50, 12, 100);
+      ctx.fillStyle = '#94a3b8'; ctx.font = '11px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('Sensorfläche', plate.x, plate.y + 70);
+      // Hand
+      ctx.font = '34px sans-serif'; ctx.fillText('✋', hand.x, hand.y + 12);
+
+      roDist.set(Math.round(d / 4) + ' cm');
+      roCap.set(C.toFixed(0) + ' pF');
+      roStat.set(alarm ? 'Annäherung erkannt' : 'frei', alarm ? 'bad' : 'ok');
+    }
+    loop(canvas, draw);
+
+    const body = el('div', {}, [
+      canvas,
+      el('div', { class: 'phys-hint', text: '⟶ Zieh die Hand näher an die Sensorfläche – die Kapazität steigt, je geringer der Abstand.' }),
+      el('div', { class: 'phys-ros' }, [roDist.wrap, roCap.wrap, roStat.wrap]),
+    ]);
+    return simCard({
+      icon: 'fa-hand-sparkles', title: 'Kapazitiver Näherungssensor', sub: 'Reagiert ohne Berührung',
+      was: 'Eine Sensorfläche bildet mit der Umgebung einen Kondensator. Nähert sich ein Körper (leitfähig, z.B. Hand), <b>steigt die Kapazität</b> (≈ 1/Abstand) – die Elektronik erkennt die Änderung.',
+      warum: 'Berührungslos und versteckt einbaubar – genutzt für Objektschutz an Vitrinen, Tresoren und Bedienfeldern.',
+      body,
+    });
+  }
+
+  /* ============================================================
      Ansicht
      ============================================================ */
   function view() {
@@ -464,7 +737,8 @@ window.PHYSIK = (() => {
     root.appendChild(intro);
 
     const grid = el('div', { class: 'phys-grid' });
-    [pirSim(), dopplerSim(), reedSim(), glassSim(), beamSim()].forEach(s => grid.appendChild(s));
+    [pirSim(), dopplerSim(), ultraschallSim(), reedSim(), beamSim(), glassSim(), seismikSim(), lockSim(), kapazitivSim()]
+      .forEach(s => grid.appendChild(s));
     root.appendChild(grid);
 
     return root;

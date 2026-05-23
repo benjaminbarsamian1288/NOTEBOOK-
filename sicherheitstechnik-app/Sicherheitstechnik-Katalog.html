@@ -9773,6 +9773,32 @@ img, svg, iframe, video {
   .phys-intro { padding: 18px; }
 }
 
+/* Klartext-Erklärbox oben in jeder Ansicht */
+.view-intro {
+  display: flex; align-items: center; gap: 14px;
+  background: linear-gradient(135deg, rgba(34,211,238,0.08), rgba(16,185,129,0.05));
+  border: 1px solid rgba(34,211,238,0.16);
+  border-left: 4px solid #22d3ee;
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 18px;
+}
+.view-intro .vi-ico {
+  width: 40px; height: 40px; flex: 0 0 40px; border-radius: 10px;
+  display: grid; place-items: center; font-size: 17px; color: #0b1424;
+  background: linear-gradient(135deg, #22d3ee, #10b981);
+}
+.view-intro .vi-t { font-weight: 700; font-size: 15px; color: #e2e8f0; margin-bottom: 2px; }
+.view-intro .vi-d { font-size: 13px; color: #94a3b8; line-height: 1.5; }
+
+/* Startseite: Kacheln gruppiert */
+.qa-section-label {
+  font-size: 12px; letter-spacing: .07em; text-transform: uppercase;
+  color: #7dd3fc; margin: 22px 4px 10px; font-weight: 700;
+  display: flex; align-items: center; gap: 8px;
+}
+.qa-section-label::before { content:''; width: 16px; height: 2px; background:#22d3ee; border-radius:2px; }
+
 </style>
 <style data-src="css/katalog.css">
 /* Master-Katalog · zentrales Drehkreuz */
@@ -11910,37 +11936,37 @@ button, .navitem, .chip, .qa-tile, .ency-card, .zone-card, .kfg-card, .bigstat {
   <nav class="navlist">
     <button class="global-search-trigger" id="gs-trigger"><i class="fas fa-search"></i> <span>Suche · alles…</span><kbd>Ctrl K</kbd></button>
 
-    <div class="nav-group-label">Hauptzugänge</div>
+    <div class="nav-group-label">1 · Start &amp; Verstehen</div>
     <button class="navitem active" data-view="home"><i class="fas fa-house"></i><span>Übersicht</span></button>
+    <button class="navitem nav-pri" data-view="physik"><i class="fas fa-atom"></i><span><strong>Physik Live</strong></span><em>9</em></button>
     <button class="navitem nav-pri" data-view="masterency"><i class="fas fa-book-open-reader"></i><span><strong>Komplett-Katalog</strong></span><em>142</em></button>
     <button class="navitem nav-pri" data-view="gesetze"><i class="fas fa-gavel"></i><span><strong>Gesetze · §§</strong></span><em>12</em></button>
-    <button class="navitem nav-pri" data-view="physik"><i class="fas fa-atom"></i><span><strong>Physik Live</strong></span><em>5</em></button>
 
-    <div class="nav-group-label">Werkzeuge</div>
-    <button class="navitem nav-tool" data-view="lab"><i class="fas fa-calculator"></i><span>Engineering-Lab</span><em>12</em></button>
-    <button class="navitem nav-tool" data-view="fp"><i class="fas fa-vector-square"></i><span>Plan-Designer</span></button>
+    <div class="nav-group-label">2 · Planen &amp; Berechnen</div>
     <button class="navitem nav-tool" data-view="wizard"><i class="fas fa-wand-magic-sparkles"></i><span>Sicherheits-Assistent</span></button>
     <button class="navitem nav-tool" data-view="konfigurator"><i class="fas fa-sliders"></i><span>Konfigurator</span></button>
+    <button class="navitem nav-tool" data-view="lab"><i class="fas fa-flask"></i><span>Engineering-Lab</span><em>12</em></button>
+    <button class="navitem nav-tool" data-view="fp"><i class="fas fa-vector-square"></i><span>Plan-Designer</span></button>
     <button class="navitem nav-tool" data-view="calculators"><i class="fas fa-calculator"></i><span>Calculator-Suite</span></button>
 
-    <div class="nav-group-label">3D-Visualisierungen</div>
+    <div class="nav-group-label">3 · Ansehen in 3D</div>
     <button class="navitem" data-view="haus3d"><i class="fas fa-house-chimney"></i><span>Sicherheits-Haus 3D</span></button>
     <button class="navitem" data-view="zwiebel3d"><i class="fas fa-circle-dot"></i><span>3D-Zwiebelmodell</span></button>
     <button class="navitem" data-view="spektrum"><i class="fas fa-wave-square"></i><span>Frequenz-Spektrum</span></button>
+    <button class="navitem nav-pri" data-view="werk"><i class="fas fa-industry"></i><span><strong>Sicherheits-Werk</strong></span><em>NEU</em></button>
 
-    <div class="nav-group-label">Spezial</div>
-    <button class="navitem nav-wwd" data-view="wwd"><i class="fas fa-tower-cell"></i><span>WWD Video-Türme</span></button>
-    <button class="navitem nav-pri" data-view="werk"><i class="fas fa-industry"></i><span><strong>🏭 Sicherheits-Werk</strong></span><em>NEU</em></button>
+    <div class="nav-group-label">4 · Technik &amp; Geräte</div>
     <button class="navitem" data-view="ema"><i class="fas fa-broadcast-tower"></i><span>EMA · ZKA · NSL</span></button>
     <button class="navitem" data-view="klassen"><i class="fas fa-medal"></i><span>SÜ · Grade · RC</span></button>
+    <button class="navitem nav-wwd" data-view="wwd"><i class="fas fa-tower-cell"></i><span>WWD Video-Türme</span></button>
 
-    <div class="nav-group-label">Bilder + Lernen</div>
+    <div class="nav-group-label">5 · Bilder &amp; Lernen</div>
     <button class="navitem" data-view="galerie"><i class="fas fa-images"></i><span>Produkt-Galerie</span></button>
     <button class="navitem" data-view="mediathek"><i class="fas fa-photo-film"></i><span>Mediathek</span></button>
     <button class="navitem" data-view="quiz"><i class="fas fa-graduation-cap"></i><span>Quiz · Lernmodus</span></button>
     <button class="navitem" data-view="glossar"><i class="fas fa-book"></i><span>Glossar</span></button>
 
-    <div class="nav-group-label">Verwaltung</div>
+    <div class="nav-group-label">6 · Verwaltung</div>
     <button class="navitem" data-view="preisliste"><i class="fas fa-euro-sign"></i><span>Preisliste</span></button>
     <button class="navitem" data-view="projects"><i class="fas fa-folder"></i><span>Meine Projekte</span></button>
     <button class="navitem" data-view="diagramme"><i class="fas fa-chart-column"></i><span>Diagramme</span></button>
@@ -39539,6 +39565,279 @@ window.PHYSIK = (() => {
   }
 
   /* ============================================================
+     6) Ultraschall-Bewegungsmelder (Doppler im Schallfeld)
+     ============================================================ */
+  function ultraschallSim() {
+    const W = 720, H = 300;
+    const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H });
+    const ctx = canvas.getContext('2d');
+    let move = 25;                          // Bewegungsstärke 0..100
+    let phase = 0;
+    const cols = 60, rows = 24;
+
+    const roMove = readout('Bewegung im Raum');
+    const roField = readout('Feldänderung');
+    const roStat = readout('Status');
+
+    function draw() {
+      phase += 0.16;
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      const emit = { x: 60, y: H / 2 };
+      const obj = { x: W * 0.6 + Math.sin(phase * 0.3) * move * 1.6, y: H / 2 + Math.cos(phase * 0.2) * move * 0.6 };
+      const cw = W / cols, ch = H / rows;
+      for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+          const x = i * cw + cw / 2, y = j * ch + ch / 2;
+          const d1 = Math.hypot(x - emit.x, y - emit.y);
+          let v = Math.sin(d1 * 0.08 - phase);
+          if (move > 0) {
+            const d2 = Math.hypot(x - obj.x, y - obj.y);
+            v += Math.sin(d2 * 0.12 - phase * 1.4) * (move / 100);
+          }
+          const b = (v + 1.4) / 2.8;
+          ctx.fillStyle = `rgba(34,211,238,${Math.max(0, b * 0.7)})`;
+          ctx.beginPath(); ctx.arc(x, y, 2.4, 0, 7); ctx.fill();
+        }
+      }
+      ctx.fillStyle = '#22d3ee'; ctx.fillRect(emit.x - 14, emit.y - 18, 18, 36);
+      if (move > 0) { ctx.fillStyle = 'rgba(248,113,113,0.9)'; ctx.beginPath(); ctx.arc(obj.x, obj.y, 12, 0, 7); ctx.fill(); }
+      ctx.fillStyle = '#94a3b8'; ctx.font = '11px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('Sender/Empfänger 40 kHz', emit.x + 30, emit.y + 42);
+
+      roMove.set(move + ' %');
+      roField.set(move === 0 ? 'stehendes Feld' : (move < 8 ? 'minimal' : 'stark verändert'));
+      roStat.set(move < 8 ? 'kein Alarm' : 'Bewegung erkannt', move < 8 ? 'ok' : 'bad');
+    }
+    loop(canvas, draw);
+
+    const slider = el('input', { type: 'range', min: '0', max: '100', value: '25', class: 'phys-slider' });
+    slider.addEventListener('input', () => { move = +slider.value; });
+    const body = el('div', {}, [
+      canvas,
+      el('div', { class: 'phys-ctrl' }, [el('label', { text: 'Bewegung im Raum' }), slider]),
+      el('div', { class: 'phys-ros' }, [roMove.wrap, roField.wrap, roStat.wrap]),
+    ]);
+    return simCard({
+      icon: 'fa-volume-high', title: 'Ultraschall-Melder', sub: 'Aktiv: füllt den Raum mit Schallfeld',
+      was: 'Ein Sender erzeugt ein unhörbares Schallfeld (~40 kHz), das den ganzen Raum mit einem stehenden Interferenzmuster füllt. <b>Bewegung</b> verschiebt das Muster (Doppler im Schall).',
+      warum: 'Sehr empfindlich im geschlossenen Raum – reagiert aber auch auf Luftzug/Vorhänge. Daher meist als Ergänzung, nicht allein.',
+      body,
+    });
+  }
+
+  /* ============================================================
+     7) Erschütterungs-/Körperschallmelder (Seismik am Tresor)
+     ============================================================ */
+  function seismikSim() {
+    const W = 720, H = 300;
+    const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H });
+    const ctx = canvas.getContext('2d');
+    const buf = new Array(W).fill(H / 2);
+    let energy = 0, attack = null, alarmHold = 0;
+
+    const roEnergy = readout('Energie im Fenster');
+    const roStat = readout('Status');
+
+    function trigger(type) { attack = { type, start: performance.now() }; }
+
+    function draw(now) {
+      let amp = 0;
+      if (attack) {
+        const dt = now - attack.start;
+        if (attack.type === 'hit') { amp = dt < 220 ? 70 * Math.exp(-dt / 90) : 0; if (dt > 600) attack = null; }
+        else { amp = 38 + Math.sin(dt / 30) * 18; if (dt > 2600) attack = null; }   // Bohren: anhaltend
+      }
+      // Signal
+      const s = (Math.random() - 0.5) * amp + Math.sin(now / 20) * amp * 0.5;
+      buf.push(H / 2 + s); buf.shift();
+      // Energie-Integrator (gleitendes Fenster)
+      energy = energy * 0.96 + Math.abs(s) * 0.04;
+      const THRESH = 1.1;
+      const alarm = energy > THRESH;
+      if (alarm) alarmHold = 30; if (alarmHold > 0) alarmHold--;
+
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      ctx.strokeStyle = 'rgba(148,163,184,0.2)'; ctx.beginPath(); ctx.moveTo(0, H / 2); ctx.lineTo(W, H / 2); ctx.stroke();
+      ctx.strokeStyle = alarmHold > 0 ? '#ef4444' : '#22d3ee'; ctx.lineWidth = 2; ctx.beginPath();
+      for (let x = 0; x < W; x++) { x ? ctx.lineTo(x, buf[x]) : ctx.moveTo(x, buf[x]); }
+      ctx.stroke();
+      // Energiebalken
+      ctx.fillStyle = 'rgba(148,163,184,0.15)'; ctx.fillRect(20, 20, 200, 14);
+      ctx.fillStyle = alarmHold > 0 ? '#ef4444' : '#fbbf24'; ctx.fillRect(20, 20, Math.min(200, energy / THRESH * 200), 14);
+      ctx.strokeStyle = '#ef4444'; ctx.beginPath(); ctx.moveTo(220, 16); ctx.lineTo(220, 38); ctx.stroke();
+
+      roEnergy.set((energy / THRESH * 100).toFixed(0) + ' %');
+      roStat.set(alarmHold > 0 ? 'ALARM (Angriff)' : (attack ? 'misst…' : 'ruhig'), alarmHold > 0 ? 'bad' : (attack ? 'warn' : 'ok'));
+    }
+    loop(canvas, draw);
+
+    const b1 = el('button', { class: 'btn', html: '<i class="fas fa-hand-back-fist"></i> Einzelner Schlag' });
+    b1.addEventListener('click', () => trigger('hit'));
+    const b2 = el('button', { class: 'btn primary', html: '<i class="fas fa-screwdriver-wrench"></i> Bohren / Flexen' });
+    b2.addEventListener('click', () => trigger('drill'));
+    const body = el('div', {}, [
+      canvas,
+      el('div', { class: 'phys-ctrl phys-ctrl-btns' }, [b1, b2]),
+      el('div', { class: 'phys-ros' }, [roEnergy.wrap, roStat.wrap]),
+    ]);
+    return simCard({
+      icon: 'fa-tower-cell', title: 'Erschütterungsmelder · Körperschall', sub: 'An Tresor, Wand & Geldautomat',
+      was: 'Ein Sensor misst Vibrationen im Material. Statt jeder Spitze zählt die <b>Energie über ein Zeitfenster</b>: ein einzelner Schlag verpufft, anhaltendes Bohren/Flexen lädt den Speicher bis zur Schwelle auf.',
+      warum: 'So unterscheidet er einen harmlosen Stoß von einem echten Aufbruchsversuch – wichtig bei Tresoren und Geldautomaten.',
+      body,
+    });
+  }
+
+  /* ============================================================
+     8) Schließzylinder · Pin-Tumbler (Picking)
+     ============================================================ */
+  function lockSim() {
+    const W = 720, H = 300;
+    const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H });
+    const ctx = canvas.getContext('2d');
+    const N = 5;
+    let pins = Array.from({ length: N }, () => ({ set: false, lift: 0 }));
+    let angle = 0, targetAngle = 0, picking = -1;
+
+    const roSet = readout('Stifte gesetzt');
+    const roStat = readout('Zylinder');
+
+    function pickNext() {
+      const i = pins.findIndex(p => !p.set);
+      if (i >= 0) { picking = i; }
+    }
+    function reset() { pins = Array.from({ length: N }, () => ({ set: false, lift: 0 })); targetAngle = 0; }
+
+    function draw() {
+      if (picking >= 0) {
+        pins[picking].lift += 0.08;
+        if (pins[picking].lift >= 1) { pins[picking].lift = 1; pins[picking].set = true; picking = -1; }
+      }
+      if (pins.every(p => p.set)) targetAngle = 0.5;
+      angle += (targetAngle - angle) * 0.12;
+
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      const cx = W / 2, cy = H / 2 + 20, plugR = 70;
+      // Gehäuse
+      ctx.fillStyle = '#1e293b'; ctx.fillRect(cx - 220, cy - 120, 440, 200);
+      // Bohrungen + Stifte
+      const shearY = cy - plugR;
+      const spacing = 60;
+      for (let i = 0; i < N; i++) {
+        const x = cx - (N - 1) / 2 * spacing + i * spacing;
+        // Bohrkanal
+        ctx.fillStyle = '#0b1424'; ctx.fillRect(x - 10, cy - 150, 20, 150);
+        const lift = pins[i].lift * 26;
+        // Treiberstift (oben, silber)
+        ctx.fillStyle = '#94a3b8'; ctx.fillRect(x - 9, cy - 150 + (pins[i].set ? -2 : 0) + lift, 18, 40 - 0);
+        // Kernstift (gold) sitzt am Schließbart
+        ctx.fillStyle = '#fbbf24'; ctx.fillRect(x - 9, shearY - 26 + lift, 18, 30);
+        // Feder
+        ctx.strokeStyle = '#475569'; ctx.beginPath();
+        for (let s = 0; s < 6; s++) { ctx.moveTo(x - 7, cy - 150 + s * 4 + lift); ctx.lineTo(x + 7, cy - 148 + s * 4 + lift); }
+        ctx.stroke();
+      }
+      // Scherlinie
+      ctx.strokeStyle = pins.every(p => p.set) ? '#22c55e' : 'rgba(239,68,68,0.7)';
+      ctx.setLineDash([6, 4]); ctx.lineWidth = 2; ctx.beginPath();
+      ctx.moveTo(cx - 200, shearY); ctx.lineTo(cx + 200, shearY); ctx.stroke(); ctx.setLineDash([]);
+      // Plug (drehbar)
+      ctx.save(); ctx.translate(cx, cy); ctx.rotate(angle);
+      ctx.fillStyle = '#334155'; ctx.beginPath(); ctx.arc(0, 0, plugR, 0, 7); ctx.fill();
+      ctx.fillStyle = '#475569'; ctx.fillRect(-10, -plugR, 20, plugR); // Keilnut
+      ctx.restore();
+      ctx.fillStyle = '#cbd5e1'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('Scherlinie', cx + 250, shearY + 4);
+
+      roSet.set(pins.filter(p => p.set).length + ' / ' + N);
+      roStat.set(pins.every(p => p.set) ? 'GEÖFFNET' : 'gesperrt', pins.every(p => p.set) ? 'bad' : 'ok');
+    }
+    loop(canvas, draw);
+
+    const b1 = el('button', { class: 'btn primary', html: '<i class="fas fa-screwdriver"></i> Nächsten Stift picken' });
+    b1.addEventListener('click', pickNext);
+    const b2 = el('button', { class: 'btn', html: '<i class="fas fa-rotate-left"></i> Zurücksetzen' });
+    b2.addEventListener('click', reset);
+    const body = el('div', {}, [
+      canvas,
+      el('div', { class: 'phys-ctrl phys-ctrl-btns' }, [b1, b2]),
+      el('div', { class: 'phys-ros' }, [roSet.wrap, roStat.wrap]),
+    ]);
+    return simCard({
+      icon: 'fa-key', title: 'Schließzylinder · Pin-Tumbler', sub: 'Warum mechanische Schließung wirkt',
+      was: 'Federn drücken Stiftpaare über die <b>Scherlinie</b> und blockieren den Kern. Erst wenn jeder Kernstift exakt an der Scherlinie steht (durch Schlüssel oder Picking), kann sich der Kern drehen.',
+      warum: 'Je mehr Stifte und je enger die Toleranzen, desto pick-sicherer. Aufbohrschutz und Not-/Gefahrenfunktion sind Themen der RC-Klassen (DIN EN 1627).',
+      body,
+    });
+  }
+
+  /* ============================================================
+     9) Kapazitiver Näherungssensor
+     ============================================================ */
+  function kapazitivSim() {
+    const W = 720, H = 280;
+    const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H });
+    const ctx = canvas.getContext('2d');
+    const plate = { x: 90, y: H / 2 };
+    const hand = { x: W * 0.7, y: H / 2, dragging: false, auto: true };
+    let ta = 0;
+
+    const roDist = readout('Abstand');
+    const roCap = readout('Kapazität');
+    const roStat = readout('Status');
+
+    function down(e) { hand.dragging = true; hand.auto = false; move(e); }
+    function move(e) { if (!hand.dragging) return; e.preventDefault(); const p = pos(canvas, e); hand.x = Math.max(plate.x + 30, p.x); hand.y = p.y; }
+    function up() { hand.dragging = false; }
+    canvas.addEventListener('mousedown', down); canvas.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
+    canvas.addEventListener('touchstart', down, { passive: false });
+    canvas.addEventListener('touchmove', move, { passive: false });
+    window.addEventListener('touchend', up);
+
+    function draw() {
+      if (hand.auto) { ta += 0.018; hand.x = W * 0.55 + Math.sin(ta) * 220; hand.y = H / 2; }
+      const d = Math.max(8, hand.x - plate.x);
+      const C = 1200 / d;                    // C ∝ 1/d (illustrativ, pF)
+      const alarm = d < 120;
+
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      // Feldlinien
+      const strength = Math.min(1, 120 / d);
+      ctx.strokeStyle = `rgba(34,211,238,${0.15 + strength * 0.6})`;
+      for (let i = -3; i <= 3; i++) {
+        ctx.beginPath(); const y = plate.y + i * 16;
+        ctx.moveTo(plate.x + 8, y);
+        ctx.quadraticCurveTo((plate.x + hand.x) / 2, y + i * 10, hand.x - 14, plate.y + i * 8);
+        ctx.stroke();
+      }
+      // Platte (Sensor)
+      ctx.fillStyle = alarm ? '#ef4444' : '#22d3ee'; ctx.fillRect(plate.x - 10, plate.y - 50, 12, 100);
+      ctx.fillStyle = '#94a3b8'; ctx.font = '11px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('Sensorfläche', plate.x, plate.y + 70);
+      // Hand
+      ctx.font = '34px sans-serif'; ctx.fillText('✋', hand.x, hand.y + 12);
+
+      roDist.set(Math.round(d / 4) + ' cm');
+      roCap.set(C.toFixed(0) + ' pF');
+      roStat.set(alarm ? 'Annäherung erkannt' : 'frei', alarm ? 'bad' : 'ok');
+    }
+    loop(canvas, draw);
+
+    const body = el('div', {}, [
+      canvas,
+      el('div', { class: 'phys-hint', text: '⟶ Zieh die Hand näher an die Sensorfläche – die Kapazität steigt, je geringer der Abstand.' }),
+      el('div', { class: 'phys-ros' }, [roDist.wrap, roCap.wrap, roStat.wrap]),
+    ]);
+    return simCard({
+      icon: 'fa-hand-sparkles', title: 'Kapazitiver Näherungssensor', sub: 'Reagiert ohne Berührung',
+      was: 'Eine Sensorfläche bildet mit der Umgebung einen Kondensator. Nähert sich ein Körper (leitfähig, z.B. Hand), <b>steigt die Kapazität</b> (≈ 1/Abstand) – die Elektronik erkennt die Änderung.',
+      warum: 'Berührungslos und versteckt einbaubar – genutzt für Objektschutz an Vitrinen, Tresoren und Bedienfeldern.',
+      body,
+    });
+  }
+
+  /* ============================================================
      Ansicht
      ============================================================ */
   function view() {
@@ -39558,7 +39857,8 @@ window.PHYSIK = (() => {
     root.appendChild(intro);
 
     const grid = el('div', { class: 'phys-grid' });
-    [pirSim(), dopplerSim(), reedSim(), glassSim(), beamSim()].forEach(s => grid.appendChild(s));
+    [pirSim(), dopplerSim(), ultraschallSim(), reedSim(), beamSim(), glassSim(), seismikSim(), lockSim(), kapazitivSim()]
+      .forEach(s => grid.appendChild(s));
     root.appendChild(grid);
 
     return root;
@@ -40367,37 +40667,51 @@ window.V = (() => {
     }, 50);
     root.appendChild(mapCard);
 
-    // --- Quick-Action Tiles (kompaktes Feature-Grid) ---
-    const qa = el('div', { class:'quick-actions' });
-    [
-      { v:'physik',       icon:'fa-atom',                t:'Physik Live',           d:'5 Echtzeit-Sims: PIR · Radar · Reed · Glas · Beam' },
-      { v:'wizard',       icon:'fa-wand-magic-sparkles', t:'Sicherheits-Assistent', d:'7-Schritte-Analyse → SÜ-Empfehlung' },
-      { v:'simulator',    icon:'fa-vector-square',       t:'Floor-Plan Simulator',  d:'Sensoren drehen, verschieben, planen' },
-      { v:'building3d',   icon:'fa-cube',                t:'3D-Gebäudeplaner',     d:'Isometrisches 3D-Haus · Etagen · rotierbar' },
-      { v:'spektrum',     icon:'fa-wave-square',         t:'Frequenz-Spektrum',     d:'EM-Spektrum · Wellenformen · Video-KI' },
-      { v:'enzyklopaedie',icon:'fa-flask',               t:'Melder-Enzyklopädie',   d:'30 Detektoren · Aktiv/Passiv · Videos' },
-      { v:'galerie',      icon:'fa-images',              t:'Produkt-Galerie',       d:'Realistische Produkt-Fotos · Hersteller' },
-      { v:'mediathek',    icon:'fa-photo-film',          t:'Mediathek',             d:'Alle Bilder + Animationsvideos zusammen' },
-      { v:'zwiebel3d',    icon:'fa-circle-dot',          t:'3D-Zwiebelmodell',      d:'Interaktives 4-Zonen-Schutzkonzept' },
-      { v:'haus3d',       icon:'fa-house-chimney',       t:'Sicherheits-Haus 3D',   d:'Vom Außenzaun bis zum Tresor · alle 4 Zonen' },
-      { v:'wwd',          icon:'fa-tower-cell',          t:'WWD Video-Türme',       d:'KWS Video Control · KI · 24/7-Leitstelle' },
-      { v:'mechency',     icon:'fa-flask-vial',          t:'Mechanik-Enzyklopädie', d:'50+ Komponenten · Bilder · Filter · Vergleich' },
-      { v:'mechanik',     icon:'fa-shield-halved',       t:'Mechanik · 6 Kategorien', d:'Türen · Tore · Zäune · Poller · Tresore · Fenster' },
-      { v:'gesetze',      icon:'fa-gavel',               t:'Gesetze · KRITIS · NIS2', d:'BewachV · DGUV · VdS · KRITIS-DachG' },
-      { v:'konfigurator', icon:'fa-sliders',             t:'Konfigurator',          d:'Komplette Stack-Empfehlung mit Preis' },
-      { v:'vergleich',    icon:'fa-table-cells-large',   t:'Melder-Vergleich',      d:'PIR vs MW vs Dual vs Schranke' },
-      { v:'calculators',  icon:'fa-calculator',          t:'Calculator-Suite',      d:'8 Live-Rechner für Mengen + Preis' },
-      { v:'quiz',         icon:'fa-graduation-cap',      t:'Quiz',                  d:'15 Fragen · teste dein Wissen' },
-      { v:'glossar',      icon:'fa-book',                t:'Glossar',               d:'37 Fachbegriffe erklärt' },
-    ].forEach(a => {
-      const t = el('button', { class:'qa-tile' });
-      t.innerHTML = `<div class="qa-i"><i class="fas ${a.icon}"></i></div>
-                     <div class="qa-t">${a.t}</div>
-                     <div class="qa-d">${a.d}</div>`;
-      t.addEventListener('click', () => location.hash = '#'+a.v);
-      qa.appendChild(t);
+    // --- Quick-Action Tiles, in klare Gruppen sortiert ---
+    const qaWrap = el('div');
+    const qaGroups = [
+      { label:'Verstehen', tiles:[
+        { v:'physik',       icon:'fa-atom',            t:'Physik Live',            d:'9 Echtzeit-Sims der Sensorphysik' },
+        { v:'gesetze',      icon:'fa-gavel',           t:'Gesetze & Normen',       d:'BeWachV · DGUV · KRITIS · DIN SPEC 14027' },
+        { v:'enzyklopaedie',icon:'fa-flask',           t:'Melder-Enzyklopädie',    d:'Detektoren erklärt · aktiv/passiv' },
+        { v:'mechency',     icon:'fa-flask-vial',      t:'Mechanik-Enzyklopädie',  d:'50+ Komponenten · Bilder · Vergleich' },
+      ]},
+      { label:'Planen & Berechnen', tiles:[
+        { v:'wizard',       icon:'fa-wand-magic-sparkles', t:'Sicherheits-Assistent', d:'Fragen beantworten → SÜ-Empfehlung' },
+        { v:'konfigurator', icon:'fa-sliders',         t:'Konfigurator',           d:'Schutz-Stack mit Richtpreis' },
+        { v:'calculators',  icon:'fa-calculator',      t:'Calculator-Suite',       d:'Live-Rechner für Mengen + Preis' },
+        { v:'simulator',    icon:'fa-vector-square',   t:'Plan-Simulator',         d:'Sensoren platzieren & planen' },
+        { v:'vergleich',    icon:'fa-table-cells-large', t:'Melder-Vergleich',     d:'PIR vs MW vs Dual vs Schranke' },
+      ]},
+      { label:'In 3D ansehen', tiles:[
+        { v:'haus3d',       icon:'fa-house-chimney',   t:'Sicherheits-Haus 3D',    d:'Vom Zaun bis zum Tresor · 4 Zonen' },
+        { v:'zwiebel3d',    icon:'fa-circle-dot',      t:'3D-Zwiebelmodell',       d:'4-Zonen-Schutzkonzept interaktiv' },
+        { v:'building3d',   icon:'fa-cube',            t:'3D-Gebäudeplaner',       d:'Isometrisches Haus · rotierbar' },
+        { v:'spektrum',     icon:'fa-wave-square',     t:'Frequenz-Spektrum',      d:'EM-Spektrum · Wellenformen' },
+      ]},
+      { label:'Technik · Bilder · Lernen', tiles:[
+        { v:'mechanik',     icon:'fa-shield-halved',   t:'Mechanik · 6 Kategorien', d:'Türen · Tore · Zäune · Poller · Tresore' },
+        { v:'galerie',      icon:'fa-images',          t:'Produkt-Galerie',        d:'Echte Produktfotos nach Hersteller' },
+        { v:'mediathek',    icon:'fa-photo-film',      t:'Mediathek',              d:'Alle Bilder + Animationen' },
+        { v:'wwd',          icon:'fa-tower-cell',      t:'WWD Video-Türme',        d:'KI · 24/7-Leitstelle' },
+        { v:'quiz',         icon:'fa-graduation-cap',  t:'Quiz',                   d:'Teste dein Wissen' },
+        { v:'glossar',      icon:'fa-book',            t:'Glossar',                d:'Fachbegriffe erklärt' },
+      ]},
+    ];
+    qaGroups.forEach(g => {
+      qaWrap.appendChild(el('div', { class:'qa-section-label', text:g.label }));
+      const grid = el('div', { class:'quick-actions' });
+      g.tiles.forEach(a => {
+        const t = el('button', { class:'qa-tile' });
+        t.innerHTML = `<div class="qa-i"><i class="fas ${a.icon}"></i></div>
+                       <div class="qa-t">${a.t}</div>
+                       <div class="qa-d">${a.d}</div>`;
+        t.addEventListener('click', () => location.hash = '#'+a.v);
+        grid.appendChild(t);
+      });
+      qaWrap.appendChild(grid);
     });
-    root.appendChild(qa);
+    root.appendChild(qaWrap);
 
     // --- Zonen-Karten (Inline-Grid, kompakt) ---
     const zoneCard = el('div', { class:'card' });
@@ -41904,6 +42218,45 @@ window.SEARCH = (() => {
     dokumente: V.dokumente,
   };
 
+  // Klartext-Erklärung pro Ansicht ("Was ist das? Was kann ich hier?")
+  const VIEW_INFO = {
+    masterency:   { icon:'fa-book-open-reader', t:'Komplett-Katalog', d:'Alle Komponenten der Sicherheitstechnik an einem Ort – durchsuchbar und filterbar. Klick auf einen Eintrag öffnet die Details.' },
+    gesetze:      { icon:'fa-gavel', t:'Gesetze & Normen', d:'Die wichtigsten Gesetze und Normen der Branche, nach Paragraphen sortiert. Oben suchen, ein Gesetz wählen, Paragraph anklicken.' },
+    wizard:       { icon:'fa-wand-magic-sparkles', t:'Sicherheits-Assistent', d:'Beantworte ein paar Fragen zu deinem Objekt – am Ende bekommst du eine passende Schutz-Empfehlung (Sicherungsklasse + Maßnahmen).' },
+    konfigurator: { icon:'fa-sliders', t:'Konfigurator', d:'Stell dir per Schieber dein Schutzniveau zusammen – die App schlägt passende Komponenten mit Richtpreis vor.' },
+    lab:          { icon:'fa-flask', t:'Engineering-Lab', d:'Fach-Rechner für die Planung: Reichweiten, Winkel, Akku, Kabel, Linsen u.v.m. Werte eingeben, Ergebnis sofort.' },
+    fp:           { icon:'fa-vector-square', t:'Plan-Designer', d:'Zeichne einen Grundriss und platziere Melder, Kameras & Zonen per Drag-and-Drop – sieh sofort die Erfassungsbereiche.' },
+    simulator:    { icon:'fa-vector-square', t:'Floor-Plan Simulator', d:'Sensoren drehen, verschieben und planen – die Erfassungsbereiche werden live angezeigt.' },
+    calculators:  { icon:'fa-calculator', t:'Calculator-Suite', d:'Schnelle Live-Rechner für Mengen und Preise – ideal für ein erstes Angebot.' },
+    haus3d:       { icon:'fa-house-chimney', t:'Sicherheits-Haus 3D', d:'Ein Haus in 3D vom Zaun bis zum Tresor – drehen und sehen, wie die 4 Schutzzonen ineinandergreifen.' },
+    zwiebel3d:    { icon:'fa-circle-dot', t:'3D-Zwiebelmodell', d:'Das Zwiebelprinzip interaktiv: 4 Schalen Schutz von außen nach innen. Klick eine Schale für Details.' },
+    building3d:   { icon:'fa-cube', t:'3D-Gebäudeplaner', d:'Isometrisches 3D-Haus mit Etagen, frei rotierbar.' },
+    spektrum:     { icon:'fa-wave-square', t:'Frequenz-Spektrum', d:'Welche Wellen nutzt welche Technik? Vom Infrarot über Funk bis Mikrowelle – als anschauliches Spektrum.' },
+    werk:         { icon:'fa-industry', t:'Sicherheits-Werk', d:'Ein virtueller Industriestandort – sieh, wie alle Gewerke der Sicherheitstechnik zusammenspielen.' },
+    ema:          { icon:'fa-broadcast-tower', t:'EMA · ZKA · NSL', d:'Einbruchmeldeanlage, Zutrittskontrolle und Notruf-Leitstelle erklärt – mit Grade-Stufen nach DIN EN 50131.' },
+    klassen:      { icon:'fa-medal', t:'Klassen & Grade', d:'Die Schutzklassen im Überblick: Sicherungsklassen (SÜ), EMA-Grade und Widerstandsklassen RC 1–6 nach DIN EN 1627.' },
+    wwd:          { icon:'fa-tower-cell', t:'WWD Video-Türme', d:'Mobile Videotürme mit KI-Auswertung und 24/7-Leitstelle – temporäre Überwachung großer Flächen.' },
+    enzyklopaedie:{ icon:'fa-flask', t:'Melder-Enzyklopädie', d:'Alle Detektor-Typen erklärt: aktiv/passiv, Funktionsweise, Einsatz – mit Bildern und Videos.' },
+    mechency:     { icon:'fa-flask-vial', t:'Mechanik-Enzyklopädie', d:'50+ mechanische Komponenten mit Bildern, Filter und Vergleich.' },
+    mechanik:     { icon:'fa-shield-halved', t:'Mechanik', d:'Mechanischer Schutz in 6 Kategorien: Türen, Tore, Zäune, Poller, Tresore, Fenster.' },
+    vergleich:    { icon:'fa-table-cells-large', t:'Melder-Vergleich', d:'PIR, Mikrowelle, Dual und Lichtschranke direkt gegenübergestellt.' },
+    galerie:      { icon:'fa-images', t:'Produkt-Galerie', d:'Echte Produktbilder nach Hersteller und Kategorie – zum Wiedererkennen der Geräte.' },
+    mediathek:    { icon:'fa-photo-film', t:'Mediathek', d:'Alle Bilder und Animationsvideos der App gesammelt an einem Ort.' },
+    quiz:         { icon:'fa-graduation-cap', t:'Quiz · Lernmodus', d:'Teste dein Wissen mit kurzen Fragen – ideal zur Prüfungsvorbereitung.' },
+    glossar:      { icon:'fa-book', t:'Glossar', d:'Fachbegriffe von A–Z kurz und verständlich erklärt.' },
+    preisliste:   { icon:'fa-euro-sign', t:'Preisliste', d:'Richtpreise der Komponenten – durchsuchbar, als Kalkulationsgrundlage.' },
+    projects:     { icon:'fa-folder', t:'Meine Projekte', d:'Speichere Konfigurationen und Pläne lokal, um später weiterzuarbeiten.' },
+    diagramme:    { icon:'fa-chart-column', t:'Diagramme', d:'Kennzahlen und Vergleiche der Sicherheitstechnik als Grafiken.' },
+    dokumente:    { icon:'fa-folder-open', t:'Dokumente · Normen', d:'Übersicht der relevanten Normen und Dokumente mit Kurzbeschreibung.' },
+  };
+
+  function viewIntro(info) {
+    const box = el('div', { class:'view-intro' });
+    box.innerHTML = `<div class="vi-ico"><i class="fas ${info.icon}"></i></div>
+      <div class="vi-body"><div class="vi-t">${info.t}</div><div class="vi-d">${info.d}</div></div>`;
+    return box;
+  }
+
   let currentView = 'home';
 
   function navigate(view) {
@@ -41912,6 +42265,7 @@ window.SEARCH = (() => {
     $$('.navitem').forEach(b => b.classList.toggle('active', b.dataset.view === view));
     const host = $('#view-host');
     host.innerHTML = '';
+    if (VIEW_INFO[view]) host.appendChild(viewIntro(VIEW_INFO[view]));
     const node = ROUTES[view](ST.data);
     host.appendChild(node);
     window.scrollTo({ top: 0, behavior: 'smooth' });

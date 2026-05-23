@@ -88,37 +88,51 @@ window.V = (() => {
     }, 50);
     root.appendChild(mapCard);
 
-    // --- Quick-Action Tiles (kompaktes Feature-Grid) ---
-    const qa = el('div', { class:'quick-actions' });
-    [
-      { v:'physik',       icon:'fa-atom',                t:'Physik Live',           d:'5 Echtzeit-Sims: PIR · Radar · Reed · Glas · Beam' },
-      { v:'wizard',       icon:'fa-wand-magic-sparkles', t:'Sicherheits-Assistent', d:'7-Schritte-Analyse → SÜ-Empfehlung' },
-      { v:'simulator',    icon:'fa-vector-square',       t:'Floor-Plan Simulator',  d:'Sensoren drehen, verschieben, planen' },
-      { v:'building3d',   icon:'fa-cube',                t:'3D-Gebäudeplaner',     d:'Isometrisches 3D-Haus · Etagen · rotierbar' },
-      { v:'spektrum',     icon:'fa-wave-square',         t:'Frequenz-Spektrum',     d:'EM-Spektrum · Wellenformen · Video-KI' },
-      { v:'enzyklopaedie',icon:'fa-flask',               t:'Melder-Enzyklopädie',   d:'30 Detektoren · Aktiv/Passiv · Videos' },
-      { v:'galerie',      icon:'fa-images',              t:'Produkt-Galerie',       d:'Realistische Produkt-Fotos · Hersteller' },
-      { v:'mediathek',    icon:'fa-photo-film',          t:'Mediathek',             d:'Alle Bilder + Animationsvideos zusammen' },
-      { v:'zwiebel3d',    icon:'fa-circle-dot',          t:'3D-Zwiebelmodell',      d:'Interaktives 4-Zonen-Schutzkonzept' },
-      { v:'haus3d',       icon:'fa-house-chimney',       t:'Sicherheits-Haus 3D',   d:'Vom Außenzaun bis zum Tresor · alle 4 Zonen' },
-      { v:'wwd',          icon:'fa-tower-cell',          t:'WWD Video-Türme',       d:'KWS Video Control · KI · 24/7-Leitstelle' },
-      { v:'mechency',     icon:'fa-flask-vial',          t:'Mechanik-Enzyklopädie', d:'50+ Komponenten · Bilder · Filter · Vergleich' },
-      { v:'mechanik',     icon:'fa-shield-halved',       t:'Mechanik · 6 Kategorien', d:'Türen · Tore · Zäune · Poller · Tresore · Fenster' },
-      { v:'gesetze',      icon:'fa-gavel',               t:'Gesetze · KRITIS · NIS2', d:'BewachV · DGUV · VdS · KRITIS-DachG' },
-      { v:'konfigurator', icon:'fa-sliders',             t:'Konfigurator',          d:'Komplette Stack-Empfehlung mit Preis' },
-      { v:'vergleich',    icon:'fa-table-cells-large',   t:'Melder-Vergleich',      d:'PIR vs MW vs Dual vs Schranke' },
-      { v:'calculators',  icon:'fa-calculator',          t:'Calculator-Suite',      d:'8 Live-Rechner für Mengen + Preis' },
-      { v:'quiz',         icon:'fa-graduation-cap',      t:'Quiz',                  d:'15 Fragen · teste dein Wissen' },
-      { v:'glossar',      icon:'fa-book',                t:'Glossar',               d:'37 Fachbegriffe erklärt' },
-    ].forEach(a => {
-      const t = el('button', { class:'qa-tile' });
-      t.innerHTML = `<div class="qa-i"><i class="fas ${a.icon}"></i></div>
-                     <div class="qa-t">${a.t}</div>
-                     <div class="qa-d">${a.d}</div>`;
-      t.addEventListener('click', () => location.hash = '#'+a.v);
-      qa.appendChild(t);
+    // --- Quick-Action Tiles, in klare Gruppen sortiert ---
+    const qaWrap = el('div');
+    const qaGroups = [
+      { label:'Verstehen', tiles:[
+        { v:'physik',       icon:'fa-atom',            t:'Physik Live',            d:'9 Echtzeit-Sims der Sensorphysik' },
+        { v:'gesetze',      icon:'fa-gavel',           t:'Gesetze & Normen',       d:'BeWachV · DGUV · KRITIS · DIN SPEC 14027' },
+        { v:'enzyklopaedie',icon:'fa-flask',           t:'Melder-Enzyklopädie',    d:'Detektoren erklärt · aktiv/passiv' },
+        { v:'mechency',     icon:'fa-flask-vial',      t:'Mechanik-Enzyklopädie',  d:'50+ Komponenten · Bilder · Vergleich' },
+      ]},
+      { label:'Planen & Berechnen', tiles:[
+        { v:'wizard',       icon:'fa-wand-magic-sparkles', t:'Sicherheits-Assistent', d:'Fragen beantworten → SÜ-Empfehlung' },
+        { v:'konfigurator', icon:'fa-sliders',         t:'Konfigurator',           d:'Schutz-Stack mit Richtpreis' },
+        { v:'calculators',  icon:'fa-calculator',      t:'Calculator-Suite',       d:'Live-Rechner für Mengen + Preis' },
+        { v:'simulator',    icon:'fa-vector-square',   t:'Plan-Simulator',         d:'Sensoren platzieren & planen' },
+        { v:'vergleich',    icon:'fa-table-cells-large', t:'Melder-Vergleich',     d:'PIR vs MW vs Dual vs Schranke' },
+      ]},
+      { label:'In 3D ansehen', tiles:[
+        { v:'haus3d',       icon:'fa-house-chimney',   t:'Sicherheits-Haus 3D',    d:'Vom Zaun bis zum Tresor · 4 Zonen' },
+        { v:'zwiebel3d',    icon:'fa-circle-dot',      t:'3D-Zwiebelmodell',       d:'4-Zonen-Schutzkonzept interaktiv' },
+        { v:'building3d',   icon:'fa-cube',            t:'3D-Gebäudeplaner',       d:'Isometrisches Haus · rotierbar' },
+        { v:'spektrum',     icon:'fa-wave-square',     t:'Frequenz-Spektrum',      d:'EM-Spektrum · Wellenformen' },
+      ]},
+      { label:'Technik · Bilder · Lernen', tiles:[
+        { v:'mechanik',     icon:'fa-shield-halved',   t:'Mechanik · 6 Kategorien', d:'Türen · Tore · Zäune · Poller · Tresore' },
+        { v:'galerie',      icon:'fa-images',          t:'Produkt-Galerie',        d:'Echte Produktfotos nach Hersteller' },
+        { v:'mediathek',    icon:'fa-photo-film',      t:'Mediathek',              d:'Alle Bilder + Animationen' },
+        { v:'wwd',          icon:'fa-tower-cell',      t:'WWD Video-Türme',        d:'KI · 24/7-Leitstelle' },
+        { v:'quiz',         icon:'fa-graduation-cap',  t:'Quiz',                   d:'Teste dein Wissen' },
+        { v:'glossar',      icon:'fa-book',            t:'Glossar',                d:'Fachbegriffe erklärt' },
+      ]},
+    ];
+    qaGroups.forEach(g => {
+      qaWrap.appendChild(el('div', { class:'qa-section-label', text:g.label }));
+      const grid = el('div', { class:'quick-actions' });
+      g.tiles.forEach(a => {
+        const t = el('button', { class:'qa-tile' });
+        t.innerHTML = `<div class="qa-i"><i class="fas ${a.icon}"></i></div>
+                       <div class="qa-t">${a.t}</div>
+                       <div class="qa-d">${a.d}</div>`;
+        t.addEventListener('click', () => location.hash = '#'+a.v);
+        grid.appendChild(t);
+      });
+      qaWrap.appendChild(grid);
     });
-    root.appendChild(qa);
+    root.appendChild(qaWrap);
 
     // --- Zonen-Karten (Inline-Grid, kompakt) ---
     const zoneCard = el('div', { class:'card' });
