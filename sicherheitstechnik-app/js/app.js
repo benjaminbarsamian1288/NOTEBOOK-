@@ -19,6 +19,7 @@
     building3d: (d) => BLDG3D.view(d),
     spektrum: () => SPEK.view(),
     physik: () => PHYSIK.view(),
+    videotechnik: () => VIDEOTECH.view(),
     sandbox: () => SANDBOX.view(),
     sensoren: () => SENSOREN.view(),
     begehung: () => BEGEHUNG.view(),
