@@ -92,7 +92,7 @@ window.V = (() => {
     const qaWrap = el('div');
     const qaGroups = [
       { label:'Verstehen', tiles:[
-        { v:'physik',       icon:'fa-atom',            t:'Physik Live',            d:'24 Sims: Leitstand, Perimeter, CCTV, Laser-Abhör u.v.m.' },
+        { v:'physik',       icon:'fa-atom',            t:'Physik Live',            d:'29 Sims: Leitstand, Nebel, Drohne, FFT, Drehkreuz u.v.m.' },
         { v:'sensoren',     icon:'fa-mobile-screen-button', t:'Handy als Sensor 📱', d:'Mikro, Bewegung & Kamera live (https)' },
         { v:'gesetze',      icon:'fa-gavel',           t:'Gesetze & Normen',       d:'BeWachV · DGUV · KRITIS · DIN SPEC 14027' },
         { v:'enzyklopaedie',icon:'fa-flask',           t:'Melder-Enzyklopädie',    d:'Detektoren erklärt · aktiv/passiv' },

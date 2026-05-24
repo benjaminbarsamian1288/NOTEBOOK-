@@ -12035,7 +12035,7 @@ button, .navitem, .chip, .qa-tile, .ency-card, .zone-card, .kfg-card, .bigstat {
 
     <div class="nav-group-label">1 · Start &amp; Verstehen</div>
     <button class="navitem active" data-view="home"><i class="fas fa-house"></i><span>Übersicht</span></button>
-    <button class="navitem nav-pri" data-view="physik"><i class="fas fa-atom"></i><span><strong>Physik Live</strong></span><em>24</em></button>
+    <button class="navitem nav-pri" data-view="physik"><i class="fas fa-atom"></i><span><strong>Physik Live</strong></span><em>29</em></button>
     <button class="navitem nav-pri" data-view="sensoren"><i class="fas fa-mobile-screen-button"></i><span><strong>Handy als Sensor</strong></span><em>NEU</em></button>
     <button class="navitem nav-pri" data-view="masterency"><i class="fas fa-book-open-reader"></i><span><strong>Komplett-Katalog</strong></span><em>142</em></button>
     <button class="navitem nav-pri" data-view="gesetze"><i class="fas fa-gavel"></i><span><strong>Gesetze · §§</strong></span><em>12</em></button>
@@ -40742,6 +40742,190 @@ window.PHYSIK = (() => {
   }
 
   /* ============================================================
+     24) Nebelmaschine · Sicherheitsnebel
+     ============================================================ */
+  function nebelSim() {
+    const W = 720, H = 300;
+    const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H });
+    const ctx = canvas.getContext('2d');
+    const intr = { x: W * 0.72, y: H * 0.62 };
+    let particles = [], fog = false;
+    const roSight = readout('Sicht'), roStat = readout('Status');
+    function draw() {
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      ctx.strokeStyle = 'rgba(148,163,184,0.25)'; ctx.strokeRect(20, 20, W - 40, H - 40);
+      if (fog && particles.length < 520) for (let i = 0; i < 7; i++) particles.push({ x: 60, y: H - 50, vx: 1.2 + Math.random() * 2.6, vy: -Math.random() * 1.8 - 0.3, life: 1, r: 8 + Math.random() * 16 });
+      particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += 0.006; p.vx *= 0.992; p.life -= 0.0035; p.r += 0.35; });
+      particles = particles.filter(p => p.life > 0 && p.x < W - 20 && p.y > 10);
+      const density = Math.min(1, particles.length / 460);
+      // Düse
+      ctx.fillStyle = '#475569'; ctx.fillRect(40, H - 56, 26, 14);
+      // Eindringling (verschwindet im Nebel)
+      ctx.globalAlpha = Math.max(0.08, 1 - density * 1.1); ctx.fillStyle = '#e2e8f0'; ctx.beginPath(); ctx.arc(intr.x, intr.y, 14, 0, 7); ctx.fill();
+      ctx.font = '15px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('🥷', intr.x, intr.y + 5); ctx.globalAlpha = 1;
+      // Nebel
+      particles.forEach(p => { ctx.fillStyle = `rgba(226,232,240,${p.life * 0.16})`; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 7); ctx.fill(); });
+      roSight.set(Math.round((1 - density) * 100) + ' %'); roStat.set(fog ? (density > 0.3 ? '🌫️ Nebel aktiv – Sicht weg' : 'Nebel baut auf…') : 'bereit', density > 0.3 ? 'ok' : 'warn');
+    }
+    loop(canvas, draw);
+    const b1 = el('button', { class: 'btn primary', html: '<i class="fas fa-smog"></i> Alarm → Nebel' }); b1.addEventListener('click', () => fog = true);
+    const b2 = el('button', { class: 'btn', html: '<i class="fas fa-wind"></i> Lüften' }); b2.addEventListener('click', () => { fog = false; particles = []; });
+    const body = el('div', {}, [canvas, el('div', { class: 'phys-ctrl phys-ctrl-btns' }, [b1, b2]), el('div', { class: 'phys-ros' }, [roSight.wrap, roStat.wrap])]);
+    return simCard({ icon: 'fa-smog', title: 'Nebelmaschine · Sicherheitsnebel', sub: 'Aktive Abwehr bei Einbruch', was: 'Bei Alarm flutet eine Nebelmaschine den Raum in Sekunden mit dichtem, ungiftigem Nebel – der Täter <b>sieht nichts mehr</b> und kann nichts finden/mitnehmen.', warum: 'Aktive Intervention statt nur Melden: Beute bleibt unauffindbar, bis Hilfe da ist. Beliebt bei Juwelieren, Apotheken, Tankstellen.', body });
+  }
+
+  /* ============================================================
+     25) Sabotage- / Deckelkontakt (Tamper)
+     ============================================================ */
+  function tamperSim() {
+    const W = 720, H = 280;
+    const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H });
+    const ctx = canvas.getContext('2d');
+    let cover = 0, target = 0, armed = false;
+    const roCover = readout('Deckel'), roStat = readout('Status');
+    function draw() {
+      cover += (target - cover) * 0.12;
+      const tamper = cover > 0.4;
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      const bx = 230, by = 70, bw = 260, bh = 150;
+      // Gerät-Innenleben
+      ctx.fillStyle = '#0f1b2e'; ctx.fillRect(bx, by, bw, bh);
+      ctx.fillStyle = '#1e293b'; ctx.fillRect(bx + 20, by + 30, 70, 40); ctx.fillRect(bx + 110, by + 30, 50, 50);
+      ctx.fillStyle = tamper ? '#ef4444' : '#22c55e'; ctx.beginPath(); ctx.arc(bx + 210, by + 40, 9, 0, 7); ctx.fill();
+      // Tamper-Federkontakt (gedrückt = zu, gelöst = offen)
+      ctx.strokeStyle = tamper ? '#ef4444' : '#22c55e'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(bx + 40, by + 110); ctx.lineTo(bx + 40, by + 110 - (tamper ? 18 : 4)); ctx.stroke();
+      ctx.fillStyle = '#94a3b8'; ctx.font = '11px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('Sabotagekontakt', bx + 40, by + 135);
+      // Deckel (klappt auf)
+      ctx.save(); ctx.translate(bx, by); ctx.transform(1, 0, -cover * 0.9, 1 - cover * 0.5, 0, -cover * 70);
+      ctx.fillStyle = 'rgba(71,85,105,0.92)'; ctx.fillRect(0, -16, bw, 18); ctx.restore();
+      ctx.fillStyle = '#e2e8f0'; ctx.font = '13px sans-serif'; ctx.fillText('Melder-Gehäuse', bx + bw / 2, by - 22);
+      roCover.set(cover > 0.4 ? 'offen' : 'geschlossen'); roStat.set(tamper ? '🚨 SABOTAGEALARM' + (armed ? '' : ' (auch unscharf!)') : (armed ? 'scharf · ok' : 'unscharf · ok'), tamper ? 'bad' : 'ok');
+    }
+    loop(canvas, draw);
+    const b1 = el('button', { class: 'btn primary', html: '<i class="fas fa-screwdriver"></i> Deckel öffnen' });
+    b1.addEventListener('click', () => { target = target > 0.4 ? 0 : 1; b1.innerHTML = target > 0.4 ? '<i class="fas fa-screwdriver"></i> Deckel schließen' : '<i class="fas fa-screwdriver"></i> Deckel öffnen'; });
+    const b2 = el('button', { class: 'btn', html: '<i class="fas fa-lock-open"></i> Anlage unscharf' });
+    b2.addEventListener('click', () => { armed = !armed; b2.className = 'btn' + (armed ? ' primary' : ''); b2.innerHTML = armed ? '<i class="fas fa-lock"></i> Anlage scharf' : '<i class="fas fa-lock-open"></i> Anlage unscharf'; });
+    const body = el('div', {}, [canvas, el('div', { class: 'phys-ctrl phys-ctrl-btns' }, [b1, b2]), el('div', { class: 'phys-ros' }, [roCover.wrap, roStat.wrap])]);
+    return simCard({ icon: 'fa-screwdriver-wrench', title: 'Sabotage- / Deckelkontakt', sub: 'Schutz rund um die Uhr', was: 'Ein Federkontakt im Gehäuse ist gedrückt, solange der Deckel zu ist. Öffnet jemand das Gerät (oder schneidet die Leitung), löst der Kontakt aus – <b>auch wenn die Anlage „unscharf" ist</b>.', warum: 'Verhindert Manipulation: Niemand kann Melder unbemerkt öffnen, überbrücken oder abklemmen. Pflicht für höhere VdS-/EN-Grade.', body });
+  }
+
+  /* ============================================================
+     26) Drohnen-Detektion (RF · Akustik · Radar)
+     ============================================================ */
+  function drohneSim() {
+    const W = 720, H = 300;
+    const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H });
+    const ctx = canvas.getContext('2d');
+    const drone = { x: W / 2, y: 90, auto: true, drag: false };
+    const layers = { rf: { on: true, r: 320, y: H - 30, x: 120, c: '#22d3ee', label: 'RF-Scanner' }, akustik: { on: true, r: 150, y: H - 30, x: 360, c: '#fbbf24', label: 'Akustik' }, radar: { on: true, r: 240, y: H - 30, x: 600, c: '#22c55e', label: 'Radar' } };
+    let ta = 0;
+    const roDet = readout('Erfasst von'), roStat = readout('Status');
+    function down(e) { drone.drag = true; drone.auto = false; mv(e); }
+    function mv(e) { if (!drone.drag) return; e.preventDefault(); const p = pos(canvas, e); drone.x = p.x; drone.y = Math.min(H - 80, p.y); }
+    canvas.addEventListener('mousedown', down); canvas.addEventListener('mousemove', mv); window.addEventListener('mouseup', () => drone.drag = false);
+    canvas.addEventListener('touchstart', down, { passive: false }); canvas.addEventListener('touchmove', mv, { passive: false }); window.addEventListener('touchend', () => drone.drag = false);
+    function draw() {
+      ta += 0.01; if (drone.auto) { drone.x = W / 2 + Math.sin(ta) * 300; drone.y = 80 + Math.cos(ta * 1.6) * 40; }
+      const sky = ctx.createLinearGradient(0, 0, 0, H); sky.addColorStop(0, '#0a1830'); sky.addColorStop(1, '#0b1424'); ctx.fillStyle = sky; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = '#13202f'; ctx.fillRect(0, H - 30, W, 30);
+      let det = [];
+      Object.values(layers).forEach(l => {
+        ctx.fillStyle = l.on ? l.c + '18' : 'rgba(148,163,184,0.05)'; ctx.beginPath(); ctx.arc(l.x, l.y, l.r, Math.PI, 0); ctx.fill();
+        ctx.fillStyle = l.on ? l.c : '#475569'; ctx.fillRect(l.x - 8, l.y - 14, 16, 18);
+        ctx.fillStyle = '#94a3b8'; ctx.font = '10px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(l.label, l.x, l.y + 16);
+        if (l.on && Math.hypot(drone.x - l.x, drone.y - l.y) < l.r) { det.push(l.label); ctx.strokeStyle = l.c; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(l.x, l.y); ctx.lineTo(drone.x, drone.y); ctx.stroke(); }
+      });
+      // Drohne
+      ctx.fillStyle = det.length ? '#ef4444' : '#e2e8f0'; ctx.beginPath(); ctx.arc(drone.x, drone.y, 13, 0, 7); ctx.fill();
+      ctx.font = '18px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('🛸', drone.x, drone.y + 6);
+      roDet.set(det.length ? det.join(', ') : '—'); roStat.set(det.length ? 'Drohne erkannt' : 'frei', det.length ? 'bad' : 'ok');
+    }
+    loop(canvas, draw);
+    const btns = Object.entries(layers).map(([k, l]) => { const b = el('button', { class: 'btn primary', html: '<i class="fas fa-toggle-on"></i> ' + l.label }); b.addEventListener('click', () => { l.on = !l.on; b.className = 'btn' + (l.on ? ' primary' : ''); }); return b; });
+    const body = el('div', {}, [canvas, el('div', { class: 'phys-ctrl phys-ctrl-btns' }, btns), el('div', { class: 'phys-hint', text: '⟶ Zieh die Drohne; schalte die Erkennungsarten ein/aus.' }), el('div', { class: 'phys-ros' }, [roDet.wrap, roStat.wrap])]);
+    return simCard({ icon: 'fa-helicopter', title: 'Drohnen-Detektion', sub: 'Mehrschichtige Luftraum-Überwachung', was: 'Drohnen erkennt man über mehrere Wege: <b>RF-Scanner</b> (Funk-Steuerlink, große Reichweite), <b>Akustik</b> (Rotorgeräusch, nah), <b>Radar</b> (Echo). Erst die Kombination ist zuverlässig.', warum: 'Schutz vor Spionage/Schmuggel über den Luftweg – relevant für KRITIS, Gefängnisse, Events. Eine Methode allein hat Lücken.', body });
+  }
+
+  /* ============================================================
+     27) FFT-Analyser · Live-Spektrum (synthetisch)
+     ============================================================ */
+  function fftSim() {
+    const W = 720, H = 300;
+    const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H });
+    const ctx = canvas.getContext('2d');
+    const N = 128; let type = 'sin', phase = 0;
+    const roType = readout('Signal'), roPeak = readout('Hauptfrequenz');
+    function signal(n) {
+      const t = n / N * Math.PI * 2;
+      if (type === 'sin') return Math.sin(t * 6 + phase);
+      if (type === 'dual') return 0.6 * Math.sin(t * 4 + phase) + 0.5 * Math.sin(t * 11 + phase);
+      if (type === 'noise') return Math.random() * 2 - 1;
+      // Glas: tieffrequenter Schlag + hochfrequentes Splittern
+      return 0.5 * Math.sin(t * 2 + phase) * Math.exp(-((n - 20) ** 2) / 200) + Math.sin(t * 24 + phase) * Math.exp(-((n - 70) ** 2) / 600);
+    }
+    function draw() {
+      phase += 0.15;
+      const buf = []; for (let n = 0; n < N; n++) buf.push(signal(n));
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      // Wellenform oben
+      ctx.strokeStyle = '#22d3ee'; ctx.lineWidth = 2; ctx.beginPath();
+      for (let n = 0; n < N; n++) { const x = n / N * W, y = 75 + buf[n] * 55; n ? ctx.lineTo(x, y) : ctx.moveTo(x, y); } ctx.stroke();
+      ctx.fillStyle = '#475569'; ctx.font = '11px sans-serif'; ctx.textAlign = 'left'; ctx.fillText('Zeitsignal', 8, 18); ctx.fillText('Frequenzspektrum (FFT)', 8, 168);
+      // DFT
+      const bins = 56; let peak = 0, peakMag = 0;
+      const mags = [];
+      for (let k = 1; k <= bins; k++) { let re = 0, im = 0; for (let n = 0; n < N; n++) { const a = -2 * Math.PI * k * n / N; re += buf[n] * Math.cos(a); im += buf[n] * Math.sin(a); } const m = Math.hypot(re, im) / N; mags.push(m); if (m > peakMag) { peakMag = m; peak = k; } }
+      const bw = W / bins;
+      mags.forEach((m, i) => { const h = Math.min(110, m * 240); ctx.fillStyle = `hsl(${190 - i * 2},80%,55%)`; ctx.fillRect(i * bw, H - 25 - h, bw - 1, h); });
+      roType.set({ sin: 'Sinus', dual: 'Zwei Töne', noise: 'Rauschen', glas: 'Glasbruch' }[type]); roPeak.set(type === 'noise' ? 'breitbandig' : 'Bin ' + peak);
+    }
+    loop(canvas, draw);
+    const mk = (k, lbl) => { const b = el('button', { class: 'btn' + (type === k ? ' primary' : '') }); b.textContent = lbl; b.addEventListener('click', () => { type = k; body.querySelectorAll('.phys-ctrl-btns .btn').forEach(x => x.className = 'btn'); b.className = 'btn primary'; }); return b; };
+    const body = el('div', {}, [canvas, el('div', { class: 'phys-ctrl phys-ctrl-btns' }, [mk('sin', 'Sinus'), mk('dual', 'Zwei Töne'), mk('noise', 'Rauschen'), mk('glas', 'Glasbruch')]), el('div', { class: 'phys-ros' }, [roType.wrap, roPeak.wrap])]);
+    return simCard({ icon: 'fa-chart-column', title: 'FFT-Analyser · Live-Spektrum', sub: 'So „hört" ein Melder Frequenzen', was: 'Oben das Zeitsignal, unten sein Frequenzspektrum (FFT). Ein reiner Ton ist ein Balken, zwei Töne zwei Balken, Rauschen ist breit – und Glasbruch hat eine typische tief+hoch-Signatur.', warum: 'Genau diese Spektralanalyse steckt in Glasbruch-, Akustik- und Körperschallmeldern: sie erkennen Muster, nicht nur Lautstärke.', body });
+  }
+
+  /* ============================================================
+     28) Vereinzelung · Drehkreuz (Anti-Tailgating)
+     ============================================================ */
+  function drehkreuzSim() {
+    const W = 720, H = 300;
+    const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H });
+    const ctx = canvas.getContext('2d');
+    const cx = W / 2, cy = H / 2 + 10, R = 70;
+    let ang = 0, target = 0, p1 = -120, p2 = -180, alarmT = 0, mode = null;
+    const roStat = readout('Status'), roLog = readout('Letzte Aktion');
+    function valid() { mode = 'ok'; target += Math.PI * 2 / 3; }
+    function tail() { mode = 'tail'; alarmT = 60; }
+    function draw() {
+      ang += (target - ang) * 0.1;
+      if (mode === 'ok') { p1 += 2.5; if (p1 > 140) { p1 = -120; mode = null; } }
+      if (alarmT > 0) alarmT--;
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      // Geländer
+      ctx.strokeStyle = '#475569'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(0, cy - R - 30); ctx.lineTo(cx - 20, cy - R - 30); ctx.moveTo(0, cy + R + 30); ctx.lineTo(cx - 20, cy + R + 30); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx + 20, cy - R - 30); ctx.lineTo(W, cy - R - 30); ctx.moveTo(cx + 20, cy + R + 30); ctx.lineTo(W, cy + R + 30); ctx.stroke();
+      // Drehkreuz (3 Arme)
+      ctx.strokeStyle = alarmT > 0 ? '#ef4444' : '#22d3ee'; ctx.lineWidth = 8; ctx.lineCap = 'round';
+      for (let i = 0; i < 3; i++) { const a = ang + i * Math.PI * 2 / 3; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.cos(a) * R, cy + Math.sin(a) * R); ctx.stroke(); }
+      ctx.fillStyle = '#64748b'; ctx.beginPath(); ctx.arc(cx, cy, 10, 0, 7); ctx.fill();
+      // Personen
+      ctx.font = '26px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('🧍', cx + p1, cy); if (alarmT > 0 || mode === 'tail') ctx.fillText('🧍', cx + p2 + 40, cy);
+      // Leser
+      ctx.fillStyle = mode === 'ok' ? '#22c55e' : alarmT > 0 ? '#ef4444' : '#fbbf24'; ctx.fillRect(cx - 30, cy - R - 24, 16, 14);
+      roStat.set(alarmT > 0 ? '🚨 Tailgating blockiert!' : mode === 'ok' ? 'Durchgang frei (1 Person)' : 'verriegelt', alarmT > 0 ? 'bad' : mode === 'ok' ? 'ok' : 'warn');
+      roLog.set(alarmT > 0 ? 'Mitläufer abgewiesen' : mode === 'ok' ? 'Karte gültig → 1 dreht durch' : 'wartet');
+    }
+    loop(canvas, draw);
+    const b1 = el('button', { class: 'btn primary', html: '<i class="fas fa-id-card"></i> Gültige Karte' }); b1.addEventListener('click', valid);
+    const b2 = el('button', { class: 'btn', html: '<i class="fas fa-users"></i> Mitläufer (Tailgating)' }); b2.addEventListener('click', tail);
+    const body = el('div', {}, [canvas, el('div', { class: 'phys-ctrl phys-ctrl-btns' }, [b1, b2]), el('div', { class: 'phys-ros' }, [roStat.wrap, roLog.wrap])]);
+    return simCard({ icon: 'fa-arrows-spin', title: 'Vereinzelung · Drehkreuz', sub: 'Genau eine Person pro Freigabe', was: 'Eine gültige Karte gibt das Drehkreuz für <b>genau eine</b> Person frei (es dreht um ein Drittel). Ein Mitläufer ohne eigene Freigabe wird mechanisch blockiert.', warum: 'Verhindert „Tailgating" – das unbemerkte Mitschlüpfen. Kernprinzip der Zutrittskontrolle in Rechenzentren, Werken, Stadien.', body });
+  }
+
+  /* ============================================================
      ★ FLAGGSCHIFF: Live-Einsatz – ganzes Objekt, alle Sensoren
      ============================================================ */
   function szeneSim() {
@@ -40961,7 +41145,7 @@ window.PHYSIK = (() => {
     intro.innerHTML = `
       <span class="tag">Verstehen · Live-Physik</span>
       <h1>Physik Live – wie Sensoren wirklich „sehen"</h1>
-      <p class="lead">24 Echtzeit-Simulationen zum Anfassen, sortiert nach Wirkprinzip – inkl. kompletter
+      <p class="lead">29 Echtzeit-Simulationen zum Anfassen, sortiert nach Wirkprinzip – inkl. kompletter
       <b>Live-Einsatz-Szene</b> mit Alarmzentrale. Ziehen, schieben, klicken. Ton einschalten für Sirene & Effekte.</p>
       <div class="phys-legend">
         <span><i class="fas fa-hand-pointer"></i> ziehen / schieben / klicken</span>
@@ -40982,11 +41166,12 @@ window.PHYSIK = (() => {
 
     const cats = [
       { label: 'Bewegung & Präsenz', sims: [pirSim, dopplerSim, ultraschallSim, radarSim, thermalSim, dualSim] },
-      { label: 'Perimeter & Außenhaut', sims: [mwSchrankeSim, glasfaserSim, induktionSim, trittmatteSim] },
-      { label: 'Video & Zutritt', sims: [cctvSim, zutrittSim] },
+      { label: 'Perimeter & Außenhaut', sims: [mwSchrankeSim, glasfaserSim, induktionSim, trittmatteSim, drohneSim] },
+      { label: 'Video & Zutritt', sims: [cctvSim, zutrittSim, drehkreuzSim] },
       { label: 'Öffnung & Mechanik', sims: [reedSim, lockSim, seismikSim, kapazitivSim] },
       { label: 'Licht & Laser', sims: [beamSim, laserSim, laserMicSim] },
-      { label: 'Akustik', sims: [glassSim, triSim] },
+      { label: 'Akustik & Spektrum', sims: [glassSim, triSim, fftSim] },
+      { label: 'Abwehr & Reaktion', sims: [nebelSim, tamperSim] },
       { label: 'Funk & Übertragung', sims: [funkSim] },
       { label: 'Grundlagen & Spektrum', sims: [schwarzkoerperSim] },
     ];
@@ -42315,7 +42500,7 @@ window.V = (() => {
     const qaWrap = el('div');
     const qaGroups = [
       { label:'Verstehen', tiles:[
-        { v:'physik',       icon:'fa-atom',            t:'Physik Live',            d:'24 Sims: Leitstand, Perimeter, CCTV, Laser-Abhör u.v.m.' },
+        { v:'physik',       icon:'fa-atom',            t:'Physik Live',            d:'29 Sims: Leitstand, Nebel, Drohne, FFT, Drehkreuz u.v.m.' },
         { v:'sensoren',     icon:'fa-mobile-screen-button', t:'Handy als Sensor 📱', d:'Mikro, Bewegung & Kamera live (https)' },
         { v:'gesetze',      icon:'fa-gavel',           t:'Gesetze & Normen',       d:'BeWachV · DGUV · KRITIS · DIN SPEC 14027' },
         { v:'enzyklopaedie',icon:'fa-flask',           t:'Melder-Enzyklopädie',    d:'Detektoren erklärt · aktiv/passiv' },
