@@ -112,6 +112,15 @@
 .sens-status.ok { color: #22c55e; } .sens-status.bad { color: #ef4444; }
 .sens-warn { margin-top: 14px; background: rgba(251,191,36,0.12); border: 1px solid rgba(251,191,36,0.35); color: #fde68a; border-radius: 10px; padding: 10px 14px; font-size: 13px; line-height: 1.5; }
 
+/* 3D-Begehung Touch-Steuerkreuz */
+.beg-pad-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 12px; }
+.beg-pad-wrap > div { display: flex; gap: 8px; }
+.beg-pad {
+  width: 58px; height: 52px; border-radius: 12px; cursor: pointer; font-size: 18px;
+  background: #1e293b; color: #e2e8f0; border: 1px solid rgba(148,163,184,0.25);
+}
+.beg-pad:active { background: #22d3ee; color: #0b1424; }
+
 .phys-card {
   background: #0f1b2e;
   border: 1px solid rgba(148,163,184,0.14);
