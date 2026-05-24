@@ -31,9 +31,7 @@ jobs:
 
       - name: Build Windows installer + portable
         working-directory: desktop
-        run: npm run build
-        env:
-          GH_TOKEN: ${{ github.token }}
+        run: npm run build -- --publish never
 
       - name: Upload Windows app
         uses: actions/upload-artifact@v4
@@ -45,6 +43,7 @@ jobs:
           retention-days: 30
 
       - name: Auf Releases-Seite veröffentlichen
+        continue-on-error: true
         uses: softprops/action-gh-release@v2
         with:
           tag_name: windows-app
