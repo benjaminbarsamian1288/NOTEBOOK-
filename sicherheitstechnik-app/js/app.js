@@ -19,7 +19,6 @@
     building3d: (d) => BLDG3D.view(d),
     spektrum: () => SPEK.view(),
     physik: () => PHYSIK.view(),
-    spiel: () => SPIEL.view(),
     sandbox: () => SANDBOX.view(),
     sensoren: () => SENSOREN.view(),
     begehung: () => BEGEHUNG.view(),

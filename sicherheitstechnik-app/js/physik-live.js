@@ -1306,6 +1306,222 @@ window.PHYSIK = (() => {
   }
 
   /* ============================================================
+     18) Mikrowellen-Schranke (bistatisch · 2 Masten)
+     ============================================================ */
+  function mwSchrankeSim() {
+    const W = 720, H = 280;
+    const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H });
+    const ctx = canvas.getContext('2d');
+    const A = { x: 70, y: H / 2 }, B = { x: W - 70, y: H / 2 };
+    const obj = { x: W / 2, y: -100, auto: true, drag: false };
+    let phase = 0, ta = 0;
+    const roDist = readout('Felddämpfung'), roStat = readout('Status');
+    function down(e) { obj.drag = true; obj.auto = false; mv(e); }
+    function mv(e) { if (!obj.drag) return; e.preventDefault(); const p = pos(canvas, e); obj.x = p.x; obj.y = p.y; }
+    canvas.addEventListener('mousedown', down); canvas.addEventListener('mousemove', mv); window.addEventListener('mouseup', () => obj.drag = false);
+    canvas.addEventListener('touchstart', down, { passive: false }); canvas.addEventListener('touchmove', mv, { passive: false }); window.addEventListener('touchend', () => obj.drag = false);
+    function draw() {
+      phase += 0.2; if (obj.auto) { ta += 0.02; obj.x = W / 2 + Math.sin(ta) * 250; obj.y = H / 2; }
+      const block = distSeg(obj.x, obj.y, A.x, A.y, B.x, B.y) < 40 && obj.x > A.x && obj.x < B.x;
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      // Feld-Ellipsoid zwischen den Masten
+      for (let i = 0; i < 3; i++) { ctx.strokeStyle = `rgba(${block ? '239,68,68' : '34,211,238'},${0.4 - i * 0.1})`; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse((A.x + B.x) / 2, H / 2, (B.x - A.x) / 2, 28 + i * 12 + Math.sin(phase) * 3, 0, 0, 7); ctx.stroke(); }
+      ctx.strokeStyle = block ? 'rgba(239,68,68,0.8)' : 'rgba(34,211,238,0.8)'; ctx.lineWidth = 2; ctx.beginPath();
+      for (let x = A.x; x <= B.x; x += 6) ctx.lineTo(x, H / 2 + Math.sin(x * 0.1 + phase) * 6); ctx.stroke();
+      [A, B].forEach(m => { ctx.fillStyle = '#64748b'; ctx.fillRect(m.x - 7, 40, 14, H - 80); ctx.fillStyle = '#22d3ee'; ctx.beginPath(); ctx.arc(m.x, 40, 7, 0, 7); ctx.fill(); });
+      ctx.fillStyle = block ? '#ef4444' : '#e2e8f0'; ctx.beginPath(); ctx.arc(obj.x, obj.y, 14, 0, 7); ctx.fill();
+      ctx.font = '15px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('🥷', obj.x, obj.y + 5);
+      roDist.set(block ? 'stark gestört' : 'frei'); roStat.set(block ? 'ALARM (Feld unterbrochen)' : 'ruhig', block ? 'bad' : 'ok');
+    }
+    loop(canvas, draw);
+    const body = el('div', {}, [canvas, el('div', { class: 'phys-hint', text: '⟶ Zieh den Eindringling zwischen die Masten – das Mikrowellenfeld wird gedämpft.' }), el('div', { class: 'phys-ros' }, [roDist.wrap, roStat.wrap])]);
+    return simCard({ icon: 'fa-tower-cell', title: 'Mikrowellen-Schranke (bistatisch)', sub: 'Sender + Empfänger an zwei Masten',
+      was: 'Zwischen zwei Masten spannt sich ein zigarrenförmiges Mikrowellenfeld. Tritt jemand hinein, <b>dämpft</b> sein Körper das Empfangssignal messbar.',
+      warum: 'Perimeterschutz für lange Zaunlinien – unsichtbar und wetterfest. Mehrere Strecken überlappen, damit es keine toten Winkel gibt.', body });
+  }
+
+  /* ============================================================
+     19) Glasfaser-Zaun (interferometrisch)
+     ============================================================ */
+  function glasfaserSim() {
+    const W = 720, H = 280;
+    const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H });
+    const ctx = canvas.getContext('2d');
+    const climber = { x: W / 2, y: H - 60, auto: true, drag: false };
+    let phase = 0, ta = 0, hitX = -1, ripple = 0;
+    const roPos = readout('Störort'), roStat = readout('Status');
+    function down(e) { climber.drag = true; climber.auto = false; mv(e); }
+    function mv(e) { if (!climber.drag) return; e.preventDefault(); const p = pos(canvas, e); climber.x = Math.max(40, Math.min(W - 40, p.x)); climber.y = p.y; }
+    canvas.addEventListener('mousedown', down); canvas.addEventListener('mousemove', mv); window.addEventListener('mouseup', () => climber.drag = false);
+    canvas.addEventListener('touchstart', down, { passive: false }); canvas.addEventListener('touchmove', mv, { passive: false }); window.addEventListener('touchend', () => climber.drag = false);
+    function draw() {
+      phase += 0.3; if (climber.auto) { ta += 0.015; climber.x = W / 2 + Math.sin(ta) * 280; climber.y = H - 60 + Math.cos(ta * 2) * 40; }
+      const fiberY = 70; const touching = climber.y < fiberY + 70;
+      if (touching) { hitX = climber.x; ripple = 1; } ripple *= 0.95;
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      // Zaun-Gitter
+      ctx.strokeStyle = 'rgba(148,163,184,0.25)'; ctx.lineWidth = 1;
+      for (let x = 40; x < W - 30; x += 22) { ctx.beginPath(); ctx.moveTo(x, fiberY); ctx.lineTo(x + 22, H - 30); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x + 22, fiberY); ctx.lineTo(x, H - 30); ctx.stroke(); }
+      ctx.strokeStyle = '#475569'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(30, H - 30); ctx.lineTo(W - 30, H - 30); ctx.stroke();
+      // Faser mit Lichtpuls + Interferenz
+      ctx.strokeStyle = ripple > 0.1 ? '#ef4444' : '#7dd3fc'; ctx.lineWidth = 3; ctx.beginPath();
+      for (let x = 30; x < W - 30; x++) { const dist = Math.abs(x - hitX); const dist2 = ripple * 14 * Math.exp(-dist * dist / 600) * Math.sin(phase); ctx.lineTo(x, fiberY + Math.sin(x * 0.3 + phase) * 2 + dist2); } ctx.stroke();
+      for (let i = 0; i < 4; i++) { const px = 30 + ((phase * 20 + i * 180) % (W - 60)); ctx.fillStyle = 'rgba(125,211,252,0.9)'; ctx.beginPath(); ctx.arc(px, fiberY, 3, 0, 7); ctx.fill(); }
+      // Kletterer
+      ctx.fillStyle = touching ? '#ef4444' : '#e2e8f0'; ctx.beginPath(); ctx.arc(climber.x, climber.y, 14, 0, 7); ctx.fill();
+      ctx.font = '15px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('🧗', climber.x, climber.y + 5);
+      roPos.set(ripple > 0.1 ? 'Mast ' + (1 + Math.floor(hitX / (W / 6))) : '—'); roStat.set(ripple > 0.1 ? 'ALARM + lokalisiert' : 'ruhig', ripple > 0.1 ? 'bad' : 'ok');
+    }
+    loop(canvas, draw);
+    const body = el('div', {}, [canvas, el('div', { class: 'phys-hint', text: '⟶ Lass den Kletterer den Zaun berühren – die Erschütterung stört das Licht in der Faser.' }), el('div', { class: 'phys-ros' }, [roPos.wrap, roStat.wrap])]);
+    return simCard({ icon: 'fa-grip-lines-vertical', title: 'Glasfaser-Zaun (interferometrisch)', sub: 'Sensorkabel im Zaun', was: 'Licht läuft durch eine Faser am Zaun. Rüttelt jemand am Zaun, ändert die winzige Dehnung die <b>Lichtinterferenz</b> – und zwar genau an der berührten Stelle.', warum: 'Kilometerlange Zäune mit <b>metergenauer</b> Ortung – keine Elektronik im Feld, unempfindlich gegen Blitz/EMV.', body });
+  }
+
+  /* ============================================================
+     20) Induktionsschleife (Fahrzeugdetektor)
+     ============================================================ */
+  function induktionSim() {
+    const W = 720, H = 280;
+    const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H });
+    const ctx = canvas.getContext('2d');
+    const loopX = 300, loopW = 150, roadY = H / 2;
+    const car = { x: 60, auto: true, drag: false };
+    let barrier = 0;
+    const roInd = readout('Induktivität'), roStat = readout('Schranke');
+    function down(e) { car.drag = true; car.auto = false; mv(e); }
+    function mv(e) { if (!car.drag) return; e.preventDefault(); car.x = pos(canvas, e).x; }
+    canvas.addEventListener('mousedown', down); canvas.addEventListener('mousemove', mv); window.addEventListener('mouseup', () => car.drag = false);
+    canvas.addEventListener('touchstart', down, { passive: false }); canvas.addEventListener('touchmove', mv, { passive: false }); window.addEventListener('touchend', () => car.drag = false);
+    function draw() {
+      if (car.auto) { car.x += 1.8; if (car.x > W + 30) car.x = -30; }
+      const over = car.x > loopX - 20 && car.x < loopX + loopW + 20;
+      barrier += ((over ? 1 : 0) - barrier) * 0.1;
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = '#1e293b'; ctx.fillRect(0, roadY - 46, W, 92);
+      ctx.strokeStyle = '#475569'; ctx.setLineDash([20, 16]); ctx.beginPath(); ctx.moveTo(0, roadY); ctx.lineTo(W, roadY); ctx.stroke(); ctx.setLineDash([]);
+      // Induktionsschleife (Kupfer)
+      ctx.strokeStyle = over ? '#fbbf24' : '#b45309'; ctx.lineWidth = 3;
+      for (let i = 0; i < 3; i++) ctx.strokeRect(loopX + i * 4, roadY - 30 + i * 4, loopW - i * 8, 60 - i * 8);
+      // Auto
+      ctx.font = '34px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('🚗', car.x, roadY + 12);
+      // Schranke
+      const sx = 600; ctx.fillStyle = '#94a3b8'; ctx.fillRect(sx - 4, roadY - 46, 8, 30);
+      ctx.save(); ctx.translate(sx, roadY - 46); ctx.rotate(-barrier * Math.PI / 2); ctx.fillStyle = barrier > 0.5 ? '#22c55e' : '#ef4444'; ctx.fillRect(0, -6, 110, 12); ctx.restore();
+      roInd.set((over ? 72 : 100) + ' %'); roStat.set(over ? 'Fahrzeug erkannt → offen' : 'geschlossen', over ? 'ok' : 'warn');
+    }
+    loop(canvas, draw);
+    const body = el('div', {}, [canvas, el('div', { class: 'phys-hint', text: '⟶ Zieh das Auto über die Schleife – das Metall senkt die Induktivität, die Schranke öffnet.' }), el('div', { class: 'phys-ros' }, [roInd.wrap, roStat.wrap])]);
+    return simCard({ icon: 'fa-car', title: 'Induktionsschleife · Fahrzeugdetektor', sub: 'Im Boden eingelassene Spule', was: 'Eine stromdurchflossene Spule im Asphalt bildet ein Magnetfeld. Fährt Metall (Auto) darüber, <b>sinkt die Induktivität</b> – der Detektor erkennt das Fahrzeug.', warum: 'Standard an Schranken, Toren und Ampeln. Reagiert auf Metallmasse, nicht auf Personen – deshalb gezielt für Fahrzeuge.', body });
+  }
+
+  /* ============================================================
+     21) Trittmatte / Bodendrucksensor
+     ============================================================ */
+  function trittmatteSim() {
+    const W = 720, H = 280;
+    const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H });
+    const ctx = canvas.getContext('2d');
+    const cols = 6, rows = 3, ox = 90, oy = 50, tw = 90, th = 60;
+    const foot = { x: W / 2, y: H / 2, auto: true, drag: false };
+    let ta = 0;
+    const roTile = readout('Aktive Matte'), roStat = readout('Status');
+    function down(e) { foot.drag = true; foot.auto = false; mv(e); }
+    function mv(e) { if (!foot.drag) return; e.preventDefault(); const p = pos(canvas, e); foot.x = p.x; foot.y = p.y; }
+    canvas.addEventListener('mousedown', down); canvas.addEventListener('mousemove', mv); window.addEventListener('mouseup', () => foot.drag = false);
+    canvas.addEventListener('touchstart', down, { passive: false }); canvas.addEventListener('touchmove', mv, { passive: false }); window.addEventListener('touchend', () => foot.drag = false);
+    function draw() {
+      if (foot.auto) { ta += 0.012; foot.x = ox + tw * 3 + Math.sin(ta) * tw * 2.6; foot.y = oy + th * 1.5 + Math.cos(ta * 1.7) * th; }
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      let active = -1;
+      for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+        const x = ox + c * tw, y = oy + r * th; const on = foot.x > x && foot.x < x + tw && foot.y > y && foot.y < y + th;
+        if (on) active = r * cols + c + 1;
+        ctx.fillStyle = on ? 'rgba(239,68,68,0.45)' : 'rgba(34,211,238,0.08)'; ctx.fillRect(x + 2, y + 2, tw - 4, th - 4);
+        ctx.strokeStyle = 'rgba(148,163,184,0.25)'; ctx.strokeRect(x + 2, y + 2, tw - 4, th - 4);
+      }
+      ctx.font = '30px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('👣', foot.x, foot.y + 10);
+      roTile.set(active > 0 ? 'Feld ' + active : '—'); roStat.set(active > 0 ? 'Druck erkannt → ALARM' : 'ruhig', active > 0 ? 'bad' : 'ok');
+    }
+    loop(canvas, draw);
+    const body = el('div', {}, [canvas, el('div', { class: 'phys-hint', text: '⟶ Zieh den Fuß über die Matten – jeder Tritt erzeugt Druck und meldet das Feld.' }), el('div', { class: 'phys-ros' }, [roTile.wrap, roStat.wrap])]);
+    return simCard({ icon: 'fa-shoe-prints', title: 'Trittmatte · Bodendrucksensor', sub: 'Druckschalter unter dem Boden', was: 'Unter dem Bodenbelag liegen druckempfindliche Felder. Ein Schritt schließt den Kontakt im betretenen Feld → Meldung mit Position.', warum: 'Unsichtbarer Innenraumschutz vor Tresoren, Vitrinen oder in Fluren – funktioniert auch, wenn optische Melder verdeckt werden.', body });
+  }
+
+  /* ============================================================
+     22) Laser-Abhörmikrofon (Spionage)
+     ============================================================ */
+  function laserMicSim() {
+    const W = 720, H = 280;
+    const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H });
+    const ctx = canvas.getContext('2d');
+    let vol = 40, phase = 0; const buf = new Array(W).fill(H - 50);
+    const roVib = readout('Scheibenvibration'), roStat = readout('Mithören');
+    function draw() {
+      phase += 0.35;
+      const winX = W - 110, src = { x: 60, y: 80 }, rec = { x: 60, y: 200 };
+      const vib = (vol / 100) * Math.sin(phase) * 8;
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      // Gebäude + Fenster
+      ctx.fillStyle = '#1e293b'; ctx.fillRect(winX - 10, 30, 120, H - 60);
+      ctx.fillStyle = '#0ea5e9'; ctx.globalAlpha = 0.5; ctx.fillRect(winX, 60 + vib, 50, 120); ctx.globalAlpha = 1;
+      // Lautsprecher im Raum
+      ctx.font = '22px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('🔊', winX + 80, H / 2);
+      for (let i = 1; i <= 3; i++) { ctx.strokeStyle = `rgba(251,191,36,${vol / 100 * (0.5 - i * 0.1)})`; ctx.beginPath(); ctx.arc(winX + 80, H / 2, i * 12 + (phase * 6 % 12), -0.8, 0.8); ctx.stroke(); }
+      // Laser hin + reflektiert (wackelt mit Vibration)
+      ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(src.x, src.y); ctx.lineTo(winX + 25, 70 + vib); ctx.stroke();
+      ctx.strokeStyle = '#f87171'; ctx.beginPath(); ctx.moveTo(winX + 25, 70 + vib); ctx.lineTo(rec.x, 200 + vib * 1.6); ctx.stroke();
+      ctx.fillStyle = '#ef4444'; ctx.fillRect(src.x - 16, src.y - 8, 18, 16); ctx.fillStyle = '#22c55e'; ctx.fillRect(rec.x - 16, 200 - 8, 18, 16);
+      ctx.fillStyle = '#94a3b8'; ctx.font = '11px sans-serif'; ctx.fillText('Laser', src.x, src.y + 26); ctx.fillText('Empfänger', rec.x, 230);
+      // zurückgewonnenes Audio
+      buf.push(H - 30 + vib * 1.5); buf.shift();
+      ctx.strokeStyle = '#22d3ee'; ctx.lineWidth = 2; ctx.beginPath(); for (let x = 0; x < W - 130; x++) x ? ctx.lineTo(x, buf[x]) : ctx.moveTo(x, buf[x]); ctx.stroke();
+      roVib.set((vol / 100 * 8).toFixed(1) + ' µm'); roStat.set(vol > 5 ? 'Gespräch rekonstruierbar' : 'still', vol > 5 ? 'bad' : 'ok');
+    }
+    loop(canvas, draw);
+    const sl = el('input', { type: 'range', min: '0', max: '100', value: '40', class: 'phys-slider' }); sl.addEventListener('input', () => vol = +sl.value);
+    const body = el('div', {}, [canvas, el('div', { class: 'phys-ctrl' }, [el('label', { text: 'Lautstärke im Raum' }), sl]), el('div', { class: 'phys-ros' }, [roVib.wrap, roStat.wrap])]);
+    return simCard({ icon: 'fa-satellite', title: 'Laser-Abhörmikrofon (Angriff)', sub: 'Wie ein Lauschangriff über Glas läuft', was: 'Schall im Raum lässt die Fensterscheibe minimal vibrieren. Ein Laser auf das Glas wird mit genau dieser Vibration zurückgeworfen – daraus lässt sich das <b>Gespräch rekonstruieren</b>.', warum: 'Reale Lauschtechnik. Gegenmaßnahmen: Scheiben-Schwinger, Vorhänge, abhörsichere Räume – wichtig für Lagebesprechungen.', body });
+  }
+
+  /* ============================================================
+     23) Schwarzkörperstrahlung · Wärme-Spektrum
+     ============================================================ */
+  function schwarzkoerperSim() {
+    const W = 720, H = 280;
+    const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H });
+    const ctx = canvas.getContext('2d');
+    let T = 310; // Kelvin
+    const roPeak = readout('Strahlungsmaximum'), roT = readout('Temperatur');
+    function draw() {
+      const peak = 2898000 / T; // nm (Wien)
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      // Achsen
+      ctx.strokeStyle = 'rgba(148,163,184,0.3)'; ctx.beginPath(); ctx.moveTo(50, H - 30); ctx.lineTo(W - 20, H - 30); ctx.stroke();
+      // Planck-ähnliche Kurve (skaliert)
+      ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2; ctx.beginPath();
+      for (let px = 0; px < W - 80; px++) {
+        const lam = 200 + px / (W - 80) * 14000; // nm
+        const x = lam / 1e9, a = 1.19e-16 / Math.pow(x, 5), b = Math.exp(1.439e-2 / (x * T)) - 1; const I = a / b;
+        const y = (H - 35) - Math.min(H - 60, I * 4e-13);
+        px ? ctx.lineTo(50 + px, y) : ctx.moveTo(50, y);
+      }
+      ctx.stroke();
+      // sichtbarer Bereich markieren
+      const vx0 = 50 + (380 - 200) / 14000 * (W - 80), vx1 = 50 + (750 - 200) / 14000 * (W - 80);
+      ctx.fillStyle = 'rgba(125,211,252,0.08)'; ctx.fillRect(vx0, 20, vx1 - vx0, H - 50);
+      ctx.fillStyle = '#94a3b8'; ctx.font = '10px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('sichtbar', (vx0 + vx1) / 2, 16); ctx.fillText('IR →', W - 50, H - 14);
+      // glühendes Objekt in Farbe der Temperatur
+      const col = T < 800 ? '#7f1d1d' : T < 1000 ? '#dc2626' : T < 1300 ? '#f97316' : T < 1700 ? '#fbbf24' : '#fef3c7';
+      const g = ctx.createRadialGradient(W - 70, 70, 2, W - 70, 70, 40); g.addColorStop(0, col); g.addColorStop(1, 'rgba(0,0,0,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(W - 70, 70, 40, 0, 7); ctx.fill();
+      roPeak.set(peak > 1000 ? (peak / 1000).toFixed(1) + ' µm (IR)' : peak.toFixed(0) + ' nm'); roT.set(T + ' K · ' + (T - 273) + ' °C');
+    }
+    loop(canvas, draw);
+    const sl = el('input', { type: 'range', min: '300', max: '2000', value: '310', class: 'phys-slider' }); sl.addEventListener('input', () => T = +sl.value);
+    const body = el('div', {}, [canvas, el('div', { class: 'phys-ctrl' }, [el('label', { text: 'Temperatur' }), sl]), el('div', { class: 'phys-ros' }, [roT.wrap, roPeak.wrap])]);
+    return simCard({ icon: 'fa-fire', title: 'Wärmestrahlung · Schwarzkörper', sub: 'Warum Wärmekameras funktionieren', was: 'Jeder Körper strahlt – das Maximum wandert mit steigender Temperatur zu kürzeren Wellen (Wien). Ein 37-°C-Mensch strahlt im <b>Infrarot</b> (~9 µm), erst sehr heiße Objekte glühen sichtbar.', warum: 'Genau dieses IR fängt die Wärmebildkamera ein – deshalb sieht sie Personen im Dunkeln, ganz ohne Licht.', body });
+  }
+
+  /* ============================================================
      ★ FLAGGSCHIFF: Live-Einsatz – ganzes Objekt, alle Sensoren
      ============================================================ */
   function szeneSim() {
@@ -1525,7 +1741,7 @@ window.PHYSIK = (() => {
     intro.innerHTML = `
       <span class="tag">Verstehen · Live-Physik</span>
       <h1>Physik Live – wie Sensoren wirklich „sehen"</h1>
-      <p class="lead">18 Echtzeit-Simulationen zum Anfassen, sortiert nach Wirkprinzip – inkl. kompletter
+      <p class="lead">24 Echtzeit-Simulationen zum Anfassen, sortiert nach Wirkprinzip – inkl. kompletter
       <b>Live-Einsatz-Szene</b> mit Alarmzentrale. Ziehen, schieben, klicken. Ton einschalten für Sirene & Effekte.</p>
       <div class="phys-legend">
         <span><i class="fas fa-hand-pointer"></i> ziehen / schieben / klicken</span>
@@ -1546,11 +1762,13 @@ window.PHYSIK = (() => {
 
     const cats = [
       { label: 'Bewegung & Präsenz', sims: [pirSim, dopplerSim, ultraschallSim, radarSim, thermalSim, dualSim] },
+      { label: 'Perimeter & Außenhaut', sims: [mwSchrankeSim, glasfaserSim, induktionSim, trittmatteSim] },
       { label: 'Video & Zutritt', sims: [cctvSim, zutrittSim] },
       { label: 'Öffnung & Mechanik', sims: [reedSim, lockSim, seismikSim, kapazitivSim] },
-      { label: 'Licht & Laser', sims: [beamSim, laserSim] },
+      { label: 'Licht & Laser', sims: [beamSim, laserSim, laserMicSim] },
       { label: 'Akustik', sims: [glassSim, triSim] },
       { label: 'Funk & Übertragung', sims: [funkSim] },
+      { label: 'Grundlagen & Spektrum', sims: [schwarzkoerperSim] },
     ];
     cats.forEach(c => {
       root.appendChild(el('div', { class: 'phys-cat', text: c.label }));
