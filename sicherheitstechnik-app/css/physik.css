@@ -111,6 +111,9 @@
 .sens-status { font-size: 13px; font-weight: 700; color: #94a3b8; align-self: center; }
 .sens-status.ok { color: #22c55e; } .sens-status.bad { color: #ef4444; }
 .sens-warn { margin-top: 14px; background: rgba(251,191,36,0.12); border: 1px solid rgba(251,191,36,0.35); color: #fde68a; border-radius: 10px; padding: 10px 14px; font-size: 13px; line-height: 1.5; }
+.sens-shots { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+.sens-shot { width: 84px; height: 47px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(34,211,238,0.4); cursor: pointer; }
+.sens-shot:hover { border-color: #22d3ee; }
 
 /* 3D-Begehung Touch-Steuerkreuz */
 .beg-pad-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 12px; }
