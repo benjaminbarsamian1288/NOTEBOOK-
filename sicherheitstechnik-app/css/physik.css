@@ -129,6 +129,7 @@
 .plan-stamps { display: flex; gap: 6px; flex-wrap: wrap; }
 .plan-stamp { width: 40px; height: 38px; border-radius: 9px; background: #16243a; border: 1px solid rgba(148,163,184,0.2); cursor: pointer; font-size: 19px; }
 .plan-stamp.sel { border-color: #22d3ee; background: rgba(34,211,238,0.16); }
+.plan-num { background: #16243a; color: #e2e8f0; border: 1px solid rgba(148,163,184,0.25); border-radius: 8px; padding: 6px 10px; font-size: 13px; max-width: 90px; }
 
 /* Sachkunde-Prüfungstrainer */
 .pr-card { background: #0f1b2e; border: 1px solid rgba(148,163,184,0.14); border-radius: 16px; padding: 20px; margin-bottom: 16px; }
