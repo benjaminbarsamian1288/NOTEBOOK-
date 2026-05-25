@@ -121,6 +121,7 @@ window.V = (() => {
         { v:'galerie',      icon:'fa-images',          t:'Produkt-Galerie',        d:'Echte Produktfotos nach Hersteller' },
         { v:'mediathek',    icon:'fa-photo-film',      t:'Mediathek',              d:'Alle Bilder + Animationen' },
         { v:'wwd',          icon:'fa-tower-cell',      t:'WWD Video-Türme',        d:'KI · 24/7-Leitstelle' },
+        { v:'wwdtech',      icon:'fa-tower-cell',      t:'WWD-Türme · Technik',    d:'Komplett erklärt + Bitübertragung animiert' },
         { v:'quiz',         icon:'fa-graduation-cap',  t:'Quiz',                   d:'Teste dein Wissen' },
         { v:'glossar',      icon:'fa-book',            t:'Glossar',                d:'Fachbegriffe erklärt' },
       ]},
