@@ -1,4 +1,4 @@
-const CACHE = 'st-katalog-v71';
+const CACHE = 'st-katalog-v72';
 const ASSETS = [
   './',
   './index.html',
@@ -6,6 +6,7 @@ const ASSETS = [
   './css/physik.css',
   './js/physik-live.js',
   './js/videotechnik.js',
+  './js/pruefung.js',
   './js/sandbox.js',
   './js/sensoren.js',
   './js/begehung.js',

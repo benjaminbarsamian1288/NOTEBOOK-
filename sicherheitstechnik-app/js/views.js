@@ -96,6 +96,7 @@ window.V = (() => {
         { v:'videotechnik', icon:'fa-video',           t:'Videotechnik · Detail',  d:'Bildkette: Belichtung, IR, WDR, Auflösung, Codec, Analytics' },
         { v:'sensoren',     icon:'fa-mobile-screen-button', t:'Handy als Sensor 📱', d:'Mikro, Bewegung & Kamera live (https)' },
         { v:'gesetze',      icon:'fa-gavel',           t:'Gesetze & Normen',       d:'BeWachV · DGUV · KRITIS · DIN SPEC 14027' },
+        { v:'pruefung',     icon:'fa-graduation-cap',  t:'Sachkunde §34a Training', d:'35 Prüfungsfragen · Üben & Prüfungsmodus' },
         { v:'enzyklopaedie',icon:'fa-flask',           t:'Melder-Enzyklopädie',    d:'Detektoren erklärt · aktiv/passiv' },
         { v:'mechency',     icon:'fa-flask-vial',      t:'Mechanik-Enzyklopädie',  d:'50+ Komponenten · Bilder · Vergleich' },
       ]},

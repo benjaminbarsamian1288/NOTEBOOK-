@@ -39,6 +39,7 @@
     masterency: (d) => MASTER_ENCY.view(d),
     werk:       (d) => WERK.view(d),
     gesetze: (d) => GESETZE_VIEW.view(d),
+    pruefung: () => PRUEFUNG.view(),
     mediathek: (d) => MEDIATHEK.view(d),
     vergleich: V.vergleich,
     quiz: () => TOOLS.quiz(),
