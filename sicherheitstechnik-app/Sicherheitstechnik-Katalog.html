@@ -41528,15 +41528,144 @@ window.VIDEOTECH = (() => {
     return vcard({ icon: 'fa-arrow-right-arrow-left', title: '7 · Video-Analytics · Linienüberschreitung', sub: 'Aus Pixeln werden Ereignisse', was: 'Die Kamera-KI legt virtuelle Linien/Zonen ins Bild und meldet, wenn etwas sie überschreitet – inklusive Richtung.', detail: 'Bewegungserkennung (VMD) findet veränderte Pixel; <b>Objekt-Analytics</b> klassifiziert (Mensch/Fahrzeug) und verfolgt Pfade. Regeln wie „Linienüberschreitung", „Bereich betreten", „Herumlungern" erzeugen gezielte Alarme statt Dauer-Aufzeichnung.', praxis: 'Spart Personal und Speicher: nur relevante Ereignisse alarmieren/aufzeichnen. Richtungslogik unterscheidet z.B. „rein" von „raus" an einer Tür.', body });
   }
 
+  /* === GRUNDLAGEN (einfach, animiert) === */
+  function kameraGrundlageSim() {
+    const W = 560, H = 280, canvas = el('canvas', { class: 'phys-canvas', width: W, height: H }), ctx = canvas.getContext('2d');
+    const cols = 8, rows = 6, sx = 415, sy = 78, pw = 120 / cols, ph = 120 / rows; const px = new Array(cols * rows).fill(0);
+    let parts = [], t = 0;
+    const pc = i => ({ x: sx + (i % cols) * pw + pw / 2, y: sy + ((i / cols) | 0) * ph + ph / 2 });
+    function draw() {
+      t++; if (t % 2 === 0) parts.push({ x: 60, y: 70 + Math.random() * 150, tp: (Math.random() * cols * rows) | 0 });
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      ctx.font = '28px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('☀️', 60, 75); ctx.fillText('🏠', 60, 150); ctx.fillText('🌳', 60, 210);
+      ctx.fillStyle = '#475569'; ctx.font = '11px sans-serif'; ctx.fillText('Motiv', 60, 250);
+      ctx.fillStyle = 'rgba(125,211,252,0.22)'; ctx.strokeStyle = '#7dd3fc'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(295, H / 2, 15, 72, 0, 0, 7); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#475569'; ctx.fillText('Objektiv', 295, H / 2 + 90);
+      ctx.fillStyle = '#1e293b'; ctx.fillRect(sx - 6, sy - 6, 132, 132);
+      for (let i = 0; i < px.length; i++) { ctx.fillStyle = `rgba(34,211,238,${0.08 + px[i] * 0.9})`; ctx.fillRect(sx + (i % cols) * pw + 1, sy + ((i / cols) | 0) * ph + 1, pw - 2, ph - 2); px[i] *= 0.97; }
+      ctx.fillStyle = '#475569'; ctx.fillText('Bildsensor · Pixel', sx + 60, sy + 150);
+      parts.forEach(p => { const tg = p.x < 295 ? { x: 295, y: H / 2 } : pc(p.tp); const dx = tg.x - p.x, dy = tg.y - p.y, d = Math.hypot(dx, dy) || 1; p.x += dx / d * 5; p.y += dy / d * 5; if (d < 6) { if (p.x < 305) p.x = 300; else { px[p.tp] = 1; p.dead = true; } } ctx.fillStyle = 'rgba(251,191,36,0.9)'; ctx.fillRect(p.x, p.y, 2.5, 2.5); });
+      parts = parts.filter(p => !p.dead && p.x < sx + 130);
+    }
+    loop(canvas, draw);
+    return vcard({ icon: 'fa-camera', title: 'A · Wie die Kamera ein Bild macht', sub: 'Licht → Objektiv → Sensor → Bild',
+      was: 'Licht vom Motiv fällt durchs Objektiv auf den Bildsensor. Jeder winzige <b>Pixel</b> misst, wie viel Licht ankommt – zusammen ergeben sie das Bild.',
+      detail: 'Das Objektiv bündelt das Licht und wirft das Motiv auf den Sensor. Millionen lichtempfindliche Pixel wandeln Licht in elektrische Signale; der Bildprozessor macht daraus ein digitales Bild. Viele Bilder pro Sekunde = bewegtes Video.',
+      praxis: 'Mehr/empfindlichere Pixel = besseres Bild (v.a. bei wenig Licht). Das Objektiv bestimmt Bildwinkel und Schärfe.', body: el('div', {}, [canvas]) });
+  }
+
+  function analogIpSim() {
+    const W = 560, H = 280, canvas = el('canvas', { class: 'phys-canvas', width: W, height: H }), ctx = canvas.getContext('2d');
+    let ip = false, t = 0;
+    function draw() {
+      t += 2; ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      const camX = 60, recX = 330, monX = 490, y = H / 2 + 10;
+      ctx.fillStyle = ip ? '#22c55e' : '#fbbf24'; ctx.font = '13px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText(ip ? 'IP-Kamera: 1 Netzwerkkabel (RJ45) für Strom + Daten · PoE · ~100 m' : 'Analog-Kamera: Koaxkabel + BNC · CVBS/AHD/TVI · ~300 m', W / 2, 36);
+      ctx.font = '32px sans-serif'; ctx.fillText('🎥', camX, y);
+      ctx.strokeStyle = ip ? '#22c55e' : '#fbbf24'; ctx.lineWidth = ip ? 4 : 7; ctx.beginPath(); ctx.moveTo(camX + 22, y - 6); ctx.lineTo(recX - 22, y - 6); ctx.stroke();
+      if (ip) { for (let i = 0; i < 6; i++) { const x = camX + 24 + ((t + i * 45) % (recX - camX - 46)); ctx.fillStyle = '#22c55e'; ctx.fillRect(x, y - 11, 9, 10); } }
+      else { ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2; ctx.beginPath(); for (let x = camX + 24; x < recX - 22; x += 2) ctx.lineTo(x, y - 22 + Math.sin((x + t) * 0.22) * 7); ctx.stroke(); }
+      ctx.font = '28px sans-serif'; ctx.fillText(ip ? '🗄️' : '📼', recX, y);
+      ctx.strokeStyle = '#64748b'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(recX + 20, y - 6); ctx.lineTo(monX - 20, y - 6); ctx.stroke();
+      ctx.font = '28px sans-serif'; ctx.fillText('🖥️', monX, y); if (ip) { ctx.font = '20px sans-serif'; ctx.fillText('☁️', monX, y - 40); ctx.fillText('📱', monX + 34, y); }
+      ctx.fillStyle = '#94a3b8'; ctx.font = '11px sans-serif';
+      ctx.fillText('Kamera', camX, y + 34); ctx.fillText(ip ? 'NVR + Switch' : 'DVR', recX, y + 34); ctx.fillText(ip ? 'Monitor + App' : 'Monitor', monX, y + 40);
+    }
+    loop(canvas, draw);
+    const b = el('button', { class: 'btn', html: '<i class="fas fa-toggle-off"></i> Analog' });
+    b.addEventListener('click', () => { ip = !ip; b.className = 'btn' + (ip ? ' primary' : ''); b.innerHTML = ip ? '<i class="fas fa-toggle-on"></i> IP / Netzwerk' : '<i class="fas fa-toggle-off"></i> Analog'; });
+    return vcard({ icon: 'fa-diagram-project', title: 'B · Analog oder IP-Kamera?', sub: 'Zwei Welten der Übertragung',
+      was: 'Eine <b>Analog-Kamera</b> schickt ein durchgehendes Videosignal über ein Koaxkabel zum DVR. Eine <b>IP-Kamera</b> ist ein kleiner Computer und sendet einen digitalen Datenstrom übers Netzwerk zum NVR.',
+      detail: 'Analog: BNC-Stecker, separates Stromkabel, Signalarten CVBS (SD) oder AHD/TVI/CVI (HD über Koax), bis ~300 m. IP: ein einziges Netzwerkkabel liefert per <b>PoE</b> Strom und Daten zugleich, bis ~100 m, dafür hohe Auflösung, Verschlüsselung und Fernzugriff.',
+      praxis: 'Bestandsanlagen sind oft analog (AHD spart Neuverkabelung). Neubau heute fast immer IP/PoE – flexibler, hochauflösend, per App erreichbar.',
+      body: el('div', {}, [canvas, el('div', { class: 'phys-ctrl phys-ctrl-btns' }, [b])]) });
+  }
+
+  function recorderSim() {
+    const W = 560, H = 280, canvas = el('canvas', { class: 'phys-canvas', width: W, height: H }), ctx = canvas.getContext('2d');
+    const N = 28, ring = new Array(N).fill(0); let head = 0, t = 0, mode = 'dauer';
+    function draw() {
+      t++; let moving = false, write = false;
+      if (mode === 'dauer') write = true;
+      else if (mode === 'bewegung') { moving = Math.floor(t / 70) % 3 === 0; write = moving; }
+      else { write = Math.floor(t / 90) % 2 === 0; }
+      if (t % 5 === 0 && write) { ring[head] = t; head = (head + 1) % N; }
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      ctx.font = '22px sans-serif'; ctx.textAlign = 'center'; ['🎥', '🎥', '🎥'].forEach((c, i) => ctx.fillText(c, 50, 70 + i * 60));
+      ctx.fillStyle = '#1e293b'; ctx.fillRect(150, 70, 120, 120); ctx.strokeStyle = '#475569'; ctx.strokeRect(150, 70, 120, 120);
+      ctx.fillStyle = '#7dd3fc'; ctx.font = '24px sans-serif'; ctx.fillText('🗄️', 210, 120); ctx.fillStyle = '#94a3b8'; ctx.font = '12px sans-serif'; ctx.fillText('Recorder (DVR/NVR)', 210, 175);
+      [70, 130, 190].forEach(yy => { ctx.strokeStyle = write ? '#22c55e' : '#475569'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(66, yy); ctx.lineTo(150, 120); ctx.stroke(); });
+      if (mode === 'bewegung') { ctx.fillStyle = moving ? '#ef4444' : '#475569'; ctx.font = '12px sans-serif'; ctx.fillText(moving ? '● Bewegung → schreibt' : 'keine Bewegung', 110, 230); }
+      // Ringspeicher
+      const bx = 300, bw = 240, cw = bw / N;
+      ctx.fillStyle = '#94a3b8'; ctx.font = '12px sans-serif'; ctx.textAlign = 'left'; ctx.fillText('Festplatte · Ringspeicher', bx, 70);
+      for (let i = 0; i < N; i++) { const age = ring[i] ? Math.max(0, 1 - (t - ring[i]) / 600) : 0; ctx.fillStyle = ring[i] ? `rgba(34,197,94,${0.25 + age * 0.7})` : 'rgba(148,163,184,0.12)'; ctx.fillRect(bx + i * cw, 84, cw - 1.5, 90); if (i === head) { ctx.fillStyle = '#fbbf24'; ctx.fillRect(bx + i * cw, 84, cw - 1.5, 5); } }
+      ctx.fillStyle = '#fbbf24'; ctx.font = '11px sans-serif'; ctx.fillText('▲ Schreibkopf – ältestes wird überschrieben', bx, 192);
+    }
+    loop(canvas, draw);
+    const mk = (k, l) => { const b = el('button', { class: 'btn' + (k === mode ? ' primary' : '') }); b.textContent = l; b.addEventListener('click', () => { mode = k; body.querySelectorAll('.phys-ctrl-btns .btn').forEach(x => x.className = 'btn'); b.className = 'btn primary'; }); return b; };
+    const body = el('div', {}, [canvas, el('div', { class: 'phys-ctrl phys-ctrl-btns' }, [mk('dauer', 'Daueraufnahme'), mk('bewegung', 'Bei Bewegung'), mk('zeitplan', 'Zeitplan')])]);
+    return vcard({ icon: 'fa-hard-drive', title: 'C · Aufzeichnung · DVR & NVR', sub: 'Wie das Video gespeichert wird',
+      was: 'Der Recorder schreibt die Kamerabilder auf eine Festplatte. Ist sie voll, werden die <b>ältesten</b> Aufnahmen automatisch überschrieben (Ringspeicher).',
+      detail: 'Aufnahmemodi: <b>Daueraufnahme</b> (alles), <b>bei Bewegung</b> (nur wenn sich etwas tut – spart enorm Platz) oder <b>Zeitplan</b> (z. B. nur nachts). DVR = für Analogkameras, NVR = für IP-Kameras.',
+      praxis: 'Speicherbedarf = Bitrate × Kameras × Aufbewahrungstage. „Bei Bewegung" + H.265 reduziert das drastisch. Wichtige Vorfälle rechtzeitig sichern, bevor sie überschrieben werden.', body });
+  }
+
+  function uebertragungSim() {
+    const W = 560, H = 280, canvas = el('canvas', { class: 'phys-canvas', width: W, height: H }), ctx = canvas.getContext('2d');
+    const lanes = [
+      ['Koax (BNC)', '#fbbf24', 'Analog · bis ~300 m'],
+      ['Netzwerk + PoE', '#22c55e', 'IP · Strom+Daten · ~100 m'],
+      ['WLAN', '#22d3ee', 'Funk · bequem, störanfällig'],
+      ['Glasfaser', '#a855f7', 'km-weit · störungsfrei'],
+    ];
+    let t = 0;
+    function draw() {
+      t += 2.5; ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      lanes.forEach(([name, c, info], i) => {
+        const y = 50 + i * 58; ctx.fillStyle = c; ctx.font = '13px sans-serif'; ctx.textAlign = 'left'; ctx.fillText(name, 14, y - 8);
+        ctx.strokeStyle = 'rgba(148,163,184,0.25)'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(150, y); ctx.lineTo(W - 30, y); ctx.stroke();
+        for (let k = 0; k < 5; k++) { const x = 150 + ((t + k * 80) % (W - 180)); ctx.fillStyle = c; if (i === 2) { ctx.globalAlpha = 0.5 + 0.5 * Math.sin((t + k * 80) / 20); } ctx.fillRect(x, y - 4, i === 0 ? 14 : 8, 8); ctx.globalAlpha = 1; }
+        ctx.fillStyle = '#94a3b8'; ctx.font = '10.5px sans-serif'; ctx.textAlign = 'right'; ctx.fillText(info, W - 32, y - 8);
+      });
+    }
+    loop(canvas, draw);
+    return vcard({ icon: 'fa-network-wired', title: 'D · Übertragungswege & Kabel', sub: 'Wie das Bild zum Recorder kommt',
+      was: 'Das Kamerabild muss zum Recorder. Dafür gibt es mehrere Wege – jeder mit Reichweite und Eigenheiten.',
+      detail: '<b>Koax/BNC</b>: klassisch analog, robust, lang. <b>Netzwerk + PoE</b>: ein Kabel für Strom & Daten, Standard bei IP. <b>WLAN</b>: kabellos, aber störanfällig/abhörbar. <b>Glasfaser</b>: riesige Reichweite, immun gegen Blitz/EMV – für Gelände & KRITIS.',
+      praxis: 'Distanz und Umgebung entscheiden: kurze Strecke → PoE; sehr lang/Außengelände → Glasfaser; nur als Notlösung WLAN.', body: el('div', {}, [canvas]) });
+  }
+
+  function systemSim() {
+    const W = 560, H = 250, canvas = el('canvas', { class: 'phys-canvas', width: W, height: H }), ctx = canvas.getContext('2d');
+    const steps = [['🎥', 'Kamera'], ['🔌', 'Kabel/PoE'], ['🗄️', 'Recorder'], ['🖥️', 'Monitor'], ['☁️', 'Cloud'], ['📱', 'App']];
+    let t = 0;
+    function draw() {
+      t += 1; ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      const n = steps.length, gap = (W - 60) / (n - 1), y = H / 2; const active = Math.floor(t / 35) % n;
+      ctx.strokeStyle = 'rgba(148,163,184,0.3)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(30, y); ctx.lineTo(W - 30, y); ctx.stroke();
+      steps.forEach(([em, lbl], i) => { const x = 30 + i * gap; const on = i === active; ctx.fillStyle = on ? 'rgba(34,211,238,0.25)' : 'rgba(15,23,42,0.8)'; ctx.beginPath(); ctx.arc(x, y, 24, 0, 7); ctx.fill(); ctx.font = '24px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(em, x, y); ctx.textBaseline = 'alphabetic'; ctx.fillStyle = on ? '#22d3ee' : '#94a3b8'; ctx.font = '11px sans-serif'; ctx.fillText(lbl, x, y + 44); });
+      const px = 30 + (active * gap); ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(px, y - 36, 6, 0, 7); ctx.fill();
+      ctx.fillStyle = '#475569'; ctx.font = '12px sans-serif'; ctx.fillText('Das Bild wandert: Motiv → Kamera → Kabel → Recorder → Anzeige & Fernzugriff', W / 2, 28);
+    }
+    loop(canvas, draw);
+    return vcard({ icon: 'fa-sitemap', title: 'E · Das ganze System', sub: 'Von der Szene bis aufs Handy',
+      was: 'Eine Videoanlage ist eine Kette: Kamera nimmt auf → Kabel überträgt → Recorder speichert → Monitor/App zeigt an.',
+      detail: 'Moderne Systeme schicken den Stream zusätzlich in die <b>Cloud</b> oder direkt aufs <b>Smartphone</b> – so siehst du live und Aufnahmen von überall, bekommst Push-Alarme und kannst exportieren.',
+      praxis: 'Beim Planen alle Glieder bedenken: Kameraposition, Kabelweg/Strom, Recorder-Speicher, Anzeige/Fernzugriff und Datenschutz (Hinweisschild, Speicherdauer).', body: el('div', {}, [canvas]) });
+  }
+
   function view() {
     const root = el('div', { class: 'phys-view' });
     const intro = el('div', { class: 'phys-intro' });
     intro.innerHTML = `<span class="tag">Videotechnik · Deep-Dive</span>
       <h1>Videotechnik – die ganze Bildkette 📹</h1>
-      <p class="lead">Von einzelnen Photonen bis zum ausgewerteten Ereignis: 7 interaktive Stationen erklären die Videoüberwachung
-      <b>Schritt für Schritt</b> – jeweils mit <b>Was</b>, <b>Im Detail</b> und <b>Praxis</b>. Schieber und Schalter zeigen die Wirkung sofort im Bild.</p>`;
+      <p class="lead">Erst <b>einfach & animiert</b>: wie eine Kamera aus Licht ein Bild macht, analog vs. IP, Aufzeichnung (DVR/NVR),
+      Kabel/Übertragung und das ganze System. Danach die <b>Details</b> (Belichtung, IR, WDR, Auflösung, Codec, Analytics) – je mit <b>Was · Im Detail · Praxis</b>.</p>`;
     root.appendChild(intro);
     const cats = [
+      { label: 'Grundlagen · So funktioniert es (einfach & animiert)', sims: [kameraGrundlageSim, analogIpSim, recorderSim, uebertragungSim, systemSim] },
       { label: 'Aufnahme · Belichtung & Licht', sims: [exposureSim, tagNachtSim, wdrSim] },
       { label: 'Bild · Auflösung & Kompression', sims: [aufloesungSim, kompressionSim, bildrateSim] },
       { label: 'Auswertung · Analytics', sims: [analyticsSim] },
@@ -43504,7 +43633,7 @@ window.V = (() => {
     const qaGroups = [
       { label:'Verstehen', tiles:[
         { v:'physik',       icon:'fa-atom',            t:'Physik Live',            d:'29 Sims: Leitstand, Nebel, Drohne, FFT, Drehkreuz u.v.m.' },
-        { v:'videotechnik', icon:'fa-video',           t:'Videotechnik · Detail',  d:'Bildkette: Belichtung, IR, WDR, Auflösung, Codec, Analytics' },
+        { v:'videotechnik', icon:'fa-video',           t:'Videotechnik · Detail',  d:'Einfach + animiert: Aufnahme, analog/IP, Recorder, Kabel + Details' },
         { v:'sensoren',     icon:'fa-mobile-screen-button', t:'Handy als Sensor 📱', d:'Mikro, Bewegung & Kamera live (https)' },
         { v:'gesetze',      icon:'fa-gavel',           t:'Gesetze & Normen',       d:'BeWachV · DGUV · KRITIS · DIN SPEC 14027' },
         { v:'pruefung',     icon:'fa-graduation-cap',  t:'Sachkunde §34a Training', d:'35 Prüfungsfragen · Üben & Prüfungsmodus' },
