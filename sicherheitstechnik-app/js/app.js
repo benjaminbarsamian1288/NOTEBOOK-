@@ -44,6 +44,7 @@
     pruefung: () => PRUEFUNG.view(),
     mediathek: (d) => MEDIATHEK.view(d),
     wwdtech: () => WWDTECH.view(),
+    daten: () => DATEN.view(),
     vergleich: V.vergleich,
     quiz: () => TOOLS.quiz(),
     glossar: () => TOOLS.glossar(),

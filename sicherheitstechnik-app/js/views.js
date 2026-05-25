@@ -94,6 +94,7 @@ window.V = (() => {
       { label:'Verstehen', tiles:[
         { v:'physik',       icon:'fa-atom',            t:'Physik Live',            d:'29 Sims: Leitstand, Nebel, Drohne, FFT, Drehkreuz u.v.m.' },
         { v:'videotechnik', icon:'fa-video',           t:'Videotechnik · Detail',  d:'Einfach + animiert: Aufnahme, analog/IP, Recorder, Kabel + Details' },
+        { v:'daten',        icon:'fa-ethernet',        t:'Datenübertragung ⚡',     d:'Spannungsimpulse, Takt, Bandbreite – animiert erklärt' },
         { v:'sensoren',     icon:'fa-mobile-screen-button', t:'Handy als Sensor 📱', d:'Mikro, Bewegung & Kamera live (https)' },
         { v:'gesetze',      icon:'fa-gavel',           t:'Gesetze & Normen',       d:'BeWachV · DGUV · KRITIS · DIN SPEC 14027' },
         { v:'pruefung',     icon:'fa-graduation-cap',  t:'Sachkunde §34a Training', d:'35 Prüfungsfragen · Üben & Prüfungsmodus' },
