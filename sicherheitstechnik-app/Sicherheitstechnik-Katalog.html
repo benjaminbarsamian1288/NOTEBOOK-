@@ -9969,6 +9969,40 @@ img, svg, iframe, video {
 }
 .qa-section-label::before { content:''; width: 16px; height: 2px; background:#22d3ee; border-radius:2px; }
 
+/* ============ ÜBERKRASS · Visual-Polish (global für alle phys-Karten) ============ */
+.phys-card {
+  background: linear-gradient(160deg, #11203a 0%, #0c1626 60%, #0a1322 100%);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.40);
+  transition: transform .2s ease, box-shadow .25s ease, border-color .25s ease;
+  position: relative; overflow: hidden;
+}
+.phys-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, #22d3ee 30%, #10b981 70%, transparent);
+  opacity: .75;
+}
+.phys-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 44px rgba(34,211,238,0.16), 0 8px 22px rgba(0,0,0,0.4);
+  border-color: rgba(34,211,238,0.35);
+}
+.phys-canvas { box-shadow: inset 0 0 34px rgba(0,0,0,0.45), 0 0 0 1px rgba(34,211,238,0.10); }
+.phys-ico { box-shadow: 0 0 18px rgba(34,211,238,0.45); }
+.phys-cat { text-shadow: 0 0 12px rgba(34,211,238,0.35); }
+.phys-intro { position: relative; overflow: hidden; box-shadow: 0 10px 40px rgba(34,211,238,0.10); }
+.phys-intro::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(115deg, transparent 42%, rgba(34,211,238,0.10) 50%, transparent 58%);
+  transform: translateX(-120%); animation: shimmer 7s ease-in-out infinite;
+}
+@keyframes shimmer { 0%, 100% { transform: translateX(-120%); } 55% { transform: translateX(120%); } }
+.phys-intro h1 { text-shadow: 0 2px 18px rgba(34,211,238,0.25); }
+.btn.primary { box-shadow: 0 2px 14px rgba(34,211,238,0.28); }
+.phys-explain { box-shadow: inset 0 0 0 1px rgba(34,211,238,0.05); }
+/* dezent animierter Verlauf der Kategorie-Linie */
+.phys-cat::before { background: linear-gradient(90deg,#22d3ee,#10b981,#7dd3fc); background-size: 200% 100%; animation: catflow 4s linear infinite; }
+@keyframes catflow { to { background-position: 200% 0; } }
+
 </style>
 <style data-src="css/katalog.css">
 /* Master-Katalog · zentrales Drehkreuz */
@@ -42951,15 +42985,18 @@ window.WWDTECH = (() => {
     ];
     let sel = 'kamera'; const info = ro('Bauteil');
     function draw() {
-      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
-      ctx.fillStyle = '#13202f'; ctx.fillRect(0, 300, W, 30);
-      ctx.fillStyle = '#334155'; ctx.fillRect(200, 278, 160, 22);               // Basis
+      ctx.clearRect(0, 0, W, H);
+      const sky = ctx.createLinearGradient(0, 0, 0, H); sky.addColorStop(0, '#0a1a30'); sky.addColorStop(0.7, '#0b1424'); sky.addColorStop(1, '#070d18'); ctx.fillStyle = sky; ctx.fillRect(0, 0, W, H);
+      const gr = ctx.createLinearGradient(0, 296, 0, H); gr.addColorStop(0, '#1a2942'); gr.addColorStop(1, '#0d1726'); ctx.fillStyle = gr; ctx.fillRect(0, 300, W, 30);
+      const bg2 = ctx.createLinearGradient(200, 0, 360, 0); bg2.addColorStop(0, '#3a4861'); bg2.addColorStop(1, '#27344a'); ctx.fillStyle = bg2; ctx.fillRect(200, 278, 160, 22); // Basis
       ctx.fillStyle = '#1e293b'; ctx.fillRect(250, 248, 40, 30); ctx.fillRect(296, 248, 38, 30); // NVR, Akku
       ctx.fillStyle = '#fbbf24'; ctx.strokeStyle = '#94a3b8'; ctx.save(); ctx.translate(165, 175); ctx.rotate(-0.3); ctx.fillRect(-45, -25, 90, 50); ctx.strokeRect(-45, -25, 90, 50); for (let i = -1; i < 2; i++) { ctx.strokeStyle = '#1e293b'; ctx.beginPath(); ctx.moveTo(i * 22, -25); ctx.lineTo(i * 22, 25); ctx.stroke(); } ctx.restore(); // Solar
       ctx.fillStyle = '#475569'; ctx.fillRect(273, 76, 14, 172);                 // Mast
       ctx.fillStyle = '#1e293b'; ctx.fillRect(248, 40, 64, 36);                  // Kopf
-      ctx.fillStyle = '#0b1424'; ctx.beginPath(); ctx.arc(280, 60, 12, 0, 7); ctx.fill(); ctx.fillStyle = '#22d3ee'; ctx.beginPath(); ctx.arc(280, 60, 5, 0, 7); ctx.fill();
-      ctx.fillStyle = '#fde68a'; ctx.fillRect(220, 46, 24, 18); ctx.fillStyle = '#7dd3fc'; ctx.fillRect(316, 46, 22, 18); // LED, Speaker
+      ctx.fillStyle = '#0b1424'; ctx.beginPath(); ctx.arc(280, 60, 12, 0, 7); ctx.fill();
+      ctx.save(); ctx.shadowColor = '#22d3ee'; ctx.shadowBlur = 16; ctx.fillStyle = '#22d3ee'; ctx.beginPath(); ctx.arc(280, 60, 5 + Math.sin(Date.now() / 400) * 1.2, 0, 7); ctx.fill(); ctx.restore(); // Linse mit Glühen
+      ctx.save(); ctx.shadowColor = '#fde68a'; ctx.shadowBlur = 14; ctx.fillStyle = '#fde68a'; ctx.fillRect(220, 46, 24, 18); ctx.restore(); // LED-Strahler glüht
+      ctx.fillStyle = '#7dd3fc'; ctx.fillRect(316, 46, 22, 18); // Lautsprecher
       const p = parts.find(x => x.k === sel); ctx.strokeStyle = '#22d3ee'; ctx.lineWidth = 2.5; ctx.setLineDash([5, 4]); ctx.strokeRect(p.bb[0] - 4, p.bb[1] - 4, p.bb[2] + 8, p.bb[3] + 8); ctx.setLineDash([]);
       ctx.fillStyle = '#22d3ee'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(p.n, p.bb[0] + p.bb[2] / 2, p.bb[1] - 10);
     }
@@ -43173,13 +43210,17 @@ window.WWDTECH = (() => {
       scroll += speed; ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
       ctx.fillStyle = '#94a3b8'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center';
       ctx.fillText('📷 Bild → Bytes → Bits (0/1) → ⚡ Spannungspulse im Kupferkabel → 🖥️ Empfänger baut es zusammen', W / 2, 24);
+      // Datenpaket-Struktur
+      let cxp = 175; [['Kopf', 60, '#a855f7'], ['Nutzdaten (Bild)', 195, '#22d3ee'], ['Prüfsumme', 70, '#22c55e']].forEach(([seg, w, c]) => { ctx.fillStyle = c + '33'; ctx.strokeStyle = c; ctx.lineWidth = 1.5; ctx.fillRect(cxp, 38, w, 18); ctx.strokeRect(cxp, 38, w, 18); ctx.fillStyle = c; ctx.font = '10px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(seg, cxp + w / 2, 51); cxp += w; });
+      ctx.fillStyle = '#64748b'; ctx.font = '10px sans-serif'; ctx.textAlign = 'right'; ctx.fillText('1 Datenpaket →', 170, 51);
       // Sender / Empfänger
       ctx.font = '26px sans-serif'; ctx.fillText('🎥', 30, y + 36); ctx.fillText('🖥️', W - 30, y + 36);
       // Kabelmantel
       ctx.strokeStyle = '#3a3320'; ctx.lineWidth = 30; ctx.lineCap = 'butt'; ctx.beginPath(); ctx.moveTo(55, y - 10); ctx.lineTo(W - 55, y - 10); ctx.stroke();
       ctx.strokeStyle = '#7c5018'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(55, y - 10); ctx.lineTo(W - 55, y - 10); ctx.stroke();
       // NRZ-Rechtecksignal (1 = HIGH, 0 = LOW)
-      ctx.save(); ctx.beginPath(); ctx.rect(55, 40, W - 110, H - 70); ctx.clip();
+      ctx.save(); ctx.beginPath(); ctx.rect(55, 60, W - 110, H - 90); ctx.clip();
+      ctx.shadowColor = '#22d3ee'; ctx.shadowBlur = 12;
       ctx.strokeStyle = '#22d3ee'; ctx.lineWidth = 3; ctx.beginPath(); let started = false;
       const n = Math.ceil((W - 110) / bw) + 2;
       for (let i = -1; i < n; i++) {
