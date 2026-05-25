@@ -37512,6 +37512,7 @@ window.GESETZE_DB = (() => {
       intro: 'Regelt das Bewachungsgewerbe nach § 34a GewO: Sachkundeprüfung, Unterrichtung, Haftpflicht, Wachpersonal-Ausweis, Dienstanweisung, Aufbewahrung.',
       anwender: 'Bewachungsunternehmer, Wachpersonen, IHK, Aufsichtsbehörden',
       visualisierung: 'bewachv-overview',
+      visualisierung2: 'bewachv-sachkunde',
       abschnitte: [
         {
           nr: 1, title: 'Zuständigkeit, Unterrichtung in Strafsachen, Antragstellung',
@@ -38730,27 +38731,46 @@ window.GESETZE_DB = (() => {
 
     'bewachv-overview': `
       <svg viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg" class="ges-vis">
+        <defs><marker id="bwarr" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#64748b"/></marker></defs>
         <rect width="600" height="300" fill="#0a0f1a"/>
-        <text x="300" y="30" text-anchor="middle" font-size="14" fill="#7c3aed" font-weight="900">BeWachV · 8 Abschnitte · 24 Paragraphen</text>
+        <text x="300" y="28" text-anchor="middle" font-size="15" fill="#a78bfa" font-weight="900">So wirst du Wachperson – Schritt für Schritt</text>
         ${[
-          ['1', 'Zuständigkeit', 50],
-          ['2', 'Unterrichtung 40h', 130],
-          ['3', 'Sachkundeprüfung', 210],
-          ['4', 'EU-Anerkennung', 290],
-          ['5', 'Haftpflicht-Vers.', 370],
-          ['6', 'Pflichten Betrieb', 450],
-          ['7', 'OWiG', 510],
-          ['8', 'Schlussvorschr.', 560],
-        ].map(([n, t, x]) => `
-          <g>
-            <circle cx="${x}" cy="150" r="28" fill="#1e293b" stroke="#7c3aed" stroke-width="2"/>
-            <text x="${x}" y="146" text-anchor="middle" font-size="14" fill="#7c3aed" font-weight="900">${n}</text>
-            <text x="${x}" y="160" text-anchor="middle" font-size="8" fill="#94a3b8">Abschn.</text>
-            <text x="${x}" y="200" text-anchor="middle" font-size="9" fill="#cbd5e1" font-weight="700">${t}</text>
-          </g>
+          ['fa-user-check', '1 · Zuverlässig', '§ 34a GewO', '#a78bfa', 75],
+          ['fa-chalkboard-user', '2 · Unterrichtung', '40 Stunden', '#22d3ee', 190],
+          ['fa-id-card-clip', '3 · Register', 'Anmeldung', '#22c55e', 305],
+          ['fa-id-badge', '4 · Ausweis', '+ Kennzeichen', '#fbbf24', 420],
+          ['fa-user-shield', '5 · Dienst', 'erlaubt', '#ef4444', 535],
+        ].map(([icon, t, sub, c, x], i) => `
+          ${i > 0 ? `<line x1="${x - 85}" y1="130" x2="${x - 34}" y2="130" stroke="#64748b" stroke-width="2.5" marker-end="url(#bwarr)"/>` : ''}
+          <circle cx="${x}" cy="130" r="30" fill="#1e293b" stroke="${c}" stroke-width="2.5"/>
+          <foreignObject x="${x - 20}" y="110" width="40" height="40"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;color:${c};font-size:21px"><i class="fas ${icon}"></i></div></foreignObject>
+          <text x="${x}" y="184" text-anchor="middle" font-size="10.5" fill="${c}" font-weight="800">${t}</text>
+          <text x="${x}" y="199" text-anchor="middle" font-size="9" fill="#94a3b8">${sub}</text>
         `).join('')}
-        <text x="300" y="260" text-anchor="middle" font-size="11" fill="#fbbf24" font-weight="700">Mindestversicherung: Personen 1.000.000 € · Sach 250.000 €</text>
-        <text x="300" y="278" text-anchor="middle" font-size="10" fill="#22c55e">Unterrichtung 40 h · Sachkundeprüfung schriftl. + mündl.</text>
+        <rect x="70" y="232" width="460" height="46" rx="8" fill="#1e293b" stroke="#fbbf24"/>
+        <foreignObject x="88" y="244" width="24" height="24"><div xmlns="http://www.w3.org/1999/xhtml" style="color:#fbbf24;font-size:17px"><i class="fas fa-shield-heart"></i></div></foreignObject>
+        <text x="305" y="251" text-anchor="middle" font-size="10.5" fill="#fbbf24" font-weight="800">Pflicht: Betriebs-Haftpflichtversicherung</text>
+        <text x="305" y="269" text-anchor="middle" font-size="11" fill="#22c55e" font-weight="900">Personenschäden 1.000.000 € · Sachschäden 250.000 €</text>
+      </svg>`,
+
+    'bewachv-sachkunde': `
+      <svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg" class="ges-vis">
+        <rect width="600" height="320" fill="#0a0f1a"/>
+        <text x="300" y="26" text-anchor="middle" font-size="15" fill="#a78bfa" font-weight="900">Die 7 Lern-Sachgebiete (§ 7 BeWachV)</text>
+        ${[
+          ['fa-scale-balanced', 'Öffentl. Recht', '#22d3ee', 95, 95],
+          ['fa-user-lock', 'Datenschutz', '#22c55e', 225, 95],
+          ['fa-file-contract', 'BGB · Haftung', '#fbbf24', 375, 95],
+          ['fa-gavel', 'Strafrecht', '#ef4444', 505, 95],
+          ['fa-helmet-safety', 'UVV Dienst', '#06b6d4', 160, 210],
+          ['fa-comments', 'Deeskalation', '#a855f7', 300, 210],
+          ['fa-shield-halved', 'Sicherheitstechnik', '#f97316', 440, 210],
+        ].map(([icon, t, c, x, y]) => `
+          <circle cx="${x}" cy="${y}" r="30" fill="#1e293b" stroke="${c}" stroke-width="2.5"/>
+          <foreignObject x="${x - 20}" y="${y - 20}" width="40" height="40"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;color:${c};font-size:20px"><i class="fas ${icon}"></i></div></foreignObject>
+          <text x="${x}" y="${y + 48}" text-anchor="middle" font-size="10" fill="${c}" font-weight="800">${t}</text>
+        `).join('')}
+        <text x="300" y="296" text-anchor="middle" font-size="10.5" fill="#cbd5e1" font-weight="700">Unterrichtung 40 h · Sachkundeprüfung bei: Türsteher · Asyl · Großevent · Detektiv · Waffe</text>
       </svg>`,
 
     'kritis-sektoren': `
@@ -38817,26 +38837,37 @@ window.GESETZE_DB = (() => {
       </svg>`,
 
     'dguv1-pflichten': `
-      <svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg" class="ges-vis">
-        <rect width="600" height="320" fill="#0a0f1a"/>
-        <text x="300" y="28" text-anchor="middle" font-size="14" fill="#22c55e" font-weight="900">DGUV V1 · Pflichten-Pyramide</text>
-        <!-- Pyramide -->
-        <polygon points="300,60 200,240 400,240" fill="rgba(34,197,94,.1)" stroke="#22c55e" stroke-width="2"/>
-        <line x1="220" y1="200" x2="380" y2="200" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="3 2"/>
-        <line x1="240" y1="160" x2="360" y2="160" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="3 2"/>
-        <line x1="260" y1="120" x2="340" y2="120" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="3 2"/>
-        <text x="300" y="90" text-anchor="middle" font-size="11" fill="#22c55e" font-weight="800">§ 2 GRUNDPFLICHT</text>
-        <text x="300" y="140" text-anchor="middle" font-size="10" fill="#cbd5e1" font-weight="700">§ 3 Gefährdungs-Beurteilung</text>
-        <text x="300" y="180" text-anchor="middle" font-size="10" fill="#cbd5e1" font-weight="700">§ 4 Unterweisung jährlich</text>
-        <text x="300" y="220" text-anchor="middle" font-size="10" fill="#cbd5e1" font-weight="700">§§ 19—28 Organisation + Erste Hilfe</text>
-        <!-- Ersthelfer-Anzahl -->
-        <rect x="40" y="260" width="240" height="46" rx="6" fill="#1e293b" stroke="#fbbf24"/>
-        <text x="160" y="278" text-anchor="middle" font-size="11" fill="#fbbf24" font-weight="800">ERSTHELFER · § 26</text>
-        <text x="160" y="295" text-anchor="middle" font-size="11" fill="#22c55e" font-weight="900">Mind. 10 % der Beschäftigten</text>
-        <!-- Sibe -->
-        <rect x="320" y="260" width="240" height="46" rx="6" fill="#1e293b" stroke="#fbbf24"/>
-        <text x="440" y="278" text-anchor="middle" font-size="11" fill="#fbbf24" font-weight="800">SICHERHEITSBEAUFTRAGTE · § 20</text>
-        <text x="440" y="295" text-anchor="middle" font-size="11" fill="#22c55e" font-weight="900">Ab 21 Beschäftigten Pflicht</text>
+      <svg viewBox="0 0 600 330" xmlns="http://www.w3.org/2000/svg" class="ges-vis">
+        <rect width="600" height="330" fill="#0a0f1a"/>
+        <text x="300" y="26" text-anchor="middle" font-size="15" fill="#22c55e" font-weight="900">DGUV V1 · Wer muss was?</text>
+        <rect x="20" y="42" width="270" height="214" rx="10" fill="rgba(34,211,238,.06)" stroke="#22d3ee"/>
+        <text x="155" y="64" text-anchor="middle" font-size="12" fill="#22d3ee" font-weight="800">ARBEITGEBER</text>
+        ${[
+          ['fa-clipboard-list', 'Gefährdungsbeurteilung', '§ 3'],
+          ['fa-chalkboard-user', 'Unterweisung – jährlich', '§ 4'],
+          ['fa-vest', 'PSA bereitstellen', '§ 31'],
+          ['fa-kit-medical', 'Erste Hilfe organisieren', '§ 24'],
+        ].map(([ic, t, r], i) => `
+          <foreignObject x="34" y="${80 + i * 43}" width="26" height="26"><div xmlns="http://www.w3.org/1999/xhtml" style="color:#22d3ee;font-size:18px"><i class="fas ${ic}"></i></div></foreignObject>
+          <text x="70" y="${90 + i * 43}" font-size="11" fill="#cbd5e1" font-weight="700">${t}</text>
+          <text x="70" y="${104 + i * 43}" font-size="9" fill="#64748b">${r}</text>`).join('')}
+        <rect x="310" y="42" width="270" height="214" rx="10" fill="rgba(168,85,247,.06)" stroke="#a855f7"/>
+        <text x="445" y="64" text-anchor="middle" font-size="12" fill="#a855f7" font-weight="800">BESCHÄFTIGTE</text>
+        ${[
+          ['fa-circle-check', 'Weisungen befolgen', '§ 15'],
+          ['fa-vest-patches', 'PSA benutzen', '§ 30'],
+          ['fa-triangle-exclamation', 'Mängel sofort melden', '§ 16'],
+          ['fa-ban', 'Keine Gefährdung / Alkohol', '§ 15'],
+        ].map(([ic, t, r], i) => `
+          <foreignObject x="324" y="${80 + i * 43}" width="26" height="26"><div xmlns="http://www.w3.org/1999/xhtml" style="color:#a855f7;font-size:18px"><i class="fas ${ic}"></i></div></foreignObject>
+          <text x="360" y="${90 + i * 43}" font-size="11" fill="#cbd5e1" font-weight="700">${t}</text>
+          <text x="360" y="${104 + i * 43}" font-size="9" fill="#64748b">${r}</text>`).join('')}
+        <rect x="40" y="274" width="250" height="46" rx="6" fill="#1e293b" stroke="#fbbf24"/>
+        <text x="165" y="292" text-anchor="middle" font-size="10.5" fill="#fbbf24" font-weight="800">ERSTHELFER · § 26</text>
+        <text x="165" y="309" text-anchor="middle" font-size="11" fill="#22c55e" font-weight="900">mind. 10 % der Beschäftigten</text>
+        <rect x="310" y="274" width="250" height="46" rx="6" fill="#1e293b" stroke="#fbbf24"/>
+        <text x="435" y="292" text-anchor="middle" font-size="10" fill="#fbbf24" font-weight="800">SICHERHEITSBEAUFTRAGTE · § 20</text>
+        <text x="435" y="309" text-anchor="middle" font-size="11" fill="#22c55e" font-weight="900">ab 21 Beschäftigten Pflicht</text>
       </svg>`,
 
     'dguv23-themen': `
@@ -38844,23 +38875,25 @@ window.GESETZE_DB = (() => {
         <rect width="600" height="320" fill="#0a0f1a"/>
         <text x="300" y="28" text-anchor="middle" font-size="14" fill="#fbbf24" font-weight="900">DGUV V23 · Wach- &amp; Sicherungsdienste</text>
         ${[
-          ['fa-id-card','Eignung & Dienstanweisung','#22c55e',80,80,'§ 3-4'],
-          ['fa-shield','Ausrüstung','#22d3ee',300,80,'§ 10-11'],
-          ['fa-dog','Diensthunde','#a855f7',520,80,'§ 12-17'],
-          ['fa-gun','Schusswaffen','#dc2626',80,200,'§ 18-22'],
-          ['fa-tower-broadcast','Alarmzentralen','#06b6d4',300,200,'§ 23'],
-          ['fa-money-bill-trend-up','Geldtransport','#fbbf24',520,200,'§ 24-27'],
+          ['fa-id-card', 'Eignung & Dienstanweisung', '#22c55e', 85, 95, '§ 3-4'],
+          ['fa-helmet-safety', 'Schutzausrüstung', '#22d3ee', 235, 95, '§ 10-11'],
+          ['fa-dog', 'Diensthunde', '#a855f7', 385, 95, '§ 12-17'],
+          ['fa-gun', 'Schusswaffen', '#dc2626', 525, 95, '§ 18-22'],
+          ['fa-tower-broadcast', 'Alarmzentralen', '#06b6d4', 85, 215, '§ 23'],
+          ['fa-money-bill-trend-up', 'Geldtransport', '#fbbf24', 235, 215, '§ 24-27'],
+          ['fa-person-walking', 'Streife / Alleinarbeit', '#f97316', 385, 215, '§ 5'],
+          ['fa-kit-medical', 'Erste Hilfe', '#ef4444', 525, 215, '§ 8'],
         ].map(([icon, label, c, x, y, ref]) => `
           <g transform="translate(${x}, ${y})">
-            <circle r="32" fill="#1e293b" stroke="${c}" stroke-width="2"/>
+            <circle r="30" fill="#1e293b" stroke="${c}" stroke-width="2.5"/>
             <foreignObject x="-20" y="-20" width="40" height="40">
-              <div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;color:${c};font-size:22px"><i class="fas ${icon}"></i></div>
+              <div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;color:${c};font-size:20px"><i class="fas ${icon}"></i></div>
             </foreignObject>
-            <text x="0" y="50" text-anchor="middle" font-size="11" fill="${c}" font-weight="800">${label}</text>
-            <text x="0" y="64" text-anchor="middle" font-size="9" fill="#94a3b8">${ref}</text>
+            <text x="0" y="48" text-anchor="middle" font-size="10" fill="${c}" font-weight="800">${label}</text>
+            <text x="0" y="61" text-anchor="middle" font-size="9" fill="#94a3b8">${ref}</text>
           </g>
         `).join('')}
-        <text x="300" y="295" text-anchor="middle" font-size="11" fill="#fbbf24" font-weight="700">5 Abschnitte · 29 Paragraphen</text>
+        <text x="300" y="305" text-anchor="middle" font-size="11" fill="#fbbf24" font-weight="700">5 Abschnitte · 29 Paragraphen · UVV für Wach- und Sicherungsdienste</text>
       </svg>`,
 
     'kritis-prozess': `
