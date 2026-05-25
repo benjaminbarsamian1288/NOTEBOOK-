@@ -243,29 +243,8 @@ window.V = (() => {
       el('p', { text: 'Klassen-Matrix nach VdS 2333, DIN EN 50131-1 und DIN EN 1627-1630. Klicke eine Klasse für Details.' })
     ]));
 
-    // Visual RC progression bar (resistance time)
-    const rcTable = d.sicherungsklassen.tables.find(t => /RC|Widerstand/i.test(t.title));
-    if (rcTable) {
-      const rcCard = el('div', { class:'card', style:'padding:18px; margin-bottom:18px' });
-      rcCard.appendChild(el('div', { class:'card-h' }, [
-        el('div', { class:'ico', html:'<i class="fas fa-stopwatch"></i>' }),
-        el('h3', { text:'RC-Widerstandszeit visuell' })
-      ]));
-      const maxMin = 20; // RC 6 = 20 min
-      rcTable.rows.forEach(r => {
-        const t = (r['Widerstandszeit'] || '').match(/\d+/);
-        const mins = t ? +t[0] : 0;
-        const row = el('div', { class:'rcbar-row' });
-        row.appendChild(el('div', { class:'rclbl', text: r['RC-Klasse'] }));
-        const bar = el('div', { class:'rcbar' });
-        const fill = el('div', { class:'fill', style:`width:${(mins/maxMin*100).toFixed(0)}%` });
-        bar.appendChild(fill);
-        row.appendChild(bar);
-        row.appendChild(el('div', { class:'rcval', text: r['Widerstandszeit'] || '—' }));
-        rcCard.appendChild(row);
-      });
-      root.appendChild(rcCard);
-    }
+    // Animierte Übersichten (RC + SÜ)
+    if (window.KLASSENVIS) root.appendChild(KLASSENVIS.overview(d));
 
     d.sicherungsklassen.tables.forEach(t => {
       const wrap = el('div', { class: 'table-wrap' });
