@@ -21,6 +21,7 @@
     physik: () => PHYSIK.view(),
     videotechnik: () => VIDEOTECH.view(),
     sandbox: () => SANDBOX.view(),
+    plan: () => PLAN.view(),
     sensoren: () => SENSOREN.view(),
     begehung: () => BEGEHUNG.view(),
     galerie: (d) => GALLERY.view(d),
