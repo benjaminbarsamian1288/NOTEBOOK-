@@ -25,6 +25,10 @@ window.SENSOREN = (() => {
     return true;
   }
 
+  let _ac = null;
+  function AC() { if (!_ac) { try { _ac = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { _ac = null; } } if (_ac && _ac.state === 'suspended') _ac.resume(); return _ac; }
+  function beep(f, d) { const a = AC(); if (!a) return; const o = a.createOscillator(), g = a.createGain(); o.frequency.value = f; g.gain.value = 0.08; g.gain.exponentialRampToValueAtTime(0.0001, a.currentTime + d); o.connect(g).connect(a.destination); o.start(); o.stop(a.currentTime + d); }
+
   /* ===================== KAMERA-STUDIO ===================== */
   function cameraCard() {
     const c = card('fa-camera', 'Kamera-Studio · Front/Rück · IR · Thermal', 'Echte Kamera mit Sicherheits-Filtern',
@@ -187,17 +191,131 @@ window.SENSOREN = (() => {
     return c;
   }
 
+  /* ===================== ANTI-DIEBSTAHL-ALARM ===================== */
+  function theftCard() {
+    const c = card('fa-bell', 'Anti-Diebstahl · Bewegungsalarm', 'Handy bewegt → Sirene + Vibration + Blitz',
+      '<b>Das passiert hier:</b> Scharf schalten und das Handy hinlegen. Wird es bewegt oder angehoben, heult sofort eine Sirene, das Gerät vibriert und der Bildschirm blitzt rot. (Bewegungssensor + Ton + Vibration)');
+    const W = 560, H = 180; const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H }); const ctx = canvas.getContext('2d');
+    const status = el('div', { class: 'sens-status', text: 'entschärft' });
+    let armed = false, alarm = false, base = null, handler = null, siren = null, t = 0, armT = 0;
+    function startSiren() { const a = AC(); if (!a || siren) return; const o = a.createOscillator(), g = a.createGain(), lfo = a.createOscillator(), lg = a.createGain(); o.type = 'sawtooth'; o.frequency.value = 700; lfo.frequency.value = 5; lg.gain.value = 350; lfo.connect(lg).connect(o.frequency); g.gain.value = 0.09; o.connect(g).connect(a.destination); o.start(); lfo.start(); siren = { o, lfo }; }
+    function stopSiren() { if (siren) { try { siren.o.stop(); siren.lfo.stop(); } catch (e) {} siren = null; } }
+    function trigger() { if (alarm) return; alarm = true; startSiren(); if (navigator.vibrate) navigator.vibrate([300, 100, 300, 100, 600]); }
+    const armBtn = el('button', { class: 'btn primary', html: '<i class="fas fa-lock"></i> Scharf schalten' });
+    armBtn.addEventListener('click', async () => {
+      if (armed) { armed = false; alarm = false; stopSiren(); base = null; if (handler) { window.removeEventListener('devicemotion', handler); handler = null; } armBtn.className = 'btn primary'; armBtn.innerHTML = '<i class="fas fa-lock"></i> Scharf schalten'; return; }
+      if (!(await askMotion()) || typeof DeviceMotionEvent === 'undefined') { status.textContent = '⚠ Bewegungssensor nötig (Smartphone + https)'; status.className = 'sens-status bad'; return; }
+      AC(); armT = 180; armed = true; base = null; armBtn.className = 'btn'; armBtn.innerHTML = '<i class="fas fa-lock-open"></i> Entschärfen';
+      handler = e => { const a = e.accelerationIncludingGravity || {}; const m = Math.hypot(a.x || 0, a.y || 0, a.z || 0); if (base == null) base = m; if (armT <= 0 && Math.abs(m - base) > 3.5) trigger(); };
+      window.addEventListener('devicemotion', handler);
+    });
+    function draw() {
+      if (!canvas.isConnected) { stopSiren(); if (handler) window.removeEventListener('devicemotion', handler); return; }
+      t++; if (armT > 0) armT--;
+      ctx.fillStyle = alarm ? (Math.floor(t / 8) % 2 ? '#3b0a0a' : '#7f1d1d') : '#0b1424'; ctx.fillRect(0, 0, W, H);
+      ctx.textAlign = 'center'; ctx.font = '42px sans-serif'; ctx.fillText(alarm ? '🚨' : armed ? '🔒' : '🔓', W / 2, H / 2 - 4);
+      ctx.font = '14px sans-serif'; ctx.fillStyle = '#cbd5e1'; ctx.fillText(alarm ? 'ALARM – bewegt!' : armed ? (armT > 0 ? 'scharf in ' + Math.ceil(armT / 60) + ' s …' : 'scharf – nicht bewegen!') : 'entschärft', W / 2, H / 2 + 32);
+      status.textContent = alarm ? '🚨 ALARM' : armed ? 'scharf' : 'entschärft'; status.className = 'sens-status' + (alarm ? ' bad' : armed ? ' warn' : '');
+      requestAnimationFrame(draw);
+    }
+    requestAnimationFrame(draw);
+    c.append(canvas, el('div', { class: 'phys-ctrl phys-ctrl-btns' }, [armBtn, status]));
+    return c;
+  }
+
+  /* ===================== METALLDETEKTOR ===================== */
+  function metalCard() {
+    const c = card('fa-magnet', 'Metalldetektor · Magnetometer', 'Magnetfeld in µT messen',
+      '<b>Das passiert hier:</b> Das Magnetometer misst das Erdmagnetfeld. Näher das Handy an Metall/einen Magneten – die Feldstärke ändert sich, Zeiger + Ton zeigen den Fund. (Android/Chrome + https)');
+    const W = 560, H = 200; const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H }); const ctx = canvas.getContext('2d');
+    const status = el('div', { class: 'sens-status', text: 'inaktiv' }); const roF = ro('Feldstärke');
+    let sensor = null, base = null, val = 0, beepT = 0;
+    const btn = el('button', { class: 'btn primary', html: '<i class="fas fa-magnet"></i> aktivieren' });
+    btn.addEventListener('click', () => {
+      if (typeof Magnetometer === 'undefined') { status.textContent = '⚠ Magnetometer nicht unterstützt (Android Chrome + https)'; status.className = 'sens-status bad'; return; }
+      try { sensor = new Magnetometer({ frequency: 20 }); sensor.addEventListener('reading', () => { val = Math.hypot(sensor.x, sensor.y, sensor.z); if (base == null) base = val; }); sensor.addEventListener('error', ev => { status.textContent = '⚠ ' + ev.error.name; status.className = 'sens-status bad'; }); sensor.start(); btn.style.display = 'none'; cal.style.display = ''; status.textContent = 'aktiv'; status.className = 'sens-status ok'; AC(); } catch (e) { status.textContent = '⚠ kein Zugriff (https + Berechtigung)'; status.className = 'sens-status bad'; }
+    });
+    const cal = el('button', { class: 'btn', html: '<i class="fas fa-crosshairs"></i> Nullen', style: 'display:none' }); cal.addEventListener('click', () => base = val);
+    function draw() {
+      if (!canvas.isConnected) { if (sensor) try { sensor.stop(); } catch (e) {} return; }
+      const dev = base != null ? Math.abs(val - base) : 0;
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      const cx = W / 2, cy = 160; ctx.strokeStyle = 'rgba(148,163,184,0.3)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, 110, Math.PI, 0); ctx.stroke();
+      const ang = Math.PI + Math.min(1, dev / 80) * Math.PI; ctx.strokeStyle = dev > 15 ? '#ef4444' : '#22d3ee'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.cos(ang) * 100, cy + Math.sin(ang) * 100); ctx.stroke();
+      ctx.fillStyle = dev > 15 ? '#ef4444' : '#cbd5e1'; ctx.font = 'bold 22px monospace'; ctx.textAlign = 'center'; ctx.fillText(val ? Math.round(val) + ' µT' : '– µT', cx, 70);
+      if (dev > 15 && beepT <= 0) { beep(700 + dev * 4, 0.05); beepT = 8; } if (beepT > 0) beepT--;
+      roF.set((val ? Math.round(val) : '–') + ' µT (Δ ' + Math.round(dev) + ')', dev > 15 ? 'bad' : 'ok');
+      requestAnimationFrame(draw);
+    }
+    requestAnimationFrame(draw);
+    c.append(canvas, el('div', { class: 'phys-ctrl phys-ctrl-btns' }, [btn, cal, status]), el('div', { class: 'phys-ros' }, [roF.wrap]));
+    return c;
+  }
+
+  /* ===================== SIRENE / TONGENERATOR ===================== */
+  function sirenCard() {
+    const c = card('fa-volume-high', 'Sirene & Tongenerator', 'Handy als Signal/Abschreckung',
+      '<b>Das passiert hier:</b> Erzeuge laute Signaltöne über den Lautsprecher: Polizei-Sirene, Daueralarm oder Ultraschall (~17,5 kHz – v.a. für junge Ohren hörbar). „Stop" beendet.');
+    const W = 560, H = 130; const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H }); const ctx = canvas.getContext('2d');
+    let node = null, mode = 'aus', t = 0;
+    function stop() { if (node) { try { Array.isArray(node) ? node.forEach(n => n.stop()) : node.stop(); } catch (e) {} node = null; } mode = 'aus'; }
+    function siren() { stop(); const a = AC(); if (!a) return; const o = a.createOscillator(), g = a.createGain(), lfo = a.createOscillator(), lg = a.createGain(); o.type = 'sawtooth'; o.frequency.value = 650; lfo.frequency.value = 0.8; lg.gain.value = 360; lfo.connect(lg).connect(o.frequency); g.gain.value = 0.12; o.connect(g).connect(a.destination); o.start(); lfo.start(); node = [o, lfo]; mode = 'Sirene'; }
+    function tone(f, m) { stop(); const a = AC(); if (!a) return; const o = a.createOscillator(), g = a.createGain(); o.frequency.value = f; g.gain.value = 0.12; o.connect(g).connect(a.destination); o.start(); node = o; mode = m; }
+    const b1 = el('button', { class: 'btn primary', html: '<i class="fas fa-tower-broadcast"></i> Sirene' }); b1.addEventListener('click', siren);
+    const b2 = el('button', { class: 'btn', html: '<i class="fas fa-triangle-exclamation"></i> Daueralarm' }); b2.addEventListener('click', () => tone(1000, 'Alarm'));
+    const b3 = el('button', { class: 'btn', html: '<i class="fas fa-wave-square"></i> Ultraschall' }); b3.addEventListener('click', () => tone(17500, 'Ultraschall'));
+    const b4 = el('button', { class: 'btn', html: '<i class="fas fa-stop"></i> Stop' }); b4.addEventListener('click', stop);
+    function draw() { if (!canvas.isConnected) { stop(); return; } t += 0.2; ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H); const on = mode !== 'aus'; ctx.strokeStyle = on ? '#22d3ee' : '#334155'; ctx.lineWidth = 2; ctx.beginPath(); for (let x = 0; x < W; x++) { ctx.lineTo(x, H / 2 + Math.sin(x * 0.1 + t) * (on ? 30 : 4)); } ctx.stroke(); ctx.fillStyle = on ? '#22d3ee' : '#475569'; ctx.font = '14px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('Modus: ' + mode, W / 2, 24); requestAnimationFrame(draw); }
+    requestAnimationFrame(draw);
+    c.append(canvas, el('div', { class: 'phys-ctrl phys-ctrl-btns' }, [b1, b2, b3, b4]));
+    return c;
+  }
+
+  /* ===================== VIBRATION / HAPTIK ===================== */
+  function vibroCard() {
+    const c = card('fa-mobile-screen-button', 'Vibration · Haptik', 'Vibrationsmotor ansteuern',
+      '<b>Das passiert hier:</b> Das Handy als stiller Melder – verschiedene Vibrationsmuster (kurz, lang, SOS, Puls). Ideal als unauffälliges Signal. (Nur Smartphone)');
+    const W = 560, H = 130; const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H }); const ctx = canvas.getContext('2d');
+    const status = el('div', { class: 'sens-status', text: navigator.vibrate ? 'bereit' : '⚠ nicht unterstützt' });
+    if (!navigator.vibrate) status.className = 'sens-status bad';
+    let shake = 0;
+    function go(p, total) { if (navigator.vibrate) { navigator.vibrate(p); shake = total; } }
+    const b1 = el('button', { class: 'btn primary', html: 'Kurz' }); b1.addEventListener('click', () => go(200, 20));
+    const b2 = el('button', { class: 'btn', html: 'Lang' }); b2.addEventListener('click', () => go(800, 50));
+    const b3 = el('button', { class: 'btn', html: 'SOS' }); b3.addEventListener('click', () => go([150, 100, 150, 100, 150, 300, 400, 100, 400, 100, 400, 300, 150, 100, 150, 100, 150], 180));
+    const b4 = el('button', { class: 'btn', html: 'Puls' }); b4.addEventListener('click', () => go([120, 120, 120, 120, 120, 120], 60));
+    function draw() { if (!canvas.isConnected) return; ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H); const dx = shake > 0 ? (Math.random() - 0.5) * 12 : 0; if (shake > 0) shake--; ctx.font = '46px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('📳', W / 2 + dx, H / 2 + 16); requestAnimationFrame(draw); }
+    requestAnimationFrame(draw);
+    c.append(canvas, el('div', { class: 'phys-ctrl phys-ctrl-btns' }, [b1, b2, b3, b4, status]));
+    return c;
+  }
+
+  /* ===================== BATTERIE / NOTSTROM ===================== */
+  function batteryCard() {
+    const c = card('fa-battery-three-quarters', 'Batterie · Notstrom-Check', 'Akku-Status & Restlaufzeit',
+      '<b>Das passiert hier:</b> Zeigt Ladezustand und ob geladen wird – wie die Anzeige einer USV (unterbrechungsfreie Stromversorgung). So sieht man, wie lange ein akkubetriebenes Gerät noch durchhält.');
+    const W = 560, H = 170; const canvas = el('canvas', { class: 'phys-canvas', width: W, height: H }); const ctx = canvas.getContext('2d');
+    const status = el('div', { class: 'sens-status', text: '…' }); const roL = ro('Ladung'), roT = ro('Restlaufzeit');
+    let level = null, charging = false, dt = 0;
+    if (navigator.getBattery) { navigator.getBattery().then(b => { const up = () => { level = b.level; charging = b.charging; dt = b.dischargingTime; }; up(); b.addEventListener('levelchange', up); b.addEventListener('chargingchange', up); b.addEventListener('dischargingtimechange', up); status.textContent = 'aktiv'; status.className = 'sens-status ok'; }); }
+    else { status.textContent = '⚠ Battery-API nicht unterstützt (z.B. iOS/Safari)'; status.className = 'sens-status bad'; }
+    function draw() { if (!canvas.isConnected) return; ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H); const bx = 160, by = 50, bw = 240, bh = 80; ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 4; ctx.strokeRect(bx, by, bw, bh); ctx.fillStyle = '#94a3b8'; ctx.fillRect(bx + bw, by + 24, 12, 32); if (level != null) { const col = level > 0.5 ? '#22c55e' : level > 0.2 ? '#fbbf24' : '#ef4444'; ctx.fillStyle = col; ctx.fillRect(bx + 6, by + 6, (bw - 12) * level, bh - 12); ctx.fillStyle = '#fff'; ctx.font = 'bold 26px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(Math.round(level * 100) + '%', bx + bw / 2, by + bh / 2 + 9); if (charging) ctx.fillText('⚡', bx + bw / 2, by - 8); const tt = (dt && isFinite(dt) && dt > 0) ? Math.round(dt / 60) + ' min' : (charging ? 'lädt' : '—'); roL.set(Math.round(level * 100) + '%' + (charging ? ' ⚡' : ''), level > 0.2 ? 'ok' : 'bad'); roT.set(tt); } else { ctx.fillStyle = '#475569'; ctx.font = '14px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('Batterie-Status …', W / 2, H / 2); } requestAnimationFrame(draw); }
+    requestAnimationFrame(draw);
+    c.append(canvas, el('div', { class: 'phys-ctrl phys-ctrl-btns' }, [status]), el('div', { class: 'phys-ros' }, [roL.wrap, roT.wrap]));
+    return c;
+  }
+
   function view() {
     const root = el('div', { class: 'phys-view' });
     const intro = el('div', { class: 'phys-intro' });
     intro.innerHTML = `<span class="tag">Krass · echte Hardware</span>
       <h1>Dein Handy wird zum Sensor 📱</h1>
-      <p class="lead">Kamera, Mikrofon, Bewegungs- & Lagesensor und GPS deines Geräts werden zu echten Sicherheits-Tools –
-      mit Infrarot-Nachtsicht, Wärmebild-Look, Bewegungs-Heatmap, Schallpegel, Wasserwaage, Kompass und Geofence.</p>`;
+      <p class="lead">11 echte Geräte-Tools: Kamera (IR/Thermal/Kanten), Anti-Diebstahl-Alarm, Mikrofon + dB, Sirene & Ultraschall,
+      Erschütterung, Metalldetektor, Vibration, Wasserwaage, Kompass, Batterie/Notstrom und GPS-Geofence.</p>`;
     if (!window.isSecureContext) intro.appendChild(el('div', { class: 'sens-warn', html: '⚠ <b>Wichtig:</b> Kamera, Mikrofon, Lage-/Bewegungssensor und GPS funktionieren nur über eine <b>https-Adresse</b> (oder localhost) – nicht beim Doppelklick auf die Datei. Öffne die App über den Online-Link (GitHub Pages).' }));
     root.appendChild(intro);
     const grid = el('div', { class: 'phys-grid' });
-    [cameraCard(), micCard(), motionCard(), levelCard(), compassCard(), gpsCard()].forEach(c => grid.appendChild(c));
+    [cameraCard(), theftCard(), micCard(), sirenCard(), motionCard(), metalCard(), vibroCard(), levelCard(), compassCard(), batteryCard(), gpsCard()].forEach(c => grid.appendChild(c));
     root.appendChild(grid);
     return root;
   }
