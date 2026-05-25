@@ -354,6 +354,97 @@ window.VIDEOTECH = (() => {
       praxis: 'Beim Planen alle Glieder bedenken: Kameraposition, Kabelweg/Strom, Recorder-Speicher, Anzeige/Fernzugriff und Datenschutz (Hinweisschild, Speicherdauer).', body: el('div', {}, [canvas]) });
   }
 
+  /* === GERÄTE & PLANUNG === */
+  function kameraTypenSim() {
+    const W = 560, H = 300, canvas = el('canvas', { class: 'phys-canvas', width: W, height: H }), ctx = canvas.getContext('2d');
+    const types = [
+      { k: 'dome', n: 'Dome', use: 'Decke innen/außen, unauffällig, vandalismusgeschützt – Blickrichtung von außen schwer erkennbar.' },
+      { k: 'bullet', n: 'Bullet', use: 'Außen, gerichtet (Einfahrt, Zaun), mit Sonnenblende – sichtbare Abschreckung.' },
+      { k: 'turret', n: 'Turret', use: 'Innen/außen, weniger Reflexionen als Dome, leicht auszurichten – sehr beliebt.' },
+      { k: 'ptz', n: 'PTZ', use: 'Schwenken/Neigen/Zoom – große Flächen aktiv verfolgen, von der Leitstelle steuerbar.' },
+      { k: 'fisheye', n: 'Fisheye 360°', use: 'Eine Kamera für den ganzen Raum (360°), Bild wird per Software entzerrt.' },
+    ];
+    let sel = 'dome'; const ro = (function () { const w = el('div', { class: 'phys-ro' }); const v = el('span', { class: 'phys-ro-v', text: '–' }); w.appendChild(el('span', { class: 'phys-ro-l', text: 'Einsatz' })); w.appendChild(v); return { wrap: w, set: t => v.textContent = t }; })();
+    function cam(type, cx, cy, s, c) {
+      ctx.strokeStyle = c; ctx.fillStyle = c + '33'; ctx.lineWidth = 3;
+      if (type === 'dome') { ctx.fillStyle = '#334155'; ctx.fillRect(cx - 55 * s, cy - 70 * s, 110 * s, 16 * s); ctx.fillStyle = c + '33'; ctx.beginPath(); ctx.arc(cx, cy - 54 * s, 48 * s, 0, Math.PI); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#0b1424'; ctx.beginPath(); ctx.arc(cx, cy - 30 * s, 12 * s, 0, 7); ctx.fill(); }
+      else if (type === 'bullet') { ctx.fillStyle = c + '33'; ctx.beginPath(); ctx.roundRect(cx - 70 * s, cy - 22 * s, 130 * s, 44 * s, 12 * s); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#334155'; ctx.fillRect(cx - 80 * s, cy - 30 * s, 120 * s, 8 * s); ctx.fillStyle = '#0b1424'; ctx.beginPath(); ctx.arc(cx + 58 * s, cy, 16 * s, 0, 7); ctx.fill(); ctx.strokeStyle = '#475569'; ctx.beginPath(); ctx.moveTo(cx - 60 * s, cy + 22 * s); ctx.lineTo(cx - 60 * s, cy + 50 * s); ctx.stroke(); }
+      else if (type === 'turret') { ctx.fillStyle = '#334155'; ctx.fillRect(cx - 50 * s, cy + 30 * s, 100 * s, 12 * s); ctx.fillStyle = c + '22'; ctx.beginPath(); ctx.arc(cx, cy + 30 * s, 50 * s, Math.PI, 0); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#0b1424'; ctx.beginPath(); ctx.arc(cx + 8 * s, cy + 6 * s, 24 * s, 0, 7); ctx.fill(); ctx.fillStyle = c; ctx.beginPath(); ctx.arc(cx + 14 * s, cy + 2 * s, 7 * s, 0, 7); ctx.fill(); }
+      else if (type === 'ptz') { ctx.fillStyle = '#334155'; ctx.fillRect(cx - 40 * s, cy - 78 * s, 80 * s, 14 * s); ctx.fillStyle = c + '33'; ctx.beginPath(); ctx.arc(cx, cy - 30 * s, 50 * s, 0, 7); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#0b1424'; ctx.beginPath(); ctx.arc(cx, cy - 14 * s, 18 * s, 0, 7); ctx.fill(); ctx.strokeStyle = c; ctx.lineWidth = 2; for (let a = 0; a < 4; a++) { const an = a * Math.PI / 2 + Date.now() / 600; ctx.beginPath(); ctx.arc(cx, cy - 30 * s, 60 * s, an, an + 0.5); ctx.stroke(); } }
+      else { ctx.fillStyle = c + '22'; ctx.beginPath(); ctx.arc(cx, cy, 56 * s, 0, 7); ctx.fill(); ctx.stroke(); ctx.setLineDash([4, 4]); for (let a = 0; a < 12; a++) { const an = a * Math.PI / 6; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.cos(an) * 56 * s, cy + Math.sin(an) * 56 * s); ctx.stroke(); } ctx.setLineDash([]); ctx.fillStyle = '#0b1424'; ctx.beginPath(); ctx.arc(cx, cy, 16 * s, 0, 7); ctx.fill(); ctx.fillStyle = c; ctx.font = (11 * s) + 'px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('360°', cx, cy + 4); }
+    }
+    function draw() { ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H); cam(sel, W / 2, H / 2, 1.5, '#22d3ee'); ctx.fillStyle = '#cbd5e1'; ctx.font = '15px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(types.find(t => t.k === sel).n, W / 2, H - 16); }
+    loop(canvas, draw);
+    const btns = types.map(t => { const b = el('button', { class: 'btn' + (t.k === sel ? ' primary' : ''), text: t.n }); b.addEventListener('click', () => { sel = t.k; ro.set(t.use); row.querySelectorAll('.btn').forEach(x => x.className = 'btn'); b.className = 'btn primary'; }); return b; });
+    const row = el('div', { class: 'phys-ctrl phys-ctrl-btns' }, btns); ro.set(types[0].use);
+    return vcard({ icon: 'fa-camera', title: 'F · Kamera-Bauformen', sub: 'Dome · Bullet · Turret · PTZ · Fisheye',
+      was: 'Die Bauform bestimmt Montage, Abschreckung und Blickfeld – wähle nach Einsatzort.',
+      detail: '<b>Dome</b> dezent an der Decke; <b>Bullet</b> gerichtet mit Sonnenblende; <b>Turret</b> reflexionsarm & beliebt; <b>PTZ</b> motorisiert schwenk-/zoombar; <b>Fisheye</b> deckt 360° ab (Software-Entzerrung).',
+      praxis: 'Einfahrt/Zaun → Bullet; Eingang/Raum innen → Dome/Turret; große Fläche aktiv → PTZ; ganzer Raum mit einer Kamera → Fisheye.',
+      body: el('div', {}, [canvas, row, el('div', { class: 'phys-ros' }, [ro.wrap])]) });
+  }
+
+  function anschluesseSim() {
+    const W = 560, H = 300, canvas = el('canvas', { class: 'phys-canvas', width: W, height: H }), ctx = canvas.getContext('2d');
+    let ip = false;
+    function bnc(x, y, s) { ctx.strokeStyle = '#fbbf24'; ctx.fillStyle = '#1e293b'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, 16 * s, 0, 7); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(x, y, 5 * s, 0, 7); ctx.fill(); ctx.strokeStyle = '#94a3b8'; ctx.beginPath(); ctx.arc(x, y, 11 * s, 0, 7); ctx.stroke(); }
+    function rj45(x, y, s) { ctx.fillStyle = '#1e293b'; ctx.strokeStyle = '#22c55e'; ctx.lineWidth = 2; ctx.fillRect(x - 16 * s, y - 12 * s, 32 * s, 22 * s); ctx.strokeRect(x - 16 * s, y - 12 * s, 32 * s, 22 * s); ctx.fillStyle = '#22c55e'; ctx.fillRect(x - 5 * s, y + 10 * s, 10 * s, 5 * s); ctx.fillStyle = '#fbbf24'; for (let i = 0; i < 8; i++) ctx.fillRect(x - 14 * s + i * 3.6 * s, y - 12 * s, 2 * s, 7 * s); }
+    function dc(x, y, s) { ctx.fillStyle = '#1e293b'; ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, 14 * s, 0, 7); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(x, y, 4 * s, 0, 7); ctx.fill(); }
+    function draw() {
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = '#22d3ee'; ctx.font = '13px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(ip ? 'IP-Kamera: 1 Buchse genügt' : 'Analog-Kamera: Video + Strom getrennt', W / 2, 30);
+      ctx.fillStyle = '#1e293b'; ctx.fillRect(W / 2 - 130, 55, 260, 90); ctx.strokeStyle = '#475569'; ctx.strokeRect(W / 2 - 130, 55, 260, 90);
+      ctx.fillStyle = '#94a3b8'; ctx.font = '11px sans-serif'; ctx.fillText('Anschlussfeld der Kamera', W / 2, 70);
+      if (ip) { rj45(W / 2, 110, 1.4); ctx.fillStyle = '#22c55e'; ctx.fillText('RJ45 · PoE (Strom + Daten)', W / 2, 138); }
+      else { bnc(W / 2 - 50, 110, 1.3); ctx.fillStyle = '#fbbf24'; ctx.fillText('BNC · Video', W / 2 - 50, 138); dc(W / 2 + 55, 110, 1.3); ctx.fillStyle = '#ef4444'; ctx.fillText('DC · 12 V Strom', W / 2 + 55, 138); }
+      // Legende
+      ctx.textAlign = 'center'; const ly = 210;
+      bnc(120, ly, 1.2); ctx.fillStyle = '#fbbf24'; ctx.fillText('BNC', 120, ly + 30); ctx.fillStyle = '#94a3b8'; ctx.font = '10px sans-serif'; ctx.fillText('Koax · Analog', 120, ly + 44); ctx.font = '11px sans-serif';
+      rj45(280, ly, 1.2); ctx.fillStyle = '#22c55e'; ctx.fillText('RJ45', 280, ly + 30); ctx.fillStyle = '#94a3b8'; ctx.font = '10px sans-serif'; ctx.fillText('Netzwerk · PoE', 280, ly + 44); ctx.font = '11px sans-serif';
+      dc(440, ly, 1.2); ctx.fillStyle = '#ef4444'; ctx.fillText('DC-Hohlstecker', 440, ly + 30); ctx.fillStyle = '#94a3b8'; ctx.font = '10px sans-serif'; ctx.fillText('12 V Strom', 440, ly + 44);
+    }
+    loop(canvas, draw);
+    const b = el('button', { class: 'btn', html: '<i class="fas fa-plug"></i> Analog-Anschluss' });
+    b.addEventListener('click', () => { ip = !ip; b.className = 'btn' + (ip ? ' primary' : ''); b.innerHTML = ip ? '<i class="fas fa-plug"></i> IP-Anschluss (PoE)' : '<i class="fas fa-plug"></i> Analog-Anschluss'; });
+    return vcard({ icon: 'fa-plug-circle-bolt', title: 'G · Anschlüsse & Stecker', sub: 'BNC · RJ45 · DC – was wohin',
+      was: 'Jede Kamera hat passende Buchsen. Analog braucht meist zwei Kabel (Video + Strom), IP nur eines.',
+      detail: '<b>BNC</b> (runder Bajonett-Stecker) führt das analoge Videosignal übers Koaxkabel. <b>RJ45</b> ist der Netzwerkstecker; mit <b>PoE</b> kommen Strom und Daten über dasselbe Kabel. Der <b>DC-Hohlstecker</b> versorgt analoge Kameras mit 12 V.',
+      praxis: 'IP/PoE spart Verkabelung (1 Kabel, 1 Switch). Bei Analog immer Video- und Stromweg getrennt planen.',
+      body: el('div', {}, [canvas, el('div', { class: 'phys-ctrl phys-ctrl-btns' }, [b])]) });
+  }
+
+  function speicherRechnerSim() {
+    const W = 560, H = 180, canvas = el('canvas', { class: 'phys-canvas', width: W, height: H }), ctx = canvas.getContext('2d');
+    const RES = [['2 MP · 1080p', 4000], ['4 MP', 8000], ['8 MP · 4K', 16000]];
+    let cams = 8, ri = 1, fps = 15, tage = 14, h265 = true, motion = true;
+    const roCam = (function () { const w = el('div', { class: 'phys-ro' }); const v = el('span', { class: 'phys-ro-v' }); w.append(el('span', { class: 'phys-ro-l', text: 'pro Kamera/Tag' }), v); return { wrap: w, set: t => v.textContent = t }; })();
+    const roTot = (function () { const w = el('div', { class: 'phys-ro' }); const v = el('span', { class: 'phys-ro-v' }); w.append(el('span', { class: 'phys-ro-l', text: 'Gesamt-Speicher' }), v); return { wrap: w, set: (t, c) => { v.textContent = t; v.className = 'phys-ro-v ' + (c || ''); } }; })();
+    function calc() { const base = RES[ri][1]; const per = base * (fps / 25) * (h265 ? 0.5 : 1) * (motion ? 0.4 : 1); const gbDay = per * 1000 / 8 * 86400 / 1e9; const tb = gbDay * cams * tage / 1000; return { gbDay, tb }; }
+    function draw() {
+      const r = calc(); ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      // HDD
+      ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 3; ctx.strokeRect(30, 40, 150, 90); const fill = Math.min(1, r.tb / 20);
+      ctx.fillStyle = r.tb > 16 ? '#ef4444' : r.tb > 8 ? '#fbbf24' : '#22c55e'; ctx.fillRect(34, 44 + (82) * (1 - fill), 142, 82 * fill);
+      ctx.fillStyle = '#94a3b8'; ctx.font = '11px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('Festplatte', 105, 148);
+      ctx.fillStyle = '#e2e8f0'; ctx.font = '900 40px sans-serif'; ctx.textAlign = 'left'; ctx.fillText(r.tb.toFixed(1) + ' TB', 220, 80);
+      ctx.fillStyle = '#94a3b8'; ctx.font = '13px sans-serif'; ctx.fillText(cams + ' Kameras · ' + tage + ' Tage · ' + (h265 ? 'H.265' : 'H.264') + ' · ' + (motion ? 'bei Bewegung' : 'Dauer'), 220, 105);
+      roCam.set(r.gbDay.toFixed(1) + ' GB'); roTot.set(r.tb.toFixed(1) + ' TB', r.tb > 16 ? 'bad' : 'ok');
+    }
+    loop(canvas, draw);
+    const sl = (lbl, min, max, val, step, cb) => { const s = el('input', { type: 'range', min, max, step: step || '1', value: val, class: 'phys-slider' }); s.addEventListener('input', () => cb(+s.value)); return el('div', { class: 'phys-ctrl' }, [el('label', { text: lbl, style: 'min-width:130px' }), s]); };
+    const resBtns = RES.map((r, i) => { const b = el('button', { class: 'btn' + (i === ri ? ' primary' : '') }); b.textContent = r[0]; b.addEventListener('click', () => { ri = i; resRow.querySelectorAll('.btn').forEach(x => x.className = 'btn'); b.className = 'btn primary'; }); return b; });
+    const resRow = el('div', { class: 'phys-ctrl phys-ctrl-btns' }, resBtns);
+    const h = el('button', { class: 'btn primary', text: 'H.265' }); h.addEventListener('click', () => { h265 = !h265; h.className = 'btn' + (h265 ? ' primary' : ''); h.textContent = h265 ? 'H.265' : 'H.264'; });
+    const mo = el('button', { class: 'btn primary', text: 'bei Bewegung' }); mo.addEventListener('click', () => { motion = !motion; mo.className = 'btn' + (motion ? ' primary' : ''); mo.textContent = motion ? 'bei Bewegung' : 'Daueraufnahme'; });
+    const body = el('div', {}, [canvas, resRow,
+      sl('Kameras', '1', '64', '8', '1', v => cams = v), sl('Bildrate (fps)', '1', '30', '15', '1', v => fps = v), sl('Aufbewahrung (Tage)', '1', '90', '14', '1', v => tage = v),
+      el('div', { class: 'phys-ctrl phys-ctrl-btns' }, [h, mo]), el('div', { class: 'phys-ros' }, [roCam.wrap, roTot.wrap])]);
+    return vcard({ icon: 'fa-database', title: 'H · Speicher-Rechner', sub: 'Wie viele TB brauche ich?',
+      was: 'Schätzt den nötigen Festplatten-Speicher aus Kamerazahl, Auflösung, Bildrate, Aufbewahrungsdauer, Codec und Aufnahmemodus.',
+      detail: 'Speicher = Bitrate × Zeit × Kameras. Höhere Auflösung/fps → mehr Bitrate. <b>H.265</b> halbiert sie, <b>Aufnahme bei Bewegung</b> spart oft ~60 %. Faustwerte – reale Werte je nach Szene/Hersteller.',
+      praxis: 'Immer Reserve einplanen (RAID, Ausfall, Mehraufnahmen). Lange Aufbewahrung + viele 4K-Kameras = schnell zweistellige TB.', body });
+  }
+
   function view() {
     const root = el('div', { class: 'phys-view' });
     const intro = el('div', { class: 'phys-intro' });
@@ -366,6 +457,7 @@ window.VIDEOTECH = (() => {
       { label: 'Grundlagen · So funktioniert es (einfach & animiert)', sims: [kameraGrundlageSim, analogIpSim, recorderSim, uebertragungSim, systemSim] },
       { label: 'Aufnahme · Belichtung & Licht', sims: [exposureSim, tagNachtSim, wdrSim] },
       { label: 'Bild · Auflösung & Kompression', sims: [aufloesungSim, kompressionSim, bildrateSim] },
+      { label: 'Geräte & Planung', sims: [kameraTypenSim, anschluesseSim, speicherRechnerSim] },
       { label: 'Auswertung · Analytics', sims: [analyticsSim] },
     ];
     cats.forEach(c => { root.appendChild(el('div', { class: 'phys-cat', text: c.label })); const g = el('div', { class: 'phys-grid' }); c.sims.forEach(fn => g.appendChild(fn())); root.appendChild(g); });
