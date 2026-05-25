@@ -43296,33 +43296,41 @@ window.DATEN = (() => {
   /* 1 · Spannungsimpulse & Takt */
   function spannungSim() {
     const W = 560, H = 300, canvas = el('canvas', { class: 'phys-canvas', width: W, height: H }), ctx = canvas.getContext('2d');
-    let byte = [0, 1, 0, 0, 1, 1, 0, 1], prog = 0, recv = [];
+    let byte = [1, 0, 1, 1, 0, 0, 1, 0], prog = 0, recv = [], speed = 1; const PER = 60;
     function rnd() { byte = Array.from({ length: 8 }, () => Math.random() < 0.5 ? 0 : 1); prog = 0; recv = []; }
+    function lamp(x, y, on, col) { if (on) { ctx.save(); ctx.shadowColor = col; ctx.shadowBlur = 26; ctx.fillStyle = col; ctx.beginPath(); ctx.arc(x, y, 15, 0, 7); ctx.fill(); ctx.restore(); } else { ctx.fillStyle = '#16202f'; ctx.strokeStyle = '#334155'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, 15, 0, 7); ctx.fill(); ctx.stroke(); } }
     function draw() {
-      prog += 0.02; if (prog > 9) { prog = 0; recv = []; }
+      prog += speed / PER; const bi = Math.floor(prog), frac = prog - bi;
+      if (bi < 8 && frac > 0.82 && recv.length === bi) recv.push(byte[bi]);
+      while (recv.length < Math.min(bi, 8)) recv.push(byte[recv.length]);
+      if (prog > 9.2) { prog = 0; recv = []; }
+      const cur = bi < 8 ? byte[bi] : null;
       ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
-      const L = 74, R = W - 28, span = R - L, bw = span / 8, hi = 92, lo = 184, thr = 138;
-      ctx.strokeStyle = 'rgba(148,163,184,0.3)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(L, 74); ctx.lineTo(L, 206); ctx.lineTo(R, 206); ctx.stroke();
-      ctx.fillStyle = '#64748b'; ctx.font = '10px sans-serif'; ctx.textAlign = 'right'; ctx.fillText('+3,3 V', L - 6, hi + 4); ctx.fillText('0 V', L - 6, lo + 4);
-      for (let i = 0; i <= 8; i++) { const x = L + i * bw; ctx.strokeStyle = 'rgba(34,211,238,0.14)'; ctx.beginPath(); ctx.moveTo(x, 76); ctx.lineTo(x, 206); ctx.stroke(); }
-      ctx.fillStyle = '#475569'; ctx.textAlign = 'center'; ctx.fillText('← 1 Takt →', L + bw * 0.5, 220);
-      ctx.setLineDash([5, 4]); ctx.strokeStyle = 'rgba(251,191,36,0.6)'; ctx.beginPath(); ctx.moveTo(L, thr); ctx.lineTo(R, thr); ctx.stroke(); ctx.setLineDash([]); ctx.fillStyle = '#fbbf24'; ctx.textAlign = 'left'; ctx.fillText('Schwelle (oben=1, unten=0)', L + 4, thr - 5);
-      ctx.save(); ctx.shadowColor = '#22d3ee'; ctx.shadowBlur = 12; ctx.strokeStyle = '#22d3ee'; ctx.lineWidth = 3; ctx.beginPath();
-      for (let i = 0; i < 8; i++) { const x0 = L + i * bw, x1 = x0 + bw, y = byte[i] ? hi : lo; i ? ctx.lineTo(x0, y) : ctx.moveTo(x0, y); ctx.lineTo(x1, y); } ctx.stroke(); ctx.restore();
-      for (let i = 0; i < 8; i++) { ctx.fillStyle = byte[i] ? '#22d3ee' : '#64748b'; ctx.font = 'bold 13px monospace'; ctx.textAlign = 'center'; ctx.fillText(byte[i], L + (i + 0.5) * bw, byte[i] ? hi - 12 : lo + 22); }
-      const idx = Math.floor(prog - 0.5); while (recv.length < idx + 1 && recv.length < 8) recv.push(byte[recv.length]);
-      recv.forEach((b, i) => { ctx.fillStyle = '#22c55e'; ctx.beginPath(); ctx.arc(L + (i + 0.5) * bw, b ? hi : lo, 5, 0, 7); ctx.fill(); });
-      if (prog < 8) { const hx = L + prog * bw; ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(hx, 76); ctx.lineTo(hx, 206); ctx.stroke(); ctx.fillStyle = '#ef4444'; ctx.font = '10px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('Empfänger misst', Math.max(L + 40, Math.min(hx, R - 40)), 70); }
-      ctx.fillStyle = '#cbd5e1'; ctx.font = '14px monospace'; ctx.textAlign = 'left'; ctx.fillText('Empfangen: ' + recv.join('') + '·'.repeat(8 - recv.length), L, 250);
-      if (recv.length === 8) { const dec = parseInt(recv.join(''), 2); const ch = dec >= 33 && dec < 127 ? String.fromCharCode(dec) : '·'; ctx.fillStyle = '#22c55e'; ctx.fillText('= ' + dec + '  →  1 Byte  →  Zeichen „' + ch + '"', L, 272); }
+      ctx.textAlign = 'center';
+      if (bi < 8) { ctx.fillStyle = '#94a3b8'; ctx.font = '13px sans-serif'; ctx.fillText('Bit ' + (bi + 1) + ' von 8 wird gesendet:', W / 2, 22); ctx.fillStyle = cur ? '#fbbf24' : '#64748b'; ctx.font = '900 24px sans-serif'; ctx.fillText(cur ? '1  →  Strom AN  💡' : '0  →  Strom AUS  ⚫', W / 2, 50); }
+      else { const dec = parseInt(recv.join(''), 2); const ch = dec >= 33 && dec < 127 ? String.fromCharCode(dec) : '·'; ctx.fillStyle = '#22c55e'; ctx.font = '900 19px sans-serif'; ctx.fillText('✓ 8 Bit = 1 Byte = Zahl ' + dec + ' = „' + ch + '"', W / 2, 44); }
+      const sx = 70, rx = W - 70, wy = 95;
+      ctx.strokeStyle = '#3a3320'; ctx.lineWidth = 10; ctx.beginPath(); ctx.moveTo(sx + 16, wy); ctx.lineTo(rx - 16, wy); ctx.stroke();
+      ctx.strokeStyle = '#7c5018'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(sx + 16, wy); ctx.lineTo(rx - 16, wy); ctx.stroke();
+      if (bi < 8) { const px = sx + 16 + (rx - sx - 32) * frac; if (cur) { ctx.save(); ctx.shadowColor = '#fbbf24'; ctx.shadowBlur = 18; ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(px, wy, 8, 0, 7); ctx.fill(); ctx.restore(); } else { ctx.strokeStyle = '#475569'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(px, wy, 7, 0, 7); ctx.stroke(); } }
+      lamp(sx, wy, cur === 1, '#fbbf24'); lamp(rx, wy, bi < 8 && frac > 0.82 && cur === 1, '#22c55e');
+      ctx.fillStyle = '#94a3b8'; ctx.font = '11px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('Sender', sx, wy + 32); ctx.fillText('Empfänger', rx, wy + 32);
+      ctx.textAlign = 'left'; ctx.fillStyle = '#64748b'; ctx.font = '11px sans-serif'; ctx.fillText('Byte:', 24, 146);
+      for (let i = 0; i < 8; i++) { const x = 78 + i * 50; ctx.fillStyle = i === bi ? (cur ? '#3a2f10' : '#1e293b') : '#16202f'; ctx.fillRect(x - 14, 150, 28, 26); if (i === bi) { ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2; ctx.strokeRect(x - 14, 150, 28, 26); } ctx.fillStyle = i <= bi ? '#e2e8f0' : '#475569'; ctx.textAlign = 'center'; ctx.font = 'bold 14px monospace'; ctx.fillText(byte[i], x, 168); }
+      ctx.textAlign = 'left'; ctx.fillStyle = '#64748b'; ctx.font = '11px sans-serif'; ctx.fillText('empfangen:', 24, 198);
+      for (let i = 0; i < 8; i++) { const x = 78 + i * 50; ctx.fillStyle = i < recv.length ? '#14331f' : '#16202f'; ctx.fillRect(x - 14, 202, 28, 26); ctx.strokeStyle = 'rgba(34,197,94,0.3)'; ctx.lineWidth = 1; ctx.strokeRect(x - 14, 202, 28, 26); ctx.fillStyle = '#22c55e'; ctx.textAlign = 'center'; ctx.font = 'bold 14px monospace'; ctx.fillText(i < recv.length ? recv[i] : '', x, 220); }
+      ctx.textAlign = 'left'; ctx.fillStyle = '#64748b'; ctx.font = '11px sans-serif'; ctx.fillText('als Spannung (1 = hoch, 0 = tief):', 24, 250);
+      const gy = 284, gh = 24; ctx.strokeStyle = '#22d3ee'; ctx.lineWidth = 2; ctx.beginPath(); let stt = false;
+      for (let i = 0; i < recv.length; i++) { const x0 = 78 + i * 50 - 14, x1 = x0 + 28, y = recv[i] ? gy - gh : gy; stt ? ctx.lineTo(x0, y) : (ctx.moveTo(x0, y), stt = true); ctx.lineTo(x1, y); } ctx.stroke();
     }
     loop(canvas, draw);
     const b = el('button', { class: 'btn primary', html: '<i class="fas fa-shuffle"></i> Neues Byte senden' }); b.addEventListener('click', rnd);
-    return vcard({ icon: 'fa-wave-square', title: '1 · Spannungsimpulse & Takt', sub: 'Wie 0 und 1 zu Spannung werden',
-      was: 'Daten reisen als <b>Spannungsimpulse</b>: eine höhere Spannung bedeutet „1", eine niedrigere „0". Der Sender legt im festen <b>Takt</b> (Clock) Spannung an, der Empfänger misst sie.',
-      detail: 'Pro Takt-Schritt steht ein Bit. Liegt die Spannung über der <b>Schwelle</b> → 1, darunter → 0 (Rechtecksignal/NRZ = Non-Return-to-Zero). Der rote Balken ist der Empfänger, der genau in der Takt-Mitte abtastet (grüne Punkte) und so Bit für Bit zusammensetzt: 8 Bit = 1 Byte = eine Zahl (0–255) = z. B. ein Zeichen.',
-      praxis: 'Sender und Empfänger müssen den <b>gleichen Takt</b> kennen, sonst werden Bits falsch gelesen. „Neues Byte" zeigt, wie aus Pegeln eine Zahl/ein Zeichen wird.',
-      body: el('div', {}, [canvas, el('div', { class: 'phys-ctrl phys-ctrl-btns' }, [b])]) });
+    const sp = el('input', { type: 'range', min: '0.4', max: '3', step: '0.2', value: '1', class: 'phys-slider' }); sp.addEventListener('input', () => speed = +sp.value);
+    return vcard({ icon: 'fa-lightbulb', title: '1 · Was ist ein Bit? (Strom an / aus)', sub: 'Ganz einfach: 1 = an, 0 = aus',
+      was: 'Ein <b>Bit</b> ist die kleinste Information – nur <b>0 oder 1</b>. Stell es dir wie einen Lichtschalter vor: <b>1 = Strom AN</b> 💡, <b>0 = Strom AUS</b> ⚫. Der Sender schaltet, der Empfänger schaut: leuchtet es (1) oder nicht (0)?',
+      detail: 'Bit für Bit wandert ein kleiner Strom-Puls durchs Kabel. <b>8 Bit = 1 Byte</b> = eine Zahl von 0 bis 255 = z. B. ein Buchstabe. „AN/AUS" ist technisch nur eine höhere/niedrigere <b>Spannung</b> – siehst du unten als Treppen-Kurve.',
+      praxis: 'Alles Digitale – Bild, Ton, Text – besteht am Ende aus ganz vielen 0/1. Mit dem <b>Tempo</b>-Regler langsamer stellen und Bit für Bit zuschauen.',
+      body: el('div', {}, [canvas, el('div', { class: 'phys-ctrl phys-ctrl-btns' }, [b]), el('div', { class: 'phys-ctrl' }, [el('label', { text: 'Tempo' }), sp])]) });
   }
 
   /* 2 · Bandbreite */
