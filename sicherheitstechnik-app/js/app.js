@@ -24,6 +24,7 @@
     plan: () => PLAN.view(),
     sensoren: () => SENSOREN.view(),
     begehung: () => BEGEHUNG.view(),
+    game3d: () => GAME3D.view(),
     galerie: (d) => GALLERY.view(d),
     zwiebel3d: (d) => ZWIEBEL3D.view(d),
     haus3d: (d) => HAUS3D.view(d),

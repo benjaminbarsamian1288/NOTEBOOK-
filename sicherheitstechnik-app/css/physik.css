@@ -177,6 +177,23 @@
 }
 .beg-pad:active { background: #22d3ee; color: #0b1424; }
 
+/* 3D-Einbruch-Spiel HUD */
+.g3-wrap { position: relative; }
+.g3-hud { position: absolute; top: 10px; left: 10px; right: 10px; pointer-events: none; }
+.g3-row { display: flex; justify-content: space-between; align-items: center; }
+.g3-phase { background: rgba(2,6,12,0.6); color: #7dd3fc; font-weight: 800; font-size: 13px; padding: 4px 10px; border-radius: 8px; display: inline-block; }
+.g3-alarm { background: rgba(2,6,12,0.6); color: #e2e8f0; font-weight: 800; font-size: 13px; padding: 4px 10px; border-radius: 8px; font-variant-numeric: tabular-nums; }
+.g3-bar { height: 12px; background: rgba(2,6,12,0.6); border-radius: 6px; overflow: hidden; margin: 6px 0; }
+.g3-bar-fill { height: 100%; width: 0; background: #22c55e; transition: width .1s; }
+.g3-obj { background: rgba(2,6,12,0.6); color: #cbd5e1; font-size: 12.5px; padding: 4px 10px; border-radius: 8px; display: inline-block; }
+.g3-log { margin-top: 6px; font-size: 12px; color: #fca5a5; line-height: 1.6; text-shadow: 0 1px 2px #000; }
+.g3-hint2 { position: absolute; bottom: 12px; left: 0; right: 0; text-align: center; color: #fbbf24; font-weight: 700; font-size: 14px; text-shadow: 0 1px 3px #000; pointer-events: none; }
+.g3-over { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(2,6,12,0.82); text-align: center; border-radius: 10px; }
+.g3-over-t { font-size: 40px; font-weight: 900; }
+.g3-over-s { font-size: 16px; color: #cbd5e1; margin-top: 8px; }
+.g3-controls { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; margin-top: 12px; }
+.g3-actions { display: flex; align-items: center; gap: 10px; }
+
 .phys-card {
   background: #0f1b2e;
   border: 1px solid rgba(148,163,184,0.14);

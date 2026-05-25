@@ -109,6 +109,7 @@ window.V = (() => {
         { v:'vergleich',    icon:'fa-table-cells-large', t:'Melder-Vergleich',     d:'PIR vs MW vs Dual vs Schranke' },
       ]},
       { label:'In 3D ansehen', tiles:[
+        { v:'game3d',       icon:'fa-gamepad',         t:'Einbruch-Spiel 3D 🥷',   d:'Perimeter → Außenhaut → Tresor, ohne Alarm' },
         { v:'begehung',     icon:'fa-person-walking',  t:'3D-Begehung (Ego) 🚶',   d:'Lauf durchs Objekt, weich den Sensoren aus' },
         { v:'haus3d',       icon:'fa-house-chimney',   t:'Sicherheits-Haus 3D',    d:'Vom Zaun bis zum Tresor · 4 Zonen' },
         { v:'zwiebel3d',    icon:'fa-circle-dot',      t:'3D-Zwiebelmodell',       d:'4-Zonen-Schutzkonzept interaktiv' },
