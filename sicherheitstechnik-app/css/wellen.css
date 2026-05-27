@@ -1,0 +1,20 @@
+/* Wellen & Signale – Eingabe + Presets (ergänzt physik.css) */
+.wl-inputrow {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 10px;
+}
+.wl-inputrow > label { font-size: 13px; color: #94a3b8; white-space: nowrap; }
+.wl-input {
+  font: 700 16px/1 monospace; letter-spacing: 2px;
+  padding: 9px 12px; min-width: 120px; max-width: 160px;
+  background: var(--surface-2, #162542); color: var(--text, #e8edf7);
+  border: 1px solid var(--border, #1f3358); border-radius: 10px;
+}
+.wl-input:focus { outline: none; border-color: #22d3ee; box-shadow: 0 0 0 3px rgba(34,211,238,.25); }
+.wl-presets { display: flex; gap: 6px; flex-wrap: wrap; }
+.wl-presets .chip {
+  cursor: pointer; font-size: 12px; font-weight: 700;
+  padding: 6px 11px; border-radius: 999px;
+  background: var(--surface-2, #162542); color: var(--text-dim, #94a3c4);
+  border: 1px solid var(--border, #1f3358);
+}
+.wl-presets .chip:hover { border-color: #22d3ee; color: #e8edf7; }
