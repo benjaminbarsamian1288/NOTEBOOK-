@@ -30,61 +30,6 @@ window.GESETZE_VIEW = (() => {
     `;
     root.appendChild(search);
 
-    // ====== Kachel-Übersicht aller Gesetze ======
-    const kachelSec = buildGesetzKacheln();
-    root.appendChild(kachelSec);
-
-    function buildGesetzKacheln() {
-      const sec = el('div', { class: 'kk-section gk-section' });
-      sec.appendChild(el('div', { class: 'kk-sec-head' }, [
-        el('div', { class: 'kk-sec-ico', html: '<i class="fas fa-scale-balanced"></i>' }),
-        el('div', {}, [
-          el('h3', { text: 'Alle Gesetze als Kacheln' }),
-          el('div', { class: 'kk-sec-sub', text: 'Tippe ein Gesetz für alle Paragraphen & Erklärungen' }),
-        ]),
-        el('span', { class: 'kk-sec-count', text: allG.length + ' Gesetze' }),
-      ]));
-      const grid = el('div', { class: 'kk-grid' });
-      allG.forEach(g => {
-        const pCount = g.abschnitte.reduce((s, a) => s + a.paragraphen.length, 0);
-        let wichtig = 0, jeder = 0;
-        g.abschnitte.forEach(a => a.paragraphen.forEach(p => { if (p.wichtig) wichtig++; if (p.jedermann) jeder++; }));
-        const tile = el('button', { class: 'kk-tile kk-tile--law', style: `--lv:${g.farbe}`, type: 'button' });
-        tile.appendChild(el('div', { class: 'kk-top' }, [
-          el('div', { class: 'kk-badge', html: `<i class="fas ${g.icon}"></i> ${g.short}` }),
-          el('span', { class: 'kk-count', text: pCount + ' §§' }),
-        ]));
-        tile.appendChild(el('div', { class: 'kk-risk', text: g.title }));
-        tile.appendChild(el('div', { class: 'kk-cat', text: g.kategorie }));
-        if (g.intro) tile.appendChild(el('div', { class: 'kk-desc', text: g.intro }));
-        const facts = el('div', { class: 'kk-facts' });
-        facts.appendChild(el('div', { class: 'kk-fact' }, [
-          el('span', { class: 'kk-fact-l', html: '<i class="fas fa-calendar"></i> Stand' }),
-          el('span', { class: 'kk-fact-v', text: g.datum }),
-        ]));
-        facts.appendChild(el('div', { class: 'kk-fact' }, [
-          el('span', { class: 'kk-fact-l', html: '<i class="fas fa-users"></i> Wer' }),
-          el('span', { class: 'kk-fact-v', text: g.anwender }),
-        ]));
-        facts.appendChild(el('div', { class: 'kk-fact' }, [
-          el('span', { class: 'kk-fact-l', html: '<i class="fas fa-layer-group"></i> Aufbau' }),
-          el('span', { class: 'kk-fact-v', text: g.abschnitte.length + ' Abschnitte' }),
-        ]));
-        tile.appendChild(facts);
-        if (wichtig || jeder) {
-          const chips = el('div', { class: 'kk-chips' });
-          if (wichtig) chips.appendChild(el('span', { class: 'kk-chip kk-chip-star', html: `<i class="fas fa-star"></i> ${wichtig} wichtig` }));
-          if (jeder) chips.appendChild(el('span', { class: 'kk-chip kk-chip-hand', html: `<i class="fas fa-hand"></i> ${jeder} Jedermannsrecht` }));
-          tile.appendChild(chips);
-        }
-        tile.appendChild(el('div', { class: 'kk-more', html: 'Gesetz öffnen <i class="fas fa-arrow-right"></i>' }));
-        tile.addEventListener('click', () => selectGesetz(g.id, true));
-        grid.appendChild(tile);
-      });
-      sec.appendChild(grid);
-      return sec;
-    }
-
     // ====== Gesetze-Tabs (Karten) ======
     const tabs = el('div', { class:'gv-tabs' });
     let activeG = allG[0].id;
@@ -308,7 +253,6 @@ window.GESETZE_VIEW = (() => {
           searchResults.style.display = 'none';
           tabs.style.display = '';
           content.style.display = '';
-          kachelSec.style.display = '';
           cnt.textContent = `${allP.length} Paragraphen`;
           return;
         }
@@ -319,7 +263,6 @@ window.GESETZE_VIEW = (() => {
         cnt.textContent = `${matches.length} Treffer`;
         tabs.style.display = 'none';
         content.style.display = 'none';
-        kachelSec.style.display = 'none';
         searchResults.style.display = '';
         searchResults.innerHTML = `
           <div class="gv-results-head">
