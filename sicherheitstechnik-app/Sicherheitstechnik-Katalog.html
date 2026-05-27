@@ -11262,6 +11262,119 @@ img, svg, iframe, video {
 }
 
 </style>
+<style data-src="css/klassen-kacheln.css">
+/* Große Übersichts-Kacheln für SÜ / EMA-Grade / RC-Klassen */
+.kk-wrap { margin: 8px 0 20px; display: flex; flex-direction: column; gap: 26px; }
+
+.kk-section { }
+.kk-sec-head {
+  display: flex; align-items: center; gap: 12px; margin: 4px 2px 12px;
+}
+.kk-sec-ico {
+  width: 40px; height: 40px; flex: 0 0 40px; border-radius: 11px;
+  display: grid; place-items: center; font-size: 18px; color: #fff;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 6px 16px var(--accent-glow);
+}
+.kk-sec-head h3 { margin: 0; font-size: 18px; line-height: 1.2; }
+.kk-sec-sub { font-size: 12.5px; color: var(--text-dim); margin-top: 2px; }
+.kk-sec-count {
+  margin-left: auto; font-size: 11.5px; color: var(--text-dim);
+  background: var(--surface-2); border: 1px solid var(--border);
+  padding: 4px 10px; border-radius: 999px; white-space: nowrap;
+}
+
+.kk-grid {
+  display: grid; gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+}
+
+.kk-tile {
+  position: relative; text-align: left; cursor: pointer;
+  display: flex; flex-direction: column; gap: 8px;
+  padding: 16px 16px 14px; border-radius: 16px;
+  background: var(--surface); color: var(--text);
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--lv, var(--accent));
+  box-shadow: 0 4px 14px rgba(0,0,0,.18);
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  overflow: hidden;
+}
+.kk-tile::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(120% 80% at 100% 0%, color-mix(in srgb, var(--lv) 16%, transparent), transparent 60%);
+}
+.kk-tile:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(0,0,0,.3);
+  border-color: var(--lv, var(--accent));
+}
+.kk-tile:focus-visible { outline: 3px solid var(--accent-glow); outline-offset: 2px; }
+
+.kk-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.kk-badge {
+  font-weight: 900; font-size: 20px; letter-spacing: .3px;
+  padding: 6px 12px; border-radius: 11px; color: #07101f;
+  background: var(--lv, var(--accent));
+  box-shadow: 0 3px 10px color-mix(in srgb, var(--lv) 45%, transparent);
+}
+.kk-dots { display: flex; gap: 4px; }
+.kk-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); }
+.kk-dot.on { background: var(--lv, var(--accent)); }
+
+.kk-risk { font-weight: 800; font-size: 15px; line-height: 1.25; }
+.kk-desc { font-size: 12.5px; color: var(--text-dim); line-height: 1.4; }
+
+.kk-facts {
+  display: flex; flex-direction: column; gap: 5px; margin-top: 2px;
+  padding-top: 9px; border-top: 1px dashed var(--border);
+}
+.kk-fact { display: flex; align-items: baseline; gap: 8px; font-size: 12px; }
+.kk-fact-l { flex: 0 0 86px; color: var(--text-mute); white-space: nowrap; }
+.kk-fact-l i { width: 14px; text-align: center; color: var(--lv, var(--accent)); margin-right: 2px; }
+.kk-fact-v { color: var(--text); font-weight: 600; }
+
+.kk-ex {
+  display: flex; align-items: flex-start; gap: 7px; font-size: 11.5px;
+  color: var(--text-dim); line-height: 1.35;
+  background: var(--surface-2); border-radius: 9px; padding: 7px 9px;
+}
+.kk-ex i { color: var(--lv, var(--accent)); margin-top: 2px; }
+
+.kk-more {
+  margin-top: auto; font-size: 12px; font-weight: 700;
+  color: var(--lv, var(--accent)); display: flex; align-items: center; gap: 6px;
+}
+.kk-more i { transition: transform .15s ease; }
+.kk-tile:hover .kk-more i { transform: translateX(4px); }
+
+/* Detail-Drawer */
+.kk-detail-hero {
+  display: flex; align-items: center; gap: 14px; margin-bottom: 16px;
+  padding: 14px; border-radius: 14px;
+  background: color-mix(in srgb, var(--lv) 14%, var(--surface-2));
+  border: 1px solid color-mix(in srgb, var(--lv) 40%, var(--border));
+  border-left: 5px solid var(--lv);
+}
+.kk-detail-badge {
+  font-weight: 900; font-size: 22px; padding: 8px 14px; border-radius: 12px;
+  color: #07101f; background: var(--lv); white-space: nowrap;
+}
+.kk-detail-risk { font-weight: 800; font-size: 16px; }
+.kk-detail-desc { font-size: 13px; color: var(--text-dim); margin-top: 3px; line-height: 1.4; }
+
+@media (max-width: 560px) {
+  .kk-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .kk-tile { padding: 12px 12px 11px; border-radius: 13px; }
+  .kk-badge { font-size: 16px; padding: 5px 9px; }
+  .kk-risk { font-size: 13px; }
+  .kk-fact-l { flex-basis: 70px; }
+}
+@media (max-width: 380px) {
+  .kk-grid { grid-template-columns: 1fr; }
+}
+
+</style>
 <style data-src="css/modern-refresh.css">
 /* ====================================================================
    MODERN REFRESH 2026 — letzte CSS-Datei, überschreibt das Basis-Design.
@@ -44257,6 +44370,157 @@ window.KLASSENVIS = (() => {
 })();
 
 </script>
+<script data-src="js/klassen-kacheln.js">
+/* Große, klickbare Übersichts-Kacheln für die Klassen-Tabellen.
+   window.KLASSENKACHELN.render(d) → DOM-Knoten mit drei Kachel-Sektionen
+   (VdS-Sicherungsklassen SÜ, EMA-Grade, RC-Widerstandsklassen).
+   Liest die echten Daten aus d.sicherungsklassen.tables. Tippen auf eine
+   Kachel öffnet den Detail-Drawer mit allen Feldern der Zeile. */
+window.KLASSENKACHELN = (() => {
+  const { el, drawer } = U;
+
+  // Risiko-Farbe: grün (geringes Risiko) → rot (höchstes Risiko)
+  function lvColor(idx, count) {
+    const hue = Math.round(140 - (idx / Math.max(1, count - 1)) * 140);
+    return `hsl(${hue} 70% 50%)`;
+  }
+
+  // Konfiguration je Tabellentyp (über Titel erkannt)
+  const CONFIGS = [
+    {
+      match: /Sicherungsklass/i,
+      icon: 'fa-medal',
+      title: 'VdS-Sicherungsklassen · SÜ 1 – 6',
+      sub: 'Welches Schutzniveau braucht das Objekt? (VdS 2333)',
+      badge: r => (r['Sicherungsklasse'] || '').split('/')[0].trim(),
+      heading: r => r['Risikograd'] || '',
+      desc: r => r['Beschreibung'] || '',
+      facts: [
+        ['EMA-Grad (EN 50131)', 'fa-bell', 'EMA-Grad'],
+        ['Min. RC-Tür', 'fa-door-closed', 'Min. RC-Tür'],
+        ['NSL-Aufschaltung', 'fa-tower-broadcast', 'NSL'],
+      ],
+      example: r => r['Beispiel-Objekte'] || '',
+    },
+    {
+      match: /EMA-SICHERHEITSGRADE|EMA-Grad/i,
+      icon: 'fa-bell',
+      title: 'EMA-Sicherheitsgrade · Grad 1 – 4',
+      sub: 'Gegen welchen Tätertyp schützt die Alarmanlage? (DIN EN 50131-1)',
+      badge: r => { const m = (r['EMA-Grad'] || '').match(/Grad\s*\d/i); return m ? m[0] : (r['EMA-Grad'] || ''); },
+      heading: r => { const p = (r['EMA-Grad'] || '').split('–')[1]; return (p ? p.trim() : '') || r['Risikostufe'] || ''; },
+      desc: r => r['Bemerkung'] || '',
+      facts: [
+        ['Tätertyp', 'fa-user-ninja', 'Täter'],
+        ['Werkzeug', 'fa-screwdriver-wrench', 'Werkzeug'],
+        ['Alarmübertragung', 'fa-tower-broadcast', 'Übertragung'],
+      ],
+      example: r => r['Typische Objekte'] || '',
+    },
+    {
+      match: /WIDERSTANDSKLASSEN|RC-Klasse/i,
+      icon: 'fa-stopwatch',
+      title: 'RC-Widerstandsklassen · RC 1 – 6',
+      sub: 'Wie lange hält Tür/Fenster dem Einbruch stand? (DIN EN 1627)',
+      badge: r => r['RC-Klasse'] || '',
+      heading: r => (r['Widerstandszeit'] && r['Widerstandszeit'] !== '—') ? '⏱ ' + r['Widerstandszeit'] : 'Kein Zeitwert',
+      desc: r => r['Typische Anwendung'] || '',
+      facts: [
+        ['Tätertyp', 'fa-user-ninja', 'Täter'],
+        ['Werkzeuge', 'fa-screwdriver-wrench', 'Werkzeug'],
+        ['Verglasung', 'fa-window-maximize', 'Glas'],
+      ],
+      example: r => r['Empfehlung'] || '',
+    },
+  ];
+
+  function detailDrawer(cfg, row, headers, color) {
+    const body = el('div', { class: 'kk-detail' });
+    body.appendChild(el('div', { class: 'kk-detail-hero', style: `--lv:${color}` }, [
+      el('div', { class: 'kk-detail-badge', text: cfg.badge(row) }),
+      el('div', { class: 'kk-detail-htext' }, [
+        el('div', { class: 'kk-detail-risk', text: cfg.heading(row) }),
+        cfg.desc(row) ? el('div', { class: 'kk-detail-desc', text: cfg.desc(row) }) : null,
+      ]),
+    ]));
+    const grid = el('div', { class: 'kv-grid' });
+    headers.forEach(h => {
+      const v = row[h];
+      if (!v) return;
+      grid.append(el('div', { class: 'k', text: h }), el('div', { class: 'v', text: v }));
+    });
+    body.appendChild(grid);
+    drawer((row['Sicherungsklasse'] || row['EMA-Grad'] || row['RC-Klasse'] || 'Klasse'), body);
+  }
+
+  function section(cfg, tbl) {
+    const headers = tbl.header.filter(h => h);
+    const rows = tbl.rows;
+    const sec = el('section', { class: 'kk-section' });
+    sec.appendChild(el('div', { class: 'kk-sec-head' }, [
+      el('div', { class: 'kk-sec-ico', html: `<i class="fas ${cfg.icon}"></i>` }),
+      el('div', {}, [
+        el('h3', { text: cfg.title }),
+        el('div', { class: 'kk-sec-sub', text: cfg.sub }),
+      ]),
+      el('span', { class: 'kk-sec-count', text: rows.length + ' Klassen' }),
+    ]));
+
+    const grid = el('div', { class: 'kk-grid' });
+    rows.forEach((r, i) => {
+      const color = lvColor(i, rows.length);
+      const tile = el('button', { class: 'kk-tile', style: `--lv:${color}`, type: 'button' });
+      // Kopf: Badge + Risiko-Punkte
+      const dots = el('div', { class: 'kk-dots' });
+      for (let k = 0; k < rows.length; k++) dots.appendChild(el('span', { class: 'kk-dot' + (k <= i ? ' on' : '') }));
+      tile.appendChild(el('div', { class: 'kk-top' }, [
+        el('div', { class: 'kk-badge', text: cfg.badge(r) }),
+        dots,
+      ]));
+      tile.appendChild(el('div', { class: 'kk-risk', text: cfg.heading(r) }));
+      if (cfg.desc(r)) tile.appendChild(el('div', { class: 'kk-desc', text: cfg.desc(r) }));
+
+      const facts = el('div', { class: 'kk-facts' });
+      cfg.facts.forEach(([key, ic, short]) => {
+        const v = r[key];
+        if (!v) return;
+        facts.appendChild(el('div', { class: 'kk-fact' }, [
+          el('span', { class: 'kk-fact-l', html: `<i class="fas ${ic}"></i> ${short}` }),
+          el('span', { class: 'kk-fact-v', text: v }),
+        ]));
+      });
+      tile.appendChild(facts);
+
+      const ex = cfg.example(r);
+      if (ex) tile.appendChild(el('div', { class: 'kk-ex' }, [
+        el('i', { class: 'fas fa-location-dot' }),
+        el('span', { text: ex }),
+      ]));
+      tile.appendChild(el('div', { class: 'kk-more', html: 'Alle Details <i class="fas fa-arrow-right"></i>' }));
+
+      tile.addEventListener('click', () => detailDrawer(cfg, r, headers, color));
+      grid.appendChild(tile);
+    });
+    sec.appendChild(grid);
+    return sec;
+  }
+
+  function render(d) {
+    const wrap = el('div', { class: 'kk-wrap' });
+    if (!d || !d.sicherungsklassen || !d.sicherungsklassen.tables) return wrap;
+    d.sicherungsklassen.tables.forEach(tbl => {
+      const cfg = CONFIGS.find(c => c.match.test(tbl.title || ''));
+      if (cfg) {
+        try { wrap.appendChild(section(cfg, tbl)); } catch (e) { /* Daten unerwartet → überspringen */ }
+      }
+    });
+    return wrap;
+  }
+
+  return { render };
+})();
+
+</script>
 <script data-src="js/views.js">
 /* All views – pure render functions that return an HTMLElement */
 window.V = (() => {
@@ -44500,11 +44764,28 @@ window.V = (() => {
     root.appendChild(el('div', { class: 'view-head' }, [
       el('span', { class: 'crumb', text: 'Sicherungs- & Widerstandsklassen' }),
       el('h1', { text: 'SÜ · EMA-Grad · RC-Klasse' }),
-      el('p', { text: 'Klassen-Matrix nach VdS 2333, DIN EN 50131-1 und DIN EN 1627-1630. Klicke eine Klasse für Details.' })
+      el('p', { text: 'Klassen-Matrix nach VdS 2333, DIN EN 50131-1 und DIN EN 1627-1630. Tippe eine Kachel für alle Details.' })
     ]));
+
+    // Große, klickbare Übersichts-Kacheln (SÜ · EMA-Grade · RC)
+    if (window.KLASSENKACHELN) root.appendChild(KLASSENKACHELN.render(d));
 
     // Animierte Übersichten (RC + SÜ)
     if (window.KLASSENVIS) root.appendChild(KLASSENVIS.overview(d));
+
+    // Vollständige Tabellen – einklappbar als Nachschlage-Referenz
+    const tblHost = el('div');
+    const tblToggle = el('button', { class: 'btn', type: 'button', html: '<i class="fas fa-table"></i> Vollständige Tabellen anzeigen' });
+    let tblOpen = false;
+    tblToggle.addEventListener('click', () => {
+      tblOpen = !tblOpen;
+      tblHost.style.display = tblOpen ? '' : 'none';
+      tblToggle.innerHTML = tblOpen
+        ? '<i class="fas fa-table"></i> Tabellen ausblenden'
+        : '<i class="fas fa-table"></i> Vollständige Tabellen anzeigen';
+    });
+    tblHost.style.display = 'none';
+    root.appendChild(el('div', { style: 'margin:18px 2px 12px' }, [tblToggle]));
 
     d.sicherungsklassen.tables.forEach(t => {
       const wrap = el('div', { class: 'table-wrap' });
@@ -44527,8 +44808,9 @@ window.V = (() => {
         }
       });
       wrap.appendChild(tbl);
-      root.appendChild(wrap);
+      tblHost.appendChild(wrap);
     });
+    root.appendChild(tblHost);
 
     return root;
   }

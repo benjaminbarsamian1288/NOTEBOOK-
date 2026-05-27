@@ -240,11 +240,28 @@ window.V = (() => {
     root.appendChild(el('div', { class: 'view-head' }, [
       el('span', { class: 'crumb', text: 'Sicherungs- & Widerstandsklassen' }),
       el('h1', { text: 'SÜ · EMA-Grad · RC-Klasse' }),
-      el('p', { text: 'Klassen-Matrix nach VdS 2333, DIN EN 50131-1 und DIN EN 1627-1630. Klicke eine Klasse für Details.' })
+      el('p', { text: 'Klassen-Matrix nach VdS 2333, DIN EN 50131-1 und DIN EN 1627-1630. Tippe eine Kachel für alle Details.' })
     ]));
+
+    // Große, klickbare Übersichts-Kacheln (SÜ · EMA-Grade · RC)
+    if (window.KLASSENKACHELN) root.appendChild(KLASSENKACHELN.render(d));
 
     // Animierte Übersichten (RC + SÜ)
     if (window.KLASSENVIS) root.appendChild(KLASSENVIS.overview(d));
+
+    // Vollständige Tabellen – einklappbar als Nachschlage-Referenz
+    const tblHost = el('div');
+    const tblToggle = el('button', { class: 'btn', type: 'button', html: '<i class="fas fa-table"></i> Vollständige Tabellen anzeigen' });
+    let tblOpen = false;
+    tblToggle.addEventListener('click', () => {
+      tblOpen = !tblOpen;
+      tblHost.style.display = tblOpen ? '' : 'none';
+      tblToggle.innerHTML = tblOpen
+        ? '<i class="fas fa-table"></i> Tabellen ausblenden'
+        : '<i class="fas fa-table"></i> Vollständige Tabellen anzeigen';
+    });
+    tblHost.style.display = 'none';
+    root.appendChild(el('div', { style: 'margin:18px 2px 12px' }, [tblToggle]));
 
     d.sicherungsklassen.tables.forEach(t => {
       const wrap = el('div', { class: 'table-wrap' });
@@ -267,8 +284,9 @@ window.V = (() => {
         }
       });
       wrap.appendChild(tbl);
-      root.appendChild(wrap);
+      tblHost.appendChild(wrap);
     });
+    root.appendChild(tblHost);
 
     return root;
   }
