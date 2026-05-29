@@ -33,6 +33,116 @@ window.PRAESENTATION = (() => {
   const fxPrev = () => ping(420, 0.14, 'triangle');
   const fxBoom = () => { ping(540, 0.16, 'sine'); setTimeout(() => ping(720, 0.16, 'sine'), 120); setTimeout(() => ping(960, 0.22, 'sine'), 240); };
 
+  /* Typewriter: schreibt den Originaltext zeichenweise nach. */
+  function typewriter(node, dur) {
+    if (!node) return;
+    const text = node.dataset.tw || node.textContent;
+    node.dataset.tw = text; node.classList.add('pp-tw');
+    const N = text.length, D = dur || Math.max(450, Math.min(1300, N * 30));
+    node.textContent = '';
+    const start = performance.now();
+    function tick(now) {
+      if (!node.isConnected) return;
+      const k = Math.min(1, (now - start) / D);
+      const i = Math.floor(k * N);
+      node.textContent = text.slice(0, i);
+      if (k < 1) requestAnimationFrame(tick); else { node.textContent = text; node.classList.add('pp-tw-done'); }
+    }
+    requestAnimationFrame(tick);
+  }
+
+  /* Maus-Parallax: bewegt alle Elemente mit Klasse .pp-px im Wirkungsbereich. */
+  function attachParallax(scope) {
+    function onMove(e) {
+      const r = scope.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      scope.querySelectorAll('.pp-px').forEach(n => {
+        const d = +(n.dataset.px || 12);
+        n.style.transform = `translate3d(${x * d}px, ${y * d}px, 0)`;
+      });
+    }
+    function onLeave() { scope.querySelectorAll('.pp-px').forEach(n => n.style.transform = ''); }
+    scope.addEventListener('mousemove', onMove);
+    scope.addEventListener('mouseleave', onLeave);
+  }
+
+  /* Click-Ripple direkt auf der Folie. */
+  function attachRipple(scope) {
+    scope.addEventListener('click', e => {
+      if (e.target.closest('button, a, input, .pp-card, .pp-toc-row')) return;
+      const r = scope.getBoundingClientRect();
+      const rip = el('span', { class: 'pp-ripple' });
+      rip.style.left = (e.clientX - r.left) + 'px';
+      rip.style.top = (e.clientY - r.top) + 'px';
+      scope.appendChild(rip);
+      setTimeout(() => rip.remove(), 720);
+    });
+  }
+
+  /* Sparkles auf Cover/Outro – kleine schwebende Lichtpunkte. */
+  function addSparkles(slide, accent) {
+    const layer = el('div', { class: 'pp-sparkles' });
+    for (let i = 0; i < 22; i++) {
+      const s = el('span', { class: 'pp-sparkle' });
+      s.style.left = (Math.random() * 100) + '%';
+      s.style.top = (Math.random() * 100) + '%';
+      s.style.background = i % 3 === 0 ? '#22d3ee' : (i % 5 === 0 ? '#a855f7' : accent);
+      s.style.animationDelay = (Math.random() * 4) + 's';
+      s.style.animationDuration = (3 + Math.random() * 4) + 's';
+      s.style.opacity = (0.4 + Math.random() * 0.6);
+      layer.appendChild(s);
+    }
+    slide.appendChild(layer);
+  }
+
+  /* Feuerwerks-Loop für die Schlussfolie. */
+  function startFireworks(stage) {
+    const c = el('canvas', { class: 'pp-fw' }); stage.appendChild(c);
+    const ctx = c.getContext('2d');
+    function fit() { c.width = stage.clientWidth; c.height = stage.clientHeight; }
+    fit();
+    const COLORS = ['#22d3ee', '#fbbf24', '#a855f7', '#22c55e', '#ef4444', '#38bdf8', '#f97316'];
+    const parts = [];
+    let lastBurst = 0;
+    function burst() {
+      const cx = c.width * (0.15 + Math.random() * 0.7), cy = c.height * (0.2 + Math.random() * 0.4);
+      const col = COLORS[(Math.random() * COLORS.length) | 0];
+      const N = 70 + Math.random() * 40;
+      for (let i = 0; i < N; i++) {
+        const a = Math.random() * Math.PI * 2, v = Math.random() * 4 + 2.5;
+        parts.push({ x: cx, y: cy, vx: Math.cos(a) * v, vy: Math.sin(a) * v, g: 0.05, col, life: 0, max: 70 + Math.random() * 50, r: Math.random() * 2.4 + 1.2 });
+      }
+      ping(700 + Math.random() * 400, 0.18, 'sine');
+    }
+    let raf = 0, last = performance.now();
+    function tick(now) {
+      if (!c.isConnected) return;
+      if (now - lastBurst > (700 + Math.random() * 800)) { burst(); lastBurst = now; }
+      ctx.fillStyle = 'rgba(6,10,19,0.18)'; ctx.fillRect(0, 0, c.width, c.height);
+      for (let i = parts.length - 1; i >= 0; i--) {
+        const p = parts[i]; p.vy += p.g; p.x += p.vx; p.y += p.vy; p.life++;
+        const a = 1 - p.life / p.max;
+        if (a <= 0) { parts.splice(i, 1); continue; }
+        ctx.globalAlpha = a; ctx.fillStyle = p.col;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r * a, 0, 7); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      raf = requestAnimationFrame(tick);
+    }
+    burst(); raf = requestAnimationFrame(tick);
+    return () => { c.remove(); cancelAnimationFrame(raf); };
+  }
+
+  /* Übergangsklasse je Folientyp – sorgt für Abwechslung. */
+  function transitionFor(type, dir) {
+    if (type === 'cover' || type === 'outro' || type === 'stats') return 'pp-fx-zoom';
+    if (type === 'section' || type === 'quiz') return 'pp-fx-flip';
+    if (type === 'visual') return 'pp-fx-fade';
+    if (type === 'compare' || type === 'toc') return 'pp-fx-rise';
+    return dir < 0 ? 'pp-from-left' : 'pp-from-right';
+  }
+
   /* Tilt-3D für Kacheln */
   function attachTilt(elt) {
     elt.style.transformStyle = 'preserve-3d';
@@ -338,11 +448,11 @@ window.PRAESENTATION = (() => {
     const slide = el('div', { class: 'pp-slide pp-' + s.type, style: `--a:${s.accent}` });
 
     if (s.type === 'cover' || s.type === 'outro') {
-      slide.appendChild(el('div', { class: 'pp-cover-ico', html: `<i class="fas ${s.icon || 'fa-file-lines'}"></i>` }));
-      slide.appendChild(el('div', { class: 'pp-kicker', text: s.kicker || '' }));
-      slide.appendChild(el('h1', { class: 'pp-cover-title', text: s.title }));
-      if (s.subtitle) slide.appendChild(el('div', { class: 'pp-cover-sub', text: s.subtitle }));
-      if (s.lead) slide.appendChild(el('p', { class: 'pp-lead', text: s.lead }));
+      slide.appendChild(el('div', { class: 'pp-cover-ico pp-px', dataset: { px: '18' }, html: `<i class="fas ${s.icon || 'fa-file-lines'}"></i>` }));
+      slide.appendChild(el('div', { class: 'pp-kicker pp-px', dataset: { px: '6' }, text: s.kicker || '' }));
+      slide.appendChild(el('h1', { class: 'pp-cover-title pp-px', dataset: { px: '14' }, text: s.title }));
+      if (s.subtitle) slide.appendChild(el('div', { class: 'pp-cover-sub pp-px', dataset: { px: '10' }, text: s.subtitle }));
+      if (s.lead) slide.appendChild(el('p', { class: 'pp-lead pp-px', dataset: { px: '5' }, text: s.lead }));
       const meta = el('div', { class: 'pp-meta' });
       (s.meta || []).forEach(m => m && meta.appendChild(el('span', { class: 'pp-meta-chip', text: m })));
       if (s.count) meta.appendChild(el('span', { class: 'pp-meta-chip pp-meta-strong pp-num', dataset: { target: s.count }, text: '0 ' + s.count.replace(/^\d[\d.]*\s*/, '') }));
@@ -620,11 +730,15 @@ window.PRAESENTATION = (() => {
         if (i >= 0) { lastDir = i >= idx ? 1 : -1; idx = i; render(); }
       }
 
+      let stopFw = null;
       function render() {
         host.innerHTML = '';
+        if (stopFw) { stopFw(); stopFw = null; }
         const s = deck.slides[idx];
         const slideEl = renderSlide(s, jumpToTitle);
-        slideEl.classList.add(lastDir < 0 ? 'pp-from-left' : 'pp-from-right');
+        slideEl.classList.add(transitionFor(s.type, lastDir));
+        // Aufmerksamkeit auf den Akzent: rotierender Neon-Rahmen für Cover & Outro
+        if (s.type === 'cover' || s.type === 'outro') slideEl.classList.add('pp-neon');
         host.appendChild(slideEl);
         fill.style.width = ((idx + 1) / deck.slides.length * 100) + '%';
         counter.textContent = (idx + 1) + ' / ' + deck.slides.length;
@@ -633,9 +747,22 @@ window.PRAESENTATION = (() => {
         thumbs.forEach((t, i) => t.classList.toggle('on', i === idx));
         const onT = thumbs[idx]; if (onT) onT.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
         // Anim-Effekte
-        requestAnimationFrame(() => animateNumbers(slideEl));
+        requestAnimationFrame(() => {
+          animateNumbers(slideEl);
+          // Typewriter auf den Haupttiteln
+          const tw = slideEl.querySelector('.pp-cover-title, .pp-title, .pp-section-title');
+          if (tw) typewriter(tw);
+          // Parallax + Ripple
+          attachParallax(slideEl);
+          attachRipple(slideEl);
+          // Sparkles auf Cover/Outro
+          if (s.type === 'cover' || s.type === 'outro') addSparkles(slideEl, s.accent);
+        });
         setupMarkerOnce();
-        if (idx === deck.slides.length - 1) { fxBoom(); fireConfetti(stage); }
+        if (idx === deck.slides.length - 1) {
+          fxBoom(); fireConfetti(stage);
+          stopFw = startFireworks(stage);
+        }
       }
       function go(delta) {
         const n = Math.min(deck.slides.length - 1, Math.max(0, idx + delta));

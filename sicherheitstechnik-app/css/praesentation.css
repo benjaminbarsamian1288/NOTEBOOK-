@@ -119,11 +119,66 @@
 .pp-marker-on .pp-nav { opacity: .3; }
 .pp-marker-on .pp-slide { cursor: crosshair; }
 
-/* Richtungs-Übergänge */
+/* Richtungs-Übergänge + Folientyp-Übergänge */
 @keyframes pp-from-right { from { opacity: 0; transform: translateX(60px) scale(.98); } to { opacity: 1; transform: none; } }
 @keyframes pp-from-left  { from { opacity: 0; transform: translateX(-60px) scale(.98); } to { opacity: 1; transform: none; } }
 .pp-from-right { animation: pp-from-right .42s cubic-bezier(.16,.8,.3,1) both; }
 .pp-from-left  { animation: pp-from-left  .42s cubic-bezier(.16,.8,.3,1) both; }
+@keyframes pp-fx-zoom { from { opacity: 0; transform: scale(.78) rotate(-1.5deg); filter: blur(8px); } 60% { filter: blur(0); } to { opacity: 1; transform: none; filter: none; } }
+.pp-fx-zoom { animation: pp-fx-zoom .55s cubic-bezier(.2,.9,.25,1.1) both; }
+@keyframes pp-fx-flip { from { opacity: 0; transform: perspective(1200px) rotateY(80deg); transform-origin: left center; } to { opacity: 1; transform: none; } }
+.pp-fx-flip { animation: pp-fx-flip .6s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes pp-fx-fade { from { opacity: 0; filter: blur(14px) saturate(1.4); transform: scale(1.03); } to { opacity: 1; filter: none; transform: none; } }
+.pp-fx-fade { animation: pp-fx-fade .55s ease both; }
+@keyframes pp-fx-rise { from { opacity: 0; transform: translateY(60px) scale(.97); } to { opacity: 1; transform: none; } }
+.pp-fx-rise { animation: pp-fx-rise .5s cubic-bezier(.2,.9,.3,1) both; }
+
+/* Rotierender Neon-Rahmen für Cover/Outro */
+.pp-neon { position: relative; }
+.pp-neon::after {
+  content: ''; position: absolute; inset: -2px; border-radius: 18px; padding: 2px; pointer-events: none;
+  background: conic-gradient(from 0deg,
+    color-mix(in srgb, var(--a) 90%, transparent), #22d3ee,
+    color-mix(in srgb, var(--a) 90%, transparent), #a855f7,
+    color-mix(in srgb, var(--a) 90%, transparent));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: pp-neon-rot 6s linear infinite;
+  filter: drop-shadow(0 0 12px color-mix(in srgb, var(--a) 65%, transparent));
+}
+@keyframes pp-neon-rot { to { transform: rotate(360deg); } }
+
+/* Typewriter */
+.pp-tw { border-right: .12em solid color-mix(in srgb, var(--a) 70%, #fff); padding-right: 2px; }
+.pp-tw-done { animation: pp-blink 1.2s steps(1) infinite; }
+@keyframes pp-blink { 50% { border-right-color: transparent; } }
+
+/* Parallax – sanfte Übergänge */
+.pp-px { transition: transform .15s ease-out; will-change: transform; }
+
+/* Ripple beim Klick */
+.pp-ripple {
+  position: absolute; width: 14px; height: 14px; border-radius: 50%; pointer-events: none;
+  transform: translate(-50%, -50%) scale(1); opacity: .55;
+  background: radial-gradient(circle, color-mix(in srgb, var(--a) 90%, transparent), transparent 70%);
+  animation: pp-ripple .72s ease-out forwards; z-index: 7;
+}
+@keyframes pp-ripple { from { transform: translate(-50%, -50%) scale(1); opacity: .55; } to { transform: translate(-50%, -50%) scale(34); opacity: 0; } }
+
+/* Sparkles auf Cover/Outro */
+.pp-sparkles { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
+.pp-sparkle {
+  position: absolute; width: 6px; height: 6px; border-radius: 50%;
+  box-shadow: 0 0 12px currentColor; animation: pp-sp 4s ease-in-out infinite;
+}
+@keyframes pp-sp {
+  0%, 100% { transform: translate(0,0) scale(.6); opacity: .2; }
+  50% { transform: translate(6px,-10px) scale(1.2); opacity: 1; }
+}
+
+/* Feuerwerks-Layer (Outro) */
+.pp-fw { position: absolute; inset: 0; pointer-events: none; z-index: 4; }
 @keyframes pp-rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 .pp-slide > * { animation: pp-rise .5s cubic-bezier(.2,.7,.2,1) both; }
 .pp-slide > *:nth-child(1) { animation-delay: .10s; }
