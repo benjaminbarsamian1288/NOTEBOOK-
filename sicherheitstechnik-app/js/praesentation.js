@@ -14,6 +14,45 @@ window.PRAESENTATION = (() => {
   }
   const numOf = s => { const m = (s || '').match(/\d+/); return m ? +m[0] : 0; };
 
+  /* Animierter Partikel-/Glow-Hintergrund (in Deck-Farbe) */
+  function startBg(canvas, sizeEl, accent) {
+    const ctx = canvas.getContext('2d');
+    let W = 0, H = 0, parts = [], t = 0;
+    const N = 44;
+    function ensure() {
+      const w = sizeEl.clientWidth || 900, h = sizeEl.clientHeight || 520;
+      if (w !== W || h !== H) {
+        W = canvas.width = w; H = canvas.height = h;
+        if (!parts.length) parts = Array.from({ length: N }, () => ({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - .5) * .35, vy: (Math.random() - .5) * .35, r: Math.random() * 2 + 1 }));
+        else parts.forEach(p => { if (p.x > W) p.x = Math.random() * W; if (p.y > H) p.y = Math.random() * H; });
+      }
+    }
+    function draw() {
+      ensure(); t += 0.005;
+      ctx.clearRect(0, 0, W, H);
+      ctx.globalCompositeOperation = 'lighter';
+      const b1x = W * (0.3 + 0.2 * Math.sin(t)), b1y = H * (0.35 + 0.2 * Math.cos(t * 0.8));
+      const g1 = ctx.createRadialGradient(b1x, b1y, 0, b1x, b1y, Math.max(W, H) * 0.5);
+      g1.addColorStop(0, accent); g1.addColorStop(1, 'transparent');
+      ctx.globalAlpha = 0.18; ctx.fillStyle = g1; ctx.fillRect(0, 0, W, H);
+      const b2x = W * (0.72 + 0.2 * Math.cos(t * 0.7)), b2y = H * (0.62 + 0.2 * Math.sin(t));
+      const g2 = ctx.createRadialGradient(b2x, b2y, 0, b2x, b2y, Math.max(W, H) * 0.45);
+      g2.addColorStop(0, '#22d3ee'); g2.addColorStop(1, 'transparent');
+      ctx.globalAlpha = 0.11; ctx.fillStyle = g2; ctx.fillRect(0, 0, W, H);
+      ctx.globalCompositeOperation = 'source-over';
+      for (const p of parts) { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > W) p.vx *= -1; if (p.y < 0 || p.y > H) p.vy *= -1; }
+      ctx.fillStyle = accent; ctx.globalAlpha = 0.55;
+      for (const p of parts) { ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 7); ctx.fill(); }
+      ctx.strokeStyle = accent; ctx.lineWidth = 1;
+      for (let i = 0; i < parts.length; i++) for (let j = i + 1; j < parts.length; j++) {
+        const a = parts[i], b = parts[j], d = Math.hypot(a.x - b.x, a.y - b.y);
+        if (d < 130) { ctx.globalAlpha = 0.15 * (1 - d / 130); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+      }
+      ctx.globalAlpha = 1;
+    }
+    requestAnimationFrame(() => loop(canvas, draw));
+  }
+
   /* Animiertes Stufen-Meter für Klassen-Folien (+ optionaler RC-Countdown) */
   function animMeter(o) {
     const W = 540, H = 176, canvas = el('canvas', { class: 'pp-canvas', width: W, height: H }), ctx = canvas.getContext('2d');
@@ -278,7 +317,7 @@ window.PRAESENTATION = (() => {
 
     function startDeck(deck) {
       root.innerHTML = '';
-      let idx = 0, autoTimer = null;
+      let idx = 0, autoTimer = null, lastDir = 1;
 
       const player = el('div', { class: 'pp-player', style: `--a:${deck.accent}` });
       const exit = el('button', { class: 'pp-btn', html: '<i class="fas fa-arrow-left"></i> <span>Übersicht</span>' });
@@ -293,7 +332,8 @@ window.PRAESENTATION = (() => {
       const host = el('div', { class: 'pp-slide-host' });
       const prev = el('button', { class: 'pp-nav pp-prev', html: '<i class="fas fa-chevron-left"></i>' });
       const next = el('button', { class: 'pp-nav pp-next', html: '<i class="fas fa-chevron-right"></i>' });
-      const stage = el('div', { class: 'pp-stage' }, [prev, host, next]);
+      const bg = el('canvas', { class: 'pp-bg' });
+      const stage = el('div', { class: 'pp-stage' }, [bg, prev, host, next]);
 
       const fill = el('div', { class: 'pp-progress-fill' });
       const counter = el('div', { class: 'pp-counter' });
@@ -301,10 +341,13 @@ window.PRAESENTATION = (() => {
 
       player.append(bar, stage, foot);
       root.appendChild(player);
+      startBg(bg, stage, deck.accent);
 
       function render() {
         host.innerHTML = '';
-        host.appendChild(renderSlide(deck.slides[idx]));
+        const slideEl = renderSlide(deck.slides[idx]);
+        slideEl.classList.add(lastDir < 0 ? 'pp-from-left' : 'pp-from-right');
+        host.appendChild(slideEl);
         fill.style.width = ((idx + 1) / deck.slides.length * 100) + '%';
         counter.textContent = (idx + 1) + ' / ' + deck.slides.length;
         prev.disabled = idx === 0;
@@ -313,7 +356,7 @@ window.PRAESENTATION = (() => {
       function go(delta) {
         const n = Math.min(deck.slides.length - 1, Math.max(0, idx + delta));
         if (n === idx) { if (delta > 0) stopAuto(); return; }
-        idx = n; render();
+        lastDir = delta < 0 ? -1 : 1; idx = n; render();
         if (autoTimer && idx === deck.slides.length - 1) stopAuto();
       }
       function stopAuto() { if (autoTimer) { clearInterval(autoTimer); autoTimer = null; autoBtn.innerHTML = '<i class="fas fa-play"></i>'; } }
