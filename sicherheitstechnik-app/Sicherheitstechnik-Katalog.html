@@ -11398,6 +11398,156 @@ img, svg, iframe, video {
 .wl-presets .chip:hover { border-color: #22d3ee; color: #e8edf7; }
 
 </style>
+<style data-src="css/praesentation.css">
+/* Präsentation / Slideshow */
+.pp-wrap { display: block; }
+
+/* ---- Deck-Auswahl ---- */
+.pp-group-label {
+  font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .6px;
+  color: var(--text-dim); margin: 18px 2px 10px;
+}
+.pp-picker-grid {
+  display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+.pp-deck {
+  display: flex; align-items: center; gap: 12px; text-align: left; cursor: pointer;
+  padding: 14px; border-radius: 14px; background: var(--surface); color: var(--text);
+  border: 1px solid var(--border); border-left: 4px solid var(--a, var(--accent));
+  transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease;
+}
+.pp-deck:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,.28); border-color: var(--a); }
+.pp-deck-ico {
+  width: 44px; height: 44px; flex: 0 0 44px; border-radius: 11px; display: grid; place-items: center;
+  font-size: 19px; color: #07101f; background: var(--a, var(--accent));
+}
+.pp-deck-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.pp-deck-body strong { font-size: 15px; }
+.pp-deck-body span { font-size: 12px; color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pp-deck-body em { font-size: 11px; color: var(--a, var(--accent)); font-style: normal; font-weight: 700; margin-top: 2px; }
+.pp-deck-go { color: var(--a, var(--accent)); font-size: 16px; opacity: .7; }
+.pp-deck:hover .pp-deck-go { opacity: 1; }
+
+/* ---- Player ---- */
+.pp-player {
+  display: flex; flex-direction: column; gap: 12px;
+  border: 1px solid var(--border); border-radius: 16px; padding: 12px;
+  background: var(--surface); box-shadow: 0 8px 30px rgba(0,0,0,.22);
+}
+.pp-player.pp-fs { justify-content: center; height: 100vh; border-radius: 0; padding: 18px 24px; }
+.pp-bar { display: flex; align-items: center; gap: 12px; }
+.pp-bar-title { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.pp-bar-title strong { font-size: 14px; }
+.pp-bar-title span { font-size: 11.5px; color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pp-bar-actions { display: flex; gap: 8px; }
+.pp-btn {
+  display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
+  background: var(--surface-2); color: var(--text); border: 1px solid var(--border);
+  border-radius: 9px; padding: 8px 12px; font-size: 13px; font-weight: 600;
+}
+.pp-btn:hover { border-color: var(--a, var(--accent)); }
+
+/* ---- Bühne ---- */
+.pp-stage { position: relative; display: flex; align-items: stretch; }
+.pp-slide-host { flex: 1; min-width: 0; }
+.pp-nav {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 3;
+  width: 42px; height: 42px; border-radius: 50%; cursor: pointer;
+  background: color-mix(in srgb, var(--surface-2) 88%, transparent); color: var(--text);
+  border: 1px solid var(--border); font-size: 16px; display: grid; place-items: center;
+}
+.pp-nav:hover:not(:disabled) { border-color: var(--a, var(--accent)); color: var(--a, var(--accent)); }
+.pp-nav:disabled { opacity: .25; cursor: default; }
+.pp-prev { left: 6px; } .pp-next { right: 6px; }
+
+/* ---- Folie ---- */
+.pp-slide {
+  position: relative; overflow: hidden;
+  min-height: 60vh; border-radius: 14px; padding: 34px 56px;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--a) 12%, var(--bg-2)) 0%, var(--bg-2) 60%);
+  border: 1px solid color-mix(in srgb, var(--a) 30%, var(--border));
+  border-top: 5px solid var(--a, var(--accent));
+  display: flex; flex-direction: column; gap: 14px;
+  animation: pp-in .32s ease both;
+}
+.pp-fs .pp-slide { min-height: 78vh; padding: 5vh 8vw; }
+@keyframes pp-in { from { opacity: 0; transform: translateY(10px) scale(.99); } to { opacity: 1; transform: none; } }
+
+.pp-kicker { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; color: var(--a, var(--accent)); }
+
+/* Cover */
+.pp-cover { justify-content: center; text-align: center; align-items: center; }
+.pp-cover-ico {
+  width: 86px; height: 86px; border-radius: 22px; display: grid; place-items: center;
+  font-size: 40px; color: #07101f; background: var(--a, var(--accent)); margin-bottom: 6px;
+  box-shadow: 0 10px 30px color-mix(in srgb, var(--a) 45%, transparent);
+}
+.pp-cover-title { font-size: clamp(34px, 6vw, 64px); margin: 0; line-height: 1.02; }
+.pp-cover-sub { font-size: clamp(16px, 2.4vw, 24px); color: var(--text); font-weight: 600; }
+.pp-lead { font-size: clamp(14px, 1.8vw, 18px); color: var(--text-dim); max-width: 760px; line-height: 1.55; margin: 6px 0 0; }
+.pp-meta { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 8px; }
+.pp-meta-chip { font-size: 12.5px; color: var(--text-dim); background: var(--surface); border: 1px solid var(--border); padding: 6px 12px; border-radius: 999px; }
+.pp-meta-strong { color: var(--a, var(--accent)); font-weight: 800; border-color: color-mix(in srgb, var(--a) 45%, var(--border)); }
+
+/* Section divider */
+.pp-section { justify-content: center; }
+.pp-section-nr { font-size: clamp(40px, 8vw, 90px); font-weight: 900; color: var(--a, var(--accent)); line-height: 1; opacity: .9; }
+.pp-section-title { font-size: clamp(22px, 3.4vw, 38px); margin: 0; }
+
+/* Content */
+.pp-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.pp-flags { display: flex; gap: 8px; flex-wrap: wrap; }
+.pp-flag { font-size: 11.5px; font-weight: 800; padding: 4px 10px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px; }
+.pp-flag-star { color: #fbbf24; background: rgba(251,191,36,.14); border: 1px solid rgba(251,191,36,.35); }
+.pp-flag-hand { color: #22d3ee; background: rgba(34,211,238,.14); border: 1px solid rgba(34,211,238,.35); }
+.pp-head { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+.pp-badge {
+  font-weight: 900; font-size: clamp(22px, 3.4vw, 36px); padding: 6px 16px; border-radius: 12px;
+  color: #07101f; background: var(--a, var(--accent)); white-space: nowrap;
+}
+.pp-title { font-size: clamp(22px, 3.4vw, 40px); margin: 0; line-height: 1.12; }
+.pp-summary { font-size: clamp(15px, 2vw, 21px); line-height: 1.5; color: var(--text); margin: 0; max-width: 1000px; }
+
+.pp-anim { display: flex; justify-content: center; }
+.pp-canvas { width: 100%; max-width: 540px; border-radius: 12px; background: #0b1424; border: 1px solid var(--border); }
+
+.pp-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.pp-field { display: flex; flex-direction: column; gap: 2px; background: color-mix(in srgb, var(--a) 7%, var(--surface)); border: 1px solid var(--border); border-left: 3px solid var(--a, var(--accent)); border-radius: 10px; padding: 9px 12px; }
+.pp-f-l { font-size: 11.5px; text-transform: uppercase; letter-spacing: .4px; color: var(--text-mute); }
+.pp-f-v { font-size: clamp(14px, 1.7vw, 18px); font-weight: 700; }
+
+.pp-box { display: flex; flex-direction: column; gap: 4px; border-radius: 12px; padding: 12px 14px; font-size: clamp(13px, 1.6vw, 16px); line-height: 1.5; }
+.pp-box-l { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .4px; display: inline-flex; align-items: center; gap: 7px; }
+.pp-box-beispiel { background: rgba(34,197,94,.1); border: 1px solid rgba(34,197,94,.28); }
+.pp-box-beispiel .pp-box-l { color: #22c55e; }
+.pp-box-merk { background: rgba(56,189,248,.1); border: 1px solid rgba(56,189,248,.28); }
+.pp-box-merk .pp-box-l { color: #38bdf8; }
+.pp-box-fehler { background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.26); }
+.pp-box-fehler .pp-box-l { color: #ef4444; }
+.pp-fehler { margin: 4px 0 0; padding-left: 20px; }
+.pp-fehler li { margin: 2px 0; }
+
+.pp-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: auto; }
+.pp-tag { font-size: 12px; font-weight: 600; color: var(--text-dim); background: var(--surface); border: 1px solid var(--border); padding: 4px 10px; border-radius: 999px; }
+
+/* Visualisierungs-Folie (eingebettete SVG/HTML) */
+.pp-vis { flex: 1; display: flex; align-items: center; justify-content: center; overflow: auto; }
+.pp-vis svg, .pp-vis .ges-vis { width: 100%; height: auto; max-height: 64vh; display: block; }
+
+/* ---- Fuß / Fortschritt ---- */
+.pp-foot { display: flex; align-items: center; gap: 12px; }
+.pp-progress { flex: 1; height: 6px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
+.pp-progress-fill { height: 100%; background: var(--a, var(--accent)); border-radius: 999px; transition: width .3s ease; }
+.pp-counter { font-size: 12.5px; color: var(--text-dim); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+@media (max-width: 640px) {
+  .pp-slide { padding: 22px 20px; min-height: 64vh; }
+  .pp-nav { width: 36px; height: 36px; }
+  .pp-prev { left: 2px; } .pp-next { right: 2px; }
+  .pp-bar-title { display: none; }
+}
+
+</style>
 <style data-src="css/modern-refresh.css">
 /* ====================================================================
    MODERN REFRESH 2026 — letzte CSS-Datei, überschreibt das Basis-Design.
@@ -12321,6 +12471,7 @@ button, .navitem, .chip, .qa-tile, .ency-card, .zone-card, .kfg-card, .bigstat {
     <button class="navitem nav-pri" data-view="wwdtech"><i class="fas fa-tower-cell"></i><span><strong>WWD-Türme · Technik</strong></span><em>NEU</em></button>
 
     <div class="nav-group-label">5 · Bilder &amp; Lernen</div>
+    <button class="navitem nav-pri" data-view="praesentation"><i class="fas fa-person-chalkboard"></i><span><strong>Präsentation · Slideshow</strong></span><em>NEU</em></button>
     <button class="navitem" data-view="galerie"><i class="fas fa-images"></i><span>Produkt-Galerie</span></button>
     <button class="navitem" data-view="mediathek"><i class="fas fa-photo-film"></i><span>Mediathek</span></button>
     <button class="navitem nav-pri" data-view="pruefung"><i class="fas fa-graduation-cap"></i><span><strong>Sachkunde §34a Training</strong></span><em>NEU</em></button>
@@ -43983,6 +44134,378 @@ window.WELLEN = (() => {
 })();
 
 </script>
+<script data-src="js/praesentation.js">
+/* Präsentations-/Slideshow-Modus: Gesetze (BeWachV, DGUV …) und
+   Sicherungsklassen (SÜ, EMA-Grade, RC) als durchblätterbare Folien.
+   window.PRAESENTATION.view(d). Reine DOM-Folien (scharfer Text, Theme-fähig). */
+window.PRAESENTATION = (() => {
+  const { el } = U;
+
+  function lvColor(idx, count) {
+    const hue = Math.round(140 - (idx / Math.max(1, count - 1)) * 140);
+    return `hsl(${hue} 70% 50%)`;
+  }
+  function loop(canvas, draw) {
+    function f() { if (!canvas.isConnected) return; draw(); requestAnimationFrame(f); }
+    requestAnimationFrame(f);
+  }
+  const numOf = s => { const m = (s || '').match(/\d+/); return m ? +m[0] : 0; };
+
+  /* Animiertes Stufen-Meter für Klassen-Folien (+ optionaler RC-Countdown) */
+  function animMeter(o) {
+    const W = 540, H = 176, canvas = el('canvas', { class: 'pp-canvas', width: W, height: H }), ctx = canvas.getContext('2d');
+    const labels = o.labels, n = labels.length, cur = o.current;
+    const hasClock = o.minutes > 0;
+    let t = 0, p = 0;
+    function draw() {
+      t += 0.04;
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = '#64748b'; ctx.font = '11px sans-serif'; ctx.textAlign = 'left';
+      ctx.fillText('Stufe im Vergleich', 18, 18);
+      const areaR = hasClock ? W * 0.6 : W - 18, base = H - 34, bw = (areaR - 28) / n;
+      for (let i = 0; i < n; i++) {
+        const x = 18 + i * bw, h = 26 + (i / Math.max(1, n - 1)) * 78, c = lvColor(i, n), on = i === cur;
+        const filled = i <= cur;
+        if (on) { ctx.save(); ctx.shadowColor = c; ctx.shadowBlur = 16 + Math.sin(t * 3) * 6; }
+        ctx.fillStyle = filled ? (on ? c : c + '99') : '#16202f';
+        ctx.fillRect(x + 3, base - h, bw - 6, h);
+        if (on) ctx.restore();
+        ctx.strokeStyle = on ? '#fff' : '#22344d'; ctx.lineWidth = on ? 2 : 1; ctx.strokeRect(x + 3, base - h, bw - 6, h);
+        ctx.fillStyle = on ? '#fff' : '#64748b'; ctx.font = (on ? 'bold ' : '') + '10px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(labels[i], x + bw / 2, base + 16);
+      }
+      ctx.fillStyle = '#475569'; ctx.font = '10px sans-serif'; ctx.textAlign = 'left'; ctx.fillText('gering', 18, 34);
+      ctx.textAlign = hasClock ? 'left' : 'right'; ctx.fillText('hoch →', areaR - 40, 34);
+      if (hasClock) {
+        const cx = W * 0.8, cy = H / 2 + 6, r = 44;
+        const period = Math.min(4, Math.max(1.4, o.minutes * 0.4));
+        p += 1 / (period * 60); let breached = p >= 1; if (p >= 1.3) p = 0;
+        ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 8; ctx.beginPath(); ctx.arc(cx, cy, r, 0, 7); ctx.stroke();
+        ctx.strokeStyle = breached ? '#ef4444' : o.accent; ctx.lineWidth = 8; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.arc(cx, cy, r, -Math.PI / 2, -Math.PI / 2 + Math.min(1, p) * 2 * Math.PI); ctx.stroke(); ctx.lineCap = 'butt';
+        ctx.fillStyle = breached ? '#ef4444' : '#e2e8f0'; ctx.font = '900 20px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(o.minutes + ' Min', cx, cy + 6);
+        ctx.fillStyle = '#64748b'; ctx.font = '10px sans-serif';
+        ctx.fillText(breached ? 'durchbrochen' : 'Widerstand…', cx, cy + r + 18);
+        const shake = breached ? 0 : Math.abs(Math.sin(t * 6)) * 5;
+        ctx.font = '22px sans-serif'; ctx.fillText('🥷', cx - r - 18 + shake, cy + 8);
+      }
+    }
+    requestAnimationFrame(() => loop(canvas, draw));
+    return canvas;
+  }
+
+  /* ---------- Decks aus den vorhandenen Daten bauen ---------- */
+  function lawDeck(g) {
+    const pCount = g.abschnitte.reduce((s, a) => s + a.paragraphen.length, 0);
+    const slides = [];
+    slides.push({
+      type: 'cover', accent: g.farbe, icon: g.icon, kicker: g.kategorie,
+      title: g.short, subtitle: g.title, lead: g.intro,
+      meta: [g.datum, g.anwender], count: pCount + ' Paragraphen',
+    });
+    // Bild-Folien aus den vorhandenen Visualisierungen
+    const visMap = [
+      [g.visualisierung, 'Überblick'],
+      [g.visualisierung2, 'Praxis-Beispiele'],
+      [g.visualisierung4, 'Jedermannsrechte'],
+      [g.visualisierung3, 'Notwehr-Prüfschema'],
+    ];
+    visMap.forEach(([key, label]) => {
+      if (key && window.GESETZE_DB && GESETZE_DB.VIS[key]) {
+        slides.push({ type: 'visual', accent: g.farbe, kicker: g.short, title: label, html: GESETZE_DB.VIS[key] });
+      }
+    });
+    g.abschnitte.forEach(a => {
+      slides.push({
+        type: 'section', accent: g.farbe, kicker: g.short,
+        title: 'Abschnitt ' + a.nr, subtitle: a.title, count: a.paragraphen.length + ' §§',
+      });
+      a.paragraphen.forEach(p => {
+        slides.push({
+          type: 'content', accent: g.farbe, kicker: 'Abschnitt ' + a.nr + ' · ' + g.short,
+          badge: p.p, title: p.t, summary: p.s,
+          beispiel: p.beispiel, merksatz: p.merksatz, fehler: p.fehler,
+          tags: p.tags || [], wichtig: p.wichtig, jedermann: p.jedermann,
+        });
+      });
+    });
+    return { id: 'law-' + g.id, group: 'Gesetze', title: g.short, sub: g.title, accent: g.farbe, icon: g.icon, count: slides.length, slides };
+  }
+
+  const CLASS_CFG = [
+    {
+      match: /Sicherungsklass/i, id: 'sue', icon: 'fa-medal', norm: 'VdS 2333',
+      title: 'VdS-Sicherungsklassen', sub: 'SÜ 1 – 6 · Schutzniveau je Objekt-Risiko',
+      lead: 'Die Sicherungsklasse ordnet einem Objekt je nach Risiko ein Schutzniveau zu – mit passendem EMA-Grad, Mindest-RC-Tür, NSL-Aufschaltung und Intervention.',
+      badge: r => (r['Sicherungsklasse'] || '').split('/')[0].trim(),
+      heading: r => r['Risikograd'] || '', desc: r => r['Beschreibung'] || '',
+      fields: [['EMA-Grad (EN 50131)', 'EMA-Grad (EN 50131)'], ['Min. RC-Tür', 'Min. RC-Tür'], ['Min. Verglasung', 'Min. Verglasung'], ['NSL-Aufschaltung', 'NSL-Aufschaltung'], ['Empf. Intervention', 'Empf. Intervention'], ['Versicherung', 'Versicherung']],
+      example: r => r['Beispiel-Objekte'] || '',
+    },
+    {
+      match: /EMA-SICHERHEITSGRADE|EMA-Grad/i, id: 'ema', icon: 'fa-bell', norm: 'DIN EN 50131-1',
+      title: 'EMA-Sicherheitsgrade', sub: 'Grad 1 – 4 · gegen welchen Tätertyp',
+      lead: 'Der EMA-Grad legt fest, gegen welchen Tätertyp die Einbruchmeldeanlage schützt – vom Gelegenheitstäter bis zum organisierten Profi.',
+      badge: r => { const m = (r['EMA-Grad'] || '').match(/Grad\s*\d/i); return m ? m[0] : (r['EMA-Grad'] || ''); },
+      heading: r => { const p = (r['EMA-Grad'] || '').split('–')[1]; return (p ? p.trim() : '') || r['Risikostufe'] || ''; },
+      desc: r => r['Bemerkung'] || '',
+      fields: [['Tätertyp', 'Tätertyp'], ['Täter-Kenntnisse', 'Täter-Kenntnisse'], ['Werkzeug', 'Werkzeug'], ['Sabotage-Schutz', 'Sabotage-Schutz'], ['Alarmübertragung', 'Alarmübertragung'], ['Richtpreis EMA-System', 'Richtpreis EMA-System']],
+      example: r => r['Typische Objekte'] || '',
+    },
+    {
+      match: /WIDERSTANDSKLASSEN|RC-Klasse/i, id: 'rc', icon: 'fa-stopwatch', norm: 'DIN EN 1627',
+      title: 'RC-Widerstandsklassen', sub: 'RC 1 – 6 · wie lange hält die Tür stand',
+      lead: 'Die Widerstandsklasse (Resistance Class) gibt an, wie lange Tür oder Fenster einem Einbruch mit bestimmten Werkzeugen standhalten.',
+      badge: r => r['RC-Klasse'] || '',
+      heading: r => (r['Widerstandszeit'] && r['Widerstandszeit'] !== '—') ? '⏱ ' + r['Widerstandszeit'] : 'Kein Zeitwert',
+      desc: r => r['Typische Anwendung'] || '',
+      fields: [['Tätertyp', 'Tätertyp'], ['Werkzeuge', 'Werkzeuge'], ['Verglasung', 'Verglasung'], ['Polizei-Empf.', 'Polizei-Empf.'], ['Richtpreis Tür', 'Richtpreis Tür (€)'], ['Richtpreis Fenster', 'Richtpreis Fenster (€)']],
+      example: r => r['Empfehlung'] || '',
+    },
+  ];
+
+  function classDeck(cfg, tbl) {
+    const slides = [];
+    const labels = tbl.rows.map(r => cfg.badge(r));
+    slides.push({
+      type: 'cover', accent: 'hsl(190 80% 50%)', icon: cfg.icon, kicker: cfg.norm,
+      title: cfg.title, subtitle: cfg.sub, lead: cfg.lead, count: tbl.rows.length + ' Klassen',
+    });
+    tbl.rows.forEach((r, i) => {
+      const color = lvColor(i, tbl.rows.length);
+      const minutes = cfg.id === 'rc' ? numOf(r['Widerstandszeit']) : 0;
+      slides.push({
+        type: 'content', accent: color, kicker: cfg.title,
+        badge: cfg.badge(r), title: cfg.heading(r), summary: cfg.desc(r),
+        fields: cfg.fields.map(([label, key]) => ({ label, value: r[key] })).filter(f => f.value),
+        beispiel: cfg.example(r) ? cfg.example(r) : null, beispielLabel: 'Beispiel-Objekte',
+        tags: [],
+        anim: { labels, current: i, accent: color, minutes },
+      });
+    });
+    return { id: 'class-' + cfg.id, group: 'Klassen & Grade', title: cfg.title, sub: cfg.sub, accent: 'hsl(190 80% 50%)', icon: cfg.icon, count: slides.length, slides };
+  }
+
+  function buildDecks(d) {
+    const decks = [];
+    if (window.GESETZE_DB) GESETZE_DB.getAll().forEach(g => decks.push(lawDeck(g)));
+    if (d && d.sicherungsklassen && d.sicherungsklassen.tables) {
+      d.sicherungsklassen.tables.forEach(tbl => {
+        const cfg = CLASS_CFG.find(c => c.match.test(tbl.title || ''));
+        if (cfg) decks.push(classDeck(cfg, tbl));
+      });
+    }
+    return decks;
+  }
+
+  /* ---------- Folie rendern ---------- */
+  function renderSlide(s) {
+    const slide = el('div', { class: 'pp-slide pp-' + s.type, style: `--a:${s.accent}` });
+    if (s.type === 'cover') {
+      slide.appendChild(el('div', { class: 'pp-cover-ico', html: `<i class="fas ${s.icon || 'fa-file-lines'}"></i>` }));
+      slide.appendChild(el('div', { class: 'pp-kicker', text: s.kicker || '' }));
+      slide.appendChild(el('h1', { class: 'pp-cover-title', text: s.title }));
+      if (s.subtitle) slide.appendChild(el('div', { class: 'pp-cover-sub', text: s.subtitle }));
+      if (s.lead) slide.appendChild(el('p', { class: 'pp-lead', text: s.lead }));
+      const meta = el('div', { class: 'pp-meta' });
+      (s.meta || []).forEach(m => m && meta.appendChild(el('span', { class: 'pp-meta-chip', text: m })));
+      if (s.count) meta.appendChild(el('span', { class: 'pp-meta-chip pp-meta-strong', text: s.count }));
+      slide.appendChild(meta);
+      return slide;
+    }
+    if (s.type === 'section') {
+      slide.appendChild(el('div', { class: 'pp-kicker', text: s.kicker || '' }));
+      slide.appendChild(el('div', { class: 'pp-section-nr', text: s.title }));
+      slide.appendChild(el('h2', { class: 'pp-section-title', text: s.subtitle || '' }));
+      if (s.count) slide.appendChild(el('div', { class: 'pp-meta-chip pp-meta-strong', text: s.count }));
+      return slide;
+    }
+    if (s.type === 'visual') {
+      slide.appendChild(el('div', { class: 'pp-kicker', text: s.kicker || '' }));
+      slide.appendChild(el('h2', { class: 'pp-title', text: s.title || 'Visualisierung' }));
+      slide.appendChild(el('div', { class: 'pp-vis', html: s.html || '' }));
+      return slide;
+    }
+    // content
+    const top = el('div', { class: 'pp-top' });
+    top.appendChild(el('span', { class: 'pp-kicker', text: s.kicker || '' }));
+    const flags = el('div', { class: 'pp-flags' });
+    if (s.wichtig) flags.appendChild(el('span', { class: 'pp-flag pp-flag-star', html: '<i class="fas fa-star"></i> WICHTIG' }));
+    if (s.jedermann) flags.appendChild(el('span', { class: 'pp-flag pp-flag-hand', html: '<i class="fas fa-hand"></i> JEDERMANNSRECHT' }));
+    top.appendChild(flags);
+    slide.appendChild(top);
+
+    const head = el('div', { class: 'pp-head' });
+    if (s.badge) head.appendChild(el('span', { class: 'pp-badge', text: s.badge }));
+    head.appendChild(el('h2', { class: 'pp-title', text: s.title || '' }));
+    slide.appendChild(head);
+
+    if (s.summary) slide.appendChild(el('p', { class: 'pp-summary', text: s.summary }));
+
+    if (s.anim) slide.appendChild(el('div', { class: 'pp-anim' }, [animMeter(s.anim)]));
+
+    if (s.fields && s.fields.length) {
+      const grid = el('div', { class: 'pp-fields' });
+      s.fields.forEach(f => grid.append(
+        el('div', { class: 'pp-field' }, [
+          el('span', { class: 'pp-f-l', text: f.label }),
+          el('span', { class: 'pp-f-v', text: f.value }),
+        ])
+      ));
+      slide.appendChild(grid);
+    }
+    if (s.beispiel) slide.appendChild(el('div', { class: 'pp-box pp-box-beispiel' }, [
+      el('span', { class: 'pp-box-l', html: '<i class="fas fa-lightbulb"></i> ' + (s.beispielLabel || 'Praxisfall') }),
+      el('span', { class: 'pp-box-v', text: s.beispiel }),
+    ]));
+    if (s.merksatz) slide.appendChild(el('div', { class: 'pp-box pp-box-merk' }, [
+      el('span', { class: 'pp-box-l', html: '<i class="fas fa-bookmark"></i> Merksatz' }),
+      el('span', { class: 'pp-box-v', text: s.merksatz }),
+    ]));
+    if (s.fehler && s.fehler.length) {
+      const box = el('div', { class: 'pp-box pp-box-fehler' });
+      box.appendChild(el('span', { class: 'pp-box-l', html: '<i class="fas fa-triangle-exclamation"></i> Typische Fehler' }));
+      const ul = el('ul', { class: 'pp-fehler' });
+      s.fehler.forEach(f => ul.appendChild(el('li', { text: f })));
+      box.appendChild(ul);
+      slide.appendChild(box);
+    }
+    if (s.tags && s.tags.length) {
+      const tg = el('div', { class: 'pp-tags' });
+      s.tags.forEach(t => tg.appendChild(el('span', { class: 'pp-tag', text: t })));
+      slide.appendChild(tg);
+    }
+    return slide;
+  }
+
+  /* ---------- Hauptansicht ---------- */
+  function view(d) {
+    const decks = buildDecks(d);
+    const root = el('div', { class: 'pp-wrap' });
+
+    function showPicker() {
+      root.innerHTML = '';
+      const head = el('div', { class: 'view-head' }, [
+        el('span', { class: 'crumb', text: 'Lernen · Präsentation' }),
+        el('h1', { text: 'Präsentation · Slideshow' }),
+        el('p', { text: 'Wähle ein Thema und blättere wie in einer Präsentation durch – mit Pfeiltasten, Wischen oder den Knöpfen. Ideal zum Lernen & Vortragen.' }),
+      ]);
+      root.appendChild(head);
+      const groups = {};
+      decks.forEach(dk => (groups[dk.group] = groups[dk.group] || []).push(dk));
+      Object.entries(groups).forEach(([gname, list]) => {
+        root.appendChild(el('div', { class: 'pp-group-label', text: gname }));
+        const grid = el('div', { class: 'pp-picker-grid' });
+        list.forEach(dk => {
+          const card = el('button', { class: 'pp-deck', type: 'button', style: `--a:${dk.accent}` });
+          card.appendChild(el('div', { class: 'pp-deck-ico', html: `<i class="fas ${dk.icon}"></i>` }));
+          card.appendChild(el('div', { class: 'pp-deck-body' }, [
+            el('strong', { text: dk.title }),
+            el('span', { text: dk.sub }),
+            el('em', { html: `<i class="fas fa-film"></i> ${dk.count} Folien` }),
+          ]));
+          card.appendChild(el('div', { class: 'pp-deck-go', html: '<i class="fas fa-play"></i>' }));
+          card.addEventListener('click', () => startDeck(dk));
+          grid.appendChild(card);
+        });
+        root.appendChild(grid);
+      });
+    }
+
+    function startDeck(deck) {
+      root.innerHTML = '';
+      let idx = 0, autoTimer = null;
+
+      const player = el('div', { class: 'pp-player', style: `--a:${deck.accent}` });
+      const exit = el('button', { class: 'pp-btn', html: '<i class="fas fa-arrow-left"></i> <span>Übersicht</span>' });
+      const autoBtn = el('button', { class: 'pp-btn', title: 'Automatisch abspielen', html: '<i class="fas fa-play"></i>' });
+      const fsBtn = el('button', { class: 'pp-btn', title: 'Vollbild', html: '<i class="fas fa-expand"></i>' });
+      const bar = el('div', { class: 'pp-bar' }, [
+        exit,
+        el('div', { class: 'pp-bar-title' }, [el('strong', { text: deck.title }), el('span', { text: deck.sub })]),
+        el('div', { class: 'pp-bar-actions' }, [autoBtn, fsBtn]),
+      ]);
+
+      const host = el('div', { class: 'pp-slide-host' });
+      const prev = el('button', { class: 'pp-nav pp-prev', html: '<i class="fas fa-chevron-left"></i>' });
+      const next = el('button', { class: 'pp-nav pp-next', html: '<i class="fas fa-chevron-right"></i>' });
+      const stage = el('div', { class: 'pp-stage' }, [prev, host, next]);
+
+      const fill = el('div', { class: 'pp-progress-fill' });
+      const counter = el('div', { class: 'pp-counter' });
+      const foot = el('div', { class: 'pp-foot' }, [el('div', { class: 'pp-progress' }, [fill]), counter]);
+
+      player.append(bar, stage, foot);
+      root.appendChild(player);
+
+      function render() {
+        host.innerHTML = '';
+        host.appendChild(renderSlide(deck.slides[idx]));
+        fill.style.width = ((idx + 1) / deck.slides.length * 100) + '%';
+        counter.textContent = (idx + 1) + ' / ' + deck.slides.length;
+        prev.disabled = idx === 0;
+        next.disabled = idx === deck.slides.length - 1;
+      }
+      function go(delta) {
+        const n = Math.min(deck.slides.length - 1, Math.max(0, idx + delta));
+        if (n === idx) { if (delta > 0) stopAuto(); return; }
+        idx = n; render();
+        if (autoTimer && idx === deck.slides.length - 1) stopAuto();
+      }
+      function stopAuto() { if (autoTimer) { clearInterval(autoTimer); autoTimer = null; autoBtn.innerHTML = '<i class="fas fa-play"></i>'; } }
+      function toggleAuto() {
+        if (autoTimer) { stopAuto(); return; }
+        if (idx === deck.slides.length - 1) idx = 0, render();
+        autoBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        autoTimer = setInterval(() => { if (!stage.isConnected) { stopAuto(); return; } go(1); }, 3500);
+      }
+      function toggleFs() {
+        try {
+          if (!document.fullscreenElement) { player.requestFullscreen && player.requestFullscreen(); player.classList.add('pp-fs'); }
+          else { document.exitFullscreen && document.exitFullscreen(); }
+        } catch (e) { /* Vollbild nicht verfügbar */ }
+      }
+      document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement) player.classList.remove('pp-fs'); });
+
+      prev.addEventListener('click', () => { stopAuto(); go(-1); });
+      next.addEventListener('click', () => { stopAuto(); go(1); });
+      exit.addEventListener('click', () => { stopAuto(); if (document.fullscreenElement) document.exitFullscreen(); showPicker(); });
+      autoBtn.addEventListener('click', toggleAuto);
+      fsBtn.addEventListener('click', toggleFs);
+
+      // Tastatur (selbst-aufräumend, wenn die Bühne nicht mehr im DOM ist)
+      function onKey(e) {
+        if (!stage.isConnected) { document.removeEventListener('keydown', onKey); stopAuto(); return; }
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); stopAuto(); go(1); }
+        else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); stopAuto(); go(-1); }
+        else if (e.key === 'Escape') { if (!document.fullscreenElement) { stopAuto(); showPicker(); } }
+        else if (e.key === 'Home') { stopAuto(); idx = 0; render(); }
+        else if (e.key === 'End') { stopAuto(); idx = deck.slides.length - 1; render(); }
+        else if (e.key.toLowerCase() === 'f') { toggleFs(); }
+      }
+      document.addEventListener('keydown', onKey);
+
+      // Wischen (Touch)
+      let tsx = null;
+      stage.addEventListener('touchstart', e => { tsx = e.touches[0].clientX; }, { passive: true });
+      stage.addEventListener('touchend', e => {
+        if (tsx == null) return;
+        const dx = e.changedTouches[0].clientX - tsx;
+        if (Math.abs(dx) > 45) { stopAuto(); go(dx < 0 ? 1 : -1); }
+        tsx = null;
+      }, { passive: true });
+
+      render();
+    }
+
+    showPicker();
+    return root;
+  }
+  return { view };
+})();
+
+</script>
 <script>
   // Wire global-search trigger after DOM ready
   window.addEventListener('load', () => {
@@ -46597,6 +47120,7 @@ window.SEARCH = (() => {
     masterency: (d) => MASTER_ENCY.view(d),
     werk:       (d) => WERK.view(d),
     gesetze: (d) => GESETZE_VIEW.view(d),
+    praesentation: (d) => PRAESENTATION.view(d),
     pruefung: () => PRUEFUNG.view(),
     mediathek: (d) => MEDIATHEK.view(d),
     wwdtech: () => WWDTECH.view(),

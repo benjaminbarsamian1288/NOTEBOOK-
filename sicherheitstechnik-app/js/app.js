@@ -41,6 +41,7 @@
     masterency: (d) => MASTER_ENCY.view(d),
     werk:       (d) => WERK.view(d),
     gesetze: (d) => GESETZE_VIEW.view(d),
+    praesentation: (d) => PRAESENTATION.view(d),
     pruefung: () => PRUEFUNG.view(),
     mediathek: (d) => MEDIATHEK.view(d),
     wwdtech: () => WWDTECH.view(),
