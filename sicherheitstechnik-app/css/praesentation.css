@@ -318,6 +318,79 @@
 .pp-card-tag { font-size: 10.5px; font-weight: 800; color: var(--a, var(--accent)); letter-spacing: .4px; }
 .pp-card-hint { font-size: 10.5px; color: var(--text-dim); margin-top: auto; }
 
+/* Streak-Banner */
+.pp-streak {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  padding: 14px 16px; border-radius: 16px; margin: 4px 2px 14px;
+  background: linear-gradient(120deg, rgba(34,211,238,.18), rgba(168,85,247,.14));
+  border: 1px solid rgba(34,211,238,.32);
+}
+.pp-streak-fire {
+  width: 44px; height: 44px; flex: 0 0 44px; border-radius: 12px;
+  display: grid; place-items: center; font-size: 22px; color: #fff;
+  background: linear-gradient(160deg, #f97316, #ef4444); box-shadow: 0 0 22px rgba(249,115,22,.6);
+  animation: pp-flick 1.4s ease-in-out infinite alternate;
+}
+@keyframes pp-flick { from { transform: scale(1) rotate(-3deg); } to { transform: scale(1.06) rotate(3deg); } }
+.pp-streak-num { font-size: 36px; font-weight: 900; font-variant-numeric: tabular-nums; color: #fff; text-shadow: 0 0 18px rgba(255,255,255,.3); }
+.pp-streak-l { display: flex; flex-direction: column; gap: 2px; }
+.pp-streak-l strong { font-size: 15px; }
+.pp-streak-l span { font-size: 12.5px; color: var(--text-dim); }
+.pp-streak-go {
+  margin-left: auto; cursor: pointer; padding: 10px 16px; border-radius: 12px; font-weight: 800;
+  background: linear-gradient(120deg, #22d3ee, #38bdf8); color: #07101f; border: none; font-size: 14px;
+  box-shadow: 0 8px 22px rgba(34,211,238,.4);
+}
+.pp-streak-go:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(34,211,238,.55); }
+.pp-streak-ms { font-weight: 800; color: #fbbf24; padding: 6px 12px; border-radius: 999px; background: rgba(251,191,36,.16); border: 1px solid rgba(251,191,36,.4); }
+
+/* Fortschrittsbalken auf Deck-Kachel */
+.pp-deck-bar { margin-top: 8px; height: 4px; border-radius: 999px; background: rgba(255,255,255,.07); overflow: hidden; }
+.pp-deck-fill { height: 100%; background: linear-gradient(90deg, var(--a, var(--accent)), #fff); box-shadow: 0 0 10px color-mix(in srgb, var(--a) 50%, transparent); }
+
+/* Content-Folie mit Illustration + Text + Callout */
+.pp-body { display: grid; grid-template-columns: 240px 1fr; gap: 18px; align-items: start; }
+.pp-illu { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.pp-illu-c { width: 220px; height: 220px; max-width: 100%; }
+.pp-callout {
+  font-size: clamp(20px, 3vw, 32px); font-weight: 900; color: #fff;
+  padding: 10px 16px; border-radius: 12px; text-align: center; min-width: 140px;
+  background: linear-gradient(120deg, color-mix(in srgb, var(--a) 60%, #07101f), #07101f);
+  border: 1px solid color-mix(in srgb, var(--a) 60%, transparent);
+  box-shadow: 0 0 22px color-mix(in srgb, var(--a) 45%, transparent);
+  font-variant-numeric: tabular-nums; letter-spacing: .5px;
+}
+.pp-body-r .pp-summary { margin: 0; }
+.pp-mark {
+  background: linear-gradient(120deg, color-mix(in srgb, var(--a) 28%, transparent), color-mix(in srgb, var(--a) 10%, transparent));
+  color: #fff; padding: 0 4px; border-radius: 4px; font-weight: 700;
+  border-bottom: 2px solid var(--a, var(--accent));
+}
+@media (max-width: 740px) {
+  .pp-body { grid-template-columns: 1fr; }
+  .pp-illu { flex-direction: row; justify-content: center; flex-wrap: wrap; }
+  .pp-illu-c { width: 140px; height: 140px; }
+}
+
+/* Lern-Aktionsbar */
+.pp-learn { display: flex; gap: 10px; flex-wrap: wrap; margin-top: auto; padding-top: 8px; }
+.pp-learn-btn {
+  flex: 1; min-width: 160px; cursor: pointer; padding: 12px 14px; border-radius: 12px; font-weight: 800; font-size: 14px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid transparent;
+  transition: transform .12s, box-shadow .15s, background .15s, color .15s;
+}
+.pp-learn-ok { background: rgba(34,197,94,.14); color: #4ade80; border-color: rgba(34,197,94,.4); }
+.pp-learn-ok:hover, .pp-learn-ok.on { background: #22c55e; color: #07101f; box-shadow: 0 8px 24px rgba(34,197,94,.35); }
+.pp-learn-re { background: rgba(251,191,36,.14); color: #fbbf24; border-color: rgba(251,191,36,.4); }
+.pp-learn-re:hover, .pp-learn-re.on { background: #fbbf24; color: #07101f; box-shadow: 0 8px 24px rgba(251,191,36,.4); }
+.pp-learn-btn:active { transform: scale(.96); }
+
+.pp-flag-ok { color: #4ade80; background: rgba(34,197,94,.18); border: 1px solid rgba(34,197,94,.45); box-shadow: 0 0 16px rgba(34,197,94,.25); }
+.pp-flag-todo { color: #fbbf24; background: rgba(251,191,36,.18); border: 1px solid rgba(251,191,36,.45); box-shadow: 0 0 16px rgba(251,191,36,.25); }
+
+/* Vorlese-Aktiv */
+.pp-btn.on { background: var(--a, var(--accent)); color: #07101f; border-color: transparent; box-shadow: 0 0 22px color-mix(in srgb, var(--a) 60%, transparent); }
+
 /* Wave-Folie („Wellen einfach erklärt") */
 .pp-wave .pp-anim { margin: 4px 0 6px; }
 .pp-wave .pp-canvas { max-width: 100%; box-shadow: 0 18px 40px rgba(0,0,0,.4); }

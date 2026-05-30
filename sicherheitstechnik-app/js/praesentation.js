@@ -5,6 +5,144 @@
 window.PRAESENTATION = (() => {
   const { el } = U;
 
+  /* ---------- Tages-Fortschritt (localStorage) ---------- */
+  const PR_STATE = (() => {
+    const KEY = 'pp-state-v1';
+    function todayStr() { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+    function diffDays(a, b) { const da = new Date(a), db = new Date(b); return Math.round((db - da) / 86400000); }
+    let s = {};
+    try { s = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
+    s.learned = s.learned || {}; s.review = s.review || {};
+    s.streak = s.streak || 0; s.lastVisit = s.lastVisit || null; s.totalDays = s.totalDays || 0;
+    function save() { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+    let lastStreakBump = -1;
+    return {
+      today: todayStr,
+      visit() {
+        const t = todayStr();
+        if (s.lastVisit === t) return s;
+        lastStreakBump = s.streak;
+        if (s.lastVisit && diffDays(s.lastVisit, t) === 1) s.streak = (s.streak || 0) + 1;
+        else s.streak = 1;
+        s.lastVisit = t; s.totalDays = (s.totalDays || 0) + 1; save(); return s;
+      },
+      learned: id => !!s.learned[id],
+      review:  id => !!s.review[id],
+      setLearned(id) { s.learned[id] = todayStr(); delete s.review[id]; save(); },
+      setReview(id)  { s.review[id]  = todayStr(); delete s.learned[id]; save(); },
+      clearMark(id)  { delete s.learned[id]; delete s.review[id]; save(); },
+      all: () => s,
+      milestoneJust() {
+        const ms = [3, 7, 14, 21, 30, 50, 100];
+        if (ms.includes(s.streak) && lastStreakBump < s.streak) { lastStreakBump = s.streak; return s.streak; }
+        return 0;
+      },
+      deckProgress(deck) {
+        const ids = deck.slides.filter(x => x.id).map(x => x.id);
+        if (!ids.length) return { learned: 0, total: 0 };
+        return { learned: ids.filter(id => s.learned[id]).length, total: ids.length };
+      },
+    };
+  })();
+
+  /* ---------- Klein-Hilfen: Illustration, Callout, Highlight, TTS ---------- */
+  function illustrationFor(slide) {
+    const txt = ((slide.title || '') + ' ' + (slide.summary || '') + ' ' + (slide.tags || []).join(' ')).toLowerCase();
+    const MAP = [
+      { re: /versicher|haftpflicht|1\.000\.000|250\.000/, ic: 'fa-shield-halved', emoji: '€', col: '#22c55e' },
+      { re: /ausweis|kennzeichnung|schild/, ic: 'fa-id-badge', emoji: 'ID', col: '#38bdf8' },
+      { re: /register|bewacherreg|datei/, ic: 'fa-clipboard-list', emoji: '📋', col: '#a855f7' },
+      { re: /schweige|geheim/, ic: 'fa-user-secret', emoji: '🤐', col: '#64748b' },
+      { re: /waffe|munition|gewehr/, ic: 'fa-gun', emoji: '⚠', col: '#ef4444' },
+      { re: /hund/, ic: 'fa-dog', emoji: '🐕', col: '#fbbf24' },
+      { re: /datenschutz|dsgvo/, ic: 'fa-lock', emoji: '🔒', col: '#22d3ee' },
+      { re: /notwehr|nothilfe/, ic: 'fa-hand-fist', emoji: '✊', col: '#f97316' },
+      { re: /jedermann/, ic: 'fa-hand', emoji: '✋', col: '#22d3ee' },
+      { re: /erste hilfe|ersthelf|unfall/, ic: 'fa-kit-medical', emoji: '✚', col: '#ef4444' },
+      { re: /prüf|sachkund|unterricht/, ic: 'fa-graduation-cap', emoji: '🎓', col: '#fbbf24' },
+      { re: /dienstanweisung|schriftform|antrag|formular/, ic: 'fa-file-signature', emoji: '✍', col: '#a855f7' },
+      { re: /uniform|kleidung/, ic: 'fa-shirt', emoji: '👔', col: '#38bdf8' },
+      { re: /kritis|bsi|cyber|nis-?2|sektor/, ic: 'fa-server', emoji: '🛡', col: '#ef4444' },
+      { re: /notruf|nsl|leitstelle/, ic: 'fa-phone', emoji: '📞', col: '#22c55e' },
+      { re: /40\s*h|stunde|stunden|monat|jahre|tage|inkraft/, ic: 'fa-clock', emoji: '⏱', col: '#fbbf24' },
+      { re: /eigentum|hausrecht|besitz/, ic: 'fa-house', emoji: '🏠', col: '#22c55e' },
+      { re: /strafe|bußgeld|haft|geldstrafe|owig/, ic: 'fa-gavel', emoji: '⚖', col: '#ef4444' },
+      { re: /diebstahl|raub|einbruch/, ic: 'fa-user-ninja', emoji: '🥷', col: '#ef4444' },
+      { re: /alarm|melder|einbruchmelde/, ic: 'fa-bell', emoji: '🔔', col: '#fbbf24' },
+      { re: /perimeter|zaun|tor/, ic: 'fa-border-all', emoji: '🚧', col: '#22c55e' },
+      { re: /buchführung|aufbewahr/, ic: 'fa-book-open', emoji: '📖', col: '#a855f7' },
+    ];
+    for (const m of MAP) if (m.re.test(txt)) return m;
+    return { ic: 'fa-section', emoji: '§', col: slide.accent || '#22d3ee' };
+  }
+
+  function extractCallout(text) {
+    if (!text) return null;
+    const re = /\b\d[\d.]*\s*(?:€|EUR|Euro|Minuten?|Min\.?|Std\.?|h|Stunden?|Monate?|Jahre?|Jahren|Tage?n?|%|Prozent|Mio\.?)\b/i;
+    const m = text.match(re); if (!m) return null;
+    return m[0];
+  }
+
+  function escapeRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+  function spotlightHTML(text, tags) {
+    if (!text) return '';
+    let out = (window.U && U.escapeHtml) ? U.escapeHtml(text) : String(text);
+    const words = new Set();
+    (tags || []).forEach(t => {
+      String(t).split(/[\s,/]+/).forEach(w => { if (w && w.length > 3) words.add(w); });
+    });
+    Array.from(words).sort((a, b) => b.length - a.length).forEach(w => {
+      const re = new RegExp('(?<![\\wäöüÄÖÜß])(' + escapeRe(w) + ')', 'gi');
+      out = out.replace(re, '<mark class="pp-mark">$1</mark>');
+    });
+    return out;
+  }
+
+  let _speaking = false, _speakUtt = null;
+  function ttsToggle(text, btn) {
+    if (!('speechSynthesis' in window)) return;
+    if (_speaking) { window.speechSynthesis.cancel(); _speaking = false; if (btn) btn.classList.remove('on'); return; }
+    const u = new SpeechSynthesisUtterance(text); u.lang = 'de-DE'; u.rate = 1.0; u.pitch = 1.0;
+    u.onend = () => { _speaking = false; if (btn) btn.classList.remove('on'); };
+    u.onerror = u.onend;
+    _speakUtt = u; _speaking = true; if (btn) btn.classList.add('on');
+    window.speechSynthesis.speak(u);
+  }
+  function ttsStop() { if (_speaking) { window.speechSynthesis.cancel(); _speaking = false; } }
+
+  /* Pulsierende Mini-Illustration für jede §-Folie. */
+  function illustrationCanvas(info, accent) {
+    const W = 220, H = 220, c = el('canvas', { class: 'pp-illu-c', width: W, height: H }), ctx = c.getContext('2d');
+    let t = 0;
+    function draw() {
+      t += 0.04;
+      ctx.clearRect(0, 0, W, H);
+      const cx = W / 2, cy = H / 2;
+      // Rotierender Ring
+      ctx.save(); ctx.translate(cx, cy); ctx.rotate(t * 0.5);
+      ctx.strokeStyle = info.col; ctx.lineWidth = 2;
+      ctx.setLineDash([6, 7]); ctx.beginPath(); ctx.arc(0, 0, 95, 0, 7); ctx.stroke();
+      ctx.setLineDash([]); ctx.restore();
+      // Glühen
+      ctx.save(); ctx.translate(cx, cy);
+      const g = ctx.createRadialGradient(0, 0, 5, 0, 0, 80);
+      g.addColorStop(0, info.col + 'cc'); g.addColorStop(1, 'transparent');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, 80, 0, 7); ctx.fill();
+      ctx.restore();
+      // Kreis
+      const pulse = 1 + Math.sin(t * 2) * 0.04;
+      ctx.save(); ctx.translate(cx, cy); ctx.scale(pulse, pulse);
+      ctx.fillStyle = '#0b1424'; ctx.beginPath(); ctx.arc(0, 0, 60, 0, 7); ctx.fill();
+      ctx.strokeStyle = info.col; ctx.lineWidth = 3; ctx.stroke();
+      ctx.fillStyle = info.col; ctx.font = '900 56px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(info.emoji || '§', 0, 6);
+      ctx.restore();
+    }
+    function f() { if (!c.isConnected) return; draw(); requestAnimationFrame(f); }
+    requestAnimationFrame(f);
+    return c;
+  }
+
   /* ---------- helpers ---------- */
   function lvColor(idx, count) {
     const hue = Math.round(140 - (idx / Math.max(1, count - 1)) * 140);
@@ -332,6 +470,7 @@ window.PRAESENTATION = (() => {
       });
       a.paragraphen.forEach(p => {
         slides.push({
+          id: g.id + '/' + (p.p || '').replace(/\s+/g, ''),
           type: 'content', accent: g.farbe, kicker: 'Abschnitt ' + a.nr + ' · ' + g.short,
           badge: p.p, title: p.t, summary: p.s,
           beispiel: p.beispiel, merksatz: p.merksatz, fehler: p.fehler,
@@ -562,6 +701,8 @@ window.PRAESENTATION = (() => {
     const flags = el('div', { class: 'pp-flags' });
     if (s.wichtig) flags.appendChild(el('span', { class: 'pp-flag pp-flag-star', html: '<i class="fas fa-star"></i> WICHTIG' }));
     if (s.jedermann) flags.appendChild(el('span', { class: 'pp-flag pp-flag-hand', html: '<i class="fas fa-hand"></i> JEDERMANNSRECHT' }));
+    if (s.id && PR_STATE.learned(s.id)) flags.appendChild(el('span', { class: 'pp-flag pp-flag-ok', html: '<i class="fas fa-check"></i> GELERNT' }));
+    else if (s.id && PR_STATE.review(s.id)) flags.appendChild(el('span', { class: 'pp-flag pp-flag-todo', html: '<i class="fas fa-rotate"></i> WIEDERHOLEN' }));
     top.appendChild(flags);
     slide.appendChild(top);
 
@@ -570,7 +711,19 @@ window.PRAESENTATION = (() => {
     head.appendChild(el('h2', { class: 'pp-title', text: s.title || '' }));
     slide.appendChild(head);
 
-    if (s.summary) slide.appendChild(el('p', { class: 'pp-summary', text: s.summary }));
+    // Illustration + Summary nebeneinander; Mega-Zahl als Callout
+    const info = illustrationFor(s);
+    const callout = extractCallout(s.summary);
+    const body = el('div', { class: 'pp-body' });
+    const left = el('div', { class: 'pp-illu pp-px', dataset: { px: '14' } });
+    left.appendChild(illustrationCanvas(info, s.accent));
+    if (callout) left.appendChild(el('div', { class: 'pp-callout pp-num', dataset: { target: callout }, text: callout }));
+    body.appendChild(left);
+    const right = el('div', { class: 'pp-body-r' });
+    if (s.summary) right.appendChild(el('p', { class: 'pp-summary', html: spotlightHTML(s.summary, s.tags) }));
+    body.appendChild(right);
+    slide.appendChild(body);
+
     if (s.anim) slide.appendChild(el('div', { class: 'pp-anim' }, [animMeter(s.anim)]));
     if (s.fields && s.fields.length) {
       const grid = el('div', { class: 'pp-fields' });
@@ -902,19 +1055,85 @@ window.PRAESENTATION = (() => {
     return base + (s.badge ? s.badge + ' · ' : '') + (s.title || '');
   }
 
+  /* ---------- „Heute lernen": Tages-Deck aus 5 §§ ---------- */
+  function dailyDeck(allLawDecks) {
+    // Sammelt alle Content-Slides, priorisiert WIEDERHOLEN, dann unbekannt, dann wichtig, dann jedermann.
+    const allP = [];
+    allLawDecks.forEach(dk => dk.slides.forEach(s => { if (s.type === 'content' && s.id) allP.push({ s, dk }); }));
+    function seed() {
+      const t = PR_STATE.today();
+      let h = 0; for (let i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) | 0;
+      return Math.abs(h);
+    }
+    function score(it) {
+      let sc = 0;
+      if (PR_STATE.review(it.s.id)) sc += 1000;
+      if (!PR_STATE.learned(it.s.id)) sc += 500;
+      if (it.s.wichtig) sc += 80;
+      if (it.s.jedermann) sc += 60;
+      // Tages-Pseudozufall, stabil pro Tag
+      sc += (((seed() ^ hashStr(it.s.id)) >>> 0) % 100);
+      return sc;
+    }
+    function hashStr(s) { let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return h; }
+    const pool = allP.slice().sort((a, b) => score(b) - score(a));
+    const today = pool.slice(0, 5);
+    if (!today.length) return null;
+    const slides = [];
+    slides.push({
+      type: 'cover', accent: '#22d3ee', icon: 'fa-calendar-day', kicker: 'Heute · ' + PR_STATE.today(),
+      title: 'Tagesportion', subtitle: '5 Paragraphen für heute',
+      lead: 'Jeden Tag eine kleine Portion – nach Plan: erst Wiederholungen, dann neue Wichtige.',
+      count: '5 §§',
+    });
+    today.forEach(({ s, dk }) => {
+      slides.push({ ...s, kicker: dk.title + ' · ' + (s.kicker || '') });
+    });
+    slides.push({
+      type: 'outro', accent: '#22d3ee', icon: 'fa-circle-check', kicker: 'Geschafft',
+      title: 'Tagesportion erledigt', subtitle: 'Komm morgen wieder – die Serie wächst.',
+      lead: 'Jeden Tag 5 §§ – nach 30 Tagen kennst du die wichtigsten 150.',
+    });
+    return { id: 'daily', group: '⭐ Tagesplan', title: 'Heute lernen · 5 §§', sub: PR_STATE.today(), accent: '#22d3ee', icon: 'fa-calendar-day', count: slides.length, slides };
+  }
+
   /* ---------- Hauptansicht ---------- */
   function view(d) {
+    PR_STATE.visit();
     const decks = buildDecks(d);
+    const lawDecks = decks.filter(x => x.id && x.id.startsWith('law-'));
+    const daily = dailyDeck(lawDecks);
+    if (daily) decks.unshift(daily);
     const root = el('div', { class: 'pp-wrap' });
+
+    function streakBanner() {
+      const state = PR_STATE.all();
+      const banner = el('div', { class: 'pp-streak' });
+      banner.appendChild(el('div', { class: 'pp-streak-fire', html: '<i class="fas fa-fire"></i>' }));
+      banner.appendChild(el('div', { class: 'pp-streak-num pp-num', dataset: { target: String(state.streak || 0) }, text: '0' }));
+      banner.appendChild(el('div', { class: 'pp-streak-l' }, [
+        el('strong', { text: (state.streak === 1 ? 'Tag in Folge' : 'Tage in Folge') }),
+        el('span', { text: 'Insgesamt aktiv an ' + (state.totalDays || 1) + ' Tagen · ' + Object.keys(state.learned || {}).length + ' §§ als gelernt markiert' }),
+      ]));
+      if (daily) {
+        const go = el('button', { class: 'pp-streak-go', html: '<i class="fas fa-play"></i> Heute lernen' });
+        go.addEventListener('click', () => startDeck(daily));
+        banner.appendChild(go);
+      }
+      const ms = PR_STATE.milestoneJust();
+      if (ms) banner.appendChild(el('span', { class: 'pp-streak-ms', text: '🎉 ' + ms + ' Tage – stark!' }));
+      return banner;
+    }
 
     function showPicker() {
       root.innerHTML = '';
       const head = el('div', { class: 'view-head' }, [
         el('span', { class: 'crumb', text: 'Lernen · Präsentation' }),
-        el('h1', { text: 'Präsentation · Slideshow' }),
-        el('p', { text: 'Wähle ein Thema. Pfeiltasten / Wischen / Knöpfe. Vollbild (F), Lese-Modus, Marker, Tempo-Regler – alles drin.' }),
+        el('h1', { text: 'Präsentation · Tagesplan & Slideshow' }),
+        el('p', { text: 'Komm jeden Tag rein – die App schlägt 5 Paragraphen vor, du markierst sie als gelernt oder zur Wiederholung. Streak wächst.' }),
       ]);
       root.appendChild(head);
+      root.appendChild(streakBanner());
       const groups = {};
       decks.forEach(dk => (groups[dk.group] = groups[dk.group] || []).push(dk));
       Object.entries(groups).forEach(([gname, list]) => {
@@ -923,11 +1142,18 @@ window.PRAESENTATION = (() => {
         list.forEach(dk => {
           const card = el('button', { class: 'pp-deck', type: 'button', style: `--a:${dk.accent}` });
           card.appendChild(el('div', { class: 'pp-deck-ico', html: `<i class="fas ${dk.icon}"></i>` }));
-          card.appendChild(el('div', { class: 'pp-deck-body' }, [
+          const pr = PR_STATE.deckProgress(dk);
+          const body = el('div', { class: 'pp-deck-body' }, [
             el('strong', { text: dk.title }),
             el('span', { text: dk.sub }),
-            el('em', { html: `<i class="fas fa-film"></i> ${dk.count} Folien` }),
-          ]));
+            el('em', { html: `<i class="fas fa-film"></i> ${dk.count} Folien` + (pr.total ? `  ·  <i class="fas fa-check"></i> ${pr.learned}/${pr.total} gelernt` : '') }),
+          ]);
+          if (pr.total) {
+            const bar = el('div', { class: 'pp-deck-bar' });
+            bar.appendChild(el('div', { class: 'pp-deck-fill', style: 'width:' + (pr.learned / pr.total * 100).toFixed(1) + '%' }));
+            body.appendChild(bar);
+          }
+          card.appendChild(body);
           card.appendChild(el('div', { class: 'pp-deck-go', html: '<i class="fas fa-play"></i>' }));
           attachTilt(card);
           card.addEventListener('click', () => startDeck(dk));
@@ -950,12 +1176,13 @@ window.PRAESENTATION = (() => {
       const markerBtn = el('button', { class: 'pp-btn pp-btn-icon', title: 'Marker (M)', html: '<i class="fas fa-pen"></i>' });
       const soundBtn = el('button', { class: 'pp-btn pp-btn-icon', title: 'Sound', html: '<i class="fas fa-volume-xmark"></i>' });
       const readBtn = el('button', { class: 'pp-btn pp-btn-icon', title: 'Lese-Modus (L)', html: '<i class="fas fa-book-open"></i>' });
+      const ttsBtn = el('button', { class: 'pp-btn pp-btn-icon', title: 'Vorlesen (V)', html: '<i class="fas fa-volume-low"></i>' });
       const fsBtn = el('button', { class: 'pp-btn pp-btn-icon', title: 'Vollbild (F)', html: '<i class="fas fa-expand"></i>' });
       const bar = el('div', { class: 'pp-bar' }, [
         exit,
         el('div', { class: 'pp-bar-title' }, [el('strong', { text: deck.title }), el('span', { text: deck.sub })]),
         search,
-        el('div', { class: 'pp-bar-actions' }, [autoBtn, speedBtn, markerBtn, soundBtn, readBtn, fsBtn]),
+        el('div', { class: 'pp-bar-actions' }, [autoBtn, speedBtn, markerBtn, soundBtn, ttsBtn, readBtn, fsBtn]),
       ]);
 
       const host = el('div', { class: 'pp-slide-host' });
@@ -1013,13 +1240,27 @@ window.PRAESENTATION = (() => {
       let stopFw = null;
       function render() {
         host.innerHTML = '';
+        ttsStop();
         if (stopFw) { stopFw(); stopFw = null; }
         const s = deck.slides[idx];
         const slideEl = renderSlide(s, jumpToTitle);
         slideEl.classList.add(transitionFor(s.type, lastDir));
-        // Aufmerksamkeit auf den Akzent: rotierender Neon-Rahmen für Cover & Outro
         if (s.type === 'cover' || s.type === 'outro') slideEl.classList.add('pp-neon');
         host.appendChild(slideEl);
+
+        // Lern-Aktionsleiste für Content-Folien mit ID
+        if (s.id && s.type === 'content') {
+          const learnedNow = PR_STATE.learned(s.id);
+          const reviewNow = PR_STATE.review(s.id);
+          const actions = el('div', { class: 'pp-learn' });
+          const okBtn = el('button', { class: 'pp-learn-btn pp-learn-ok' + (learnedNow ? ' on' : ''), html: '<i class="fas fa-check"></i> <span>Gelernt</span>' });
+          const reBtn = el('button', { class: 'pp-learn-btn pp-learn-re' + (reviewNow ? ' on' : ''), html: '<i class="fas fa-rotate"></i> <span>Wiederholen</span>' });
+          okBtn.addEventListener('click', () => { PR_STATE.setLearned(s.id); render(); setTimeout(() => go(1), 350); });
+          reBtn.addEventListener('click', () => { PR_STATE.setReview(s.id); render(); setTimeout(() => go(1), 350); });
+          actions.append(okBtn, reBtn);
+          slideEl.appendChild(actions);
+        }
+
         fill.style.width = ((idx + 1) / deck.slides.length * 100) + '%';
         counter.textContent = (idx + 1) + ' / ' + deck.slides.length;
         prev.disabled = idx === 0;
@@ -1029,13 +1270,10 @@ window.PRAESENTATION = (() => {
         // Anim-Effekte
         requestAnimationFrame(() => {
           animateNumbers(slideEl);
-          // Typewriter auf den Haupttiteln
           const tw = slideEl.querySelector('.pp-cover-title, .pp-title, .pp-section-title');
           if (tw) typewriter(tw);
-          // Parallax + Ripple
           attachParallax(slideEl);
           attachRipple(slideEl);
-          // Sparkles auf Cover/Outro
           if (s.type === 'cover' || s.type === 'outro') addSparkles(slideEl, s.accent);
         });
         setupMarkerOnce();
@@ -1043,6 +1281,16 @@ window.PRAESENTATION = (() => {
           fxBoom(); fireConfetti(stage);
           stopFw = startFireworks(stage);
         }
+      }
+      function speakCurrent() {
+        const s = deck.slides[idx]; if (!s) return;
+        const parts = [];
+        if (s.badge) parts.push(s.badge);
+        if (s.title) parts.push(s.title);
+        if (s.summary) parts.push(s.summary);
+        if (s.beispiel) parts.push('Praxisfall: ' + s.beispiel);
+        if (s.merksatz) parts.push('Merksatz: ' + s.merksatz);
+        ttsToggle(parts.join('. '), ttsBtn);
       }
       function go(delta) {
         const n = Math.min(deck.slides.length - 1, Math.max(0, idx + delta));
@@ -1093,12 +1341,13 @@ window.PRAESENTATION = (() => {
 
       prev.addEventListener('click', () => { stopAuto(); go(-1); });
       next.addEventListener('click', () => { stopAuto(); go(1); });
-      exit.addEventListener('click', () => { stopAuto(); if (document.fullscreenElement) document.exitFullscreen(); showPicker(); });
+      exit.addEventListener('click', () => { stopAuto(); ttsStop(); if (document.fullscreenElement) document.exitFullscreen(); showPicker(); });
       autoBtn.addEventListener('click', toggleAuto);
       speedBtn.addEventListener('click', bumpSpeed);
       soundBtn.addEventListener('click', toggleSound);
       markerBtn.addEventListener('click', toggleMarker);
       readBtn.addEventListener('click', showReader);
+      ttsBtn.addEventListener('click', speakCurrent);
       fsBtn.addEventListener('click', toggleFs);
 
       // Live-Suche im Deck
@@ -1133,6 +1382,9 @@ window.PRAESENTATION = (() => {
         else if (e.key.toLowerCase() === 'm') { toggleMarker(); }
         else if (e.key.toLowerCase() === 'l') { showReader(); }
         else if (e.key.toLowerCase() === 's') { toggleSound(); }
+        else if (e.key.toLowerCase() === 'v') { speakCurrent(); }
+        else if (e.key.toLowerCase() === 'g') { const s = deck.slides[idx]; if (s && s.id) { PR_STATE.setLearned(s.id); render(); go(1); } }
+        else if (e.key.toLowerCase() === 'w') { const s = deck.slides[idx]; if (s && s.id) { PR_STATE.setReview(s.id); render(); go(1); } }
       }
       document.addEventListener('keydown', onKey);
 
