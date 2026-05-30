@@ -197,9 +197,9 @@ window.WELLEN = (() => {
       icon: 'fa-paper-plane', wide: true,
       title: '1 · Von der Nachricht zum Impuls auf der Leitung',
       sub: 'Tippe ein Wort – sieh, wie es als Strom-Impulse durchs Kabel reist',
-      was: 'Jeder Buchstabe ist im Computer eine <b>Zahl</b> (ASCII). Diese Zahl wird in <b>8 Bit</b> (acht 0/1) zerlegt. Eine <b>1</b> = Strom AN = hohe Spannung, eine <b>0</b> = Strom AUS = tiefe Spannung.',
-      detail: 'Bit für Bit wird als kleiner <b>Spannungs-Impuls</b> über das Kabel geschickt (siehe Wanderpuls + Treppen-Kurve = NRZ-Codierung). Der Empfänger misst die Spannung und setzt die 0/1 wieder zur Zahl und damit zum Buchstaben zusammen.',
-      praxis: 'Genauso reden Melder, Zentrale und Bedienteil über den BUS: alles sind 0/1-Impulse. Tippe z. B. „SOS" und stell das Tempo langsam, um jedes Bit zu sehen.',
+      was: 'Ein <b>Bit</b> ist wie ein <b>Lichtschalter</b>: <b>1 = Licht an</b> 💡, <b>0 = Licht aus</b> ⚫. Mehr nicht.',
+      detail: 'Tippe ein Wort. Jeder Buchstabe ist eine <b>Zahl</b> (z. B. „H" = 72). Die Zahl wird zu <b>8 Schaltern</b> (8 Bit). Diese Schalter schicken kleine <b>Strom-Blitze</b> übers Kabel: <b>Blitz da = 1</b>, <b>keiner = 0</b>.',
+      praxis: 'So reden Melder, Zentrale und Bedienteil miteinander. Stell das Tempo langsam – dann siehst du jeden Blitz einzeln.',
       body,
     });
   }
@@ -304,9 +304,9 @@ window.WELLEN = (() => {
       icon: 'fa-wave-square', wide: true,
       title: '2 · Die elektromagnetische Welle',
       sub: 'Funk schickt dieselbe Information ohne Kabel – als Welle durch die Luft',
-      was: 'Eine elektromagnetische Welle besteht aus einem <b>elektrischen Feld</b> (rot) und einem <b>magnetischen Feld</b> (blau), die <b>senkrecht zueinander</b> stehen und gemeinsam mit <b>Lichtgeschwindigkeit c</b> durch den Raum laufen.',
-      detail: 'Es gilt <b>c = λ · f</b>: je höher die Frequenz <b>f</b>, desto kürzer die Wellenlänge <b>λ</b>. Schieb die Frequenz und sieh, wie sich λ und der Bereich (Funk → Mikrowelle → Infrarot → Licht) ändern.',
-      praxis: 'Funk-Melder (433/868 MHz), WLAN-Kameras (2,4 GHz), IR-Bewegungsmelder (Wärme) und Lichtschranken nutzen genau verschiedene Stellen dieses Spektrums.',
+      was: 'Eine Welle ist <b>Energie, die durch die Luft schwingt</b> – wie Wellen im Wasser, nur unsichtbar. So funkt das Handy, das WLAN und die Fernbedienung.',
+      detail: 'Sie wackelt <b>elektrisch (rot)</b> und <b>magnetisch (blau)</b> gleichzeitig. <b>Schnelles Wackeln = kurze Welle</b>, <b>langsames Wackeln = lange Welle</b>. Schieb am Regler und schau zu.',
+      praxis: 'Funk-Melder wackeln 433 Millionen Mal pro Sekunde. WLAN sogar 2,4 Milliarden Mal. Licht noch viel öfter.',
       body,
     });
   }
@@ -378,9 +378,9 @@ window.WELLEN = (() => {
       icon: 'fa-tower-broadcast',
       title: '3 · Bits reiten auf der Welle (Modulation)',
       sub: 'Wie kommen 0 und 1 auf eine Funkwelle?',
-      was: 'Die Funkwelle ist erstmal nur ein gleichförmiger <b>Träger</b>. Damit sie Information trägt, wird sie im Takt der Bits verändert – das heißt <b>Modulieren</b>.',
-      detail: '<b>ASK</b> (An/Aus): bei 1 sendet der Träger, bei 0 ist er aus. <b>FSK</b>: 1 = höhere Frequenz, 0 = tiefere Frequenz. Der Empfänger erkennt das Muster und liest die 0/1 wieder heraus.',
-      praxis: 'Einfache Funk-Handsender und Melder nutzen oft ASK/OOK, störsichere Systeme FSK. Schalte zwischen ASK und FSK um und beobachte das gesendete Signal.',
+      was: 'Eine leere Welle „sagt" noch nichts. Wir müssen sie im <b>Takt der Bits verändern</b> – das nennt man <b>Modulieren</b>.',
+      detail: '<b>ASK = An/Aus:</b> bei 1 sendet die Welle, bei 0 ist Stille. <b>FSK = schnell/langsam:</b> 1 = schnelles Wackeln, 0 = langsames Wackeln. Der Empfänger erkennt das Muster und liest die 0/1 wieder ab.',
+      praxis: 'Einfache Funk-Handsender und Türöffner nutzen <b>ASK</b>. Bessere Melder nutzen <b>FSK</b> – das ist störsicherer.',
       body,
     });
   }
@@ -388,11 +388,11 @@ window.WELLEN = (() => {
   function view() {
     const root = el('div', { class: 'phys-view' });
     const intro = el('div', { class: 'phys-intro' });
-    intro.innerHTML = `<span class="tag">Wellen & Signale verstehen</span>
+    intro.innerHTML = `<span class="tag">Wellen & Signale einfach erklärt</span>
       <h1>Von der Nachricht zur Welle 📡</h1>
-      <p class="lead">Eine einfache Nachricht – z. B. <b>„Hi"</b> – wird Schritt für Schritt sichtbar: erst zu <b>ASCII-Zahlen</b> und <b>Bits</b>,
-      dann zu <b>Spannungs-Impulsen auf der Leitung</b>, und schließlich als <b>elektromagnetische Welle</b> durch die Luft.
-      Tippe eigene Wörter und schau live zu – mit <b>Was · Im Detail · Praxis</b>.</p>`;
+      <p class="lead">Stell dir ein <b>Bit</b> wie einen <b>Lichtschalter</b> vor: <b>1 = an</b>, <b>0 = aus</b>.
+      Tippe ein Wort – die App zeigt, wie es als Strom-Blitze durchs <b>Kabel</b> reist und dann als <b>Welle durch die Luft</b>.
+      Drei kurze Stationen, jede mit einem Bild und einem Vergleich aus dem Alltag.</p>`;
     root.appendChild(intro);
     const g = el('div', { class: 'phys-grid' });
     [leitungSim(), emWelleSim(), modSim()].forEach(s => g.appendChild(s));

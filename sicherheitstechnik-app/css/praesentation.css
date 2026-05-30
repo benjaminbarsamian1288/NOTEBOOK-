@@ -318,6 +318,27 @@
 .pp-card-tag { font-size: 10.5px; font-weight: 800; color: var(--a, var(--accent)); letter-spacing: .4px; }
 .pp-card-hint { font-size: 10.5px; color: var(--text-dim); margin-top: auto; }
 
+/* Wave-Folie („Wellen einfach erklärt") */
+.pp-wave .pp-anim { margin: 4px 0 6px; }
+.pp-wave .pp-canvas { max-width: 100%; box-shadow: 0 18px 40px rgba(0,0,0,.4); }
+.pp-like { background: linear-gradient(120deg, rgba(34,211,238,.14), rgba(168,85,247,.10)); border-color: rgba(34,211,238,.32); }
+.pp-like .pp-box-l { color: #22d3ee; }
+.pp-like .pp-box-v { font-size: clamp(15px, 2vw, 19px); font-weight: 700; }
+.pp-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-top: 4px; }
+.pp-step {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12);
+  border-left: 4px solid var(--a, var(--accent)); border-radius: 12px; padding: 10px 13px;
+  transition: transform .15s ease, background .15s;
+}
+.pp-step:hover { transform: translateY(-2px); background: rgba(255,255,255,.08); }
+.pp-step-n {
+  width: 30px; height: 30px; flex: 0 0 30px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--a, var(--accent)); color: #07101f; font-weight: 900; font-size: 14px;
+  box-shadow: 0 0 14px color-mix(in srgb, var(--a) 55%, transparent);
+}
+.pp-step-t { font-size: 14.5px; font-weight: 600; line-height: 1.35; }
+
 /* Visualisierungs-Folie */
 .pp-vis { flex: 1; display: flex; align-items: center; justify-content: center; overflow: auto; border-radius: 12px; }
 .pp-vis svg, .pp-vis .ges-vis { width: 100%; height: auto; max-height: 62vh; display: block; animation: pp-kb 18s ease-in-out infinite alternate; }
@@ -360,6 +381,7 @@
 .pp-th-stats::before { background: #22c55e; }
 .pp-th-compare::before { background: #38bdf8; }
 .pp-th-toc::before { background: #a855f7; }
+.pp-th-wave::before { background: linear-gradient(90deg,#22d3ee,#a855f7,#22d3ee); }
 
 /* ---- Lese-Modus (alle Folien untereinander) ---- */
 .pp-reader {

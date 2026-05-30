@@ -140,6 +140,7 @@ window.PRAESENTATION = (() => {
     if (type === 'section' || type === 'quiz') return 'pp-fx-flip';
     if (type === 'visual') return 'pp-fx-fade';
     if (type === 'compare' || type === 'toc') return 'pp-fx-rise';
+    if (type === 'wave') return 'pp-fx-rise';
     return dir < 0 ? 'pp-from-left' : 'pp-from-right';
   }
 
@@ -433,6 +434,7 @@ window.PRAESENTATION = (() => {
 
   function buildDecks(d) {
     const decks = [];
+    decks.push(wavesDeck()); // „Wellen einfach erklärt" zuerst
     if (window.GESETZE_DB) GESETZE_DB.getAll().forEach(g => decks.push(lawDeck(g)));
     if (d && d.sicherungsklassen && d.sicherungsklassen.tables) {
       d.sicherungsklassen.tables.forEach(tbl => {
@@ -553,6 +555,7 @@ window.PRAESENTATION = (() => {
       slide.appendChild(grid);
       return slide;
     }
+    if (s.type === 'wave') return renderWaveSlide(s);
     // content
     const top = el('div', { class: 'pp-top' });
     top.appendChild(el('span', { class: 'pp-kicker', text: s.kicker || '' }));
@@ -601,6 +604,283 @@ window.PRAESENTATION = (() => {
       slide.appendChild(tg);
     }
     return slide;
+  }
+
+  /* ---------- Mini-Animationen für „Wellen einfach erklärt" ---------- */
+  function lightAnim() {
+    const W = 560, H = 220, c = el('canvas', { class: 'pp-canvas', width: W, height: H }), ctx = c.getContext('2d');
+    let t = 0;
+    function draw() {
+      t += 0.03;
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      const on = Math.floor(t) % 2 === 0;
+      const cx = W / 2, cy = H / 2 + 10, r = 56;
+      if (on) { ctx.save(); ctx.shadowColor = '#fbbf24'; ctx.shadowBlur = 50; ctx.fillStyle = '#fde68a'; ctx.beginPath(); ctx.arc(cx, cy, r, 0, 7); ctx.fill(); ctx.restore(); }
+      else { ctx.fillStyle = '#16202f'; ctx.beginPath(); ctx.arc(cx, cy, r, 0, 7); ctx.fill(); ctx.strokeStyle = '#334155'; ctx.lineWidth = 3; ctx.stroke(); }
+      ctx.fillStyle = on ? '#fbbf24' : '#64748b';
+      ctx.font = '900 64px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(on ? '1' : '0', cx, cy + 22);
+      ctx.fillStyle = '#94a3b8'; ctx.font = '700 18px sans-serif';
+      ctx.fillText(on ? 'AN  =  Strom da  =  1' : 'AUS  =  kein Strom  =  0', cx, H - 18);
+    }
+    loop(c, draw); return c;
+  }
+  function pipelineAnim() {
+    const W = 600, H = 230, c = el('canvas', { class: 'pp-canvas', width: W, height: H }), ctx = c.getContext('2d');
+    let t = 0;
+    const bin = '01001000'; // H
+    function draw() {
+      t += 0.02;
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      ctx.textAlign = 'center'; ctx.fillStyle = '#94a3b8'; ctx.font = '12px sans-serif';
+      ctx.fillText('Buchstabe', 70, 30); ctx.fillText('Zahl (ASCII)', W / 2, 30); ctx.fillText('Bits (Schalter)', W - 80, 30);
+      // Buchstabe
+      ctx.fillStyle = '#e8edf7'; ctx.font = '900 56px monospace'; ctx.fillText('H', 70, 100);
+      // Zahl
+      ctx.fillStyle = '#fbbf24'; ctx.font = '900 44px monospace'; ctx.fillText('72', W / 2, 95);
+      // Pfeile
+      ctx.strokeStyle = '#475569'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(110, 85); ctx.lineTo(W / 2 - 60, 85); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(W / 2 + 60, 85); ctx.lineTo(W - 130, 85); ctx.stroke();
+      ctx.fillStyle = '#475569'; ctx.font = '20px sans-serif'; ctx.fillText('→', W / 2 - 50, 92); ctx.fillText('→', W - 122, 92);
+      // Bits (laufendes Highlight)
+      const i = Math.floor(t * 4) % 8;
+      for (let k = 0; k < 8; k++) {
+        const x = W - 168 + k * 22, on = k === i;
+        ctx.fillStyle = on ? '#22d3ee' : (bin[k] === '1' ? '#fbbf24' : '#475569');
+        ctx.font = '900 22px monospace'; ctx.fillText(bin[k], x, 105);
+      }
+      ctx.fillStyle = '#64748b'; ctx.font = '12px sans-serif';
+      ctx.fillText("z. B. 'H' = 72 = 01001000", W / 2, 175);
+    }
+    loop(c, draw); return c;
+  }
+  function streamAnim() {
+    const W = 620, H = 220, c = el('canvas', { class: 'pp-canvas', width: W, height: H }), ctx = c.getContext('2d');
+    const bits = [1, 0, 1, 1, 0, 0, 1, 0];
+    let pos = 0;
+    function draw() {
+      pos += 0.015; if (pos >= bits.length + 0.5) pos = 0;
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      // Sender / Empfänger Boxen
+      ctx.fillStyle = '#16202f'; ctx.strokeStyle = '#334155'; ctx.lineWidth = 2;
+      ctx.fillRect(20, 70, 70, 70); ctx.strokeRect(20, 70, 70, 70);
+      ctx.fillRect(W - 90, 70, 70, 70); ctx.strokeRect(W - 90, 70, 70, 70);
+      ctx.fillStyle = '#94a3b8'; ctx.font = '34px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('📤', 55, 116); ctx.fillText('📥', W - 55, 116);
+      // Kabel
+      ctx.strokeStyle = '#3a3320'; ctx.lineWidth = 12; ctx.beginPath(); ctx.moveTo(90, 105); ctx.lineTo(W - 90, 105); ctx.stroke();
+      ctx.strokeStyle = '#7c5018'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(90, 105); ctx.lineTo(W - 90, 105); ctx.stroke();
+      // Wanderpuls
+      const bi = Math.floor(pos), frac = pos - bi;
+      if (bi < bits.length) {
+        const x = 90 + (W - 180) * frac, cur = bits[bi];
+        if (cur === 1) { ctx.save(); ctx.shadowColor = '#fbbf24'; ctx.shadowBlur = 22; ctx.fillStyle = '#fde68a'; ctx.beginPath(); ctx.arc(x, 105, 11, 0, 7); ctx.fill(); ctx.restore(); }
+        else { ctx.strokeStyle = '#475569'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, 105, 8, 0, 7); ctx.stroke(); }
+        ctx.fillStyle = cur ? '#fbbf24' : '#64748b'; ctx.font = '900 20px monospace'; ctx.textAlign = 'center';
+        ctx.fillText(cur ? '1' : '0', x, 80);
+      }
+      // Beschriftung
+      ctx.fillStyle = '#94a3b8'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('Sender', 55, 162); ctx.fillText('Empfänger', W - 55, 162);
+      ctx.fillStyle = '#64748b'; ctx.font = '13px sans-serif';
+      ctx.fillText('1 = Blitz   ·   0 = nichts', W / 2, 192);
+    }
+    loop(c, draw); return c;
+  }
+  function ropeWaveAnim() {
+    const W = 620, H = 230, c = el('canvas', { class: 'pp-canvas', width: W, height: H }), ctx = c.getContext('2d');
+    let t = 0;
+    function draw() {
+      t += 0.08;
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      // Hand links
+      ctx.font = '40px sans-serif'; ctx.textAlign = 'center';
+      const hy = H / 2 + Math.sin(t) * 50; ctx.fillText('✋', 40, hy);
+      // Seil (Sinuswelle, an Hand befestigt)
+      ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 3; ctx.beginPath();
+      for (let x = 60; x <= W - 30; x += 2) {
+        const k = (x - 60) / (W - 90);
+        const amp = 50 * (1 - k * 0.4);
+        const y = H / 2 + Math.sin((x - 60) * 0.06 - t) * amp * (1 - Math.exp(-k * 5));
+        x === 60 ? ctx.moveTo(60, hy) : ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      // Beschriftung
+      ctx.fillStyle = '#94a3b8'; ctx.font = '13px sans-serif'; ctx.textAlign = 'left';
+      ctx.fillText('Eine Welle ist Bewegung, die sich fortpflanzt –', 40, 30);
+      ctx.fillText('wie wenn du an einem Seil rüttelst.', 40, 48);
+    }
+    loop(c, draw); return c;
+  }
+  function emFieldsAnim() {
+    const W = 620, H = 230, c = el('canvas', { class: 'pp-canvas', width: W, height: H }), ctx = c.getContext('2d');
+    let t = 0;
+    function draw() {
+      t += 0.05;
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      const x0 = 50, x1 = W - 30, y0 = H / 2 + 6, A = 56;
+      ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y0); ctx.stroke();
+      // E-Feld rot
+      ctx.strokeStyle = '#f87171'; ctx.lineWidth = 3; ctx.beginPath();
+      for (let x = x0; x <= x1; x += 2) { const y = y0 - Math.sin((x - x0) * 0.06 - t) * A; x === x0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); }
+      ctx.stroke();
+      // B-Feld blau (perspektivisch versetzt)
+      ctx.strokeStyle = 'rgba(56,189,248,0.85)'; ctx.lineWidth = 2; ctx.beginPath();
+      for (let x = x0; x <= x1; x += 2) {
+        const s = Math.sin((x - x0) * 0.06 - t) * A * 0.55;
+        ctx.lineTo(x + s * 0.1, y0 + s * 0.55);
+      }
+      ctx.stroke();
+      ctx.fillStyle = '#f87171'; ctx.font = 'bold 13px sans-serif'; ctx.textAlign = 'left'; ctx.fillText('— elektrisch (wackelt rot)', x0, 26);
+      ctx.fillStyle = '#38bdf8'; ctx.fillText('— magnetisch (wackelt blau)', x0 + 190, 26);
+      ctx.fillStyle = '#94a3b8'; ctx.font = '12px sans-serif'; ctx.fillText('beide schwingen im Takt – das ist die Welle', x0, H - 20);
+    }
+    loop(c, draw); return c;
+  }
+  function freqAnim() {
+    const W = 620, H = 230, c = el('canvas', { class: 'pp-canvas', width: W, height: H }), ctx = c.getContext('2d');
+    let t = 0;
+    function draw() {
+      t += 0.05;
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      const xs = 40, xe = W - 30;
+      // Langsame Welle (lang)
+      ctx.strokeStyle = '#22c55e'; ctx.lineWidth = 3; ctx.beginPath();
+      for (let x = xs; x <= xe; x += 2) { const y = 70 - Math.sin((x - xs) * 0.025 - t) * 22; x === xs ? ctx.moveTo(x, y) : ctx.lineTo(x, y); }
+      ctx.stroke();
+      ctx.fillStyle = '#22c55e'; ctx.font = '900 14px sans-serif'; ctx.textAlign = 'left'; ctx.fillText('langsam = lange Welle', xs, 30);
+      // Mittlere Welle
+      ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 3; ctx.beginPath();
+      for (let x = xs; x <= xe; x += 2) { const y = 130 - Math.sin((x - xs) * 0.08 - t * 2) * 18; x === xs ? ctx.moveTo(x, y) : ctx.lineTo(x, y); }
+      ctx.stroke();
+      ctx.fillStyle = '#fbbf24'; ctx.fillText('mittel', xs, 100);
+      // Schnelle Welle (kurz)
+      ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 3; ctx.beginPath();
+      for (let x = xs; x <= xe; x += 2) { const y = 195 - Math.sin((x - xs) * 0.22 - t * 4) * 16; x === xs ? ctx.moveTo(x, y) : ctx.lineTo(x, y); }
+      ctx.stroke();
+      ctx.fillStyle = '#ef4444'; ctx.fillText('schnell = kurze Welle', xs, 165);
+    }
+    loop(c, draw); return c;
+  }
+  function modAnim() {
+    const W = 620, H = 230, c = el('canvas', { class: 'pp-canvas', width: W, height: H }), ctx = c.getContext('2d');
+    const bits = [1, 0, 1, 1, 0, 1, 0, 0];
+    let t = 0;
+    function draw() {
+      t += 0.07;
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#0b1424'; ctx.fillRect(0, 0, W, H);
+      const xs = 50, xe = W - 20, bw = (xe - xs) / bits.length;
+      // Bit-Reihe
+      ctx.textAlign = 'center';
+      for (let i = 0; i < bits.length; i++) {
+        ctx.fillStyle = bits[i] ? '#fbbf24' : '#475569'; ctx.font = '900 18px monospace';
+        ctx.fillText(bits[i], xs + i * bw + bw / 2, 38);
+        ctx.strokeStyle = '#13203a'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(xs + i * bw, 50); ctx.lineTo(xs + i * bw, 200); ctx.stroke();
+      }
+      // ASK-Welle
+      ctx.strokeStyle = '#22d3ee'; ctx.lineWidth = 2.5; ctx.beginPath(); let st = false;
+      for (let x = xs; x <= xe; x += 1.5) {
+        const i = Math.min(bits.length - 1, Math.floor((x - xs) / bw));
+        const amp = bits[i] ? 40 : 0;
+        const y = 130 - Math.sin((x - xs) * 0.28 - t * 3) * amp;
+        st ? ctx.lineTo(x, y) : (ctx.moveTo(x, y), st = true);
+      }
+      ctx.stroke();
+      ctx.fillStyle = '#94a3b8'; ctx.font = '13px sans-serif'; ctx.textAlign = 'left';
+      ctx.fillText('1 = Welle sendet · 0 = Welle ist aus', xs, H - 16);
+    }
+    loop(c, draw); return c;
+  }
+
+  /* Folientyp „wave": eine schöne Folie mit Mini-Animation, Vergleich und Schritten. */
+  function renderWaveSlide(s) {
+    const slide = el('div', { class: 'pp-slide pp-wave', style: `--a:${s.accent}` });
+    slide.appendChild(el('div', { class: 'pp-kicker', text: s.kicker || '' }));
+    const head = el('div', { class: 'pp-head' });
+    if (s.badge) head.appendChild(el('span', { class: 'pp-badge', text: s.badge }));
+    head.appendChild(el('h2', { class: 'pp-title', text: s.title || '' }));
+    slide.appendChild(head);
+    if (s.lead) slide.appendChild(el('p', { class: 'pp-summary', text: s.lead }));
+    if (s.anim) {
+      const wrap = el('div', { class: 'pp-anim' });
+      const made = s.anim();
+      wrap.appendChild(made);
+      slide.appendChild(wrap);
+    }
+    if (s.like) slide.appendChild(el('div', { class: 'pp-box pp-box-merk pp-like' }, [
+      el('span', { class: 'pp-box-l', html: '<i class="fas fa-equals"></i> So wie:' }),
+      el('span', { class: 'pp-box-v', text: s.like }),
+    ]));
+    if (s.steps && s.steps.length) {
+      const list = el('div', { class: 'pp-steps' });
+      s.steps.forEach((stp, i) => list.appendChild(
+        el('div', { class: 'pp-step' }, [
+          el('span', { class: 'pp-step-n', text: String(i + 1) }),
+          el('span', { class: 'pp-step-t', text: stp }),
+        ])
+      ));
+      slide.appendChild(list);
+    }
+    if (s.note) slide.appendChild(el('div', { class: 'pp-box pp-box-beispiel' }, [
+      el('span', { class: 'pp-box-l', html: '<i class="fas fa-lightbulb"></i> Merken' }),
+      el('span', { class: 'pp-box-v', text: s.note }),
+    ]));
+    return slide;
+  }
+
+  /* Eigenes Deck „Wellen einfach erklärt". */
+  function wavesDeck() {
+    const A = '#22d3ee';
+    const slides = [
+      { type: 'cover', accent: A, icon: 'fa-satellite-dish', kicker: 'Einfach erklärt',
+        title: 'Wellen & Signale',
+        subtitle: 'Vom Lichtschalter bis zur Funkwelle',
+        lead: 'In 7 großen Folien: was ein Bit ist, wie es durchs Kabel reist und wie es als Welle fliegt.',
+        count: '7 Folien' },
+      { type: 'wave', accent: A, kicker: 'Schritt 1', badge: '1', title: 'Ein Bit ist ein Lichtschalter',
+        lead: 'Ein Bit kann nur zwei Sachen: AN oder AUS. Mehr nicht.',
+        anim: lightAnim,
+        like: 'ein Lichtschalter an der Wand. Drück ihn rauf = 1, drück ihn runter = 0.',
+        steps: ['1 bedeutet: Strom da – Licht an', '0 bedeutet: kein Strom – Licht aus', 'Ganze Wörter sind viele Schalter hintereinander'] },
+      { type: 'wave', accent: A, kicker: 'Schritt 2', badge: '2', title: 'Buchstabe → Zahl → 8 Schalter',
+        lead: 'Im Computer ist jeder Buchstabe eine Zahl. Die Zahl wird zu 8 Schaltern.',
+        anim: pipelineAnim,
+        like: 'Geheimsprache: aus „H" wird 72, und aus 72 wird 0 1 0 0 1 0 0 0.',
+        steps: ['„H" → Zahl 72', '72 → 8 Schalter (01001000)', '8 Schalter = 1 Byte = 1 Buchstabe'] },
+      { type: 'wave', accent: A, kicker: 'Schritt 3', badge: '3', title: 'Im Kabel: Strom-Blitze',
+        lead: 'Jeder Schalter schickt einen kleinen Blitz übers Kabel. Blitz = 1, nichts = 0.',
+        anim: streamAnim,
+        like: 'eine Reihe von Morsezeichen, die durch einen Draht laufen.',
+        steps: ['Sender schickt Bit für Bit', 'Bei 1 fließt Strom (Blitz)', 'Empfänger zählt mit und setzt zurück zum Buchstaben'],
+        note: 'Genau so reden Melder, Zentrale und Bedienteil über den BUS-Draht.' },
+      { type: 'wave', accent: A, kicker: 'Schritt 4', badge: '4', title: 'Was ist eine Welle?',
+        lead: 'Eine Welle ist Bewegung, die sich fortpflanzt. Wir sehen sie im Wasser – bei Funk ist sie unsichtbar.',
+        anim: ropeWaveAnim,
+        like: 'ein Seil, an dem du rüttelst – die Bewegung läuft weiter.',
+        steps: ['Du rüttelst am Anfang', 'Die Bewegung wandert nach vorn', 'So wandert auch eine Funkwelle durch die Luft'] },
+      { type: 'wave', accent: A, kicker: 'Schritt 5', badge: '5', title: 'Die elektromagnetische Welle',
+        lead: 'Funk besteht aus zwei Wellen gleichzeitig: einer elektrischen (rot) und einer magnetischen (blau).',
+        anim: emFieldsAnim,
+        like: 'zwei Tänzer Hand in Hand – einer wackelt hoch/runter, der andere vor/zurück.',
+        steps: ['Beide schwingen im Takt', 'Beide sind unsichtbar', 'Sie fliegen mit Lichtgeschwindigkeit'] },
+      { type: 'wave', accent: A, kicker: 'Schritt 6', badge: '6', title: 'Schnell oder langsam',
+        lead: 'Eine Welle kann schnell oder langsam wackeln. Schnell = kurze Welle. Langsam = lange Welle.',
+        anim: freqAnim,
+        like: 'Klavier: links tiefe, lange Töne – rechts hohe, kurze.',
+        steps: ['Funk-Melder: 433 Millionen Mal pro Sekunde', 'WLAN: 2,4 Milliarden Mal', 'Licht: noch viel öfter – darum sehen wir es'] },
+      { type: 'wave', accent: A, kicker: 'Schritt 7', badge: '7', title: 'Bits reiten auf der Welle',
+        lead: 'Die leere Welle „sagt" noch nichts. Wir lassen sie im Takt der Bits arbeiten – das nennt man Modulieren.',
+        anim: modAnim,
+        like: 'Taschenlampe blinken: kurz an = 1, kurz aus = 0 – nur viel schneller.',
+        steps: ['Bei 1 sendet die Welle', 'Bei 0 ist Stille', 'Der Empfänger liest das Muster und kennt die Bits'],
+        note: 'Einfache Funk-Türöffner machen genau das (ASK).' },
+      { type: 'outro', accent: A, icon: 'fa-circle-check', kicker: 'Geschafft',
+        title: 'Fertig!',
+        subtitle: 'Du verstehst jetzt: Bit · Kabel · Welle',
+        lead: 'Drück Esc, um zur Übersicht zurück.',
+        count: '7 Folien' },
+    ];
+    return { id: 'waves', group: 'Wellen & Signale', title: 'Wellen einfach erklärt', sub: '7 Folien mit Animationen', accent: A, icon: 'fa-satellite-dish', count: slides.length, slides };
   }
 
   /* Mini-Thumbnail einer Folie (Punkt-Indikator + Mini-Text) */
