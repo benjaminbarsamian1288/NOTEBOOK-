@@ -42,6 +42,7 @@
     werk:       (d) => WERK.view(d),
     gesetze: (d) => GESETZE_VIEW.view(d),
     praesentation: (d) => PRAESENTATION.view(d),
+    notebook: () => NOTEBOOK.view(),
     pruefung: () => PRUEFUNG.view(),
     mediathek: (d) => MEDIATHEK.view(d),
     wwdtech: () => WWDTECH.view(),
@@ -69,6 +70,7 @@
     zwiebel3d:    { icon:'fa-circle-dot', t:'3D-Zwiebelmodell', d:'Das Zwiebelprinzip interaktiv: 4 Schalen Schutz von außen nach innen. Klick eine Schale für Details.' },
     building3d:   { icon:'fa-cube', t:'3D-Gebäudeplaner', d:'Isometrisches 3D-Haus mit Etagen, frei rotierbar.' },
     spektrum:     { icon:'fa-wave-square', t:'Frequenz-Spektrum', d:'Welche Wellen nutzt welche Technik? Vom Infrarot über Funk bis Mikrowelle – als anschauliches Spektrum.' },
+    notebook:     { icon:'fa-bookmark', t:'Mein Notizbuch', d:'Alle gepinnten Paragraphen und Klassen an einem Ort. Daraus baust du dein eigenes Lern-Deck oder exportierst es als Markdown.' },
     wellen:       { icon:'fa-satellite-dish', t:'Wellen & Signale', d:'Wie wird aus einer einfachen Nachricht ein Strom-Impuls und eine elektromagnetische Welle? Tippe ein Wort und sieh ASCII, Bits, Spannungs-Impulse und die Funkwelle live.' },
     werk:         { icon:'fa-industry', t:'Sicherheits-Werk', d:'Ein virtueller Industriestandort – sieh, wie alle Gewerke der Sicherheitstechnik zusammenspielen.' },
     ema:          { icon:'fa-broadcast-tower', t:'EMA · ZKA · NSL', d:'Einbruchmeldeanlage, Zutrittskontrolle und Notruf-Leitstelle erklärt – mit Grade-Stufen nach DIN EN 50131.' },
@@ -106,10 +108,51 @@
     if (VIEW_INFO[view]) host.appendChild(viewIntro(VIEW_INFO[view]));
     const node = ROUTES[view](ST.data);
     host.appendChild(node);
+    if (view === 'home') injectTipOfDay(host);
     window.scrollTo({ top: 0, behavior: 'smooth' });
     // close mobile sidebar
     $('#sidebar').classList.remove('open');
     location.hash = '#'+view;
+  }
+
+  // ============== Tipp des Tages ==============
+  function injectTipOfDay(host) {
+    if (!window.GESETZE_DB) return;
+    const E = U.el;
+    const all = []; GESETZE_DB.getAll().forEach(g => g.abschnitte.forEach(a => a.paragraphen.forEach(p => all.push({ g, a, p }))));
+    if (!all.length) return;
+    const t = new Date(); const key = t.getFullYear() * 1000 + t.getMonth() * 32 + t.getDate();
+    const pool = all.filter(x => x.p.wichtig || x.p.jedermann);
+    const list = pool.length ? pool : all;
+    const pick = list[key % list.length];
+    const card = E('div', { class: 'tip-card' });
+    card.appendChild(E('div', { class: 'tip-ico', html: `<i class="fas ${pick.g.icon}"></i>` }));
+    const body = E('div', { class: 'tip-body' });
+    body.appendChild(E('div', { class: 'tip-kicker', text: '💡 Tipp des Tages · ' + pick.g.short + ' · Abschnitt ' + pick.a.nr }));
+    body.appendChild(E('div', { class: 'tip-title', text: pick.p.p + '  ·  ' + pick.p.t }));
+    body.appendChild(E('div', { class: 'tip-sum', text: pick.p.s || '' }));
+    card.appendChild(body);
+    const go = E('button', { class: 'tip-go', html: '<i class="fas fa-play"></i> Heute lernen' });
+    go.addEventListener('click', () => navigate('praesentation'));
+    card.appendChild(go);
+    // Direkt nach dem Hero einsortieren
+    const hero = host.querySelector('.hero');
+    if (hero && hero.parentNode) hero.parentNode.insertBefore(card, hero.nextSibling);
+    else host.prepend(card);
+  }
+
+  // ============== Streak-Chip in der Topbar ==============
+  function injectStreakChip() {
+    const top = document.querySelector('.topbar');
+    const theme = document.getElementById('btn-theme');
+    if (!top || !theme) return;
+    const state = (() => {
+      try { return JSON.parse(localStorage.getItem('pp-state-v1') || '{}'); } catch (e) { return {}; }
+    })();
+    const chip = U.el('button', { class: 'streak-chip', title: 'Tagesplan öffnen' });
+    chip.innerHTML = `<i class="fas fa-fire"></i><span class="streak-num">${state.streak || 0}</span><span class="streak-lbl">Tage</span>`;
+    chip.addEventListener('click', () => navigate('praesentation'));
+    top.insertBefore(chip, theme);
   }
 
   // Sidebar nav
@@ -195,6 +238,7 @@
   // Boot
   ST.load().then(d => {
     SEARCH.buildIndex(d);
+    injectStreakChip();
     const initial = (location.hash || '#home').replace(/^#/, '');
     navigate(initial);
   }).catch(err => {

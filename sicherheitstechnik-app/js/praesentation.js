@@ -1248,6 +1248,17 @@ window.PRAESENTATION = (() => {
         if (s.type === 'cover' || s.type === 'outro') slideEl.classList.add('pp-neon');
         host.appendChild(slideEl);
 
+        // Pin-Button (Notizbuch) rechts oben einfügen
+        if (s.id && s.type === 'content' && window.NOTEBOOK) {
+          const topRow = slideEl.querySelector('.pp-top .pp-flags');
+          if (topRow) topRow.appendChild(NOTEBOOK.pinBtn({
+            id: s.id, kind: s.id.startsWith('class-') ? 'class' : 'law',
+            kicker: s.kicker, badge: s.badge, title: s.title, summary: s.summary,
+            beispiel: s.beispiel, merksatz: s.merksatz, fehler: s.fehler,
+            tags: s.tags, wichtig: s.wichtig, jedermann: s.jedermann, accent: s.accent,
+          }, { size: 'sm' }));
+        }
+
         // Lern-Aktionsleiste für Content-Folien mit ID
         if (s.id && s.type === 'content') {
           const learnedNow = PR_STATE.learned(s.id);
@@ -1401,8 +1412,25 @@ window.PRAESENTATION = (() => {
       render();
     }
 
+    // Externe Eintrittsstelle merken, damit PRAESENTATION.play(deck) das aktuelle Deck starten kann.
+    PUB.startDeck = startDeck;
     showPicker();
     return root;
   }
-  return { view };
+
+  /* Öffentlich: ein externes Deck (z.B. aus dem Notizbuch) abspielen. */
+  function play(deck) {
+    if (!deck) return;
+    if (PUB.startDeck) { PUB.startDeck(deck); return; }
+    // View ist noch nicht aufgebaut → erst zur Route navigieren, dann nach Aufbau starten.
+    location.hash = '#praesentation';
+    let tries = 0;
+    const iv = setInterval(() => {
+      tries++;
+      if (PUB.startDeck) { clearInterval(iv); PUB.startDeck(deck); }
+      else if (tries > 30) clearInterval(iv);
+    }, 60);
+  }
+  const PUB = { view, play, startDeck: null };
+  return PUB;
 })();

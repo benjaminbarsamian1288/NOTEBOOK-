@@ -126,6 +126,20 @@ window.KLASSENKACHELN = (() => {
       tile.appendChild(el('div', { class: 'kk-more', html: 'Alle Details <i class="fas fa-arrow-right"></i>' }));
 
       tile.addEventListener('click', () => detailDrawer(cfg, r, headers, color));
+
+      // Notizbuch-Pin oben rechts (überlagert die Kachel, eigener Klick)
+      if (window.NOTEBOOK) {
+        const item = {
+          id: 'class-' + cfg.id + '-' + (cfg.badge(r) || ('row-' + i)).replace(/\s+/g, '-'),
+          kind: 'class', kicker: cfg.title, badge: cfg.badge(r),
+          title: cfg.heading(r), summary: cfg.desc(r) || '',
+          beispiel: cfg.example(r) ? 'Beispiel-Objekte: ' + cfg.example(r) : null,
+          tags: [], accent: color,
+        };
+        const pin = NOTEBOOK.pinBtn(item, { size: 'sm' });
+        pin.classList.add('kk-pin');
+        tile.appendChild(pin);
+      }
       grid.appendChild(tile);
     });
     sec.appendChild(grid);

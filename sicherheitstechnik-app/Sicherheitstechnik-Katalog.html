@@ -11882,6 +11882,109 @@ img, svg, iframe, video {
 }
 
 </style>
+<style data-src="css/notebook.css">
+/* Notizbuch */
+.nb-wrap { display: block; }
+.nb-bar { display: flex; align-items: center; gap: 10px; margin: 10px 2px 14px; flex-wrap: wrap; }
+.nb-bar-count { font-size: 14px; color: var(--text-dim); padding: 8px 12px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--border); }
+.nb-bar-count strong { font-size: 18px; color: var(--text); margin-right: 4px; }
+.nb-btn {
+  display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
+  background: var(--surface-2); color: var(--text); border: 1px solid var(--border);
+  padding: 9px 14px; border-radius: 10px; font-size: 13.5px; font-weight: 700;
+  transition: border-color .15s, box-shadow .15s, background .15s, color .15s, transform .1s;
+}
+.nb-btn:hover:not(:disabled) { border-color: #a855f7; box-shadow: 0 0 0 3px rgba(168,85,247,.18); }
+.nb-btn:active:not(:disabled) { transform: scale(.97); }
+.nb-btn:disabled { opacity: .35; cursor: default; }
+.nb-btn-mini { padding: 6px 10px; font-size: 12px; }
+.nb-btn-primary { background: linear-gradient(120deg,#a855f7,#22d3ee); color:#07101f; border:none; }
+.nb-btn-primary:hover:not(:disabled) { box-shadow: 0 10px 24px rgba(168,85,247,.4); }
+.nb-btn-danger { color:#f87171; border-color: rgba(239,68,68,.4); }
+.nb-btn-danger:hover:not(:disabled) { background: rgba(239,68,68,.12); border-color:#ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.2); }
+
+.nb-empty {
+  text-align: center; padding: 40px 22px; border-radius: 16px;
+  background: var(--surface); border: 1px dashed var(--border);
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.nb-empty i.far { font-size: 44px; color: var(--text-mute); }
+.nb-empty h3 { margin: 6px 0 0; }
+.nb-empty p { color: var(--text-dim); max-width: 560px; line-height: 1.5; margin: 0 0 8px; }
+
+.nb-grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.nb-card {
+  position: relative; padding: 14px 14px 12px; border-radius: 14px;
+  background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--a);
+  display: flex; flex-direction: column; gap: 8px;
+  transition: transform .14s, box-shadow .14s, border-color .14s;
+}
+.nb-card:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(0,0,0,.25); border-color: var(--a); }
+.nb-no { position: absolute; top: 8px; right: 12px; font-size: 11px; font-weight: 800; color: var(--text-mute); }
+.nb-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.nb-badge { font-weight: 900; font-size: 16px; padding: 3px 10px; border-radius: 8px; color: #07101f; background: var(--a); }
+.nb-head h3 { margin: 0; font-size: 15.5px; line-height: 1.2; }
+.nb-kicker { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .4px; color: var(--a); }
+.nb-summary { margin: 0; font-size: 13px; line-height: 1.5; color: var(--text-dim); display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.nb-flags { display: flex; gap: 6px; flex-wrap: wrap; }
+.nb-flag { font-size: 10.5px; font-weight: 800; padding: 3px 8px; border-radius: 999px; display: inline-flex; align-items: center; gap: 5px; }
+.nb-flag-star { color: #fbbf24; background: rgba(251,191,36,.14); border: 1px solid rgba(251,191,36,.34); }
+.nb-flag-hand { color: #22d3ee; background: rgba(34,211,238,.14); border: 1px solid rgba(34,211,238,.34); }
+.nb-foot { display: flex; gap: 8px; margin-top: auto; padding-top: 6px; }
+.nb-foot .nb-btn { flex: 1; justify-content: center; }
+
+/* Pin-Toggle-Knopf (überall einsetzbar) */
+.nb-pin {
+  display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+  padding: 7px 11px; border-radius: 9px; font-size: 12.5px; font-weight: 700;
+  background: var(--surface-2); color: var(--text-dim);
+  border: 1px solid var(--border); transition: all .15s;
+}
+.nb-pin:hover { color: #a855f7; border-color: #a855f7; }
+.nb-pin.on { color: #07101f; background: #a855f7; border-color: transparent; box-shadow: 0 0 14px rgba(168,85,247,.45); }
+.nb-pin-sm { padding: 4px 8px; font-size: 11px; gap: 4px; }
+.nb-pin-sm span { display: none; }
+@media (min-width: 520px) { .nb-pin-sm span { display: inline; } }
+
+/* Pin auf Klassen-Kachel (überlagert oben rechts) */
+.kk-pin { position: absolute; top: 10px; right: 10px; z-index: 2; }
+.kk-tile { position: relative; }
+
+/* Streak-Chip in der Topbar */
+.streak-chip {
+  display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
+  padding: 6px 11px; border-radius: 999px; font-weight: 800; font-size: 13px;
+  background: linear-gradient(120deg, rgba(249,115,22,.18), rgba(239,68,68,.18));
+  color: #fbbf24; border: 1px solid rgba(251,191,36,.35); margin: 0 8px;
+  transition: transform .15s, box-shadow .15s;
+}
+.streak-chip:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(249,115,22,.35); }
+.streak-chip i { color: #f97316; animation: streak-flick 1.4s ease-in-out infinite alternate; }
+@keyframes streak-flick { from { transform: scale(1) rotate(-3deg); } to { transform: scale(1.12) rotate(4deg); } }
+@media (max-width: 520px) { .streak-chip .streak-lbl { display: none; } }
+
+/* Tipp des Tages auf der Startseite */
+.tip-card {
+  position: relative; overflow: hidden;
+  display: flex; align-items: center; gap: 14px; padding: 16px 18px; margin: 8px 0 14px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(34,211,238,.14), rgba(168,85,247,.12) 60%, rgba(251,191,36,.10));
+  border: 1px solid rgba(34,211,238,.32);
+}
+.tip-card::after { content:''; position:absolute; inset:0; background: radial-gradient(120% 90% at 100% 0%, rgba(168,85,247,.18), transparent 60%); pointer-events:none; }
+.tip-ico { width: 46px; height: 46px; flex: 0 0 46px; border-radius: 12px; display: grid; place-items: center; font-size: 22px; color: #07101f; background: linear-gradient(120deg,#22d3ee,#a855f7); box-shadow: 0 6px 18px rgba(34,211,238,.4); }
+.tip-body { flex: 1; min-width: 0; z-index: 1; }
+.tip-kicker { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; color: #22d3ee; }
+.tip-title { font-size: 16px; font-weight: 800; margin: 2px 0; }
+.tip-sum { font-size: 13px; color: var(--text-dim); line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.tip-go {
+  z-index: 1; cursor: pointer; padding: 10px 14px; border-radius: 10px; font-weight: 800;
+  background: linear-gradient(120deg, #22d3ee, #38bdf8); color: #07101f; border: none; font-size: 13.5px;
+  box-shadow: 0 6px 16px rgba(34,211,238,.35);
+}
+.tip-go:hover { transform: translateY(-1px); }
+
+</style>
 <style data-src="css/modern-refresh.css">
 /* ====================================================================
    MODERN REFRESH 2026 — letzte CSS-Datei, überschreibt das Basis-Design.
@@ -12806,6 +12909,7 @@ button, .navitem, .chip, .qa-tile, .ency-card, .zone-card, .kfg-card, .bigstat {
 
     <div class="nav-group-label">5 · Bilder &amp; Lernen</div>
     <button class="navitem nav-pri" data-view="praesentation"><i class="fas fa-person-chalkboard"></i><span><strong>Präsentation · Slideshow</strong></span><em>NEU</em></button>
+    <button class="navitem nav-pri" data-view="notebook"><i class="fas fa-bookmark"></i><span><strong>Mein Notizbuch</strong></span><em>NEU</em></button>
     <button class="navitem" data-view="galerie"><i class="fas fa-images"></i><span>Produkt-Galerie</span></button>
     <button class="navitem" data-view="mediathek"><i class="fas fa-photo-film"></i><span>Mediathek</span></button>
     <button class="navitem nav-pri" data-view="pruefung"><i class="fas fa-graduation-cap"></i><span><strong>Sachkunde §34a Training</strong></span><em>NEU</em></button>
@@ -44468,6 +44572,200 @@ window.WELLEN = (() => {
 })();
 
 </script>
+<script data-src="js/notebook.js">
+/* Notizbuch – globale, persistente Sammlung von Lerninhalten quer durch die App.
+   window.NOTEBOOK: pin / unpin / isPinned / getAll / view / buildDeck.
+   Geteilte Streak-/Lern-Daten teilt es sich mit PRAESENTATION (gleicher Storage). */
+window.NOTEBOOK = (() => {
+  const { el } = U;
+  const KEY = 'nb-items-v1';
+
+  let items = [];
+  try { items = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { items = []; }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(items)); } catch (e) {} }
+
+  const listeners = new Set();
+  function emit() { listeners.forEach(fn => { try { fn(items); } catch (e) {} }); }
+  function onChange(fn) { listeners.add(fn); return () => listeners.delete(fn); }
+
+  function isPinned(id) { return items.some(x => x.id === id); }
+  function pin(item) {
+    if (!item || !item.id) return false;
+    if (isPinned(item.id)) return false;
+    items.unshift({ ...item, pinnedAt: Date.now() });
+    save(); emit(); return true;
+  }
+  function unpin(id) {
+    const i = items.findIndex(x => x.id === id);
+    if (i < 0) return false;
+    items.splice(i, 1); save(); emit(); return true;
+  }
+  function toggle(item) {
+    if (isPinned(item.id)) { unpin(item.id); return false; }
+    pin(item); return true;
+  }
+  function clearAll() { items = []; save(); emit(); }
+  function getAll() { return items.slice(); }
+  function count() { return items.length; }
+
+  /* Baut aus den Pins ein Slideshow-Deck. */
+  function buildDeck() {
+    if (!items.length) return null;
+    const A = '#a855f7';
+    const slides = [{
+      type: 'cover', accent: A, icon: 'fa-bookmark', kicker: 'Mein Notizbuch',
+      title: 'Eigenes Deck', subtitle: items.length + ' gepinnte Lern-Inhalte',
+      lead: 'Alle gemerkten Paragraphen und Klassen als eine Präsentation.',
+      count: items.length + ' Folien',
+    }];
+    items.forEach(it => {
+      if (it.kind === 'law' || it.kind === 'class') {
+        slides.push({
+          id: it.id, type: 'content', accent: it.accent || A, kicker: it.kicker || 'Notizbuch',
+          badge: it.badge || '', title: it.title || '', summary: it.summary || '',
+          beispiel: it.beispiel, merksatz: it.merksatz, fehler: it.fehler,
+          tags: it.tags || [], wichtig: it.wichtig, jedermann: it.jedermann,
+        });
+      }
+    });
+    slides.push({
+      type: 'outro', accent: A, icon: 'fa-circle-check', kicker: 'Geschafft',
+      title: 'Notizbuch durchgegangen', subtitle: 'Stark gemacht!',
+      lead: 'Du hast alle deine Pins wiederholt. Komm morgen wieder.',
+    });
+    return { id: 'notebook', group: '📌 Mein Notizbuch', title: 'Notizbuch · Eigenes Deck',
+      sub: items.length + ' Pins', accent: A, icon: 'fa-bookmark', count: slides.length, slides };
+  }
+
+  /* Export als Markdown (für eigene Notizen / Drucken). */
+  function exportMarkdown() {
+    if (!items.length) return '';
+    const lines = ['# Mein Sicherheitstechnik-Notizbuch', '', 'Stand: ' + new Date().toLocaleDateString('de-DE'), ''];
+    items.forEach((it, i) => {
+      lines.push('## ' + (i + 1) + '. ' + (it.badge ? it.badge + ' · ' : '') + (it.title || ''));
+      if (it.kicker) lines.push('*' + it.kicker + '*', '');
+      if (it.summary) lines.push(it.summary, '');
+      if (it.beispiel) lines.push('**Praxisfall:** ' + it.beispiel, '');
+      if (it.merksatz) lines.push('**Merksatz:** ' + it.merksatz, '');
+      if (it.tags && it.tags.length) lines.push('Tags: ' + it.tags.join(', '), '');
+      lines.push('---', '');
+    });
+    return lines.join('\n');
+  }
+
+  function downloadMd() {
+    const md = exportMarkdown(); if (!md) return;
+    const blob = new Blob([md], { type: 'text/markdown' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'notizbuch-' + new Date().toISOString().slice(0, 10) + '.md';
+    document.body.appendChild(a); a.click(); setTimeout(() => { a.remove(); URL.revokeObjectURL(a.href); }, 100);
+  }
+
+  /* Pin-Toggle-Button als wiederverwendbares Mini-UI. */
+  function pinBtn(item, opts) {
+    const o = opts || {};
+    const b = el('button', { class: 'nb-pin' + (o.size === 'sm' ? ' nb-pin-sm' : ''), type: 'button', title: 'Im Notizbuch merken' });
+    function refresh() {
+      const on = isPinned(item.id);
+      b.classList.toggle('on', on);
+      b.innerHTML = on ? '<i class="fas fa-bookmark"></i><span>Gemerkt</span>' : '<i class="far fa-bookmark"></i><span>Merken</span>';
+      b.title = on ? 'Aus Notizbuch entfernen' : 'Im Notizbuch merken';
+    }
+    refresh();
+    b.addEventListener('click', e => {
+      e.preventDefault(); e.stopPropagation();
+      toggle(item); refresh();
+      try { U.toast(isPinned(item.id) ? 'Im Notizbuch gemerkt ✓' : 'Aus Notizbuch entfernt'); } catch (_) {}
+    });
+    const stop = onChange(refresh); b.addEventListener('remove', stop);
+    return b;
+  }
+
+  /* Komplette Ansicht für die Route „notebook". */
+  function view() {
+    const root = el('div', { class: 'nb-wrap' });
+
+    function render() {
+      root.innerHTML = '';
+      root.appendChild(el('div', { class: 'view-head' }, [
+        el('span', { class: 'crumb', text: 'Mein Notizbuch' }),
+        el('h1', { text: '📌 Notizbuch' }),
+        el('p', { text: 'Alles, was du dir in der App gemerkt hast – Paragraphen, Klassen, EMA-Grade. Daraus baust du dein eigenes Lern-Deck.' }),
+      ]));
+
+      const bar = el('div', { class: 'nb-bar' });
+      bar.appendChild(el('div', { class: 'nb-bar-count' }, [
+        el('strong', { text: String(items.length) }),
+        el('span', { text: items.length === 1 ? ' Eintrag im Notizbuch' : ' Einträge im Notizbuch' }),
+      ]));
+      const play = el('button', { class: 'nb-btn nb-btn-primary', html: '<i class="fas fa-play"></i> Als Präsentation abspielen' });
+      play.disabled = !items.length;
+      play.addEventListener('click', () => {
+        const deck = buildDeck(); if (deck && window.PRAESENTATION && PRAESENTATION.play) PRAESENTATION.play(deck);
+        else location.hash = '#praesentation';
+      });
+      const exp = el('button', { class: 'nb-btn', html: '<i class="fas fa-file-arrow-down"></i> Als Markdown' });
+      exp.disabled = !items.length;
+      exp.addEventListener('click', downloadMd);
+      const clr = el('button', { class: 'nb-btn nb-btn-danger', html: '<i class="fas fa-trash"></i> Alle entfernen' });
+      clr.disabled = !items.length;
+      clr.addEventListener('click', () => { if (confirm('Wirklich alle ' + items.length + ' Notizen löschen?')) clearAll(); });
+      bar.appendChild(play); bar.appendChild(exp); bar.appendChild(clr);
+      root.appendChild(bar);
+
+      if (!items.length) {
+        const empty = el('div', { class: 'nb-empty' });
+        empty.innerHTML = `
+          <i class="far fa-bookmark"></i>
+          <h3>Noch nichts gemerkt</h3>
+          <p>Tippe in der <b>Präsentation</b> auf einer Paragraph-Folie oben auf <i class="fas fa-bookmark"></i> Merken,
+          oder bei den <b>Sicherungsklassen-Kacheln</b> auf das Lesezeichen-Symbol. Hier findest du dann alles wieder.</p>
+          <button class="nb-btn nb-btn-primary"><i class="fas fa-person-chalkboard"></i> Zur Präsentation</button>`;
+        empty.querySelector('button').addEventListener('click', () => location.hash = '#praesentation');
+        root.appendChild(empty);
+        return;
+      }
+
+      const grid = el('div', { class: 'nb-grid' });
+      items.forEach((it, i) => {
+        const card = el('div', { class: 'nb-card', style: `--a:${it.accent || '#a855f7'}` });
+        card.appendChild(el('div', { class: 'nb-no', text: '#' + (i + 1) }));
+        const head = el('div', { class: 'nb-head' });
+        if (it.badge) head.appendChild(el('span', { class: 'nb-badge', text: it.badge }));
+        head.appendChild(el('h3', { text: it.title || '' }));
+        card.appendChild(head);
+        if (it.kicker) card.appendChild(el('div', { class: 'nb-kicker', text: it.kicker }));
+        if (it.summary) card.appendChild(el('p', { class: 'nb-summary', text: it.summary }));
+        const flags = el('div', { class: 'nb-flags' });
+        if (it.wichtig) flags.appendChild(el('span', { class: 'nb-flag nb-flag-star', html: '<i class="fas fa-star"></i> WICHTIG' }));
+        if (it.jedermann) flags.appendChild(el('span', { class: 'nb-flag nb-flag-hand', html: '<i class="fas fa-hand"></i> JEDERMANNSRECHT' }));
+        card.appendChild(flags);
+        const foot = el('div', { class: 'nb-foot' });
+        const goOne = el('button', { class: 'nb-btn nb-btn-mini', html: '<i class="fas fa-play"></i> Einzeln üben' });
+        goOne.addEventListener('click', () => {
+          const single = { id: 'nb-one', group: '📌 Notizbuch', title: it.title || 'Einzeln', sub: it.kicker || '', accent: it.accent || '#a855f7', icon: 'fa-bookmark', count: 1,
+            slides: [{ ...it, type: 'content', kicker: it.kicker || 'Notizbuch' }] };
+          if (window.PRAESENTATION && PRAESENTATION.play) PRAESENTATION.play(single);
+        });
+        const rem = el('button', { class: 'nb-btn nb-btn-mini nb-btn-danger', html: '<i class="fas fa-xmark"></i> Entfernen' });
+        rem.addEventListener('click', () => unpin(it.id));
+        foot.append(goOne, rem);
+        card.appendChild(foot);
+        grid.appendChild(card);
+      });
+      root.appendChild(grid);
+    }
+
+    onChange(render);
+    render();
+    return root;
+  }
+
+  return { pin, unpin, toggle, isPinned, getAll, count, view, buildDeck, pinBtn, onChange, exportMarkdown };
+})();
+
+</script>
 <script data-src="js/praesentation.js">
 /* Präsentations-/Slideshow-Modus „krass++". window.PRAESENTATION.view(d).
    Features: Tilt-3D-Kacheln, Konfetti, Counter-Anim, Mini-Map mit Thumbs,
@@ -45719,6 +46017,17 @@ window.PRAESENTATION = (() => {
         if (s.type === 'cover' || s.type === 'outro') slideEl.classList.add('pp-neon');
         host.appendChild(slideEl);
 
+        // Pin-Button (Notizbuch) rechts oben einfügen
+        if (s.id && s.type === 'content' && window.NOTEBOOK) {
+          const topRow = slideEl.querySelector('.pp-top .pp-flags');
+          if (topRow) topRow.appendChild(NOTEBOOK.pinBtn({
+            id: s.id, kind: s.id.startsWith('class-') ? 'class' : 'law',
+            kicker: s.kicker, badge: s.badge, title: s.title, summary: s.summary,
+            beispiel: s.beispiel, merksatz: s.merksatz, fehler: s.fehler,
+            tags: s.tags, wichtig: s.wichtig, jedermann: s.jedermann, accent: s.accent,
+          }, { size: 'sm' }));
+        }
+
         // Lern-Aktionsleiste für Content-Folien mit ID
         if (s.id && s.type === 'content') {
           const learnedNow = PR_STATE.learned(s.id);
@@ -45872,10 +46181,27 @@ window.PRAESENTATION = (() => {
       render();
     }
 
+    // Externe Eintrittsstelle merken, damit PRAESENTATION.play(deck) das aktuelle Deck starten kann.
+    PUB.startDeck = startDeck;
     showPicker();
     return root;
   }
-  return { view };
+
+  /* Öffentlich: ein externes Deck (z.B. aus dem Notizbuch) abspielen. */
+  function play(deck) {
+    if (!deck) return;
+    if (PUB.startDeck) { PUB.startDeck(deck); return; }
+    // View ist noch nicht aufgebaut → erst zur Route navigieren, dann nach Aufbau starten.
+    location.hash = '#praesentation';
+    let tries = 0;
+    const iv = setInterval(() => {
+      tries++;
+      if (PUB.startDeck) { clearInterval(iv); PUB.startDeck(deck); }
+      else if (tries > 30) clearInterval(iv);
+    }, 60);
+  }
+  const PUB = { view, play, startDeck: null };
+  return PUB;
 })();
 
 </script>
@@ -46827,6 +47153,20 @@ window.KLASSENKACHELN = (() => {
       tile.appendChild(el('div', { class: 'kk-more', html: 'Alle Details <i class="fas fa-arrow-right"></i>' }));
 
       tile.addEventListener('click', () => detailDrawer(cfg, r, headers, color));
+
+      // Notizbuch-Pin oben rechts (überlagert die Kachel, eigener Klick)
+      if (window.NOTEBOOK) {
+        const item = {
+          id: 'class-' + cfg.id + '-' + (cfg.badge(r) || ('row-' + i)).replace(/\s+/g, '-'),
+          kind: 'class', kicker: cfg.title, badge: cfg.badge(r),
+          title: cfg.heading(r), summary: cfg.desc(r) || '',
+          beispiel: cfg.example(r) ? 'Beispiel-Objekte: ' + cfg.example(r) : null,
+          tags: [], accent: color,
+        };
+        const pin = NOTEBOOK.pinBtn(item, { size: 'sm' });
+        pin.classList.add('kk-pin');
+        tile.appendChild(pin);
+      }
       grid.appendChild(tile);
     });
     sec.appendChild(grid);
@@ -48494,6 +48834,7 @@ window.SEARCH = (() => {
     werk:       (d) => WERK.view(d),
     gesetze: (d) => GESETZE_VIEW.view(d),
     praesentation: (d) => PRAESENTATION.view(d),
+    notebook: () => NOTEBOOK.view(),
     pruefung: () => PRUEFUNG.view(),
     mediathek: (d) => MEDIATHEK.view(d),
     wwdtech: () => WWDTECH.view(),
@@ -48521,6 +48862,7 @@ window.SEARCH = (() => {
     zwiebel3d:    { icon:'fa-circle-dot', t:'3D-Zwiebelmodell', d:'Das Zwiebelprinzip interaktiv: 4 Schalen Schutz von außen nach innen. Klick eine Schale für Details.' },
     building3d:   { icon:'fa-cube', t:'3D-Gebäudeplaner', d:'Isometrisches 3D-Haus mit Etagen, frei rotierbar.' },
     spektrum:     { icon:'fa-wave-square', t:'Frequenz-Spektrum', d:'Welche Wellen nutzt welche Technik? Vom Infrarot über Funk bis Mikrowelle – als anschauliches Spektrum.' },
+    notebook:     { icon:'fa-bookmark', t:'Mein Notizbuch', d:'Alle gepinnten Paragraphen und Klassen an einem Ort. Daraus baust du dein eigenes Lern-Deck oder exportierst es als Markdown.' },
     wellen:       { icon:'fa-satellite-dish', t:'Wellen & Signale', d:'Wie wird aus einer einfachen Nachricht ein Strom-Impuls und eine elektromagnetische Welle? Tippe ein Wort und sieh ASCII, Bits, Spannungs-Impulse und die Funkwelle live.' },
     werk:         { icon:'fa-industry', t:'Sicherheits-Werk', d:'Ein virtueller Industriestandort – sieh, wie alle Gewerke der Sicherheitstechnik zusammenspielen.' },
     ema:          { icon:'fa-broadcast-tower', t:'EMA · ZKA · NSL', d:'Einbruchmeldeanlage, Zutrittskontrolle und Notruf-Leitstelle erklärt – mit Grade-Stufen nach DIN EN 50131.' },
@@ -48558,10 +48900,51 @@ window.SEARCH = (() => {
     if (VIEW_INFO[view]) host.appendChild(viewIntro(VIEW_INFO[view]));
     const node = ROUTES[view](ST.data);
     host.appendChild(node);
+    if (view === 'home') injectTipOfDay(host);
     window.scrollTo({ top: 0, behavior: 'smooth' });
     // close mobile sidebar
     $('#sidebar').classList.remove('open');
     location.hash = '#'+view;
+  }
+
+  // ============== Tipp des Tages ==============
+  function injectTipOfDay(host) {
+    if (!window.GESETZE_DB) return;
+    const E = U.el;
+    const all = []; GESETZE_DB.getAll().forEach(g => g.abschnitte.forEach(a => a.paragraphen.forEach(p => all.push({ g, a, p }))));
+    if (!all.length) return;
+    const t = new Date(); const key = t.getFullYear() * 1000 + t.getMonth() * 32 + t.getDate();
+    const pool = all.filter(x => x.p.wichtig || x.p.jedermann);
+    const list = pool.length ? pool : all;
+    const pick = list[key % list.length];
+    const card = E('div', { class: 'tip-card' });
+    card.appendChild(E('div', { class: 'tip-ico', html: `<i class="fas ${pick.g.icon}"></i>` }));
+    const body = E('div', { class: 'tip-body' });
+    body.appendChild(E('div', { class: 'tip-kicker', text: '💡 Tipp des Tages · ' + pick.g.short + ' · Abschnitt ' + pick.a.nr }));
+    body.appendChild(E('div', { class: 'tip-title', text: pick.p.p + '  ·  ' + pick.p.t }));
+    body.appendChild(E('div', { class: 'tip-sum', text: pick.p.s || '' }));
+    card.appendChild(body);
+    const go = E('button', { class: 'tip-go', html: '<i class="fas fa-play"></i> Heute lernen' });
+    go.addEventListener('click', () => navigate('praesentation'));
+    card.appendChild(go);
+    // Direkt nach dem Hero einsortieren
+    const hero = host.querySelector('.hero');
+    if (hero && hero.parentNode) hero.parentNode.insertBefore(card, hero.nextSibling);
+    else host.prepend(card);
+  }
+
+  // ============== Streak-Chip in der Topbar ==============
+  function injectStreakChip() {
+    const top = document.querySelector('.topbar');
+    const theme = document.getElementById('btn-theme');
+    if (!top || !theme) return;
+    const state = (() => {
+      try { return JSON.parse(localStorage.getItem('pp-state-v1') || '{}'); } catch (e) { return {}; }
+    })();
+    const chip = U.el('button', { class: 'streak-chip', title: 'Tagesplan öffnen' });
+    chip.innerHTML = `<i class="fas fa-fire"></i><span class="streak-num">${state.streak || 0}</span><span class="streak-lbl">Tage</span>`;
+    chip.addEventListener('click', () => navigate('praesentation'));
+    top.insertBefore(chip, theme);
   }
 
   // Sidebar nav
@@ -48647,6 +49030,7 @@ window.SEARCH = (() => {
   // Boot
   ST.load().then(d => {
     SEARCH.buildIndex(d);
+    injectStreakChip();
     const initial = (location.hash || '#home').replace(/^#/, '');
     navigate(initial);
   }).catch(err => {
