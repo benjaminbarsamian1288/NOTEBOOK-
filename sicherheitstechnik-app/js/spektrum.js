@@ -240,11 +240,41 @@ window.SPEK = (() => {
     const lblFreq = el('div', { class:'spek-tuner-label' });
     const lblWave = el('div', { class:'spek-tuner-label small muted' });
 
-    tunerCtrl.appendChild(el('div', { class:'fp-control' }, [el('label', { text:'Frequenz' }), slider]));
+    const freqCtrl = el('div', { class:'fp-control' });
+    freqCtrl.appendChild(el('label', { html:'Frequenz <span class="spek-help" title="Wie oft die Welle pro Sekunde wackelt. Mehr Frequenz = kürzere Welle = höhere Energie.">?</span>' }));
+    freqCtrl.appendChild(slider);
+    tunerCtrl.appendChild(freqCtrl);
     tunerCtrl.appendChild(lblFreq);
     tunerCtrl.appendChild(lblWave);
-    tunerCtrl.appendChild(el('div', { class:'fp-control' }, [el('label', { text:'Amplitude' }), ampSlider]));
+
+    const ampCtrl = el('div', { class:'fp-control' });
+    ampCtrl.appendChild(el('label', { html:'Amplitude <span class="spek-help" title="Wie hoch die Welle ausschlägt – also wie STARK das Signal ist. Beim Ton: Lautstärke. Bei Licht: Helligkeit. Beim Funk: Sendeleistung.">?</span>' }));
+    ampCtrl.appendChild(ampSlider);
+    tunerCtrl.appendChild(ampCtrl);
+
+    // Große, klare Erklärung der zwei Begriffe (immer sichtbar)
+    const help = el('div', { class:'spek-tuner-help' });
+    help.innerHTML = `
+      <div class="spek-help-row">
+        <div class="spek-help-ic"><i class="fas fa-wave-square"></i></div>
+        <div>
+          <strong>Frequenz</strong> = <b>wie OFT</b> die Welle pro Sekunde wackelt.
+          <span class="spek-help-ex">Tief = langsam (Bass · Funk-Lange-Wellen) · Hoch = schnell (Licht · Röntgen)</span>
+        </div>
+      </div>
+      <div class="spek-help-row">
+        <div class="spek-help-ic"><i class="fas fa-up-down"></i></div>
+        <div>
+          <strong>Amplitude</strong> = <b>wie HOCH</b> die Welle ausschlägt. Also <b>wie STARK das Signal</b> ist.
+          <span class="spek-help-ex">Schall: <b>Lautstärke</b> · Licht: <b>Helligkeit</b> · Funk: <b>Sendeleistung / Reichweite</b></span>
+        </div>
+      </div>
+      <div class="spek-help-tip">
+        💡 <b>Faustregel:</b> Die <b>Frequenz</b> sagt <i>welche Sorte</i> Welle (Funk, Licht, Röntgen),
+        die <b>Amplitude</b> sagt nur <i>wie laut/hell/stark</i> sie ist. Frequenz und Amplitude sind <b>unabhängig</b> voneinander.
+      </div>`;
     root.appendChild(tunerCard);
+    root.appendChild(help);
 
     function updateTunerLabel() {
       // Map slider 0..10 → log frequency 1 Hz .. 10²² Hz
