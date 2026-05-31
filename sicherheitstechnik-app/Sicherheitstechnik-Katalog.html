@@ -12533,6 +12533,178 @@ img, svg, iframe, video {
 }
 
 </style>
+<style data-src="css/cockpit.css">
+/* Cockpit – kompakte Zwei-Spalten-Übersicht */
+.ck-wrap { display: flex; flex-direction: column; gap: 14px; }
+
+/* Kopf */
+.ck-head {
+  display: grid; grid-template-columns: 1fr auto; gap: 18px; align-items: center;
+  padding: 14px 18px; border-radius: 16px;
+  background: linear-gradient(135deg, rgba(34,211,238,.10) 0%, rgba(168,85,247,.06) 60%, rgba(251,191,36,.04) 100%);
+  border: 1px solid rgba(34,211,238,.2);
+}
+.ck-eyebrow { font-size: 11px; font-weight: 900; color: #22d3ee; text-transform: uppercase; letter-spacing: .8px; }
+.ck-title { margin: 4px 0 4px; font-size: clamp(20px, 2.5vw, 28px); }
+.ck-sub { margin: 0; color: var(--text-dim); font-size: 13px; line-height: 1.45; max-width: 720px; }
+
+.ck-search-wrap {
+  position: relative; display: flex; align-items: center; gap: 8px; min-width: 280px; max-width: 460px;
+}
+.ck-search-icon { position: absolute; left: 14px; color: #22d3ee; font-size: 15px; pointer-events: none; }
+.ck-search {
+  flex: 1; padding: 12px 38px 12px 38px; border-radius: 12px;
+  background: var(--surface-2); color: var(--text); border: 1px solid var(--border);
+  font-size: 14px; font-weight: 600; outline: none;
+  transition: all .15s;
+}
+.ck-search:focus { border-color: #22d3ee; box-shadow: 0 0 0 3px rgba(34,211,238,.2); }
+.ck-search-clear {
+  position: absolute; right: 8px; background: transparent; border: none; color: var(--text-dim);
+  cursor: pointer; padding: 6px 10px; border-radius: 8px; font-size: 14px;
+}
+.ck-search-clear:hover { background: var(--surface); color: var(--text); }
+.ck-search-clear.hidden { display: none; }
+
+/* Stats */
+.ck-stats {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px;
+}
+.ck-stat {
+  display: flex; flex-direction: column; align-items: center; padding: 10px;
+  background: var(--surface); border: 1px solid var(--border); border-top: 3px solid var(--c, #22d3ee);
+  border-radius: 10px; text-align: center;
+}
+.ck-stat i { color: var(--c, #22d3ee); font-size: 16px; margin-bottom: 4px; }
+.ck-stat strong { font-size: 20px; font-weight: 900; color: var(--text); font-variant-numeric: tabular-nums; }
+.ck-stat span { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: .4px; font-weight: 700; }
+
+/* Split-Grid */
+.ck-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 1000px) { .ck-grid { grid-template-columns: 1fr; } }
+
+.ck-col {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+  padding: 12px; display: flex; flex-direction: column; gap: 10px;
+  max-height: 80vh; overflow: hidden;
+}
+.ck-col-laws { border-top: 4px solid #fbbf24; }
+.ck-col-comp { border-top: 4px solid #22d3ee; }
+.ck-col-head { display: flex; align-items: center; justify-content: space-between; padding: 4px 4px 8px; border-bottom: 1px solid var(--border); }
+.ck-col-head h2 { margin: 0; font-size: 17px; }
+.ck-col-head h2 i { margin-right: 8px; }
+.ck-col-laws .ck-col-head h2 i { color: #fbbf24; }
+.ck-col-comp .ck-col-head h2 i { color: #22d3ee; }
+.ck-col-count { font-size: 11px; font-weight: 800; color: var(--text-dim); background: var(--surface-2); padding: 3px 10px; border-radius: 999px; border: 1px solid var(--border); }
+
+/* Filter-Chips */
+.ck-chipbar, .ck-tagbar { display: flex; flex-wrap: wrap; gap: 5px; }
+.ck-chip, .ck-tagbtn {
+  display: inline-flex; align-items: center; gap: 5px; cursor: pointer;
+  padding: 5px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 700;
+  background: var(--surface-2); color: var(--text-dim);
+  border: 1px solid var(--border); transition: all .14s;
+}
+.ck-chip:hover, .ck-tagbtn:hover { border-color: var(--c, #22d3ee); color: var(--text); }
+.ck-chip.on { background: var(--c); color: #07101f; border-color: transparent; box-shadow: 0 4px 12px color-mix(in srgb, var(--c) 35%, transparent); }
+.ck-tagbtn.on { background: #fbbf24; color: #07101f; border-color: transparent; }
+
+/* Liste */
+.ck-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 4px; }
+.ck-list::-webkit-scrollbar { width: 6px; }
+.ck-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+
+.ck-group {
+  background: rgba(255,255,255,.02); border: 1px solid var(--border); border-left: 3px solid var(--c, #22d3ee);
+  border-radius: 10px; padding: 8px; display: flex; flex-direction: column; gap: 4px;
+}
+.ck-group-head { display: flex; align-items: center; gap: 8px; padding: 4px; }
+.ck-group-ic {
+  width: 30px; height: 30px; flex: 0 0 30px; border-radius: 8px; display: grid; place-items: center;
+  font-size: 14px; color: #07101f; background: var(--c, #22d3ee);
+}
+.ck-group-head strong { display: block; font-size: 13px; }
+.ck-group-sub { font-size: 11px; color: var(--text-dim); }
+.ck-group-n { margin-left: auto; font-size: 10.5px; font-weight: 800; color: var(--text-dim); padding: 2px 8px; background: var(--surface-2); border-radius: 999px; border: 1px solid var(--border); }
+.ck-subhead {
+  font-size: 11px; font-weight: 800; color: var(--text-dim); padding: 6px 6px 2px;
+  text-transform: uppercase; letter-spacing: .3px;
+}
+
+.ck-row {
+  display: grid; grid-template-columns: auto 1fr auto; gap: 9px; align-items: center;
+  padding: 8px 10px; border-radius: 8px;
+  background: var(--surface); border: 1px solid var(--border);
+  cursor: pointer; text-align: left; color: var(--text);
+  transition: all .12s;
+}
+.ck-row:hover { transform: translateX(2px); border-color: var(--c, #22d3ee); box-shadow: 0 4px 14px rgba(0,0,0,.18); }
+.ck-row-badge {
+  font-weight: 900; font-size: 11.5px; color: #07101f; padding: 4px 8px; border-radius: 6px;
+  white-space: nowrap; min-width: 40px; text-align: center;
+}
+.ck-row-icon { font-size: 16px; }
+.ck-row-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ck-row-title { font-size: 13px; font-weight: 700; line-height: 1.3; }
+.ck-row-desc {
+  font-size: 11.5px; color: var(--text-dim); line-height: 1.35;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.ck-row-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px; }
+.ck-pill {
+  font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 999px;
+  background: color-mix(in srgb, var(--c) 22%, transparent); color: var(--c);
+  border: 1px solid color-mix(in srgb, var(--c) 40%, transparent);
+}
+.ck-pill-norm { background: rgba(168,85,247,.18); color: #c084fc; border-color: rgba(168,85,247,.4); }
+.ck-pill-price { background: rgba(34,197,94,.16); color: #4ade80; border-color: rgba(34,197,94,.4); }
+.ck-row-go { color: var(--text-mute); font-size: 11px; transition: transform .12s; }
+.ck-row:hover .ck-row-go { transform: translateX(2px); color: var(--c, #22d3ee); }
+
+.ck-rowflag-star { color: #fbbf24; margin-left: 4px; font-size: 10px; }
+.ck-rowflag-hand { color: #22d3ee; margin-left: 4px; font-size: 10px; }
+
+.ck-more { font-size: 11px; color: var(--text-mute); padding: 6px 10px; font-style: italic; text-align: center; }
+.ck-empty { padding: 20px; text-align: center; color: var(--text-dim); font-size: 13px; }
+.ck-empty i { color: #22d3ee; margin-right: 6px; }
+.ck-hl { background: rgba(34,211,238,.35); color: #fff; padding: 0 2px; border-radius: 3px; }
+
+/* Drawer-Innenleben */
+.ck-drawer { display: flex; flex-direction: column; gap: 10px; }
+.ck-drawer-head { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 12px;
+  background: color-mix(in srgb, var(--c) 12%, var(--surface-2));
+  border: 1px solid color-mix(in srgb, var(--c) 40%, var(--border)); border-left: 4px solid var(--c);
+}
+.ck-drawer-ico { width: 40px; height: 40px; flex: 0 0 40px; border-radius: 10px; display: grid; place-items: center; font-size: 18px; color: #07101f; background: var(--c); }
+.ck-drawer-meta { font-size: 11.5px; color: var(--text-dim); font-weight: 700; text-transform: uppercase; letter-spacing: .3px; }
+.ck-drawer-head h3 { margin: 2px 0 0; font-size: 16px; }
+.ck-drawer-flags { display: flex; gap: 6px; }
+.ck-flag { font-size: 11px; font-weight: 800; padding: 3px 9px; border-radius: 999px; display: inline-flex; align-items: center; gap: 5px; }
+.ck-flag-star { color: #fbbf24; background: rgba(251,191,36,.14); border: 1px solid rgba(251,191,36,.4); }
+.ck-flag-hand { color: #22d3ee; background: rgba(34,211,238,.14); border: 1px solid rgba(34,211,238,.4); }
+.ck-drawer-section { padding: 10px 12px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--border); }
+.ck-drawer-section h4 { margin: 0 0 6px; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+.ck-drawer-section h4 i { color: #22d3ee; }
+.ck-drawer-section p { margin: 0; font-size: 13.5px; line-height: 1.5; }
+.ck-box-ex { background: rgba(34,197,94,.08); border-color: rgba(34,197,94,.3); }
+.ck-box-ex h4 i { color: #4ade80; }
+.ck-box-merk { background: rgba(34,211,238,.08); border-color: rgba(34,211,238,.3); }
+.ck-box-merk h4 i { color: #38bdf8; }
+.ck-box-fehler { background: rgba(239,68,68,.08); border-color: rgba(239,68,68,.3); }
+.ck-box-fehler h4 i { color: #f87171; }
+.ck-box-fehler ul { margin: 0; padding-left: 18px; font-size: 13px; }
+.ck-drawer-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.ck-tag { font-size: 11px; padding: 3px 9px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border); color: var(--text-dim); }
+.ck-drawer-actions { display: flex; gap: 8px; margin-top: 4px; }
+
+/* Responsive Kopf */
+@media (max-width: 760px) {
+  .ck-head { grid-template-columns: 1fr; gap: 10px; }
+  .ck-search-wrap { width: 100%; max-width: none; }
+  .ck-col { max-height: none; }
+}
+
+</style>
 <style data-src="css/modern-refresh.css">
 /* ====================================================================
    MODERN REFRESH 2026 — letzte CSS-Datei, überschreibt das Basis-Design.
@@ -13423,6 +13595,7 @@ button, .navitem, .chip, .qa-tile, .ency-card, .zone-card, .kfg-card, .bigstat {
     <button class="global-search-trigger" id="gs-trigger"><i class="fas fa-search"></i> <span>Suche · alles…</span><kbd>Ctrl K</kbd></button>
 
     <button class="navitem active" data-view="home"><i class="fas fa-house"></i><span><strong>Übersicht</strong></span></button>
+    <button class="navitem nav-pri" data-view="cockpit"><i class="fas fa-table-columns"></i><span><strong>🛰 Cockpit</strong></span><em>NEU</em></button>
 
     <div class="nav-group-label">Themen-Hubs</div>
     <button class="navitem nav-pri" data-view="hub-welle"><i class="fas fa-satellite-dish"></i><span><strong>📡 Wellen &amp; Signale</strong></span></button>
@@ -46753,6 +46926,9 @@ window.HUBS = (() => {
       title: '⚖️ Recht & Normen',
       lead: 'BeWachV, DGUV, KRITIS, NIS-2, GewO §34a, WaffG, BGB, StGB — alle Sicherheits-Gesetze an einem Ort. Plus Notizbuch und Sachkunde-Training.',
       sections: [
+        { label: 'Übersicht', tiles: [
+          { v: 'cockpit', ic: 'fa-table-columns', c: '#22d3ee', t: '🛰 Cockpit · Alles auf einen Blick', d: 'Gesetze + Komponenten nebeneinander · eine Suche filtert beides', tag: 'NEU' },
+        ]},
         { label: 'Gesetze', tiles: [
           { v: 'gesetze', ic: 'fa-gavel', c: '#fbbf24', t: 'Gesetze-Katalog', d: '12 Gesetze · 264 §§ · Praxisfälle · Suchen' },
         ]},
@@ -46841,6 +47017,354 @@ window.HUBS = (() => {
   }
 
   return { view, HUBS };
+})();
+
+</script>
+<script data-src="js/cockpit.js">
+/* Cockpit – die zentrale Übersichts-Ansicht.
+   Links: Alle Gesetze + Paragraphen, durchsuchbar.
+   Rechts: Alle Sicherheits-Komponenten (Melder, Perimeter, Außenhaut, EMA, Klassen),
+   durchsuchbar und nach Typ filterbar.
+   Oben: eine Mega-Suche die BEIDE Spalten gleichzeitig filtert.
+   window.COCKPIT.view(d). */
+window.COCKPIT = (() => {
+  const { el, escapeHtml, drawer } = U;
+
+  /* ============ Daten sammeln ============ */
+  function gatherLaws() {
+    if (!window.GESETZE_DB) return [];
+    return GESETZE_DB.getAll().map(g => ({
+      g, items: g.abschnitte.flatMap(a => a.paragraphen.map(p => ({
+        g, a, p,
+        text: (p.p + ' ' + p.t + ' ' + (p.s || '') + ' ' + (p.tags || []).join(' ')).toLowerCase(),
+      }))),
+    }));
+  }
+  function gatherComponents(d) {
+    // Liste mit Quelle, Kategorie, Zeile, normalisierten Feldern.
+    const out = [];
+    const push = (group, gid, gicon, color, tbl) => {
+      (tbl.rows || []).forEach(r => {
+        const title = r['Produkt / Maßnahme'] || r['Produkt'] || r['Maßnahme'] || r['Sicherungsklasse'] || r['EMA-Grad'] || r['RC-Klasse'] || r['Modell'] || Object.values(r)[1] || '';
+        const desc = r['Beschreibung'] || r['Detektionsprinzip'] || r['Beispiel-Objekte'] || r['Anwendung'] || r['Typische Anwendung'] || r['Einsatzbereich'] || '';
+        const klass = r['Sicherungsklasse'] || r['VdS-Klasse / Grad'] || r['VdS-Klasse'] || r['Widerstandsklasse'] || r['EMA-Grad'] || r['EMA-Grad (EN 50131)'] || '';
+        const norm = r['Norm / Richtlinie'] || r['Norm'] || '';
+        const preis = r['Richtpreis (€)'] || r['Richtpreis Tür (€)'] || r['Preis'] || r['Richtpreis'] || '';
+        out.push({
+          group, gid, gicon, color,
+          section: (tbl.title || '').replace(/^[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]\s*/u, ''),
+          title, desc, klass, norm, preis, raw: r,
+          text: (title + ' ' + desc + ' ' + klass + ' ' + norm + ' ' + (tbl.title || '')).toLowerCase(),
+        });
+      });
+    };
+    if (d.melder)     d.melder.tables.forEach(t => push('Melder', 'melder', 'fa-bell', '#22d3ee', t));
+    if (d.perimeter)  d.perimeter.tables.forEach(t => push('Perimeter', 'perimeter', 'fa-border-all', '#22c55e', t));
+    if (d.aussenhaut) d.aussenhaut.tables.forEach(t => push('Außenhaut', 'aussenhaut', 'fa-door-closed', '#fbbf24', t));
+    if (d.ema_zka)    d.ema_zka.tables.forEach(t => push('EMA · ZKA', 'ema', 'fa-tower-broadcast', '#a855f7', t));
+    if (d.sicherungsklassen) d.sicherungsklassen.tables.forEach(t => push('Klassen', 'klassen', 'fa-medal', '#ef4444', t));
+    return out;
+  }
+
+  /* ============ Detail-Drawer ============ */
+  function openLawDetail(item) {
+    const { g, a, p } = item;
+    const body = el('div', { class: 'ck-drawer' });
+    body.appendChild(el('div', { class: 'ck-drawer-head', style: `--c:${g.farbe}` }, [
+      el('div', { class: 'ck-drawer-ico', html: `<i class="fas ${g.icon}"></i>` }),
+      el('div', {}, [
+        el('div', { class: 'ck-drawer-meta', text: g.short + ' · ' + g.title + ' · Abschnitt ' + a.nr }),
+        el('h3', { text: p.p + ' ' + p.t }),
+      ]),
+    ]));
+    if (p.wichtig || p.jedermann) {
+      const flags = el('div', { class: 'ck-drawer-flags' });
+      if (p.wichtig) flags.appendChild(el('span', { class: 'ck-flag ck-flag-star', html: '<i class="fas fa-star"></i> WICHTIG' }));
+      if (p.jedermann) flags.appendChild(el('span', { class: 'ck-flag ck-flag-hand', html: '<i class="fas fa-hand"></i> JEDERMANNSRECHT' }));
+      body.appendChild(flags);
+    }
+    if (p.s) body.appendChild(el('div', { class: 'ck-drawer-section' }, [
+      el('h4', { html: '<i class="fas fa-file-lines"></i> Zusammenfassung' }),
+      el('p', { text: p.s }),
+    ]));
+    if (p.beispiel) body.appendChild(el('div', { class: 'ck-drawer-section ck-box-ex' }, [
+      el('h4', { html: '<i class="fas fa-lightbulb"></i> Praxisfall' }),
+      el('p', { text: p.beispiel }),
+    ]));
+    if (p.merksatz) body.appendChild(el('div', { class: 'ck-drawer-section ck-box-merk' }, [
+      el('h4', { html: '<i class="fas fa-bookmark"></i> Merksatz' }),
+      el('p', { text: p.merksatz }),
+    ]));
+    if (p.fehler && p.fehler.length) {
+      const box = el('div', { class: 'ck-drawer-section ck-box-fehler' });
+      box.appendChild(el('h4', { html: '<i class="fas fa-triangle-exclamation"></i> Typische Fehler' }));
+      const ul = el('ul'); p.fehler.forEach(f => ul.appendChild(el('li', { text: f })));
+      box.appendChild(ul); body.appendChild(box);
+    }
+    if (p.tags && p.tags.length) {
+      const tg = el('div', { class: 'ck-drawer-tags' });
+      p.tags.forEach(t => tg.appendChild(el('span', { class: 'ck-tag', text: t })));
+      body.appendChild(tg);
+    }
+    // Notebook-Pin
+    if (window.NOTEBOOK) {
+      const actions = el('div', { class: 'ck-drawer-actions' });
+      actions.appendChild(NOTEBOOK.pinBtn({
+        id: g.id + '/' + (p.p || '').replace(/\s+/g, ''),
+        kind: 'law', kicker: g.short + ' · Abschnitt ' + a.nr, badge: p.p,
+        title: p.t, summary: p.s || '', beispiel: p.beispiel, merksatz: p.merksatz,
+        fehler: p.fehler, tags: p.tags || [], wichtig: p.wichtig, jedermann: p.jedermann, accent: g.farbe,
+      }));
+      body.appendChild(actions);
+    }
+    drawer(p.p + ' · ' + p.t, body);
+  }
+
+  function openComponentDetail(it) {
+    const body = el('div', { class: 'ck-drawer' });
+    body.appendChild(el('div', { class: 'ck-drawer-head', style: `--c:${it.color}` }, [
+      el('div', { class: 'ck-drawer-ico', html: `<i class="fas ${it.gicon}"></i>` }),
+      el('div', {}, [
+        el('div', { class: 'ck-drawer-meta', text: it.group + ' · ' + it.section }),
+        el('h3', { text: it.title }),
+      ]),
+    ]));
+    if (it.desc) body.appendChild(el('div', { class: 'ck-drawer-section' }, [
+      el('h4', { html: '<i class="fas fa-file-lines"></i> Beschreibung' }),
+      el('p', { text: it.desc }),
+    ]));
+    // Alle weiteren Felder als Key/Value-Liste
+    const kv = el('div', { class: 'kv-grid' });
+    Object.entries(it.raw).forEach(([k, v]) => {
+      if (!v || k === 'Nr.' || k === 'Beschreibung') return;
+      kv.appendChild(el('div', { class: 'k', text: k }));
+      kv.appendChild(el('div', { class: 'v', text: v }));
+    });
+    body.appendChild(kv);
+    drawer(it.title, body);
+  }
+
+  /* ============ Hauptansicht ============ */
+  function view(d) {
+    const root = el('div', { class: 'ck-wrap' });
+
+    // Hero/Header mit Mega-Suche
+    const head = el('div', { class: 'ck-head' });
+    head.appendChild(el('div', { class: 'ck-head-l' }, [
+      el('span', { class: 'ck-eyebrow', text: 'Cockpit' }),
+      el('h1', { class: 'ck-title', text: '🛰 Alles auf einen Blick' }),
+      el('p', { class: 'ck-sub', text: 'Links: Gesetze · Rechts: Melder & Komponenten · Suche oben filtert beides gleichzeitig. Klick öffnet Details. Nichts hin-und-her-Springen.' }),
+    ]));
+    const searchWrap = el('div', { class: 'ck-search-wrap' });
+    const searchIcon = el('i', { class: 'fas fa-search ck-search-icon' });
+    const search = el('input', { class: 'ck-search', type: 'search', placeholder: 'Suche in Gesetzen UND Komponenten…  z.B. Notwehr, PIR, RC 3, Versicherung, Glasbruch' });
+    const clearBtn = el('button', { class: 'ck-search-clear hidden', html: '<i class="fas fa-xmark"></i>' });
+    searchWrap.appendChild(searchIcon); searchWrap.appendChild(search); searchWrap.appendChild(clearBtn);
+    head.appendChild(searchWrap);
+    root.appendChild(head);
+
+    // Quick-Stats
+    const laws = gatherLaws();
+    const components = gatherComponents(d);
+    const lawCount = laws.reduce((s, x) => s + x.items.length, 0);
+    const stats = el('div', { class: 'ck-stats' });
+    [
+      { i: 'fa-gavel', n: laws.length, l: 'Gesetze', c: '#fbbf24' },
+      { i: 'fa-section', n: lawCount, l: 'Paragraphen', c: '#fbbf24' },
+      { i: 'fa-bell', n: components.filter(c => c.group === 'Melder').length, l: 'Melder', c: '#22d3ee' },
+      { i: 'fa-border-all', n: components.filter(c => c.group === 'Perimeter').length, l: 'Perimeter', c: '#22c55e' },
+      { i: 'fa-door-closed', n: components.filter(c => c.group === 'Außenhaut').length, l: 'Außenhaut', c: '#fbbf24' },
+      { i: 'fa-medal', n: components.filter(c => c.group === 'Klassen').length, l: 'Klassen', c: '#ef4444' },
+    ].forEach(s => {
+      const c = el('div', { class: 'ck-stat', style: `--c:${s.c}` });
+      c.innerHTML = `<i class="fas ${s.i}"></i><strong>${s.n}</strong><span>${s.l}</span>`;
+      stats.appendChild(c);
+    });
+    root.appendChild(stats);
+
+    // Split-Layout
+    const grid = el('div', { class: 'ck-grid' });
+    const leftCol = el('div', { class: 'ck-col ck-col-laws' });
+    const rightCol = el('div', { class: 'ck-col ck-col-comp' });
+    grid.appendChild(leftCol); grid.appendChild(rightCol);
+    root.appendChild(grid);
+
+    // ===== LEFT: Gesetze =====
+    leftCol.appendChild(el('div', { class: 'ck-col-head' }, [
+      el('h2', { html: '<i class="fas fa-gavel"></i> Gesetze · §§' }),
+      el('span', { class: 'ck-col-count', text: lawCount + ' §§' }),
+    ]));
+
+    // Gesetz-Filter-Chips (Toggle nach Gesetz)
+    const lawFilters = new Set();  // wenn leer = alle
+    const lawChipBar = el('div', { class: 'ck-chipbar' });
+    laws.forEach(({ g }) => {
+      const ch = el('button', { class: 'ck-chip', type: 'button', style: `--c:${g.farbe}`, dataset: { id: g.id } });
+      ch.innerHTML = `<i class="fas ${g.icon}"></i> ${g.short}`;
+      ch.addEventListener('click', () => {
+        if (lawFilters.has(g.id)) lawFilters.delete(g.id); else lawFilters.add(g.id);
+        ch.classList.toggle('on');
+        renderLaws();
+      });
+      lawChipBar.appendChild(ch);
+    });
+    leftCol.appendChild(lawChipBar);
+
+    // Quick-Filter Important / Jedermannsrecht
+    const lawTagBar = el('div', { class: 'ck-tagbar' });
+    let onlyWichtig = false, onlyJedermann = false;
+    const wBtn = el('button', { class: 'ck-tagbtn', html: '<i class="fas fa-star"></i> nur WICHTIG' });
+    const jBtn = el('button', { class: 'ck-tagbtn', html: '<i class="fas fa-hand"></i> nur JEDERMANNSRECHT' });
+    wBtn.addEventListener('click', () => { onlyWichtig = !onlyWichtig; wBtn.classList.toggle('on'); renderLaws(); });
+    jBtn.addEventListener('click', () => { onlyJedermann = !onlyJedermann; jBtn.classList.toggle('on'); renderLaws(); });
+    lawTagBar.append(wBtn, jBtn);
+    leftCol.appendChild(lawTagBar);
+
+    const lawList = el('div', { class: 'ck-list' });
+    leftCol.appendChild(lawList);
+
+    function renderLaws() {
+      const q = search.value.trim().toLowerCase();
+      lawList.innerHTML = '';
+      let totalShown = 0;
+      laws.forEach(({ g, items }) => {
+        if (lawFilters.size && !lawFilters.has(g.id)) return;
+        const matched = items.filter(it =>
+          (!q || it.text.includes(q)) &&
+          (!onlyWichtig || it.p.wichtig) &&
+          (!onlyJedermann || it.p.jedermann)
+        );
+        if (!matched.length) return;
+        const grp = el('div', { class: 'ck-group', style: `--c:${g.farbe}` });
+        grp.appendChild(el('div', { class: 'ck-group-head' }, [
+          el('div', { class: 'ck-group-ic', html: `<i class="fas ${g.icon}"></i>` }),
+          el('div', {}, [
+            el('strong', { text: g.short }),
+            el('span', { class: 'ck-group-sub', text: g.title }),
+          ]),
+          el('span', { class: 'ck-group-n', text: matched.length + ' §§' }),
+        ]));
+        matched.slice(0, 20).forEach(it => {
+          const row = el('button', { class: 'ck-row', type: 'button' });
+          const flagsHtml = (it.p.wichtig ? '<i class="fas fa-star ck-rowflag-star"></i>' : '') +
+                           (it.p.jedermann ? '<i class="fas fa-hand ck-rowflag-hand"></i>' : '');
+          row.innerHTML = `
+            <span class="ck-row-badge" style="background:${g.farbe}">${it.p.p}</span>
+            <span class="ck-row-body">
+              <span class="ck-row-title">${highlight(it.p.t, q)} ${flagsHtml}</span>
+              <span class="ck-row-desc">${highlight(it.p.s || '', q)}</span>
+            </span>
+            <i class="fas fa-chevron-right ck-row-go"></i>`;
+          row.addEventListener('click', () => openLawDetail(it));
+          grp.appendChild(row);
+          totalShown++;
+        });
+        if (matched.length > 20) grp.appendChild(el('div', { class: 'ck-more', text: '+ ' + (matched.length - 20) + ' weitere Paragraphen (Suche eingrenzen)' }));
+        lawList.appendChild(grp);
+      });
+      if (!totalShown) lawList.appendChild(el('div', { class: 'ck-empty', html: '<i class="fas fa-circle-info"></i> Keine Paragraphen passen.' }));
+    }
+
+    // ===== RIGHT: Komponenten =====
+    rightCol.appendChild(el('div', { class: 'ck-col-head' }, [
+      el('h2', { html: '<i class="fas fa-microchip"></i> Melder · Komponenten' }),
+      el('span', { class: 'ck-col-count', text: components.length + ' Einträge' }),
+    ]));
+
+    const compFilters = new Set();
+    const compChipBar = el('div', { class: 'ck-chipbar' });
+    const groups = ['Melder', 'Perimeter', 'Außenhaut', 'EMA · ZKA', 'Klassen'];
+    const groupColors = { 'Melder': '#22d3ee', 'Perimeter': '#22c55e', 'Außenhaut': '#fbbf24', 'EMA · ZKA': '#a855f7', 'Klassen': '#ef4444' };
+    const groupIcons = { 'Melder': 'fa-bell', 'Perimeter': 'fa-border-all', 'Außenhaut': 'fa-door-closed', 'EMA · ZKA': 'fa-tower-broadcast', 'Klassen': 'fa-medal' };
+    groups.forEach(g => {
+      const ch = el('button', { class: 'ck-chip', type: 'button', style: `--c:${groupColors[g]}`, dataset: { id: g } });
+      ch.innerHTML = `<i class="fas ${groupIcons[g]}"></i> ${g}`;
+      ch.addEventListener('click', () => {
+        if (compFilters.has(g)) compFilters.delete(g); else compFilters.add(g);
+        ch.classList.toggle('on');
+        renderComponents();
+      });
+      compChipBar.appendChild(ch);
+    });
+    rightCol.appendChild(compChipBar);
+
+    const compList = el('div', { class: 'ck-list' });
+    rightCol.appendChild(compList);
+
+    function renderComponents() {
+      const q = search.value.trim().toLowerCase();
+      compList.innerHTML = '';
+      // Gruppieren nach Group → Section
+      const byGroup = {};
+      components.forEach(c => {
+        if (compFilters.size && !compFilters.has(c.group)) return;
+        if (q && !c.text.includes(q)) return;
+        (byGroup[c.group] = byGroup[c.group] || {})[c.section] = (byGroup[c.group][c.section] || []);
+        byGroup[c.group][c.section].push(c);
+      });
+      let total = 0;
+      Object.entries(byGroup).forEach(([gname, sections]) => {
+        const color = groupColors[gname] || '#22d3ee';
+        const grp = el('div', { class: 'ck-group', style: `--c:${color}` });
+        const cnt = Object.values(sections).reduce((s, a) => s + a.length, 0);
+        grp.appendChild(el('div', { class: 'ck-group-head' }, [
+          el('div', { class: 'ck-group-ic', html: `<i class="fas ${groupIcons[gname]}"></i>` }),
+          el('div', {}, [
+            el('strong', { text: gname }),
+            el('span', { class: 'ck-group-sub', text: Object.keys(sections).length + ' Kategorien' }),
+          ]),
+          el('span', { class: 'ck-group-n', text: cnt + ' Einträge' }),
+        ]));
+        Object.entries(sections).forEach(([sec, items]) => {
+          if (Object.keys(sections).length > 1) grp.appendChild(el('div', { class: 'ck-subhead', text: sec }));
+          items.slice(0, 15).forEach(it => {
+            const row = el('button', { class: 'ck-row', type: 'button' });
+            row.innerHTML = `
+              <span class="ck-row-icon" style="color:${color}"><i class="fas ${it.gicon}"></i></span>
+              <span class="ck-row-body">
+                <span class="ck-row-title">${highlight(it.title, q)}</span>
+                <span class="ck-row-desc">${highlight(it.desc || '', q)}</span>
+                <span class="ck-row-tags">
+                  ${it.klass ? `<span class="ck-pill" style="--c:${color}">${it.klass}</span>` : ''}
+                  ${it.norm ? `<span class="ck-pill ck-pill-norm">${it.norm}</span>` : ''}
+                  ${it.preis ? `<span class="ck-pill ck-pill-price">${it.preis}</span>` : ''}
+                </span>
+              </span>
+              <i class="fas fa-chevron-right ck-row-go"></i>`;
+            row.addEventListener('click', () => openComponentDetail(it));
+            grp.appendChild(row);
+            total++;
+          });
+          if (items.length > 15) grp.appendChild(el('div', { class: 'ck-more', text: '+ ' + (items.length - 15) + ' weitere (Suche eingrenzen)' }));
+        });
+        compList.appendChild(grp);
+      });
+      if (!total) compList.appendChild(el('div', { class: 'ck-empty', html: '<i class="fas fa-circle-info"></i> Keine Komponenten passen.' }));
+    }
+
+    function highlight(text, q) {
+      const s = escapeHtml(text || '');
+      if (!q) return s;
+      const re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+      return s.replace(re, '<mark class="ck-hl">$1</mark>');
+    }
+
+    // Suche live: filtert BEIDE
+    search.addEventListener('input', () => {
+      clearBtn.classList.toggle('hidden', !search.value);
+      renderLaws();
+      renderComponents();
+    });
+    clearBtn.addEventListener('click', () => { search.value = ''; clearBtn.classList.add('hidden'); renderLaws(); renderComponents(); });
+    // Initial
+    renderLaws(); renderComponents();
+    // Auto-Fokus
+    setTimeout(() => search.focus(), 100);
+
+    return root;
+  }
+
+  return { view };
 })();
 
 </script>
@@ -50874,6 +51398,7 @@ window.SEARCH = (() => {
 
   const ROUTES = {
     home: V.home,
+    cockpit: (d) => COCKPIT.view(d),
     'hub-welle':   () => HUBS.view('hub-welle'),
     'hub-schutz':  () => HUBS.view('hub-schutz'),
     'hub-technik': () => HUBS.view('hub-technik'),
@@ -50948,6 +51473,7 @@ window.SEARCH = (() => {
     haus3d:       { icon:'fa-house-chimney', t:'Sicherheits-Haus 3D', d:'Ein Haus in 3D vom Zaun bis zum Tresor – drehen und sehen, wie die 4 Schutzzonen ineinandergreifen.' },
     zwiebel3d:    { icon:'fa-circle-dot', t:'3D-Zwiebelmodell', d:'Das Zwiebelprinzip interaktiv: 4 Schalen Schutz von außen nach innen. Klick eine Schale für Details.' },
     building3d:   { icon:'fa-cube', t:'3D-Gebäudeplaner', d:'Isometrisches 3D-Haus mit Etagen, frei rotierbar.' },
+    cockpit:      { icon:'fa-table-columns', t:'Cockpit · Alles auf einen Blick', d:'Links Gesetze, rechts Komponenten – eine Suche filtert beides gleichzeitig. Klick öffnet Details. Kein Hin-und-Her-Springen mehr.' },
     spektrum:     { icon:'fa-wave-square', t:'Frequenz-Spektrum', d:'Welche Wellen nutzt welche Technik? Vom Infrarot über Funk bis Mikrowelle – als anschauliches Spektrum.' },
     freqtab:      { icon:'fa-table-list', t:'Frequenzen & Datenraten', d:'Zwei große Tabellen zum Nachschlagen: alle Frequenzen von Hz bis Gamma mit Mini-Welle, und alle Datenraten mit Lade-Zeit für deine Datei (E-Mail bis 4K-Spielfilm).' },
     notebook:     { icon:'fa-bookmark', t:'Mein Notizbuch', d:'Alle gepinnten Paragraphen und Klassen an einem Ort. Daraus baust du dein eigenes Lern-Deck oder exportierst es als Markdown.' },

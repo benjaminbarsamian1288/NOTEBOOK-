@@ -4,6 +4,7 @@
 
   const ROUTES = {
     home: V.home,
+    cockpit: (d) => COCKPIT.view(d),
     'hub-welle':   () => HUBS.view('hub-welle'),
     'hub-schutz':  () => HUBS.view('hub-schutz'),
     'hub-technik': () => HUBS.view('hub-technik'),
@@ -78,6 +79,7 @@
     haus3d:       { icon:'fa-house-chimney', t:'Sicherheits-Haus 3D', d:'Ein Haus in 3D vom Zaun bis zum Tresor – drehen und sehen, wie die 4 Schutzzonen ineinandergreifen.' },
     zwiebel3d:    { icon:'fa-circle-dot', t:'3D-Zwiebelmodell', d:'Das Zwiebelprinzip interaktiv: 4 Schalen Schutz von außen nach innen. Klick eine Schale für Details.' },
     building3d:   { icon:'fa-cube', t:'3D-Gebäudeplaner', d:'Isometrisches 3D-Haus mit Etagen, frei rotierbar.' },
+    cockpit:      { icon:'fa-table-columns', t:'Cockpit · Alles auf einen Blick', d:'Links Gesetze, rechts Komponenten – eine Suche filtert beides gleichzeitig. Klick öffnet Details. Kein Hin-und-Her-Springen mehr.' },
     spektrum:     { icon:'fa-wave-square', t:'Frequenz-Spektrum', d:'Welche Wellen nutzt welche Technik? Vom Infrarot über Funk bis Mikrowelle – als anschauliches Spektrum.' },
     freqtab:      { icon:'fa-table-list', t:'Frequenzen & Datenraten', d:'Zwei große Tabellen zum Nachschlagen: alle Frequenzen von Hz bis Gamma mit Mini-Welle, und alle Datenraten mit Lade-Zeit für deine Datei (E-Mail bis 4K-Spielfilm).' },
     notebook:     { icon:'fa-bookmark', t:'Mein Notizbuch', d:'Alle gepinnten Paragraphen und Klassen an einem Ort. Daraus baust du dein eigenes Lern-Deck oder exportierst es als Markdown.' },

@@ -66,6 +66,9 @@ window.HUBS = (() => {
       title: '⚖️ Recht & Normen',
       lead: 'BeWachV, DGUV, KRITIS, NIS-2, GewO §34a, WaffG, BGB, StGB — alle Sicherheits-Gesetze an einem Ort. Plus Notizbuch und Sachkunde-Training.',
       sections: [
+        { label: 'Übersicht', tiles: [
+          { v: 'cockpit', ic: 'fa-table-columns', c: '#22d3ee', t: '🛰 Cockpit · Alles auf einen Blick', d: 'Gesetze + Komponenten nebeneinander · eine Suche filtert beides', tag: 'NEU' },
+        ]},
         { label: 'Gesetze', tiles: [
           { v: 'gesetze', ic: 'fa-gavel', c: '#fbbf24', t: 'Gesetze-Katalog', d: '12 Gesetze · 264 §§ · Praxisfälle · Suchen' },
         ]},
