@@ -2578,29 +2578,48 @@ input[type="range"] { touch-action: pan-x; }
   margin-top: 12px; padding: 14px 16px; border-radius: 14px;
   background: linear-gradient(135deg, rgba(34,211,238,.10), rgba(168,85,247,.08));
   border: 1px solid rgba(34,211,238,.28);
-  display: flex; flex-direction: column; gap: 10px;
+  display: flex; flex-direction: column; gap: 12px;
 }
-.spek-help-row {
-  display: flex; align-items: flex-start; gap: 12px; line-height: 1.5;
-  font-size: 14px; color: var(--text, #e8edf7);
+.spek-help-title {
+  font-size: 14px; font-weight: 800; color: #22d3ee; letter-spacing: .3px;
+  display: flex; align-items: center; gap: 8px;
 }
-.spek-help-row strong { color: #22d3ee; font-weight: 800; }
-.spek-help-row b { color: #fbbf24; font-weight: 700; }
-.spek-help-ic {
-  width: 36px; height: 36px; flex: 0 0 36px; border-radius: 10px;
-  display: grid; place-items: center; font-size: 16px; color: #07101f;
-  background: linear-gradient(135deg, #22d3ee, #38bdf8);
-  box-shadow: 0 4px 12px rgba(34,211,238,.4);
+.spek-help-big {
+  font-size: 17px; line-height: 1.55; color: var(--text, #e8edf7); font-weight: 600;
 }
-.spek-help-row:nth-child(2) .spek-help-ic { background: linear-gradient(135deg, #a855f7, #ec4899); box-shadow: 0 4px 12px rgba(168,85,247,.4); }
-.spek-help-row:nth-child(2) strong { color: #c084fc; }
-.spek-help-ex { display: block; font-size: 12.5px; color: var(--text-dim, #94a3c4); margin-top: 3px; }
+.spek-help-big b { color: #fbbf24; font-weight: 900; }
+.spek-help-demo { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.spek-help-card {
+  background: rgba(11,20,36,.5); border: 1px solid rgba(255,255,255,.08);
+  border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px;
+}
+.spek-help-card-h { font-size: 14px; font-weight: 700; color: var(--text, #e8edf7); }
+.spek-help-card-h b { color: #fbbf24; }
+.spek-help-card-row {
+  display: grid; grid-template-columns: 70px 1fr 90px; align-items: center; gap: 8px;
+  font-size: 12.5px;
+}
+.spek-help-card-l { color: var(--text-dim, #94a3c4); font-weight: 600; }
+.spek-help-card-v { color: var(--text-dim, #94a3c4); font-size: 11.5px; text-align: right; font-style: italic; }
+.spek-help-card-row canvas { display: block; width: 100%; height: 44px; border-radius: 6px; background: rgba(0,0,0,.25); }
+.spek-help-bulb {
+  display: block; width: 52px; height: 52px; border-radius: 50%;
+  justify-self: center; transition: all .25s;
+}
+.spek-help-card-foot {
+  margin-top: 4px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,.1);
+  font-size: 11.5px; color: var(--text-dim, #94a3c4); line-height: 1.4;
+}
+.spek-help-card-foot b { color: #22d3ee; }
+@media (max-width: 520px) {
+  .spek-help-demo { grid-template-columns: 1fr; }
+  .spek-help-card-row { grid-template-columns: 60px 1fr 80px; }
+}
 .spek-help-tip {
-  font-size: 13px; line-height: 1.5; padding: 10px 12px; border-radius: 10px;
+  font-size: 13px; line-height: 1.65; padding: 12px 14px; border-radius: 10px;
   background: rgba(251,191,36,.10); border: 1px solid rgba(251,191,36,.3); color: var(--text, #e8edf7);
 }
-.spek-help-tip b { color: #fbbf24; }
-.spek-help-tip i { color: var(--text-dim, #94a3c4); }
+.spek-help-tip b { color: #fbbf24; font-weight: 800; }
 
 /* Wave compare grid */
 .spek-wavegrid {
@@ -21920,26 +21939,94 @@ window.SPEK = (() => {
     // Große, klare Erklärung der zwei Begriffe (immer sichtbar)
     const help = el('div', { class:'spek-tuner-help' });
     help.innerHTML = `
-      <div class="spek-help-row">
-        <div class="spek-help-ic"><i class="fas fa-wave-square"></i></div>
-        <div>
-          <strong>Frequenz</strong> = <b>wie OFT</b> die Welle pro Sekunde wackelt.
-          <span class="spek-help-ex">Tief = langsam (Bass · Funk-Lange-Wellen) · Hoch = schnell (Licht · Röntgen)</span>
+      <div class="spek-help-title">
+        <i class="fas fa-circle-question"></i> Was bedeutet Amplitude?
+      </div>
+
+      <div class="spek-help-big">
+        Amplitude = <b>wie LAUT</b> oder <b>wie HELL</b> die Welle ist.<br>
+        Frequenz = <b>was</b> für eine Welle (Bass, Funk, Licht …).
+      </div>
+
+      <div class="spek-help-demo" id="spek-help-demo">
+        <div class="spek-help-card">
+          <div class="spek-help-card-h">🔊 <b>Wie laut?</b></div>
+          <div class="spek-help-card-row">
+            <span class="spek-help-card-l">Flüstern</span>
+            <canvas data-amp="leise"  width="160" height="44"></canvas>
+            <span class="spek-help-card-v">kleine Welle</span>
+          </div>
+          <div class="spek-help-card-row">
+            <span class="spek-help-card-l">Brüllen</span>
+            <canvas data-amp="laut"   width="160" height="44"></canvas>
+            <span class="spek-help-card-v">große Welle</span>
+          </div>
+          <div class="spek-help-card-foot">Frequenz <b>gleich</b> (1000 Hz), nur die <b>Amplitude</b> ist anders.</div>
+        </div>
+
+        <div class="spek-help-card">
+          <div class="spek-help-card-h">💡 <b>Wie hell?</b></div>
+          <div class="spek-help-card-row">
+            <span class="spek-help-card-l">Kerze</span>
+            <span class="spek-help-bulb" data-bulb="dim"></span>
+            <span class="spek-help-card-v">wenig Licht</span>
+          </div>
+          <div class="spek-help-card-row">
+            <span class="spek-help-card-l">Scheinwerfer</span>
+            <span class="spek-help-bulb" data-bulb="bright"></span>
+            <span class="spek-help-card-v">viel Licht</span>
+          </div>
+          <div class="spek-help-card-foot">Beide leuchten <b>gelb</b> (gleiche Frequenz), nur die <b>Amplitude</b> ist anders.</div>
         </div>
       </div>
-      <div class="spek-help-row">
-        <div class="spek-help-ic"><i class="fas fa-up-down"></i></div>
-        <div>
-          <strong>Amplitude</strong> = <b>wie HOCH</b> die Welle ausschlägt. Also <b>wie STARK das Signal</b> ist.
-          <span class="spek-help-ex">Schall: <b>Lautstärke</b> · Licht: <b>Helligkeit</b> · Funk: <b>Sendeleistung / Reichweite</b></span>
-        </div>
-      </div>
+
       <div class="spek-help-tip">
-        💡 <b>Faustregel:</b> Die <b>Frequenz</b> sagt <i>welche Sorte</i> Welle (Funk, Licht, Röntgen),
-        die <b>Amplitude</b> sagt nur <i>wie laut/hell/stark</i> sie ist. Frequenz und Amplitude sind <b>unabhängig</b> voneinander.
+        <b>Beispiele aus der Sicherheitstechnik:</b><br>
+        📻 Funk-Melder mit <b>mehr Amplitude</b> = <b>höhere Reichweite</b><br>
+        📷 Kamera-LED mit <b>mehr Amplitude</b> = <b>weiter sehen bei Nacht</b><br>
+        🔔 Sirene mit <b>mehr Amplitude</b> = <b>lauter</b> (gleicher Ton)
       </div>`;
     root.appendChild(tunerCard);
     root.appendChild(help);
+
+    // Mini-Animationen für die Demo
+    setTimeout(() => {
+      const demo = help.querySelector('#spek-help-demo');
+      if (!demo) return;
+      // Wellen: leise vs laut
+      demo.querySelectorAll('canvas[data-amp]').forEach(cv => {
+        const ctx = cv.getContext('2d');
+        const amp = cv.dataset.amp === 'laut' ? 16 : 4;
+        const col = cv.dataset.amp === 'laut' ? '#fbbf24' : '#94a3c4';
+        let tt = Math.random() * 10;
+        function loop() {
+          if (!cv.isConnected) return;
+          tt += 0.06;
+          ctx.clearRect(0, 0, cv.width, cv.height);
+          ctx.strokeStyle = col; ctx.lineWidth = 2;
+          ctx.shadowColor = col; ctx.shadowBlur = cv.dataset.amp === 'laut' ? 8 : 2;
+          ctx.beginPath();
+          for (let x = 2; x <= cv.width - 2; x++) {
+            const y = cv.height / 2 - Math.sin(x * 0.32 - tt) * amp;
+            x === 2 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+          }
+          ctx.stroke();
+          ctx.shadowBlur = 0;
+          requestAnimationFrame(loop);
+        }
+        requestAnimationFrame(loop);
+      });
+      // Lampen: dim vs hell
+      demo.querySelectorAll('.spek-help-bulb').forEach(b => {
+        const big = b.dataset.bulb === 'bright';
+        b.style.background = big
+          ? 'radial-gradient(circle, #fde047 0%, #fbbf24 40%, transparent 75%)'
+          : 'radial-gradient(circle, #fde047cc 0%, #fbbf2455 30%, transparent 60%)';
+        b.style.width  = big ? '52px' : '52px';
+        b.style.height = big ? '52px' : '52px';
+        b.style.filter = big ? 'drop-shadow(0 0 16px #fbbf24)' : 'drop-shadow(0 0 4px #fbbf2466)';
+      });
+    }, 0);
 
     function updateTunerLabel() {
       // Map slider 0..10 → log frequency 1 Hz .. 10²² Hz

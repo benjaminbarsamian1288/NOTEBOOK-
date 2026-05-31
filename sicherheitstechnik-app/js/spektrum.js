@@ -255,26 +255,94 @@ window.SPEK = (() => {
     // Große, klare Erklärung der zwei Begriffe (immer sichtbar)
     const help = el('div', { class:'spek-tuner-help' });
     help.innerHTML = `
-      <div class="spek-help-row">
-        <div class="spek-help-ic"><i class="fas fa-wave-square"></i></div>
-        <div>
-          <strong>Frequenz</strong> = <b>wie OFT</b> die Welle pro Sekunde wackelt.
-          <span class="spek-help-ex">Tief = langsam (Bass · Funk-Lange-Wellen) · Hoch = schnell (Licht · Röntgen)</span>
+      <div class="spek-help-title">
+        <i class="fas fa-circle-question"></i> Was bedeutet Amplitude?
+      </div>
+
+      <div class="spek-help-big">
+        Amplitude = <b>wie LAUT</b> oder <b>wie HELL</b> die Welle ist.<br>
+        Frequenz = <b>was</b> für eine Welle (Bass, Funk, Licht …).
+      </div>
+
+      <div class="spek-help-demo" id="spek-help-demo">
+        <div class="spek-help-card">
+          <div class="spek-help-card-h">🔊 <b>Wie laut?</b></div>
+          <div class="spek-help-card-row">
+            <span class="spek-help-card-l">Flüstern</span>
+            <canvas data-amp="leise"  width="160" height="44"></canvas>
+            <span class="spek-help-card-v">kleine Welle</span>
+          </div>
+          <div class="spek-help-card-row">
+            <span class="spek-help-card-l">Brüllen</span>
+            <canvas data-amp="laut"   width="160" height="44"></canvas>
+            <span class="spek-help-card-v">große Welle</span>
+          </div>
+          <div class="spek-help-card-foot">Frequenz <b>gleich</b> (1000 Hz), nur die <b>Amplitude</b> ist anders.</div>
+        </div>
+
+        <div class="spek-help-card">
+          <div class="spek-help-card-h">💡 <b>Wie hell?</b></div>
+          <div class="spek-help-card-row">
+            <span class="spek-help-card-l">Kerze</span>
+            <span class="spek-help-bulb" data-bulb="dim"></span>
+            <span class="spek-help-card-v">wenig Licht</span>
+          </div>
+          <div class="spek-help-card-row">
+            <span class="spek-help-card-l">Scheinwerfer</span>
+            <span class="spek-help-bulb" data-bulb="bright"></span>
+            <span class="spek-help-card-v">viel Licht</span>
+          </div>
+          <div class="spek-help-card-foot">Beide leuchten <b>gelb</b> (gleiche Frequenz), nur die <b>Amplitude</b> ist anders.</div>
         </div>
       </div>
-      <div class="spek-help-row">
-        <div class="spek-help-ic"><i class="fas fa-up-down"></i></div>
-        <div>
-          <strong>Amplitude</strong> = <b>wie HOCH</b> die Welle ausschlägt. Also <b>wie STARK das Signal</b> ist.
-          <span class="spek-help-ex">Schall: <b>Lautstärke</b> · Licht: <b>Helligkeit</b> · Funk: <b>Sendeleistung / Reichweite</b></span>
-        </div>
-      </div>
+
       <div class="spek-help-tip">
-        💡 <b>Faustregel:</b> Die <b>Frequenz</b> sagt <i>welche Sorte</i> Welle (Funk, Licht, Röntgen),
-        die <b>Amplitude</b> sagt nur <i>wie laut/hell/stark</i> sie ist. Frequenz und Amplitude sind <b>unabhängig</b> voneinander.
+        <b>Beispiele aus der Sicherheitstechnik:</b><br>
+        📻 Funk-Melder mit <b>mehr Amplitude</b> = <b>höhere Reichweite</b><br>
+        📷 Kamera-LED mit <b>mehr Amplitude</b> = <b>weiter sehen bei Nacht</b><br>
+        🔔 Sirene mit <b>mehr Amplitude</b> = <b>lauter</b> (gleicher Ton)
       </div>`;
     root.appendChild(tunerCard);
     root.appendChild(help);
+
+    // Mini-Animationen für die Demo
+    setTimeout(() => {
+      const demo = help.querySelector('#spek-help-demo');
+      if (!demo) return;
+      // Wellen: leise vs laut
+      demo.querySelectorAll('canvas[data-amp]').forEach(cv => {
+        const ctx = cv.getContext('2d');
+        const amp = cv.dataset.amp === 'laut' ? 16 : 4;
+        const col = cv.dataset.amp === 'laut' ? '#fbbf24' : '#94a3c4';
+        let tt = Math.random() * 10;
+        function loop() {
+          if (!cv.isConnected) return;
+          tt += 0.06;
+          ctx.clearRect(0, 0, cv.width, cv.height);
+          ctx.strokeStyle = col; ctx.lineWidth = 2;
+          ctx.shadowColor = col; ctx.shadowBlur = cv.dataset.amp === 'laut' ? 8 : 2;
+          ctx.beginPath();
+          for (let x = 2; x <= cv.width - 2; x++) {
+            const y = cv.height / 2 - Math.sin(x * 0.32 - tt) * amp;
+            x === 2 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+          }
+          ctx.stroke();
+          ctx.shadowBlur = 0;
+          requestAnimationFrame(loop);
+        }
+        requestAnimationFrame(loop);
+      });
+      // Lampen: dim vs hell
+      demo.querySelectorAll('.spek-help-bulb').forEach(b => {
+        const big = b.dataset.bulb === 'bright';
+        b.style.background = big
+          ? 'radial-gradient(circle, #fde047 0%, #fbbf24 40%, transparent 75%)'
+          : 'radial-gradient(circle, #fde047cc 0%, #fbbf2455 30%, transparent 60%)';
+        b.style.width  = big ? '52px' : '52px';
+        b.style.height = big ? '52px' : '52px';
+        b.style.filter = big ? 'drop-shadow(0 0 16px #fbbf24)' : 'drop-shadow(0 0 4px #fbbf2466)';
+      });
+    }, 0);
 
     function updateTunerLabel() {
       // Map slider 0..10 → log frequency 1 Hz .. 10²² Hz
