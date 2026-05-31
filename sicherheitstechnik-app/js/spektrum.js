@@ -256,93 +256,218 @@ window.SPEK = (() => {
     const help = el('div', { class:'spek-tuner-help' });
     help.innerHTML = `
       <div class="spek-help-title">
-        <i class="fas fa-circle-question"></i> Was bedeutet Amplitude?
+        <i class="fas fa-bolt"></i> Was ist Amplitude? <span class="spek-help-pulse"></span>
       </div>
 
       <div class="spek-help-big">
-        Amplitude = <b>wie LAUT</b> oder <b>wie HELL</b> die Welle ist.<br>
-        Frequenz = <b>was</b> für eine Welle (Bass, Funk, Licht …).
+        Amplitude = <b>wie LAUT</b> · <b>wie HELL</b> · <b>wie WEIT</b><br>
+        <span class="spek-help-sub">Frequenz sagt <i>welche Sorte</i> Welle. Amplitude sagt <i>wie stark</i> sie ist.</span>
+      </div>
+
+      <div class="spek-help-ctrl">
+        <span class="spek-help-ctrl-l">🎚 Probier es: Amplitude</span>
+        <input type="range" id="spek-amp-master" min="5" max="100" value="35" class="spek-help-range">
+        <span class="spek-help-ctrl-v" id="spek-amp-val">35%</span>
       </div>
 
       <div class="spek-help-demo" id="spek-help-demo">
-        <div class="spek-help-card">
-          <div class="spek-help-card-h">🔊 <b>Wie laut?</b></div>
-          <div class="spek-help-card-row">
-            <span class="spek-help-card-l">Flüstern</span>
-            <canvas data-amp="leise"  width="160" height="44"></canvas>
-            <span class="spek-help-card-v">kleine Welle</span>
+        <div class="spek-help-card spek-help-card-sound">
+          <div class="spek-help-card-h">🔊 <b>Schall</b><span class="spek-help-card-sub">Sirene</span></div>
+          <div class="spek-help-vu">
+            <div class="spek-help-vu-bars" id="spek-vu"></div>
           </div>
-          <div class="spek-help-card-row">
-            <span class="spek-help-card-l">Brüllen</span>
-            <canvas data-amp="laut"   width="160" height="44"></canvas>
-            <span class="spek-help-card-v">große Welle</span>
+          <canvas id="spek-wave-snd" width="280" height="80"></canvas>
+          <div class="spek-help-meter">
+            <span>leise</span>
+            <div class="spek-help-meter-bar"><div class="spek-help-meter-fill" id="spek-meter-snd"></div></div>
+            <span>laut</span>
           </div>
-          <div class="spek-help-card-foot">Frequenz <b>gleich</b> (1000 Hz), nur die <b>Amplitude</b> ist anders.</div>
         </div>
 
-        <div class="spek-help-card">
-          <div class="spek-help-card-h">💡 <b>Wie hell?</b></div>
-          <div class="spek-help-card-row">
-            <span class="spek-help-card-l">Kerze</span>
-            <span class="spek-help-bulb" data-bulb="dim"></span>
-            <span class="spek-help-card-v">wenig Licht</span>
+        <div class="spek-help-card spek-help-card-light">
+          <div class="spek-help-card-h">💡 <b>Licht</b><span class="spek-help-card-sub">Kamera-LED</span></div>
+          <div class="spek-help-light-stage">
+            <div class="spek-help-rays" id="spek-rays"></div>
+            <div class="spek-help-lamp" id="spek-lamp">
+              <div class="spek-help-lamp-core"></div>
+              <div class="spek-help-lamp-glow"></div>
+            </div>
+            <div class="spek-help-sparkle-layer" id="spek-sparkle"></div>
           </div>
-          <div class="spek-help-card-row">
-            <span class="spek-help-card-l">Scheinwerfer</span>
-            <span class="spek-help-bulb" data-bulb="bright"></span>
-            <span class="spek-help-card-v">viel Licht</span>
+          <div class="spek-help-meter">
+            <span>Kerze</span>
+            <div class="spek-help-meter-bar"><div class="spek-help-meter-fill" id="spek-meter-light"></div></div>
+            <span>Scheinwerfer</span>
           </div>
-          <div class="spek-help-card-foot">Beide leuchten <b>gelb</b> (gleiche Frequenz), nur die <b>Amplitude</b> ist anders.</div>
+        </div>
+
+        <div class="spek-help-card spek-help-card-radio">
+          <div class="spek-help-card-h">📡 <b>Funk</b><span class="spek-help-card-sub">Reichweite</span></div>
+          <div class="spek-help-radio-stage">
+            <div class="spek-help-radio-ring" data-i="1"></div>
+            <div class="spek-help-radio-ring" data-i="2"></div>
+            <div class="spek-help-radio-ring" data-i="3"></div>
+            <div class="spek-help-radio-ring" data-i="4"></div>
+            <div class="spek-help-tower">📡</div>
+            <div class="spek-help-target" id="spek-target">🏠</div>
+            <div class="spek-help-target spek-help-target-far" id="spek-target-far">🏠</div>
+          </div>
+          <div class="spek-help-meter">
+            <span>50 m</span>
+            <div class="spek-help-meter-bar"><div class="spek-help-meter-fill" id="spek-meter-radio"></div></div>
+            <span>2 km</span>
+          </div>
         </div>
       </div>
 
       <div class="spek-help-tip">
-        <b>Beispiele aus der Sicherheitstechnik:</b><br>
-        📻 Funk-Melder mit <b>mehr Amplitude</b> = <b>höhere Reichweite</b><br>
-        📷 Kamera-LED mit <b>mehr Amplitude</b> = <b>weiter sehen bei Nacht</b><br>
-        🔔 Sirene mit <b>mehr Amplitude</b> = <b>lauter</b> (gleicher Ton)
+        <b>Merke:</b> Frequenz bleibt gleich. Nur die Welle wird größer/kleiner.<br>
+        🎯 Sicherheitstechnik: <b>Mehr Amplitude</b> = lauter, heller, weitere Reichweite — <b>aber auch mehr Strom & Akku-Verbrauch</b>.
       </div>`;
     root.appendChild(tunerCard);
     root.appendChild(help);
 
-    // Mini-Animationen für die Demo
+    // ============= LIVE-ANIMATION =============
     setTimeout(() => {
-      const demo = help.querySelector('#spek-help-demo');
-      if (!demo) return;
-      // Wellen: leise vs laut
-      demo.querySelectorAll('canvas[data-amp]').forEach(cv => {
-        const ctx = cv.getContext('2d');
-        const amp = cv.dataset.amp === 'laut' ? 16 : 4;
-        const col = cv.dataset.amp === 'laut' ? '#fbbf24' : '#94a3c4';
-        let tt = Math.random() * 10;
-        function loop() {
-          if (!cv.isConnected) return;
-          tt += 0.06;
-          ctx.clearRect(0, 0, cv.width, cv.height);
-          ctx.strokeStyle = col; ctx.lineWidth = 2;
-          ctx.shadowColor = col; ctx.shadowBlur = cv.dataset.amp === 'laut' ? 8 : 2;
-          ctx.beginPath();
-          for (let x = 2; x <= cv.width - 2; x++) {
-            const y = cv.height / 2 - Math.sin(x * 0.32 - tt) * amp;
-            x === 2 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-          }
-          ctx.stroke();
-          ctx.shadowBlur = 0;
-          requestAnimationFrame(loop);
+      const range = help.querySelector('#spek-amp-master');
+      const valEl = help.querySelector('#spek-amp-val');
+      const waveSnd = help.querySelector('#spek-wave-snd');
+      const ctxSnd  = waveSnd ? waveSnd.getContext('2d') : null;
+      const vu = help.querySelector('#spek-vu');
+      const lamp = help.querySelector('#spek-lamp');
+      const lampCore = lamp ? lamp.querySelector('.spek-help-lamp-core') : null;
+      const lampGlow = lamp ? lamp.querySelector('.spek-help-lamp-glow') : null;
+      const rays = help.querySelector('#spek-rays');
+      const sparkleLayer = help.querySelector('#spek-sparkle');
+      const target = help.querySelector('#spek-target');
+      const targetFar = help.querySelector('#spek-target-far');
+      const meterSnd  = help.querySelector('#spek-meter-snd');
+      const meterLight= help.querySelector('#spek-meter-light');
+      const meterRadio= help.querySelector('#spek-meter-radio');
+      const rings = Array.from(help.querySelectorAll('.spek-help-radio-ring'));
+
+      // VU-Bars
+      const N_BARS = 14;
+      if (vu) for (let i = 0; i < N_BARS; i++) {
+        const b = document.createElement('span');
+        b.className = 'spek-help-vu-bar';
+        vu.appendChild(b);
+      }
+      // Strahlen
+      if (rays) for (let i = 0; i < 12; i++) {
+        const r = document.createElement('span');
+        r.className = 'spek-help-ray';
+        r.style.transform = `rotate(${i * 30}deg)`;
+        rays.appendChild(r);
+      }
+
+      let amp = +range.value / 100; // 0..1
+      function setAmp(v) {
+        amp = v;
+        range.value = String(Math.round(v * 100));
+        valEl.textContent = Math.round(v * 100) + '%';
+        if (meterSnd)   meterSnd.style.width   = (10 + v * 90) + '%';
+        if (meterLight) meterLight.style.width = (10 + v * 90) + '%';
+        if (meterRadio) meterRadio.style.width = (10 + v * 90) + '%';
+        // Lampe
+        if (lampCore) {
+          const sz = 22 + v * 30;
+          lampCore.style.width = sz + 'px';
+          lampCore.style.height = sz + 'px';
+          lampCore.style.boxShadow = `0 0 ${10 + v * 50}px ${4 + v * 20}px rgba(253,224,71,${0.6 + v * 0.4})`;
         }
-        requestAnimationFrame(loop);
-      });
-      // Lampen: dim vs hell
-      demo.querySelectorAll('.spek-help-bulb').forEach(b => {
-        const big = b.dataset.bulb === 'bright';
-        b.style.background = big
-          ? 'radial-gradient(circle, #fde047 0%, #fbbf24 40%, transparent 75%)'
-          : 'radial-gradient(circle, #fde047cc 0%, #fbbf2455 30%, transparent 60%)';
-        b.style.width  = big ? '52px' : '52px';
-        b.style.height = big ? '52px' : '52px';
-        b.style.filter = big ? 'drop-shadow(0 0 16px #fbbf24)' : 'drop-shadow(0 0 4px #fbbf2466)';
-      });
-    }, 0);
+        if (lampGlow) {
+          const sz = 50 + v * 200;
+          lampGlow.style.width = sz + 'px';
+          lampGlow.style.height = sz + 'px';
+          lampGlow.style.opacity = String(0.15 + v * 0.7);
+        }
+        if (rays) rays.style.opacity = String(v);
+        // Funk-Ringe: Größe + Sichtbarkeit
+        rings.forEach((ring, i) => {
+          ring.style.opacity = String(Math.max(0, v * 1.3 - i * 0.18));
+        });
+        // Ziel weit entfernt taucht erst ab hoher Amplitude auf
+        if (targetFar) targetFar.style.opacity = String(Math.max(0, v - 0.45) / 0.55);
+        if (target) target.style.filter = `drop-shadow(0 0 ${4 + v * 16}px rgba(34,211,238,${0.5 + v * 0.5}))`;
+      }
+      setAmp(amp);
+      range.addEventListener('input', () => setAmp(+range.value / 100));
+
+      // Schall-Welle + VU-Bars animieren
+      let t = 0;
+      const vuBars = vu ? Array.from(vu.querySelectorAll('.spek-help-vu-bar')) : [];
+      function frame() {
+        if (!waveSnd || !waveSnd.isConnected) return;
+        t += 0.10;
+        // Welle zeichnen
+        const W = waveSnd.width, H = waveSnd.height;
+        ctxSnd.clearRect(0, 0, W, H);
+        const A = 4 + amp * (H / 2 - 6); // sichtbare Amplitude
+        // Glow-Pass
+        ctxSnd.save();
+        ctxSnd.lineWidth = 2 + amp * 2;
+        ctxSnd.shadowColor = '#fbbf24';
+        ctxSnd.shadowBlur = 8 + amp * 18;
+        ctxSnd.strokeStyle = `rgba(251,191,36,${0.6 + amp * 0.4})`;
+        ctxSnd.beginPath();
+        for (let x = 0; x <= W; x += 2) {
+          // Mehrere Sinusse für „reicher" Klang
+          const y = H / 2
+            - Math.sin(x * 0.06 - t) * A
+            - Math.sin(x * 0.13 - t * 1.7) * A * 0.35;
+          x === 0 ? ctxSnd.moveTo(x, y) : ctxSnd.lineTo(x, y);
+        }
+        ctxSnd.stroke();
+        ctxSnd.restore();
+        // Spiegelung blass
+        ctxSnd.save();
+        ctxSnd.globalAlpha = 0.18;
+        ctxSnd.strokeStyle = '#fbbf24'; ctxSnd.lineWidth = 1.5;
+        ctxSnd.beginPath();
+        for (let x = 0; x <= W; x += 4) {
+          const y = H / 2 - Math.sin(x * 0.06 - t) * A * 0.8;
+          x === 0 ? ctxSnd.moveTo(x, H - y) : ctxSnd.lineTo(x, H - y);
+        }
+        ctxSnd.stroke();
+        ctxSnd.restore();
+        // VU-Bars: jeder Bar reagiert mit Versatz
+        vuBars.forEach((b, i) => {
+          const local = Math.abs(Math.sin(t * 0.9 + i * 0.6));
+          const h = (8 + local * amp * 36);
+          b.style.height = h + 'px';
+          b.style.opacity = String(0.4 + amp * 0.6);
+        });
+        // Lamp-Flicker bei hoher Amplitude
+        if (lamp && amp > 0.6) {
+          const flick = 1 + Math.sin(t * 6) * 0.04 * amp;
+          lamp.style.transform = `translate(-50%,-50%) scale(${flick})`;
+        } else if (lamp) {
+          lamp.style.transform = 'translate(-50%,-50%) scale(1)';
+        }
+        // Sparkles spawnen bei hoher Helligkeit
+        if (sparkleLayer && Math.random() < amp * 0.4) {
+          const s = document.createElement('span');
+          s.className = 'spek-help-spark';
+          const angle = Math.random() * Math.PI * 2;
+          const dist  = 40 + Math.random() * 50;
+          s.style.left = '50%'; s.style.top = '50%';
+          s.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+          s.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
+          sparkleLayer.appendChild(s);
+          setTimeout(() => s.remove(), 900);
+        }
+        // Funk-Ringe pulsen
+        rings.forEach((ring, i) => {
+          const phase = (t * 0.25 + i * 0.25) % 1.0;
+          const scale = 0.2 + phase * (0.4 + amp * 1.4);
+          ring.style.transform = `translate(-50%, -50%) scale(${scale})`;
+          ring.style.borderWidth = (2 + amp * 3) + 'px';
+        });
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }, 30);
 
     function updateTunerLabel() {
       // Map slider 0..10 → log frequency 1 Hz .. 10²² Hz
