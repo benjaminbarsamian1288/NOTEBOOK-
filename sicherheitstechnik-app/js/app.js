@@ -4,6 +4,13 @@
 
   const ROUTES = {
     home: V.home,
+    'hub-welle':   () => HUBS.view('hub-welle'),
+    'hub-schutz':  () => HUBS.view('hub-schutz'),
+    'hub-technik': () => HUBS.view('hub-technik'),
+    'hub-recht':   () => HUBS.view('hub-recht'),
+    'hub-planen':  () => HUBS.view('hub-planen'),
+    'hub-erleben': () => HUBS.view('hub-erleben'),
+    megaspektrum:  () => MEGASPEKTRUM.view(),
     konzept: V.konzept,
     klassen: V.klassen,
     klassenlive: (d) => KLASSEN_LIVE.view(d),

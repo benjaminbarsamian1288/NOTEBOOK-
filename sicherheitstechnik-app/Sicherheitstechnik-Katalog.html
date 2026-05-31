@@ -12228,6 +12228,121 @@ img, svg, iframe, video {
 }
 
 </style>
+<style data-src="css/megaspektrum.css">
+/* Mega-Spektrum + Hub-System */
+
+/* ===== Mega-Spektrum ===== */
+.ms-wrap { display: flex; flex-direction: column; gap: 14px; }
+.ms-filter { display: flex; gap: 6px; flex-wrap: wrap; }
+.ms-chip {
+  cursor: pointer; font-size: 12.5px; font-weight: 700; padding: 6px 12px; border-radius: 999px;
+  background: var(--surface-2); color: var(--text); border: 1px solid var(--border);
+  display: inline-flex; align-items: center; gap: 7px; transition: all .15s;
+}
+.ms-chip:hover { border-color: #22d3ee; }
+.ms-chip.on { background: linear-gradient(120deg,#22d3ee,#38bdf8); color: #07101f; border-color: transparent; box-shadow: 0 4px 12px rgba(34,211,238,.4); }
+.ms-chip-dot { width: 9px; height: 9px; border-radius: 50%; }
+.ms-chip-preset { background: rgba(255,255,255,.03); }
+.ms-ctrl { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.ms-ctrl-l { font-size: 12.5px; color: var(--text-dim); font-weight: 700; margin-right: 4px; }
+.ms-ctrl-sep { width: 1px; height: 20px; background: var(--border); margin: 0 4px; }
+.ms-presets { display: flex; gap: 6px; flex-wrap: wrap; }
+.ms-btn {
+  cursor: pointer; padding: 8px 12px; border-radius: 10px; font-size: 13px; font-weight: 700;
+  background: var(--surface-2); color: var(--text); border: 1px solid var(--border);
+  display: inline-flex; align-items: center; gap: 6px; transition: all .15s;
+}
+.ms-btn:hover { border-color: #22d3ee; box-shadow: 0 0 0 3px rgba(34,211,238,.18); }
+.ms-stage {
+  background: linear-gradient(160deg, #0b1424, #060a13);
+  border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0,0,0,.32);
+}
+.ms-canvas { display: block; width: 100%; height: 320px; cursor: grab; touch-action: none; }
+.ms-canvas:active { cursor: grabbing; }
+.ms-detail {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+  padding: 14px; min-height: 80px;
+}
+.ms-detail-empty { color: var(--text-dim); font-size: 13px; text-align: center; padding: 18px; }
+.ms-detail-empty i { margin-right: 8px; color: #22d3ee; font-size: 16px; }
+.ms-card { display: flex; flex-direction: column; gap: 10px; }
+.ms-card-head { display: flex; align-items: center; gap: 12px; }
+.ms-card-ico {
+  width: 46px; height: 46px; flex: 0 0 46px; border-radius: 12px;
+  display: grid; place-items: center; font-size: 20px; color: #07101f;
+  background: var(--lv, #22d3ee); box-shadow: 0 6px 16px color-mix(in srgb, var(--lv) 50%, transparent);
+}
+.ms-card-cat { font-size: 11px; font-weight: 800; color: var(--lv); text-transform: uppercase; letter-spacing: .5px; }
+.ms-card-head h3 { margin: 0; font-size: 17px; }
+.ms-card-stats { display: flex; gap: 8px; flex-wrap: wrap; }
+.ms-card-stat { display: flex; flex-direction: column; gap: 2px; padding: 7px 12px; background: var(--surface-2); border: 1px solid var(--border); border-left: 3px solid var(--lv); border-radius: 9px; min-width: 110px; }
+.ms-card-stat span { font-size: 10.5px; color: var(--text-mute); text-transform: uppercase; letter-spacing: .3px; font-weight: 700; }
+.ms-card-stat strong { font-size: 14px; font-variant-numeric: tabular-nums; }
+.ms-card-desc { margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--text); }
+.ms-card-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.ms-legend { padding: 12px 14px; border-radius: 12px; background: rgba(34,211,238,.06); border: 1px solid rgba(34,211,238,.22); }
+.ms-legend h3 { margin: 0 0 8px; font-size: 14px; }
+.ms-legend h3 i { color: #22d3ee; margin-right: 6px; }
+.ms-legend-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 6px; font-size: 12px; }
+.ms-legend-item { display: flex; align-items: center; gap: 8px; padding: 4px 0; }
+.ms-legend-bar { width: 16px; height: 12px; border-radius: 3px; flex: 0 0 16px; }
+.ms-legend-item strong { font-size: 12.5px; }
+.ms-legend-r { color: var(--text-dim); font-family: monospace; font-size: 11px; margin-left: auto; }
+
+@media (max-width: 700px) {
+  .ms-canvas { height: 380px; }
+}
+
+/* ===== Hub-System ===== */
+.hub-wrap { display: flex; flex-direction: column; gap: 18px; }
+.hub-hero {
+  display: flex; align-items: center; gap: 16px; padding: 18px 20px; border-radius: 16px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--a) 22%, var(--surface)) 0%, var(--surface) 70%);
+  border: 1px solid color-mix(in srgb, var(--a) 35%, var(--border));
+  border-left: 5px solid var(--a);
+}
+.hub-hero-ic {
+  width: 70px; height: 70px; flex: 0 0 70px; border-radius: 16px;
+  display: grid; place-items: center; font-size: 30px; color: #07101f;
+  background: var(--a, var(--accent)); box-shadow: 0 10px 30px color-mix(in srgb, var(--a) 50%, transparent);
+}
+.hub-hero h1 { margin: 0; font-size: clamp(22px, 3vw, 30px); }
+.hub-hero p { margin: 4px 0 0; color: var(--text-dim); font-size: 14px; line-height: 1.5; }
+.hub-section-label {
+  font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .8px;
+  color: var(--a); margin: 8px 2px 2px;
+}
+.hub-grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.hub-tile {
+  position: relative; overflow: hidden; cursor: pointer; text-align: left;
+  display: flex; align-items: center; gap: 12px; padding: 14px;
+  background: var(--surface); color: var(--text);
+  border: 1px solid var(--border); border-radius: 14px; border-left: 4px solid var(--c, var(--a));
+  transition: transform .15s, box-shadow .15s, border-color .15s;
+}
+.hub-tile::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(120% 90% at 110% -10%, color-mix(in srgb, var(--c) 22%, transparent), transparent 55%);
+}
+.hub-tile:hover { transform: translateY(-3px); box-shadow: 0 14px 32px rgba(0,0,0,.28); border-color: var(--c); }
+.hub-tile-ic {
+  width: 42px; height: 42px; flex: 0 0 42px; border-radius: 12px; display: grid; place-items: center;
+  font-size: 18px; color: #07101f; background: var(--c, var(--a));
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--c) 50%, transparent); z-index: 1;
+}
+.hub-tile-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; z-index: 1; }
+.hub-tile-body strong { font-size: 14.5px; }
+.hub-tile-body span { font-size: 12px; color: var(--text-dim); line-height: 1.35; }
+.hub-tile-go { color: var(--c); font-size: 14px; z-index: 1; transition: transform .15s; }
+.hub-tile:hover .hub-tile-go { transform: translateX(4px); }
+.hub-tile-tag {
+  font-size: 9.5px; font-weight: 800; padding: 2px 6px; border-radius: 5px;
+  background: color-mix(in srgb, var(--c) 25%, transparent); color: var(--c);
+  text-transform: uppercase; letter-spacing: .4px;
+}
+
+</style>
 <style data-src="css/modern-refresh.css">
 /* ====================================================================
    MODERN REFRESH 2026 — letzte CSS-Datei, überschreibt das Basis-Design.
@@ -13117,55 +13232,22 @@ button, .navitem, .chip, .qa-tile, .ency-card, .zone-card, .kfg-card, .bigstat {
   <nav class="navlist">
     <button class="global-search-trigger" id="gs-trigger"><i class="fas fa-search"></i> <span>Suche · alles…</span><kbd>Ctrl K</kbd></button>
 
-    <div class="nav-group-label">1 · Start &amp; Verstehen</div>
-    <button class="navitem active" data-view="home"><i class="fas fa-house"></i><span>Übersicht</span></button>
-    <button class="navitem nav-pri" data-view="physik"><i class="fas fa-atom"></i><span><strong>Physik Live</strong></span><em>29</em></button>
-    <button class="navitem nav-pri" data-view="videotechnik"><i class="fas fa-video"></i><span><strong>Videotechnik · Detail</strong></span><em>NEU</em></button>
-    <button class="navitem nav-pri" data-view="daten"><i class="fas fa-ethernet"></i><span><strong>Datenübertragung</strong></span><em>NEU</em></button>
-    <button class="navitem nav-pri" data-view="wellen"><i class="fas fa-satellite-dish"></i><span><strong>Wellen &amp; Signale</strong></span><em>NEU</em></button>
-    <button class="navitem nav-pri" data-view="sensoren"><i class="fas fa-mobile-screen-button"></i><span><strong>Handy als Sensor</strong></span><em>NEU</em></button>
-    <button class="navitem nav-pri" data-view="masterency"><i class="fas fa-book-open-reader"></i><span><strong>Komplett-Katalog</strong></span><em>142</em></button>
-    <button class="navitem nav-pri" data-view="gesetze"><i class="fas fa-gavel"></i><span><strong>Gesetze · §§</strong></span><em>12</em></button>
+    <button class="navitem active" data-view="home"><i class="fas fa-house"></i><span><strong>Übersicht</strong></span></button>
 
-    <div class="nav-group-label">2 · Planen &amp; Berechnen</div>
-    <button class="navitem nav-pri" data-view="plan"><i class="fas fa-pen-ruler"></i><span><strong>Plan zeichnen (Stift)</strong></span><em>NEU</em></button>
-    <button class="navitem nav-tool" data-view="sandbox"><i class="fas fa-vector-square"></i><span>Objekt-Planer (Sandbox)</span></button>
-    <button class="navitem nav-tool" data-view="wizard"><i class="fas fa-wand-magic-sparkles"></i><span>Sicherheits-Assistent</span></button>
-    <button class="navitem nav-tool" data-view="konfigurator"><i class="fas fa-sliders"></i><span>Konfigurator</span></button>
-    <button class="navitem nav-tool" data-view="lab"><i class="fas fa-flask"></i><span>Engineering-Lab</span><em>12</em></button>
-    <button class="navitem nav-tool" data-view="fp"><i class="fas fa-vector-square"></i><span>Plan-Designer</span></button>
-    <button class="navitem nav-tool" data-view="calculators"><i class="fas fa-calculator"></i><span>Calculator-Suite</span></button>
+    <div class="nav-group-label">Themen-Hubs</div>
+    <button class="navitem nav-pri" data-view="hub-welle"><i class="fas fa-satellite-dish"></i><span><strong>📡 Wellen &amp; Signale</strong></span></button>
+    <button class="navitem nav-pri" data-view="hub-schutz"><i class="fas fa-shield-halved"></i><span><strong>🛡 Klassen &amp; Schutz</strong></span></button>
+    <button class="navitem nav-pri" data-view="hub-technik"><i class="fas fa-microchip"></i><span><strong>🛠 Technik &amp; Geräte</strong></span></button>
+    <button class="navitem nav-pri" data-view="hub-recht"><i class="fas fa-gavel"></i><span><strong>⚖️ Recht &amp; Lernen</strong></span></button>
+    <button class="navitem nav-pri" data-view="hub-planen"><i class="fas fa-pen-ruler"></i><span><strong>📐 Planen &amp; Berechnen</strong></span></button>
+    <button class="navitem nav-pri" data-view="hub-erleben"><i class="fas fa-gamepad"></i><span><strong>🎬 Erleben &amp; Spielen</strong></span></button>
 
-    <div class="nav-group-label">3 · Ansehen in 3D</div>
-    <button class="navitem nav-pri" data-view="game3d"><i class="fas fa-gamepad"></i><span><strong>Einbruch-Spiel 3D</strong></span><em>NEU</em></button>
-    <button class="navitem nav-pri" data-view="begehung"><i class="fas fa-person-walking"></i><span><strong>3D-Begehung (Ego)</strong></span><em>NEU</em></button>
-    <button class="navitem" data-view="haus3d"><i class="fas fa-house-chimney"></i><span>Sicherheits-Haus 3D</span></button>
-    <button class="navitem" data-view="zwiebel3d"><i class="fas fa-circle-dot"></i><span>3D-Zwiebelmodell</span></button>
-    <button class="navitem" data-view="spektrum"><i class="fas fa-wave-square"></i><span>Frequenz-Spektrum</span></button>
-    <button class="navitem nav-pri" data-view="freqtab"><i class="fas fa-table-list"></i><span><strong>Frequenzen &amp; Datenraten</strong></span><em>NEU</em></button>
-    <button class="navitem nav-pri" data-view="werk"><i class="fas fa-industry"></i><span><strong>Sicherheits-Werk</strong></span><em>NEU</em></button>
-
-    <div class="nav-group-label">4 · Technik &amp; Geräte</div>
-    <button class="navitem" data-view="ema"><i class="fas fa-broadcast-tower"></i><span>EMA · ZKA · NSL</span></button>
-    <button class="navitem nav-pri" data-view="klassenlive"><i class="fas fa-medal"></i><span><strong>SÜ · Grade · RC · Live</strong></span><em>NEU</em></button>
-    <button class="navitem" data-view="klassen"><i class="fas fa-medal"></i><span>SÜ · Grade · RC (klassisch)</span></button>
-    <button class="navitem nav-wwd" data-view="wwd"><i class="fas fa-tower-cell"></i><span>WWD Video-Türme</span></button>
-    <button class="navitem nav-pri" data-view="wwdtech"><i class="fas fa-tower-cell"></i><span><strong>WWD-Türme · Technik</strong></span><em>NEU</em></button>
-
-    <div class="nav-group-label">5 · Bilder &amp; Lernen</div>
-    <button class="navitem nav-pri" data-view="praesentation"><i class="fas fa-person-chalkboard"></i><span><strong>Präsentation · Slideshow</strong></span><em>NEU</em></button>
-    <button class="navitem nav-pri" data-view="notebook"><i class="fas fa-bookmark"></i><span><strong>Mein Notizbuch</strong></span><em>NEU</em></button>
-    <button class="navitem" data-view="galerie"><i class="fas fa-images"></i><span>Produkt-Galerie</span></button>
-    <button class="navitem" data-view="mediathek"><i class="fas fa-photo-film"></i><span>Mediathek</span></button>
-    <button class="navitem nav-pri" data-view="pruefung"><i class="fas fa-graduation-cap"></i><span><strong>Sachkunde §34a Training</strong></span><em>NEU</em></button>
-    <button class="navitem" data-view="quiz"><i class="fas fa-graduation-cap"></i><span>Quiz · Lernmodus</span></button>
-    <button class="navitem" data-view="glossar"><i class="fas fa-book"></i><span>Glossar</span></button>
-
-    <div class="nav-group-label">6 · Verwaltung</div>
-    <button class="navitem" data-view="preisliste"><i class="fas fa-euro-sign"></i><span>Preisliste</span></button>
-    <button class="navitem" data-view="projects"><i class="fas fa-folder"></i><span>Meine Projekte</span></button>
-    <button class="navitem" data-view="diagramme"><i class="fas fa-chart-column"></i><span>Diagramme</span></button>
-    <button class="navitem" data-view="dokumente"><i class="fas fa-folder-open"></i><span>Dokumente · Normen</span></button>
+    <div class="nav-group-label">Direkter Zugriff</div>
+    <button class="navitem" data-view="praesentation"><i class="fas fa-person-chalkboard"></i><span>Tagesplan · Slideshow</span></button>
+    <button class="navitem" data-view="notebook"><i class="fas fa-bookmark"></i><span>Mein Notizbuch</span></button>
+    <button class="navitem" data-view="gesetze"><i class="fas fa-gavel"></i><span>Gesetze · §§</span></button>
+    <button class="navitem" data-view="megaspektrum"><i class="fas fa-chart-line"></i><span>Mega-Spektrum</span></button>
+    <button class="navitem" data-view="klassenlive"><i class="fas fa-medal"></i><span>SÜ · Grade · RC Live</span></button>
   </nav>
   <div class="sidebar-foot">
     <div class="meta">
@@ -45722,6 +45804,633 @@ window.KLASSEN_LIVE = (() => {
 })();
 
 </script>
+<script data-src="js/megaspektrum.js">
+/* Mega-Spektrum: horizontaler logarithmischer Zeitstrahl von 1 Hz bis 1 ZHz
+   mit Pan/Zoom (Maus, Touch, Buttons), 60+ Sicherheitstechnik-Markern,
+   farbcodierten Bändern und Detail-Drawer pro Marker.
+   window.MEGASPEKTRUM.view(). */
+window.MEGASPEKTRUM = (() => {
+  const { el } = U;
+
+  /* ---------- Bänder (in Hz) ---------- */
+  const BANDS = [
+    { f0: 1,     f1: 20,    name: 'Infraschall',  col: '#475569' },
+    { f0: 20,    f1: 20e3,  name: 'Hörschall',    col: '#22c55e' },
+    { f0: 20e3,  f1: 300e3, name: 'Ultraschall',  col: '#84cc16' },
+    { f0: 300e3, f1: 3e6,   name: 'Langwelle (LF/MF)', col: '#a3e635' },
+    { f0: 3e6,   f1: 30e6,  name: 'Kurzwelle (HF)',col: '#facc15' },
+    { f0: 30e6,  f1: 300e6, name: 'UKW (VHF)',    col: '#f59e0b' },
+    { f0: 300e6, f1: 3e9,   name: 'UHF · Funk',   col: '#f97316' },
+    { f0: 3e9,   f1: 30e9,  name: 'SHF · Mikrowelle', col: '#ef4444' },
+    { f0: 30e9,  f1: 300e9, name: 'EHF · Millimeterwelle', col: '#dc2626' },
+    { f0: 300e9, f1: 4e14,  name: 'Infrarot',     col: '#a855f7' },
+    { f0: 4e14,  f1: 8e14,  name: 'Sichtbares Licht', col: '#22d3ee' },
+    { f0: 8e14,  f1: 3e16,  name: 'UV',           col: '#7c3aed' },
+    { f0: 3e16,  f1: 3e19,  name: 'Röntgen',      col: '#6366f1' },
+    { f0: 3e19,  f1: 1e21,  name: 'Gamma',        col: '#1e293b' },
+  ];
+
+  /* ---------- Marker (Sicherheitstechnik-Fokus) ---------- */
+  // kind: 'sec' (Sicherheitstechnik), 'gen' (allgemein), 'ref' (Referenz wie Steckdose/Musik)
+  const MARKERS = [
+    // Infra-/Hörschall
+    { f: 0.1,      name: 'Erdbeben',                    kind: 'gen', icon: 'fa-house-crack', desc: 'Erdbeben-Wellen, sehr tief. Werden im Sicherheitsbereich z.B. von Tresor-Seismometern erkannt (Aufbruchschutz).', cat: 'Andere' },
+    { f: 50,       name: 'Stromnetz (50 Hz)',           kind: 'ref', icon: 'fa-plug', desc: 'Brummen aus dem Stromnetz. Wichtig als Störfrequenz für Mikrofone (Brumm-Schleifen) und EMV.', cat: 'Andere' },
+    { f: 440,      name: 'Kammerton A',                 kind: 'ref', icon: 'fa-music', desc: 'Mitten im hörbaren Bereich – Referenz für Musik.', cat: 'Andere' },
+    { f: 1000,     name: 'Sirenen-Pfeifton',            kind: 'sec', icon: 'fa-bell', desc: 'Innensirenen einer EMA arbeiten typisch bei 1–4 kHz – maximal lästig für den Täter.', cat: 'Alarmierung' },
+    { f: 3000,     name: 'Telefon-Stimme',              kind: 'ref', icon: 'fa-phone', desc: 'Verständliche Sprache braucht 300 Hz – 3,4 kHz.', cat: 'Andere' },
+    // Ultraschall
+    { f: 25e3,     name: 'Glasbruchmelder Ultraschall', kind: 'sec', icon: 'fa-window-maximize', desc: 'Aktive Glasbruchmelder senden Ultraschall (~25 kHz) und horchen, wie er reflektiert wird. Beim Bruch ändert sich das Echo.', cat: 'Melder' },
+    { f: 40e3,     name: 'Ultraschall-Bewegungsmelder', kind: 'sec', icon: 'fa-wave-square', desc: 'Aktive Bewegungsmelder senden Ultraschall (~40 kHz) und werten Doppler-Verschiebungen aus. Heute eher selten – wird durch PIR/MW ersetzt.', cat: 'Melder' },
+    // LF/MF
+    { f: 125e3,    name: 'RFID 125 kHz',                kind: 'sec', icon: 'fa-id-card', desc: 'LF-RFID für Zutrittskontrolle (alte Mitarbeiter-Karten, Tiermarken). Reichweite nur wenige cm.', cat: 'Zutritt' },
+    { f: 13.56e6,  name: 'NFC / RFID 13,56 MHz',        kind: 'sec', icon: 'fa-id-card', desc: 'NFC für Zutrittskarten (MIFARE), Smartphone-Bezahlen, Türschlösser. Reichweite ~10 cm.', cat: 'Zutritt' },
+    { f: 27e6,     name: 'CB-Funk',                     kind: 'gen', icon: 'fa-truck', desc: 'Citizen Band Funk – Hobby/LKW.', cat: 'Andere' },
+    // HF/VHF
+    { f: 77.5e3,   name: 'DCF77 Funkuhr',               kind: 'gen', icon: 'fa-clock', desc: 'Atomuhr-Zeitsignal aus Mainflingen. Synchronisiert auch viele Sicherheitssysteme.', cat: 'Andere' },
+    { f: 100e6,    name: 'UKW-Radio',                   kind: 'ref', icon: 'fa-radio', desc: 'Klassisches FM-Radio.', cat: 'Andere' },
+    { f: 161e6,    name: 'BOS-Analog (alt)',            kind: 'sec', icon: 'fa-truck-medical', desc: 'Früherer Polizei-/Feuerwehrfunk im 4m-Band – heute durch TETRA ersetzt.', cat: 'Funk' },
+    { f: 174e6,    name: 'DAB+ Digital-Radio',          kind: 'ref', icon: 'fa-tower-broadcast', desc: 'Digitales Radio.', cat: 'Andere' },
+    // UHF
+    { f: 380e6,    name: 'TETRA · BOS-Digitalfunk',     kind: 'sec', icon: 'fa-shield-halved', desc: 'Polizei, Feuerwehr, Rettung – verschlüsselter Digitalfunk. Auch Sicherheitsdienst-Leitstellen.', cat: 'Funk' },
+    { f: 433.92e6, name: 'ISM 433 MHz – Funk-Melder',   kind: 'sec', icon: 'fa-bell', desc: 'EMA-Funkmelder, Handsender, Garagentor, Wetterstation. Beliebt aber stör-anfällig. Hauptband: 433,05–434,79 MHz.', cat: 'Melder', hot: true },
+    { f: 700e6,    name: 'Mobilfunk LTE Band 28',       kind: 'sec', icon: 'fa-mobile-screen', desc: '4G LTE – auch Alarmübertragung über GSM/LTE-Module.', cat: 'Übertragung' },
+    { f: 800e6,    name: 'DVB-T2 Antennen-TV',          kind: 'ref', icon: 'fa-tv', desc: 'Digitales Antennen-Fernsehen.', cat: 'Andere' },
+    { f: 868e6,    name: 'ISM 868 MHz – EMA-Funk',      kind: 'sec', icon: 'fa-bell', desc: 'Premium-Funkmelder (besser als 433 MHz), KNX-RF, LoRaWAN, Smart-Home-Sicherheit. Robuste 2-Wege-Kommunikation, AES-Verschlüsselung.', cat: 'Melder', hot: true },
+    { f: 900e6,    name: 'GSM 900 · Handy 2G',          kind: 'sec', icon: 'fa-mobile-screen', desc: 'Alarmübertragung per SIM-Karte. Backup-Weg falls IP ausfällt.', cat: 'Übertragung' },
+    { f: 1.575e9,  name: 'GPS L1',                      kind: 'sec', icon: 'fa-location-crosshairs', desc: 'GPS für Geo-Tracking von Werttransporten, Streifen-Fahrzeugen.', cat: 'Andere' },
+    { f: 1.8e9,    name: 'GSM 1800 / DECT',             kind: 'sec', icon: 'fa-phone-volume', desc: 'GSM 1800: Handy 2G. DECT (1880–1900 MHz): schnurloses Telefon, auch DECT-Funkmelder.', cat: 'Funk' },
+    { f: 2.4e9,    name: 'WLAN / Bluetooth / ZigBee',   kind: 'sec', icon: 'fa-wifi', desc: 'WLAN 2,4 GHz · Bluetooth · ZigBee (Smart-Home-Sensoren) · Mikrowellen-Ofen (Störquelle!). Auch viele IP-Kameras.', cat: 'Übertragung', hot: true },
+    { f: 5.2e9,    name: 'WLAN 5 GHz · Wi-Fi 5/6',      kind: 'sec', icon: 'fa-wifi', desc: 'Schnelleres, weniger gestörtes WLAN für 4K-IP-Kameras und Highspeed-Daten.', cat: 'Übertragung' },
+    // Mikrowelle (SHF)
+    { f: 5.8e9,    name: 'ISM 5,8 GHz · Drohnen-Steuerung', kind: 'sec', icon: 'fa-helicopter', desc: 'Drohnen-Video-Link, WLAN-Brücken, einige Mikrowellen-Lichtschranken.', cat: 'Übertragung' },
+    { f: 10.525e9, name: 'MW-Bewegungsmelder 10 GHz',   kind: 'sec', icon: 'fa-satellite-dish', desc: 'Klassischer Mikrowellen-Bewegungsmelder (Innen + Außen). Sendet kurze Pulse, misst Doppler-Frequenzverschiebung – sieht durch Glas und Trockenbau.', cat: 'Melder', hot: true },
+    { f: 24.125e9, name: 'MW-Melder 24 GHz · K-Band-Radar', kind: 'sec', icon: 'fa-gauge-high', desc: 'Premium Mikrowellen-Bewegungsmelder · Verkehrs-Radar der Polizei · Perimeterradar.', cat: 'Melder', hot: true },
+    { f: 28e9,     name: '5G mmWave',                   kind: 'gen', icon: 'fa-tower-cell', desc: '5G Millimeterwelle – sehr hohe Datenraten, kurze Reichweite.', cat: 'Übertragung' },
+    { f: 77e9,     name: 'Auto-Radar 77 GHz',           kind: 'gen', icon: 'fa-car', desc: 'Adaptiver Tempomat, Notbrems-Assistent.', cat: 'Andere' },
+    { f: 122e9,    name: 'Perimeter-Radar 122 GHz',     kind: 'sec', icon: 'fa-radar', desc: 'Hochauflösendes Außenhaut-/Perimeterradar (Industrie, Flughafen).', cat: 'Melder' },
+    // Terahertz / IR
+    { f: 300e9,    name: 'Body-Scanner Terahertz',      kind: 'sec', icon: 'fa-person', desc: 'Sicherheits-Body-Scanner am Flughafen (300 GHz – 3 THz). Erkennt Gegenstände unter Kleidung ohne ionisierende Strahlung.', cat: 'Scanner' },
+    { f: 3e12,     name: 'Wärmebildkamera (LWIR)',      kind: 'sec', icon: 'fa-temperature-high', desc: 'Langwelliges Infrarot 8–14 µm (~30 THz). Sieht Wärme = Menschen in Dunkelheit, Nebel, Rauch. Perimeter, Brandschutz, Polizei.', cat: 'Kamera', hot: true },
+    { f: 30e12,    name: 'PIR-Bewegungsmelder (10 µm)', kind: 'sec', icon: 'fa-person-walking', desc: 'Mensch strahlt bei ~10 µm Wellenlänge (~30 THz) – das nutzt der PIR (Passiv-Infrarot)-Melder. Häufigster Innenmelder weltweit.', cat: 'Melder', hot: true },
+    { f: 90e12,    name: 'IR-Lichtschranke · Fernbedienung', kind: 'sec', icon: 'fa-arrow-up-from-bracket', desc: 'Nahes Infrarot 850–950 nm. IR-Lichtschranken (aktiver Melder), Fernbedienungen, Nachtsicht-Kameras (IR-LEDs).', cat: 'Melder', hot: true },
+    // Sichtbares Licht
+    { f: 384e12,   name: 'Rotes Licht (780 nm)',        kind: 'gen', icon: 'fa-circle', desc: 'Untere Grenze des sichtbaren Lichts.', cat: 'Andere' },
+    { f: 484e12,   name: 'Gelbes Licht (620 nm)',       kind: 'gen', icon: 'fa-circle', desc: 'Natrium-Dampf-Lampen, Bernstein-Warnleuchten.', cat: 'Andere' },
+    { f: 540e12,   name: 'Grünes Licht (555 nm)',       kind: 'gen', icon: 'fa-circle', desc: 'Empfindlichstes für das menschliche Auge – darum „Tag-Sehen-Maximum".', cat: 'Andere' },
+    { f: 600e12,   name: 'Blaues Licht (500 nm)',       kind: 'gen', icon: 'fa-circle', desc: 'Blaue LEDs, Datenträger-Lese-Laser.', cat: 'Andere' },
+    { f: 750e12,   name: 'Violettes Licht (400 nm)',    kind: 'gen', icon: 'fa-circle', desc: 'Obere Grenze des sichtbaren Lichts.', cat: 'Andere' },
+    { f: 600e12,   name: 'Tag-Kamera CMOS-Sensor',      kind: 'sec', icon: 'fa-video', desc: 'Normale Überwachungskameras sehen im sichtbaren Spektrum. Spezielle Day/Night-Cams schalten nachts auf NIR-LED um.', cat: 'Kamera' },
+    // UV
+    { f: 1e15,     name: 'UV-A · Schwarzlicht',         kind: 'sec', icon: 'fa-sun', desc: 'Geldscheine prüfen, Sicherheits-Markierungen, Forensik (Spuren).', cat: 'Scanner' },
+    { f: 1.18e15,  name: 'UV-C · Desinfektion (254 nm)',kind: 'gen', icon: 'fa-virus-slash', desc: 'Wasser-Sterilisation, OP-Saal-Desinfektion.', cat: 'Andere' },
+    { f: 1.5e15,   name: 'UV-Flammenmelder (200 nm)',   kind: 'sec', icon: 'fa-fire', desc: 'Solarblinder UV-Flammenmelder. Erkennt Flammen sehr schnell (<1 s), filtert Sonnenlicht raus.', cat: 'Melder', hot: true },
+    // Röntgen / Gamma
+    { f: 1e17,     name: 'Zahn-Röntgen (10 keV)',       kind: 'gen', icon: 'fa-tooth', desc: 'Medizinisches Röntgen mit relativ niedriger Energie.', cat: 'Andere' },
+    { f: 1e18,     name: 'Gepäck-Scanner Flughafen',    kind: 'sec', icon: 'fa-suitcase', desc: 'Dual-Energy-Röntgen: durchleuchtet Koffer, zeigt Metalle/Kunststoffe in unterschiedlichen Farben (organisch=orange, Metall=blau).', cat: 'Scanner', hot: true },
+    { f: 5e18,     name: 'Container-Scanner',           kind: 'sec', icon: 'fa-truck', desc: 'Hochenergie-Röntgen für ganze LKW/Container am Zoll – mehrere MeV.', cat: 'Scanner' },
+    { f: 1e20,     name: 'Gamma · Radioaktive Strahlung',kind: 'sec', icon: 'fa-radiation', desc: 'Detektion in Tresor-Räumen, Atomkraftwerken, Grenz-Kontrolle. Geiger-Zähler.', cat: 'Scanner' },
+  ];
+
+  const C = 299792458;
+  function fmtHz(f) {
+    if (f >= 1e21) return (f / 1e21).toFixed(0) + ' ZHz';
+    if (f >= 1e18) return (f / 1e18).toFixed(f >= 1e19 ? 0 : 1) + ' EHz';
+    if (f >= 1e15) return (f / 1e15).toFixed(f >= 1e16 ? 0 : 1) + ' PHz';
+    if (f >= 1e12) return (f / 1e12).toFixed(f >= 1e13 ? 0 : 1) + ' THz';
+    if (f >= 1e9)  return (f / 1e9).toFixed(f >= 1e10 ? 0 : 1) + ' GHz';
+    if (f >= 1e6)  return (f / 1e6).toFixed(f >= 1e7 ? 0 : 1) + ' MHz';
+    if (f >= 1e3)  return (f / 1e3).toFixed(f >= 1e4 ? 0 : 1) + ' kHz';
+    if (f >= 1)    return f.toFixed(f >= 10 ? 0 : 1) + ' Hz';
+    return f.toExponential(1) + ' Hz';
+  }
+  function fmtLambda(m) {
+    if (m >= 1000)   return (m / 1000).toFixed(m >= 1e4 ? 0 : 1) + ' km';
+    if (m >= 1)      return m.toFixed(m >= 10 ? 0 : 2) + ' m';
+    if (m >= 1e-3)   return (m * 1e3).toFixed(m >= 1e-2 ? 0 : 1) + ' mm';
+    if (m >= 1e-6)   return (m * 1e6).toFixed(m >= 1e-5 ? 0 : 1) + ' µm';
+    if (m >= 1e-9)   return (m * 1e9).toFixed(m >= 1e-8 ? 0 : 1) + ' nm';
+    if (m >= 1e-12)  return (m * 1e12).toFixed(0) + ' pm';
+    return m.toExponential(1) + ' m';
+  }
+
+  const CAT_COLOR = { Melder: '#22d3ee', Funk: '#fbbf24', 'Übertragung': '#a855f7', Zutritt: '#22c55e', Kamera: '#ef4444', Scanner: '#f97316', Andere: '#64748b' };
+
+  function view() {
+    const root = el('div', { class: 'ms-wrap' });
+    root.appendChild(el('div', { class: 'view-head' }, [
+      el('span', { class: 'crumb', text: 'Verstehen · Spektrum' }),
+      el('h1', { text: '📡 Spektrum-Karte · 1 Hz bis Gamma' }),
+      el('p', { text: 'Zoom & wisch wie auf einer Landkarte. Tipp einen Marker für die Erklärung. Sicherheitstechnik-Marker (PIR, MW, WLAN, IR-Lichtschranke …) leuchten farbig.' }),
+    ]));
+
+    // --- Kategorie-Filter ---
+    const cats = ['Alle', 'Melder', 'Funk', 'Übertragung', 'Zutritt', 'Kamera', 'Scanner', 'Andere'];
+    let activeCat = 'Alle';
+    const filt = el('div', { class: 'ms-filter' });
+    cats.forEach(c => {
+      const b = el('button', { class: 'ms-chip' + (c === activeCat ? ' on' : ''), type: 'button' });
+      const col = c === 'Alle' ? '#22d3ee' : CAT_COLOR[c];
+      b.innerHTML = `<span class="ms-chip-dot" style="background:${col}"></span>${c}`;
+      b.addEventListener('click', () => {
+        activeCat = c;
+        filt.querySelectorAll('.ms-chip').forEach((x, i) => x.classList.toggle('on', cats[i] === c));
+        draw();
+      });
+      filt.appendChild(b);
+    });
+    root.appendChild(filt);
+
+    // --- Zoom-Steuerung ---
+    const ctrl = el('div', { class: 'ms-ctrl' });
+    const btnIn = el('button', { class: 'ms-btn', html: '<i class="fas fa-plus"></i> Zoom in' });
+    const btnOut = el('button', { class: 'ms-btn', html: '<i class="fas fa-minus"></i> Zoom out' });
+    const btnReset = el('button', { class: 'ms-btn', html: '<i class="fas fa-expand"></i> Alles zeigen' });
+    const presets = el('div', { class: 'ms-presets' });
+    [
+      { l: 'Ultraschall',   f0: 15e3,  f1: 100e3 },
+      { l: 'Funk-Melder',   f0: 300e6, f1: 1e9 },
+      { l: 'WLAN/MW',       f0: 1e9,   f1: 30e9 },
+      { l: 'PIR-Bereich',   f0: 10e12, f1: 100e12 },
+      { l: 'Licht',         f0: 350e12, f1: 800e12 },
+      { l: 'Röntgen',       f0: 3e16,  f1: 3e19 },
+    ].forEach(p => {
+      const b = el('button', { class: 'ms-chip ms-chip-preset', text: p.l });
+      b.addEventListener('click', () => { setRange(p.f0, p.f1); });
+      presets.appendChild(b);
+    });
+    ctrl.appendChild(btnIn); ctrl.appendChild(btnOut); ctrl.appendChild(btnReset);
+    ctrl.appendChild(el('span', { class: 'ms-ctrl-sep' }));
+    ctrl.appendChild(el('span', { class: 'ms-ctrl-l', text: 'Sprung zu:' }));
+    ctrl.appendChild(presets);
+    root.appendChild(ctrl);
+
+    // --- Canvas ---
+    const stage = el('div', { class: 'ms-stage' });
+    const canvas = el('canvas', { class: 'ms-canvas' });
+    stage.appendChild(canvas);
+    root.appendChild(stage);
+
+    // --- Detail-Drawer (inline unter dem Spektrum) ---
+    const detail = el('div', { class: 'ms-detail' });
+    detail.innerHTML = `<div class="ms-detail-empty"><i class="fas fa-hand-pointer"></i> Tippe einen Marker oben für Details.</div>`;
+    root.appendChild(detail);
+
+    // --- Legende ---
+    const legend = el('div', { class: 'ms-legend' });
+    legend.appendChild(el('h3', { html: '<i class="fas fa-info-circle"></i> Bänder · Übersicht' }));
+    const lgrid = el('div', { class: 'ms-legend-grid' });
+    BANDS.forEach(b => {
+      const c = el('div', { class: 'ms-legend-item' });
+      c.innerHTML = `<span class="ms-legend-bar" style="background:${b.col}"></span>
+        <strong>${b.name}</strong><span class="ms-legend-r">${fmtHz(b.f0)} – ${fmtHz(b.f1)}</span>`;
+      lgrid.appendChild(c);
+    });
+    legend.appendChild(lgrid);
+    root.appendChild(legend);
+
+    // ============ Render-Logik ============
+    const F_MIN = 1, F_MAX = 1e21;
+    let lo = F_MIN, hi = F_MAX;    // sichtbarer Bereich (Hz)
+    let selectedIdx = -1;
+    let dragX = null, dragStart = null;
+
+    function setRange(a, b) {
+      lo = Math.max(F_MIN, a); hi = Math.min(F_MAX, b);
+      if (hi <= lo) hi = lo * 10;
+      draw();
+    }
+    function logRange(f) { return (Math.log10(f) - Math.log10(lo)) / (Math.log10(hi) - Math.log10(lo)); }
+    function rangeLog(k)  { return Math.pow(10, Math.log10(lo) + k * (Math.log10(hi) - Math.log10(lo))); }
+    function visible(f)   { return f >= lo && f <= hi; }
+
+    function resize() {
+      const W = stage.clientWidth, H = 320;
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      canvas.width = W * dpr; canvas.height = H * dpr;
+      canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+      const ctx = canvas.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function visibleMarkers() {
+      return MARKERS.filter(m => visible(m.f) && (activeCat === 'Alle' || m.cat === activeCat));
+    }
+
+    function draw() {
+      resize();
+      const W = canvas.clientWidth, H = canvas.clientHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, W, H);
+      // Hintergrund-Verlauf
+      const bg = ctx.createLinearGradient(0, 0, 0, H);
+      bg.addColorStop(0, '#0b1424'); bg.addColorStop(1, '#070b15');
+      ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+
+      const padL = 12, padR = 12, padT = 16, padB = 78;
+      const innerW = W - padL - padR, innerH = H - padT - padB;
+      const cy = padT + innerH / 2;
+
+      // Bänder als bunte Streifen
+      BANDS.forEach(b => {
+        const f0 = Math.max(lo, b.f0), f1 = Math.min(hi, b.f1);
+        if (f1 <= f0) return;
+        const x0 = padL + logRange(f0) * innerW;
+        const x1 = padL + logRange(f1) * innerW;
+        const grd = ctx.createLinearGradient(0, padT, 0, padT + innerH);
+        grd.addColorStop(0, b.col + '55'); grd.addColorStop(0.5, b.col + '22'); grd.addColorStop(1, b.col + '11');
+        ctx.fillStyle = grd; ctx.fillRect(x0, padT, x1 - x0, innerH);
+        // Band-Label oben
+        const lw = x1 - x0;
+        if (lw > 60) {
+          ctx.fillStyle = b.col; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+          ctx.fillText(b.name, (x0 + x1) / 2, padT + 4);
+        }
+      });
+
+      // Mittellinie (Achse)
+      ctx.strokeStyle = '#22d3ee'; ctx.lineWidth = 1.5; ctx.shadowColor = '#22d3ee'; ctx.shadowBlur = 6;
+      ctx.beginPath(); ctx.moveTo(padL, cy); ctx.lineTo(padL + innerW, cy); ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      // Dekaden-Ticks
+      const startE = Math.ceil(Math.log10(lo)), endE = Math.floor(Math.log10(hi));
+      ctx.fillStyle = '#94a3b8'; ctx.font = '10px monospace'; ctx.textAlign = 'center';
+      ctx.strokeStyle = '#334155'; ctx.lineWidth = 1;
+      for (let e = startE; e <= endE; e++) {
+        const f = Math.pow(10, e);
+        const x = padL + logRange(f) * innerW;
+        ctx.beginPath(); ctx.moveTo(x, cy - 6); ctx.lineTo(x, cy + 6); ctx.stroke();
+        ctx.fillText(fmtHz(f), x, cy + 18);
+      }
+
+      // Marker zeichnen
+      const list = visibleMarkers();
+      // Höhen-Staffelung gegen Überlappung
+      const occupied = [];
+      list.forEach((m, idx) => {
+        const x = padL + logRange(m.f) * innerW;
+        // Lane-Berechnung: prüfe horizontale Überlappung gegen bisherige Marker
+        let lane = 0;
+        for (let li = 0; li < 6; li++) {
+          const o = occupied[li] || (occupied[li] = []);
+          if (o.every(ox => Math.abs(ox - x) > 90)) { o.push(x); lane = li; break; }
+          if (li === 5) lane = 5;
+        }
+        const yOff = (lane % 2 === 0 ? -1 : 1) * (18 + Math.floor(lane / 2) * 36);
+        const my = cy + yOff;
+        const col = CAT_COLOR[m.cat] || '#22d3ee';
+        const isSel = MARKERS.indexOf(m) === selectedIdx;
+        const r = m.hot ? 9 : 7;
+
+        // Verbindungslinie zur Achse
+        ctx.strokeStyle = col + 'aa'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(x, cy); ctx.lineTo(x, my); ctx.stroke();
+        // Glow bei hot/selected
+        if (m.hot || isSel) { ctx.save(); ctx.shadowColor = col; ctx.shadowBlur = 14; }
+        // Punkt
+        ctx.fillStyle = col; ctx.beginPath(); ctx.arc(x, my, r, 0, 7); ctx.fill();
+        ctx.strokeStyle = '#0b1424'; ctx.lineWidth = 2; ctx.stroke();
+        if (m.hot || isSel) ctx.restore();
+        // Auswahl-Ring
+        if (isSel) {
+          ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.arc(x, my, r + 5, 0, 7); ctx.stroke();
+        }
+
+        // Label
+        ctx.fillStyle = isSel ? '#fff' : '#e8edf7'; ctx.font = (isSel ? 'bold ' : '') + '11px sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = yOff < 0 ? 'bottom' : 'top';
+        ctx.fillText(m.name, x, my + (yOff < 0 ? -r - 5 : r + 5));
+        // Frequenz unten
+        ctx.fillStyle = col; ctx.font = '10px monospace';
+        ctx.fillText(fmtHz(m.f), x, my + (yOff < 0 ? -r - 18 : r + 17));
+
+        // Speichere für Klick-Erkennung
+        m._x = x; m._y = my; m._r = r + 5;
+      });
+
+      // Mini-Übersicht ganz unten
+      drawMinimap(ctx, padL, H - padB + 16, innerW, 14);
+    }
+    function drawMinimap(ctx, x, y, w, h) {
+      ctx.save();
+      // Gesamt-Bereich
+      BANDS.forEach(b => {
+        const f0 = Math.max(F_MIN, b.f0), f1 = Math.min(F_MAX, b.f1);
+        const x0 = x + (Math.log10(f0) - Math.log10(F_MIN)) / (Math.log10(F_MAX) - Math.log10(F_MIN)) * w;
+        const x1 = x + (Math.log10(f1) - Math.log10(F_MIN)) / (Math.log10(F_MAX) - Math.log10(F_MIN)) * w;
+        ctx.fillStyle = b.col + '88'; ctx.fillRect(x0, y, x1 - x0, h);
+      });
+      // Sichtbarer Ausschnitt
+      const vx0 = x + (Math.log10(lo) - Math.log10(F_MIN)) / (Math.log10(F_MAX) - Math.log10(F_MIN)) * w;
+      const vx1 = x + (Math.log10(hi) - Math.log10(F_MIN)) / (Math.log10(F_MAX) - Math.log10(F_MIN)) * w;
+      ctx.fillStyle = 'rgba(34,211,238,.18)'; ctx.fillRect(vx0, y - 2, vx1 - vx0, h + 4);
+      ctx.strokeStyle = '#22d3ee'; ctx.lineWidth = 2; ctx.strokeRect(vx0, y - 2, vx1 - vx0, h + 4);
+      // Label
+      ctx.fillStyle = '#94a3b8'; ctx.font = '10px monospace'; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+      ctx.fillText(fmtHz(F_MIN), x, y + h + 2);
+      ctx.textAlign = 'right'; ctx.fillText(fmtHz(F_MAX), x + w, y + h + 2);
+      ctx.restore();
+    }
+
+    function showDetail(m) {
+      const col = CAT_COLOR[m.cat] || '#22d3ee';
+      detail.innerHTML = '';
+      const card = el('div', { class: 'ms-card', style: `--lv:${col}` });
+      const head = el('div', { class: 'ms-card-head' });
+      head.appendChild(el('div', { class: 'ms-card-ico', html: `<i class="fas ${m.icon}"></i>` }));
+      const text = el('div', {});
+      text.appendChild(el('span', { class: 'ms-card-cat', text: m.cat }));
+      text.appendChild(el('h3', { text: m.name }));
+      head.appendChild(text);
+      card.appendChild(head);
+      const stats = el('div', { class: 'ms-card-stats' });
+      stats.appendChild(el('div', { class: 'ms-card-stat' }, [el('span', { text: 'Frequenz' }), el('strong', { text: fmtHz(m.f) })]));
+      if (m.f < 1e18) stats.appendChild(el('div', { class: 'ms-card-stat' }, [el('span', { text: 'Wellenlänge λ' }), el('strong', { text: fmtLambda(C / m.f) })]));
+      const band = BANDS.find(b => m.f >= b.f0 && m.f < b.f1);
+      if (band) stats.appendChild(el('div', { class: 'ms-card-stat' }, [el('span', { text: 'Bereich' }), el('strong', { text: band.name })]));
+      card.appendChild(stats);
+      card.appendChild(el('p', { class: 'ms-card-desc', text: m.desc }));
+      // Aktions-Reihe
+      const act = el('div', { class: 'ms-card-actions' });
+      const zoom = el('button', { class: 'ms-btn', html: '<i class="fas fa-magnifying-glass-plus"></i> Auf diesen Bereich zoomen' });
+      zoom.addEventListener('click', () => setRange(m.f / 6, m.f * 6));
+      act.appendChild(zoom);
+      if (window.NOTEBOOK) {
+        const pin = NOTEBOOK.pinBtn({
+          id: 'spectrum-' + m.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+          kind: 'class', kicker: 'Spektrum · ' + m.cat, badge: fmtHz(m.f),
+          title: m.name, summary: m.desc, tags: [m.cat], accent: col,
+        }, { size: 'sm' });
+        act.appendChild(pin);
+      }
+      card.appendChild(act);
+      detail.appendChild(card);
+    }
+
+    canvas.addEventListener('click', e => {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left, y = e.clientY - rect.top;
+      // Treffer ermitteln (rückwärts: oberster Marker zuerst)
+      const list = visibleMarkers().slice().reverse();
+      for (const m of list) {
+        if (m._x == null) continue;
+        if (Math.hypot(x - m._x, y - m._y) <= m._r + 4) {
+          selectedIdx = MARKERS.indexOf(m);
+          showDetail(m); draw(); return;
+        }
+      }
+    });
+
+    // Drag-Pan auf Achse
+    canvas.addEventListener('mousedown', e => {
+      const rect = canvas.getBoundingClientRect();
+      dragX = e.clientX - rect.left; dragStart = { lo, hi };
+    });
+    window.addEventListener('mouseup', () => { dragX = null; dragStart = null; });
+    canvas.addEventListener('mousemove', e => {
+      if (dragX == null) return;
+      const rect = canvas.getBoundingClientRect();
+      const dx = (e.clientX - rect.left) - dragX;
+      const W = canvas.clientWidth - 24;
+      const logSpan = Math.log10(dragStart.hi) - Math.log10(dragStart.lo);
+      const shift = (dx / W) * logSpan;
+      lo = Math.max(F_MIN, Math.pow(10, Math.log10(dragStart.lo) - shift));
+      hi = Math.min(F_MAX, Math.pow(10, Math.log10(dragStart.hi) - shift));
+      draw();
+    });
+
+    // Maus-Wheel-Zoom
+    canvas.addEventListener('wheel', e => {
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.clientX - rect.left - 12) / (canvas.clientWidth - 24);
+      const focus = rangeLog(Math.max(0, Math.min(1, x)));
+      const z = e.deltaY > 0 ? 1.25 : 0.8;
+      const newLo = Math.max(F_MIN, Math.pow(10, Math.log10(focus) - (Math.log10(focus) - Math.log10(lo)) * z));
+      const newHi = Math.min(F_MAX, Math.pow(10, Math.log10(focus) + (Math.log10(hi) - Math.log10(focus)) * z));
+      lo = newLo; hi = newHi; draw();
+    }, { passive: false });
+
+    // Touch-Pan + Pinch
+    let touch = null;
+    canvas.addEventListener('touchstart', e => {
+      if (e.touches.length === 1) {
+        const r = canvas.getBoundingClientRect();
+        touch = { type: 'pan', x: e.touches[0].clientX - r.left, lo, hi };
+      } else if (e.touches.length === 2) {
+        const r = canvas.getBoundingClientRect();
+        const x1 = e.touches[0].clientX - r.left, x2 = e.touches[1].clientX - r.left;
+        touch = { type: 'pinch', cx: (x1 + x2) / 2, dist: Math.abs(x1 - x2), lo, hi };
+      }
+    }, { passive: true });
+    canvas.addEventListener('touchmove', e => {
+      if (!touch) return;
+      const r = canvas.getBoundingClientRect();
+      if (touch.type === 'pan' && e.touches.length === 1) {
+        const dx = (e.touches[0].clientX - r.left) - touch.x;
+        const W = canvas.clientWidth - 24;
+        const logSpan = Math.log10(touch.hi) - Math.log10(touch.lo);
+        const shift = (dx / W) * logSpan;
+        lo = Math.max(F_MIN, Math.pow(10, Math.log10(touch.lo) - shift));
+        hi = Math.min(F_MAX, Math.pow(10, Math.log10(touch.hi) - shift));
+        draw();
+      } else if (touch.type === 'pinch' && e.touches.length === 2) {
+        const x1 = e.touches[0].clientX - r.left, x2 = e.touches[1].clientX - r.left;
+        const dist = Math.abs(x1 - x2);
+        const z = touch.dist / Math.max(20, dist);
+        const focusX = touch.cx / (canvas.clientWidth - 24);
+        const focus = Math.pow(10, Math.log10(touch.lo) + focusX * (Math.log10(touch.hi) - Math.log10(touch.lo)));
+        lo = Math.max(F_MIN, Math.pow(10, Math.log10(focus) - (Math.log10(focus) - Math.log10(touch.lo)) * z));
+        hi = Math.min(F_MAX, Math.pow(10, Math.log10(focus) + (Math.log10(touch.hi) - Math.log10(focus)) * z));
+        draw();
+      }
+    }, { passive: true });
+    canvas.addEventListener('touchend', () => { touch = null; });
+
+    btnIn.addEventListener('click', () => {
+      const focus = Math.sqrt(lo * hi), z = 0.6;
+      lo = Math.max(F_MIN, Math.pow(10, Math.log10(focus) - (Math.log10(focus) - Math.log10(lo)) * z));
+      hi = Math.min(F_MAX, Math.pow(10, Math.log10(focus) + (Math.log10(hi) - Math.log10(focus)) * z));
+      draw();
+    });
+    btnOut.addEventListener('click', () => {
+      const focus = Math.sqrt(lo * hi), z = 1.6;
+      lo = Math.max(F_MIN, Math.pow(10, Math.log10(focus) - (Math.log10(focus) - Math.log10(lo)) * z));
+      hi = Math.min(F_MAX, Math.pow(10, Math.log10(focus) + (Math.log10(hi) - Math.log10(focus)) * z));
+      draw();
+    });
+    btnReset.addEventListener('click', () => { lo = F_MIN; hi = F_MAX; draw(); });
+
+    window.addEventListener('resize', draw);
+    requestAnimationFrame(draw);
+    return root;
+  }
+
+  return { view };
+})();
+
+</script>
+<script data-src="js/hubs.js">
+/* Themen-Hubs: 6 große Bereiche mit kuratierten Unter-Ansichten.
+   window.HUBS.view(id). */
+window.HUBS = (() => {
+  const { el } = U;
+
+  const HUBS = {
+    'hub-welle': {
+      icon: 'fa-satellite-dish', color: '#22d3ee',
+      title: '📡 Wellen & Signale',
+      lead: 'Alles über Wellen, Frequenzen und wie Daten in der Sicherheitstechnik übertragen werden. Vom Lichtschalter bis zur Funkwelle, vom EMA-BUS bis zur 5G-Alarmübertragung.',
+      sections: [
+        { label: 'Verstehen', tiles: [
+          { v: 'megaspektrum', ic: 'fa-chart-line', c: '#22d3ee', t: 'Mega-Spektrum-Karte', d: '60+ Marker von 1 Hz bis Gamma · Zoom & Pan · PIR, MW, WLAN, Röntgen', tag: 'NEU' },
+          { v: 'wellen', ic: 'fa-wave-square', c: '#22d3ee', t: 'Wellen einfach erklärt', d: 'Was ist Frequenz, Wellenlänge, λ·f=c – mit Animationen und Alltagsvergleichen' },
+          { v: 'daten', ic: 'fa-ethernet', c: '#a855f7', t: 'Datenübertragung Deep-Dive', d: 'Spannungspulse, Bandbreite, Bits → Bild, Störung – animiert' },
+        ]},
+        { label: 'Nachschlagen', tiles: [
+          { v: 'freqtab', ic: 'fa-table-list', c: '#fbbf24', t: 'Frequenzen & Datenraten', d: '44 Frequenz-Beispiele · 15 Datenraten · Lade-Zeit für 11 Datei-Typen' },
+          { v: 'spektrum', ic: 'fa-wave-square', c: '#38bdf8', t: 'Spektrum (alt · animiert)', d: '11 Bänder mit 3D-Wellen, Slider, Farb-Spektrum' },
+        ]},
+      ]
+    },
+    'hub-schutz': {
+      icon: 'fa-shield-halved', color: '#22c55e',
+      title: '🛡 Klassen & Schutz',
+      lead: 'Sicherungsklassen, EMA-Grade, RC-Widerstandsklassen — was bedeutet was, welche Norm gilt, wie viel kostet welches Niveau. Plus die Schutzzonen-Ansicht.',
+      sections: [
+        { label: 'Klassen verstehen', tiles: [
+          { v: 'klassenlive', ic: 'fa-medal', c: '#22c55e', t: 'SÜ · Grade · RC · Live', d: 'Tür mit Einbruchs-Animation, Pyramide, große Karten, Vergleich', tag: 'NEU' },
+          { v: 'klassen', ic: 'fa-medal', c: '#84cc16', t: 'Klassen-Tabellen (alt)', d: 'Vollständige Daten-Tabellen aller SÜ, Grade, RC' },
+        ]},
+        { label: 'Schutzkonzept', tiles: [
+          { v: 'konzept', ic: 'fa-circle-dot', c: '#22c55e', t: 'Zwiebel-Schutzkonzept', d: '4 Zonen: Perimeter → Außenhaut → Innen → Wertschutz' },
+          { v: 'zwiebel3d', ic: 'fa-globe', c: '#a3e635', t: '3D-Zwiebelmodell', d: 'Interaktives 3D-Modell der 4 Schutzzonen' },
+          { v: 'haus3d', ic: 'fa-house-chimney', c: '#fbbf24', t: 'Sicherheits-Haus 3D', d: 'Vom Zaun bis zum Tresor in 3D' },
+        ]},
+        { label: 'Komponenten je Zone', tiles: [
+          { v: 'perimeter', ic: 'fa-border-all', c: '#22c55e', t: 'Perimeter · Zone 1', d: 'Zäune, Tore, Schranken, Poller' },
+          { v: 'aussenhaut', ic: 'fa-door-closed', c: '#84cc16', t: 'Außenhaut · Zone 2', d: 'Türen, Fenster, Verglasung (RC, Pn)' },
+          { v: 'melder', ic: 'fa-bell', c: '#fbbf24', t: 'Melder · Zone 3', d: 'PIR, MW, Dual, Glasbruch, Erschütterung' },
+          { v: 'mechanik', ic: 'fa-vault', c: '#f97316', t: 'Mechanik · Zone 4', d: 'Tresore, Wertschutzschränke, Zylinder' },
+        ]},
+      ]
+    },
+    'hub-technik': {
+      icon: 'fa-microchip', color: '#a855f7',
+      title: '🛠 Technik & Geräte',
+      lead: 'EMA-Zentralen, NSL-Aufschaltung, Videotechnik, Zutrittskontrolle. Alles was die Sicherheitstechnik elektrisch macht.',
+      sections: [
+        { label: 'Systeme', tiles: [
+          { v: 'ema', ic: 'fa-tower-broadcast', c: '#a855f7', t: 'EMA · ZKA · NSL', d: 'Zentralen, Bedienteile, Übertragung, Aufschaltung' },
+          { v: 'videotechnik', ic: 'fa-video', c: '#ef4444', t: 'Videotechnik Detail', d: 'Aufnahme, analog/IP, Recorder, Kabel – animiert' },
+          { v: 'wwd', ic: 'fa-tower-cell', c: '#fbbf24', t: 'WWD Video-Türme', d: 'KI-Auswertung, 24/7-Leitstelle' },
+          { v: 'wwdtech', ic: 'fa-tower-cell', c: '#f97316', t: 'WWD-Türme · Technik', d: 'Bitübertragung in Türmen erklärt' },
+        ]},
+        { label: 'Kataloge', tiles: [
+          { v: 'masterency', ic: 'fa-book-open-reader', c: '#22d3ee', t: 'Komplett-Katalog', d: '142 Komponenten durchsuchbar' },
+          { v: 'enzyklopaedie', ic: 'fa-flask', c: '#a855f7', t: 'Melder-Enzyklopädie', d: 'Detektor-Typen erklärt' },
+          { v: 'mechency', ic: 'fa-flask-vial', c: '#fbbf24', t: 'Mechanik-Enzyklopädie', d: '50+ Komponenten · Vergleich' },
+          { v: 'galerie', ic: 'fa-images', c: '#22c55e', t: 'Produkt-Galerie', d: 'Echte Produktfotos nach Hersteller' },
+        ]},
+      ]
+    },
+    'hub-recht': {
+      icon: 'fa-gavel', color: '#fbbf24',
+      title: '⚖️ Recht & Normen',
+      lead: 'BeWachV, DGUV, KRITIS, NIS-2, GewO §34a, WaffG, BGB, StGB — alle Sicherheits-Gesetze an einem Ort. Plus Notizbuch und Sachkunde-Training.',
+      sections: [
+        { label: 'Gesetze', tiles: [
+          { v: 'gesetze', ic: 'fa-gavel', c: '#fbbf24', t: 'Gesetze-Katalog', d: '12 Gesetze · 264 §§ · Praxisfälle · Suchen' },
+        ]},
+        { label: 'Lernen & Üben', tiles: [
+          { v: 'praesentation', ic: 'fa-person-chalkboard', c: '#22d3ee', t: 'Slideshow + Tagesplan', d: '5 §§ pro Tag · Streak · Vorlesen · Marker' },
+          { v: 'notebook', ic: 'fa-bookmark', c: '#a855f7', t: 'Mein Notizbuch', d: 'Gepinnte Inhalte als eigenes Deck' },
+          { v: 'pruefung', ic: 'fa-graduation-cap', c: '#22c55e', t: 'Sachkunde §34a Training', d: '35 Prüfungsfragen' },
+        ]},
+      ]
+    },
+    'hub-planen': {
+      icon: 'fa-pen-ruler', color: '#38bdf8',
+      title: '🛠 Planen & Berechnen',
+      lead: 'Werkzeuge zum Planen einer Anlage: Pläne zeichnen, Sensoren platzieren, Reichweiten und Preise rechnen.',
+      sections: [
+        { label: 'Werkzeuge', tiles: [
+          { v: 'plan', ic: 'fa-pen-ruler', c: '#38bdf8', t: 'Plan zeichnen (Stift)', d: 'Mit S-Pen skizzieren + Stempel' },
+          { v: 'sandbox', ic: 'fa-vector-square', c: '#22d3ee', t: 'Objekt-Planer (Sandbox)', d: 'Sensoren setzen → Heatmap' },
+          { v: 'fp', ic: 'fa-vector-square', c: '#a855f7', t: 'Plan-Designer', d: 'Grundriss + Komponenten platzieren' },
+          { v: 'building3d', ic: 'fa-cube', c: '#fbbf24', t: '3D-Gebäudeplaner', d: 'Isometrisches Haus, rotierbar' },
+        ]},
+        { label: 'Rechnen & Beraten', tiles: [
+          { v: 'wizard', ic: 'fa-wand-magic-sparkles', c: '#22c55e', t: 'Sicherheits-Assistent', d: 'Fragen → SÜ-Empfehlung' },
+          { v: 'konfigurator', ic: 'fa-sliders', c: '#22d3ee', t: 'Konfigurator', d: 'Schutz-Stack mit Richtpreis' },
+          { v: 'calculators', ic: 'fa-calculator', c: '#fbbf24', t: 'Calculator-Suite', d: 'Live-Rechner Mengen + Preise' },
+          { v: 'lab', ic: 'fa-flask', c: '#f97316', t: 'Engineering-Lab', d: '12 Fach-Rechner: Linsen, Akku, Kabel …' },
+          { v: 'preisliste', ic: 'fa-euro-sign', c: '#22c55e', t: 'Preisliste', d: 'Richtpreise aller Komponenten' },
+        ]},
+      ]
+    },
+    'hub-erleben': {
+      icon: 'fa-gamepad', color: '#ef4444',
+      title: '🎬 Erleben & Lernen',
+      lead: 'Sicherheitstechnik zum Anfassen: 3D-Spiel, Begehung, Physik live, Quiz, Mediathek.',
+      sections: [
+        { label: '3D & Spiele', tiles: [
+          { v: 'game3d', ic: 'fa-gamepad', c: '#ef4444', t: 'Einbruch-Spiel 3D', d: 'Perimeter → Außenhaut → Tresor, ohne Alarm' },
+          { v: 'begehung', ic: 'fa-person-walking', c: '#fbbf24', t: '3D-Begehung (Ego)', d: 'Lauf durchs Objekt, weich den Sensoren aus' },
+          { v: 'werk', ic: 'fa-industry', c: '#a855f7', t: 'Sicherheits-Werk', d: 'Virtueller Industriestandort' },
+        ]},
+        { label: 'Lernen', tiles: [
+          { v: 'physik', ic: 'fa-atom', c: '#22d3ee', t: 'Physik Live · 29 Sims', d: 'Leitstand, Nebel, Drohne, FFT, Drehkreuz …' },
+          { v: 'sensoren', ic: 'fa-mobile-screen-button', c: '#22c55e', t: 'Handy als Sensor', d: 'Mikro, Bewegung & Kamera live' },
+          { v: 'vergleich', ic: 'fa-table-cells-large', c: '#fbbf24', t: 'Melder-Vergleich', d: 'PIR vs MW vs Dual vs Schranke' },
+          { v: 'quiz', ic: 'fa-graduation-cap', c: '#a855f7', t: 'Quiz · Lernmodus', d: 'Teste dein Wissen' },
+          { v: 'glossar', ic: 'fa-book', c: '#22d3ee', t: 'Glossar', d: 'Fachbegriffe A-Z' },
+          { v: 'mediathek', ic: 'fa-photo-film', c: '#ef4444', t: 'Mediathek', d: 'Alle Bilder + Animationen' },
+        ]},
+      ]
+    },
+  };
+
+  function view(id) {
+    const hub = HUBS[id];
+    const root = el('div', { class: 'hub-wrap' });
+    if (!hub) { root.appendChild(el('div', { text: 'Hub nicht gefunden' })); return root; }
+    root.style.setProperty('--a', hub.color);
+
+    const hero = el('div', { class: 'hub-hero' });
+    hero.appendChild(el('div', { class: 'hub-hero-ic', html: `<i class="fas ${hub.icon}"></i>` }));
+    const heroT = el('div', { style: 'flex:1' });
+    heroT.appendChild(el('h1', { text: hub.title }));
+    heroT.appendChild(el('p', { text: hub.lead }));
+    hero.appendChild(heroT);
+    root.appendChild(hero);
+
+    hub.sections.forEach(sec => {
+      root.appendChild(el('div', { class: 'hub-section-label', text: sec.label }));
+      const grid = el('div', { class: 'hub-grid' });
+      sec.tiles.forEach(t => {
+        const tile = el('button', { class: 'hub-tile', type: 'button', style: `--c:${t.c}` });
+        tile.appendChild(el('div', { class: 'hub-tile-ic', html: `<i class="fas ${t.ic}"></i>` }));
+        const body = el('div', { class: 'hub-tile-body' }, [
+          el('strong', { text: t.t }),
+          el('span', { text: t.d }),
+        ]);
+        if (t.tag) body.appendChild(el('span', { class: 'hub-tile-tag', text: t.tag }));
+        tile.appendChild(body);
+        tile.appendChild(el('i', { class: 'fas fa-arrow-right hub-tile-go' }));
+        tile.addEventListener('click', () => { location.hash = '#' + t.v; });
+        grid.appendChild(tile);
+      });
+      root.appendChild(grid);
+    });
+    return root;
+  }
+
+  return { view, HUBS };
+})();
+
+</script>
 <script data-src="js/praesentation.js">
 /* Präsentations-/Slideshow-Modus „krass++". window.PRAESENTATION.view(d).
    Features: Tilt-3D-Kacheln, Konfetti, Counter-Anim, Mini-Map mit Thumbs,
@@ -49752,6 +50461,13 @@ window.SEARCH = (() => {
 
   const ROUTES = {
     home: V.home,
+    'hub-welle':   () => HUBS.view('hub-welle'),
+    'hub-schutz':  () => HUBS.view('hub-schutz'),
+    'hub-technik': () => HUBS.view('hub-technik'),
+    'hub-recht':   () => HUBS.view('hub-recht'),
+    'hub-planen':  () => HUBS.view('hub-planen'),
+    'hub-erleben': () => HUBS.view('hub-erleben'),
+    megaspektrum:  () => MEGASPEKTRUM.view(),
     konzept: V.konzept,
     klassen: V.klassen,
     klassenlive: (d) => KLASSEN_LIVE.view(d),

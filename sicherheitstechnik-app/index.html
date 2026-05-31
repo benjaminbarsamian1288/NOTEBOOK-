@@ -51,6 +51,7 @@
 <link rel="stylesheet" href="css/notebook.css?v=94">
 <link rel="stylesheet" href="css/freqtab.css?v=95">
 <link rel="stylesheet" href="css/klassen-live.css?v=96">
+<link rel="stylesheet" href="css/megaspektrum.css?v=97">
 <link rel="stylesheet" href="css/modern-refresh.css?v=31">
 <link rel="stylesheet" href="css/modern.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -82,55 +83,22 @@
   <nav class="navlist">
     <button class="global-search-trigger" id="gs-trigger"><i class="fas fa-search"></i> <span>Suche · alles…</span><kbd>Ctrl K</kbd></button>
 
-    <div class="nav-group-label">1 · Start &amp; Verstehen</div>
-    <button class="navitem active" data-view="home"><i class="fas fa-house"></i><span>Übersicht</span></button>
-    <button class="navitem nav-pri" data-view="physik"><i class="fas fa-atom"></i><span><strong>Physik Live</strong></span><em>29</em></button>
-    <button class="navitem nav-pri" data-view="videotechnik"><i class="fas fa-video"></i><span><strong>Videotechnik · Detail</strong></span><em>NEU</em></button>
-    <button class="navitem nav-pri" data-view="daten"><i class="fas fa-ethernet"></i><span><strong>Datenübertragung</strong></span><em>NEU</em></button>
-    <button class="navitem nav-pri" data-view="wellen"><i class="fas fa-satellite-dish"></i><span><strong>Wellen &amp; Signale</strong></span><em>NEU</em></button>
-    <button class="navitem nav-pri" data-view="sensoren"><i class="fas fa-mobile-screen-button"></i><span><strong>Handy als Sensor</strong></span><em>NEU</em></button>
-    <button class="navitem nav-pri" data-view="masterency"><i class="fas fa-book-open-reader"></i><span><strong>Komplett-Katalog</strong></span><em>142</em></button>
-    <button class="navitem nav-pri" data-view="gesetze"><i class="fas fa-gavel"></i><span><strong>Gesetze · §§</strong></span><em>12</em></button>
+    <button class="navitem active" data-view="home"><i class="fas fa-house"></i><span><strong>Übersicht</strong></span></button>
 
-    <div class="nav-group-label">2 · Planen &amp; Berechnen</div>
-    <button class="navitem nav-pri" data-view="plan"><i class="fas fa-pen-ruler"></i><span><strong>Plan zeichnen (Stift)</strong></span><em>NEU</em></button>
-    <button class="navitem nav-tool" data-view="sandbox"><i class="fas fa-vector-square"></i><span>Objekt-Planer (Sandbox)</span></button>
-    <button class="navitem nav-tool" data-view="wizard"><i class="fas fa-wand-magic-sparkles"></i><span>Sicherheits-Assistent</span></button>
-    <button class="navitem nav-tool" data-view="konfigurator"><i class="fas fa-sliders"></i><span>Konfigurator</span></button>
-    <button class="navitem nav-tool" data-view="lab"><i class="fas fa-flask"></i><span>Engineering-Lab</span><em>12</em></button>
-    <button class="navitem nav-tool" data-view="fp"><i class="fas fa-vector-square"></i><span>Plan-Designer</span></button>
-    <button class="navitem nav-tool" data-view="calculators"><i class="fas fa-calculator"></i><span>Calculator-Suite</span></button>
+    <div class="nav-group-label">Themen-Hubs</div>
+    <button class="navitem nav-pri" data-view="hub-welle"><i class="fas fa-satellite-dish"></i><span><strong>📡 Wellen &amp; Signale</strong></span></button>
+    <button class="navitem nav-pri" data-view="hub-schutz"><i class="fas fa-shield-halved"></i><span><strong>🛡 Klassen &amp; Schutz</strong></span></button>
+    <button class="navitem nav-pri" data-view="hub-technik"><i class="fas fa-microchip"></i><span><strong>🛠 Technik &amp; Geräte</strong></span></button>
+    <button class="navitem nav-pri" data-view="hub-recht"><i class="fas fa-gavel"></i><span><strong>⚖️ Recht &amp; Lernen</strong></span></button>
+    <button class="navitem nav-pri" data-view="hub-planen"><i class="fas fa-pen-ruler"></i><span><strong>📐 Planen &amp; Berechnen</strong></span></button>
+    <button class="navitem nav-pri" data-view="hub-erleben"><i class="fas fa-gamepad"></i><span><strong>🎬 Erleben &amp; Spielen</strong></span></button>
 
-    <div class="nav-group-label">3 · Ansehen in 3D</div>
-    <button class="navitem nav-pri" data-view="game3d"><i class="fas fa-gamepad"></i><span><strong>Einbruch-Spiel 3D</strong></span><em>NEU</em></button>
-    <button class="navitem nav-pri" data-view="begehung"><i class="fas fa-person-walking"></i><span><strong>3D-Begehung (Ego)</strong></span><em>NEU</em></button>
-    <button class="navitem" data-view="haus3d"><i class="fas fa-house-chimney"></i><span>Sicherheits-Haus 3D</span></button>
-    <button class="navitem" data-view="zwiebel3d"><i class="fas fa-circle-dot"></i><span>3D-Zwiebelmodell</span></button>
-    <button class="navitem" data-view="spektrum"><i class="fas fa-wave-square"></i><span>Frequenz-Spektrum</span></button>
-    <button class="navitem nav-pri" data-view="freqtab"><i class="fas fa-table-list"></i><span><strong>Frequenzen &amp; Datenraten</strong></span><em>NEU</em></button>
-    <button class="navitem nav-pri" data-view="werk"><i class="fas fa-industry"></i><span><strong>Sicherheits-Werk</strong></span><em>NEU</em></button>
-
-    <div class="nav-group-label">4 · Technik &amp; Geräte</div>
-    <button class="navitem" data-view="ema"><i class="fas fa-broadcast-tower"></i><span>EMA · ZKA · NSL</span></button>
-    <button class="navitem nav-pri" data-view="klassenlive"><i class="fas fa-medal"></i><span><strong>SÜ · Grade · RC · Live</strong></span><em>NEU</em></button>
-    <button class="navitem" data-view="klassen"><i class="fas fa-medal"></i><span>SÜ · Grade · RC (klassisch)</span></button>
-    <button class="navitem nav-wwd" data-view="wwd"><i class="fas fa-tower-cell"></i><span>WWD Video-Türme</span></button>
-    <button class="navitem nav-pri" data-view="wwdtech"><i class="fas fa-tower-cell"></i><span><strong>WWD-Türme · Technik</strong></span><em>NEU</em></button>
-
-    <div class="nav-group-label">5 · Bilder &amp; Lernen</div>
-    <button class="navitem nav-pri" data-view="praesentation"><i class="fas fa-person-chalkboard"></i><span><strong>Präsentation · Slideshow</strong></span><em>NEU</em></button>
-    <button class="navitem nav-pri" data-view="notebook"><i class="fas fa-bookmark"></i><span><strong>Mein Notizbuch</strong></span><em>NEU</em></button>
-    <button class="navitem" data-view="galerie"><i class="fas fa-images"></i><span>Produkt-Galerie</span></button>
-    <button class="navitem" data-view="mediathek"><i class="fas fa-photo-film"></i><span>Mediathek</span></button>
-    <button class="navitem nav-pri" data-view="pruefung"><i class="fas fa-graduation-cap"></i><span><strong>Sachkunde §34a Training</strong></span><em>NEU</em></button>
-    <button class="navitem" data-view="quiz"><i class="fas fa-graduation-cap"></i><span>Quiz · Lernmodus</span></button>
-    <button class="navitem" data-view="glossar"><i class="fas fa-book"></i><span>Glossar</span></button>
-
-    <div class="nav-group-label">6 · Verwaltung</div>
-    <button class="navitem" data-view="preisliste"><i class="fas fa-euro-sign"></i><span>Preisliste</span></button>
-    <button class="navitem" data-view="projects"><i class="fas fa-folder"></i><span>Meine Projekte</span></button>
-    <button class="navitem" data-view="diagramme"><i class="fas fa-chart-column"></i><span>Diagramme</span></button>
-    <button class="navitem" data-view="dokumente"><i class="fas fa-folder-open"></i><span>Dokumente · Normen</span></button>
+    <div class="nav-group-label">Direkter Zugriff</div>
+    <button class="navitem" data-view="praesentation"><i class="fas fa-person-chalkboard"></i><span>Tagesplan · Slideshow</span></button>
+    <button class="navitem" data-view="notebook"><i class="fas fa-bookmark"></i><span>Mein Notizbuch</span></button>
+    <button class="navitem" data-view="gesetze"><i class="fas fa-gavel"></i><span>Gesetze · §§</span></button>
+    <button class="navitem" data-view="megaspektrum"><i class="fas fa-chart-line"></i><span>Mega-Spektrum</span></button>
+    <button class="navitem" data-view="klassenlive"><i class="fas fa-medal"></i><span>SÜ · Grade · RC Live</span></button>
   </nav>
   <div class="sidebar-foot">
     <div class="meta">
@@ -221,6 +189,8 @@
 <script src="js/notebook.js?v=94"></script>
 <script src="js/freqtab.js?v=95"></script>
 <script src="js/klassen-live.js?v=96"></script>
+<script src="js/megaspektrum.js?v=97"></script>
+<script src="js/hubs.js?v=97"></script>
 <script src="js/praesentation.js?v=94"></script>
 <script>
   // Wire global-search trigger after DOM ready
