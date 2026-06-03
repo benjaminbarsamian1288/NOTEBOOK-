@@ -283,15 +283,6 @@ window.KLASSEN_LIVE = (() => {
       el('span', { class: 'kl-big-ex-l', html: '<i class="fas fa-location-dot"></i> Typische Objekte' }),
       el('span', { class: 'kl-big-ex-v', text: ex }),
     ]));
-    // Notebook-Pin
-    if (window.NOTEBOOK) {
-      right.appendChild(NOTEBOOK.pinBtn({
-        id: 'class-live-' + cfg.key + '-' + (cfg.badge(r) || idx).toString().replace(/\s+/g, '-'),
-        kind: 'class', kicker: cfg.label, badge: cfg.badge(r),
-        title: cfg.title(r), summary: cfg.desc(r) || '',
-        beispiel: ex ? 'Typische Objekte: ' + ex : null, tags: [], accent: color,
-      }, { size: 'sm' }));
-    }
     card.appendChild(right);
     return card;
   }

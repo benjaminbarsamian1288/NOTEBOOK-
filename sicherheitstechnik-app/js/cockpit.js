@@ -83,17 +83,6 @@ window.COCKPIT = (() => {
       p.tags.forEach(t => tg.appendChild(el('span', { class: 'ck-tag', text: t })));
       body.appendChild(tg);
     }
-    // Notebook-Pin
-    if (window.NOTEBOOK) {
-      const actions = el('div', { class: 'ck-drawer-actions' });
-      actions.appendChild(NOTEBOOK.pinBtn({
-        id: g.id + '/' + (p.p || '').replace(/\s+/g, ''),
-        kind: 'law', kicker: g.short + ' · Abschnitt ' + a.nr, badge: p.p,
-        title: p.t, summary: p.s || '', beispiel: p.beispiel, merksatz: p.merksatz,
-        fehler: p.fehler, tags: p.tags || [], wichtig: p.wichtig, jedermann: p.jedermann, accent: g.farbe,
-      }));
-      body.appendChild(actions);
-    }
     drawer(p.p + ' · ' + p.t, body);
   }
 

@@ -349,14 +349,6 @@ window.MEGASPEKTRUM = (() => {
       const zoom = el('button', { class: 'ms-btn', html: '<i class="fas fa-magnifying-glass-plus"></i> Auf diesen Bereich zoomen' });
       zoom.addEventListener('click', () => setRange(m.f / 6, m.f * 6));
       act.appendChild(zoom);
-      if (window.NOTEBOOK) {
-        const pin = NOTEBOOK.pinBtn({
-          id: 'spectrum-' + m.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-          kind: 'class', kicker: 'Spektrum · ' + m.cat, badge: fmtHz(m.f),
-          title: m.name, summary: m.desc, tags: [m.cat], accent: col,
-        }, { size: 'sm' });
-        act.appendChild(pin);
-      }
       card.appendChild(act);
       detail.appendChild(card);
     }
