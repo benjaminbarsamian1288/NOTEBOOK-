@@ -12,6 +12,7 @@
     aussenhaut:   V.aussenhaut,
     melder:       V.melder,
     mechanik:     (d) => MECHANIK.view(d),
+    zylinder:     () => ZYLINDER.view(),
     ema:          V.ema,
     videotechnik: () => VIDEOTECH.view(),
     konfigurator: V.konfigurator,

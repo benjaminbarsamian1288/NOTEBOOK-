@@ -1,0 +1,103 @@
+/* Schließzylinder · Hersteller & Animation */
+.zyl-wrap { display: flex; flex-direction: column; gap: 14px; }
+
+/* Tabs */
+.zyl-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+.zyl-tab {
+  cursor: pointer; padding: 10px 16px; border-radius: 12px; font-weight: 800; font-size: 14px;
+  background: var(--surface-2); color: var(--text); border: 1px solid var(--border);
+  transition: all .15s;
+}
+.zyl-tab:hover { border-color: var(--c); color: var(--c); }
+.zyl-tab.on { background: var(--c); color: #07101f; border-color: transparent; box-shadow: 0 6px 18px color-mix(in srgb, var(--c) 45%, transparent); }
+
+/* Animations-Karte */
+.zyl-anim-card {
+  background: linear-gradient(160deg, rgba(251,191,36,.08), rgba(11,20,36,.6));
+  border: 1px solid rgba(251,191,36,.25); border-radius: 16px; padding: 16px;
+  display: flex; flex-direction: column; gap: 10px;
+  box-shadow: 0 8px 30px rgba(0,0,0,.3);
+}
+.zyl-anim-elec {
+  background: linear-gradient(160deg, rgba(34,211,238,.08), rgba(11,20,36,.6));
+  border-color: rgba(34,211,238,.3);
+}
+.zyl-anim-head h3 { margin: 0; font-size: 17px; }
+.zyl-anim-head h3 i { margin-right: 6px; color: #fbbf24; }
+.zyl-anim-elec .zyl-anim-head h3 i { color: #22d3ee; }
+.zyl-anim-head p { margin: 4px 0 0; color: var(--text-dim); font-size: 13px; line-height: 1.5; }
+.zyl-canvas { display: block; width: 100%; height: auto; max-height: 280px; border-radius: 12px; background: #0b1424; box-shadow: inset 0 0 24px rgba(0,0,0,.4); }
+
+.zyl-ctrl { display: flex; align-items: center; gap: 12px; }
+.zyl-ctrl label { font-size: 13px; color: var(--text-dim); white-space: nowrap; font-weight: 700; }
+.zyl-slider { flex: 1; accent-color: #fbbf24; height: 4px; }
+.zyl-ctrl-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.zyl-btn {
+  cursor: pointer; padding: 8px 14px; border-radius: 10px; font-size: 13px; font-weight: 700;
+  background: var(--surface-2); color: var(--text); border: 1px solid var(--border);
+  transition: all .15s;
+}
+.zyl-btn:hover { border-color: var(--text); }
+.zyl-btn-on { background: #fbbf24; color: #07101f; border-color: transparent; }
+.zyl-anim-elec .zyl-btn-on { background: #22d3ee; }
+
+.zyl-status {
+  padding: 10px 14px; border-radius: 10px; font-size: 13px; line-height: 1.5;
+  background: var(--surface-2); border: 1px solid var(--border); color: var(--text);
+}
+.zyl-status-ok  { background: rgba(34,197,94,.12); border-color: rgba(34,197,94,.4); color: #4ade80; font-weight: 700; }
+.zyl-status-bad { background: rgba(239,68,68,.12); border-color: rgba(239,68,68,.4); color: #f87171; font-weight: 700; }
+
+/* Hersteller-Karte */
+.zyl-hst-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-left: 4px solid var(--c, #fbbf24); border-radius: 16px; padding: 16px; margin-top: 12px;
+}
+.zyl-hst-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.zyl-hst-ico { width: 42px; height: 42px; flex: 0 0 42px; border-radius: 11px; display: grid; place-items: center; font-size: 18px; color: #07101f; background: var(--c); box-shadow: 0 6px 16px color-mix(in srgb, var(--c) 45%, transparent); }
+.zyl-hst-head h3 { margin: 0; font-size: 17px; }
+.zyl-hst-head p { margin: 3px 0 0; font-size: 12.5px; color: var(--text-dim); line-height: 1.45; max-width: 720px; }
+.zyl-hst-count { margin-left: auto; font-size: 11.5px; font-weight: 800; color: var(--text-dim); background: var(--surface-2); border: 1px solid var(--border); padding: 5px 12px; border-radius: 999px; white-space: nowrap; }
+
+.zyl-hst-grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.zyl-hst-firm {
+  position: relative; padding: 12px; border-radius: 12px;
+  background: var(--surface-2); border: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 6px;
+  transition: transform .14s, box-shadow .14s, border-color .14s;
+}
+.zyl-hst-firm:hover { transform: translateY(-2px); border-color: var(--c); box-shadow: 0 8px 20px rgba(0,0,0,.25); }
+.zyl-hst-firm.top { border-top: 3px solid #fbbf24; }
+.zyl-hst-firm.highend { border-top: 3px solid #a855f7; }
+.zyl-hst-tag {
+  position: absolute; top: -8px; right: 10px; font-size: 10px; font-weight: 900;
+  padding: 2px 8px; border-radius: 999px; text-transform: uppercase; letter-spacing: .5px;
+  background: var(--c); color: #07101f;
+}
+.zyl-hst-firm.highend .zyl-hst-tag { background: #a855f7; color: #fff; }
+.zyl-hst-firm-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.zyl-hst-firm-head strong { font-size: 14.5px; }
+.zyl-hst-firm-land { font-size: 11px; color: var(--text-dim); }
+.zyl-hst-firm-spec { margin: 0; font-size: 12.5px; color: var(--text-dim); line-height: 1.4; }
+.zyl-hst-firm-klass { font-size: 11px; font-weight: 700; color: var(--c); padding: 3px 9px; background: color-mix(in srgb, var(--c) 15%, transparent); border: 1px solid color-mix(in srgb, var(--c) 35%, transparent); border-radius: 999px; align-self: flex-start; }
+.zyl-hst-firm-web { font-size: 11.5px; color: var(--c); text-decoration: none; align-self: flex-start; padding: 2px 0; }
+.zyl-hst-firm-web:hover { text-decoration: underline; }
+.zyl-hst-firm-web i { margin-right: 4px; }
+
+/* Vergleichs-Tabelle */
+.zyl-cmp-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px;
+}
+.zyl-cmp-card h3 { margin: 0 0 12px; font-size: 17px; }
+.zyl-cmp-card h3 i { color: #a855f7; margin-right: 6px; }
+.zyl-cmp { width: 100%; border-collapse: collapse; font-size: 13px; }
+.zyl-cmp th { text-align: left; padding: 10px 12px; font-weight: 800; color: var(--text); background: var(--surface-2); border-bottom: 2px solid var(--border); }
+.zyl-cmp td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.zyl-cmp tr:hover td { background: rgba(34,211,238,.04); }
+.zyl-cmp-l { font-weight: 700; color: var(--text-dim); width: 28%; }
+
+@media (max-width: 640px) {
+  .zyl-cmp { font-size: 12px; }
+  .zyl-cmp th, .zyl-cmp td { padding: 8px 10px; }
+  .zyl-hst-grid { grid-template-columns: 1fr; }
+}
