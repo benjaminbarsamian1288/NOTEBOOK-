@@ -21,9 +21,50 @@ window.TEKANIM = (() => {
       ]),
       el('span', { class: 'tek-live', text: 'LIVE' }),
     ]));
-    c.appendChild(opts.body);
+    // opts.body kann sein: Canvas oder { canvas, controls }
+    if (opts.body && opts.body.canvas) {
+      c.appendChild(opts.body.canvas);
+      if (opts.body.controls && opts.body.controls.length) {
+        const bar = el('div', { class: 'tek-ctrl' });
+        opts.body.controls.forEach(ctrl => bar.appendChild(makeControl(ctrl)));
+        c.appendChild(bar);
+      }
+    } else {
+      c.appendChild(opts.body);
+    }
     if (opts.legend) c.appendChild(el('div', { class: 'tek-legend', html: opts.legend }));
     return c;
+  }
+
+  /* Steuer-Element bauen */
+  function makeControl(ctrl) {
+    if (ctrl.type === 'slider') {
+      const wrap = el('div', { class: 'tek-ctrl-item tek-ctrl-slider' });
+      const valSpan = el('span', { class: 'tek-ctrl-val', text: ctrl.value + (ctrl.unit || '') });
+      wrap.appendChild(el('label', { text: ctrl.label }));
+      const sl = el('input', { type: 'range', min: String(ctrl.min), max: String(ctrl.max), step: String(ctrl.step), value: String(ctrl.value) });
+      sl.addEventListener('input', () => { const v = +sl.value; ctrl.onChange(v); valSpan.textContent = v + (ctrl.unit || ''); });
+      wrap.appendChild(sl);
+      wrap.appendChild(valSpan);
+      return wrap;
+    }
+    if (ctrl.type === 'toggle') {
+      const wrap = el('label', { class: 'tek-ctrl-item tek-ctrl-toggle' });
+      const cb = el('input', { type: 'checkbox' });
+      if (ctrl.value) cb.checked = true;
+      cb.addEventListener('change', () => ctrl.onChange(cb.checked));
+      const slider = el('span', { class: 'tek-toggle-slider' });
+      wrap.appendChild(cb); wrap.appendChild(slider);
+      wrap.appendChild(el('span', { class: 'tek-ctrl-lbl', text: ctrl.label }));
+      return wrap;
+    }
+    if (ctrl.type === 'button') {
+      const b = el('button', { class: 'tek-ctrl-btn', type: 'button', text: ctrl.label });
+      if (ctrl.color) b.style.setProperty('--bc', ctrl.color);
+      b.addEventListener('click', () => ctrl.onClick(b));
+      return b;
+    }
+    return el('span');
   }
 
   /* ============ PERIMETER · Zaun-Sensorik (Faseroptik, Mikrowelle) ============ */
@@ -31,88 +72,73 @@ window.TEKANIM = (() => {
     const W = 600, H = 220;
     const cv = el('canvas', { class: 'tek-canvas', width: W, height: H });
     const ctx = cv.getContext('2d');
-    let intruder = -50;          // X-Position des Eindringlings
-    let alarmAt = 0;             // wann Alarm ausgelöst
+    let intruder = -50, speed = 0.7, mwOn = true, fiberOn = true;
     function draw(t) {
       ctx.clearRect(0, 0, W, H);
-      // Hintergrund
       const g = ctx.createLinearGradient(0, 0, 0, H);
       g.addColorStop(0, '#0b1424'); g.addColorStop(1, '#060a13');
       ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-      // Boden + Gras
       ctx.fillStyle = '#1e293b'; ctx.fillRect(0, H - 30, W, 30);
       ctx.fillStyle = '#16302b'; ctx.fillRect(0, H - 35, W, 5);
 
-      // Zaun (rechte Seite = innen)
-      const fy = H - 35, ftop = fy - 100, fx = W / 2;
+      // Zaun
+      const fy = H - 35, ftop = fy - 100;
       ctx.fillStyle = '#475569';
-      // Pfosten
       for (let i = 0; i < 6; i++) {
-        const x = 40 + i * 90;
-        ctx.fillRect(x - 3, ftop, 6, fy - ftop);
+        const x = 40 + i * 90; ctx.fillRect(x - 3, ftop, 6, fy - ftop);
       }
-      // Maschendraht
       ctx.strokeStyle = '#64748b'; ctx.lineWidth = 1;
-      for (let y = ftop + 10; y < fy; y += 12) {
-        ctx.beginPath(); ctx.moveTo(40, y); ctx.lineTo(W - 40, y); ctx.stroke();
-      }
-      for (let x = 40; x < W - 40; x += 12) {
-        ctx.beginPath(); ctx.moveTo(x, ftop); ctx.lineTo(x, fy); ctx.stroke();
-      }
-      // NATO-Draht oben
+      for (let y = ftop + 10; y < fy; y += 12) { ctx.beginPath(); ctx.moveTo(40, y); ctx.lineTo(W - 40, y); ctx.stroke(); }
+      for (let x = 40; x < W - 40; x += 12) { ctx.beginPath(); ctx.moveTo(x, ftop); ctx.lineTo(x, fy); ctx.stroke(); }
       ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2;
-      for (let x = 40; x < W - 40; x += 24) {
-        ctx.beginPath(); ctx.arc(x + 12, ftop - 5, 8, 0, Math.PI, true); ctx.stroke();
-      }
+      for (let x = 40; x < W - 40; x += 24) { ctx.beginPath(); ctx.arc(x + 12, ftop - 5, 8, 0, Math.PI, true); ctx.stroke(); }
 
-      // Glasfaser-Sensor (gelbe Linie am Zaun, schwingt bei Berührung)
       const tT = t / 1000;
-      ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2;
-      ctx.shadowColor = '#fbbf24'; ctx.shadowBlur = 6;
-      ctx.beginPath();
-      for (let x = 40; x < W - 40; x += 4) {
-        const close = Math.max(0, 1 - Math.abs(x - intruder) / 60);
-        const y = ftop + 50 + Math.sin(tT * 3 + x * 0.04) * 2 + close * Math.sin(tT * 20) * 6;
-        x === 40 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      // Glasfaser
+      if (fiberOn) {
+        ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2;
+        ctx.shadowColor = '#fbbf24'; ctx.shadowBlur = 6;
+        ctx.beginPath();
+        for (let x = 40; x < W - 40; x += 4) {
+          const close = Math.max(0, 1 - Math.abs(x - intruder) / 60);
+          const y = ftop + 50 + Math.sin(tT * 3 + x * 0.04) * 2 + close * Math.sin(tT * 20) * 6;
+          x === 40 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        }
+        ctx.stroke(); ctx.shadowBlur = 0;
       }
-      ctx.stroke();
-      ctx.shadowBlur = 0;
+      // MW-Barrier
+      if (mwOn) {
+        ctx.fillStyle = '#22d3ee';
+        ctx.fillRect(30, ftop + 30, 14, 30); ctx.fillRect(W - 44, ftop + 30, 14, 30);
+        const beamCut = Math.abs(intruder - W / 2) < 18;
+        ctx.strokeStyle = beamCut ? '#ef4444' : 'rgba(34,211,238,.55)';
+        ctx.lineWidth = 2; ctx.setLineDash([6, 4]);
+        ctx.beginPath(); ctx.moveTo(44, ftop + 45); ctx.lineTo(W - 44, ftop + 45); ctx.stroke();
+        ctx.setLineDash([]);
+      }
 
-      // Mikrowellen-Barrier (Sender links, Empfänger rechts)
-      ctx.fillStyle = '#22d3ee';
-      ctx.fillRect(30, ftop + 30, 14, 30);
-      ctx.fillRect(W - 44, ftop + 30, 14, 30);
-      // Strahl
-      const beamCut = Math.abs(intruder - W / 2) < 18;
-      ctx.strokeStyle = beamCut ? '#ef4444' : 'rgba(34,211,238,.55)';
-      ctx.lineWidth = 2; ctx.setLineDash([6, 4]);
-      ctx.beginPath(); ctx.moveTo(44, ftop + 45); ctx.lineTo(W - 44, ftop + 45); ctx.stroke();
-      ctx.setLineDash([]);
-
-      // Eindringling (läuft von links auf den Zaun zu)
-      intruder += 0.7;
-      if (intruder > W + 50) { intruder = -50; alarmAt = 0; }
-      // Berührungs-Test
-      const touching = intruder > 30 && intruder < W - 30 && intruder > 70;
-      if (touching && !alarmAt) alarmAt = t;
-
+      intruder += speed; if (intruder > W + 50) intruder = -50;
       ctx.font = '36px sans-serif'; ctx.textAlign = 'center';
       ctx.fillText('🥷', intruder, fy - 8);
 
-      // Status & Alarm
+      const touching = (fiberOn && intruder > 70 && intruder < W - 70) ||
+                       (mwOn && Math.abs(intruder - W / 2) < 18);
       ctx.font = 'bold 13px sans-serif'; ctx.textAlign = 'left';
-      if (alarmAt && (t - alarmAt) < 2500) {
-        // Blink
-        const a = 0.5 + 0.5 * Math.sin((t - alarmAt) / 50);
+      if (touching) {
+        const a = 0.5 + 0.5 * Math.sin(t / 50);
         ctx.fillStyle = `rgba(239,68,68,${a})`;
-        ctx.fillText('🚨 ALARM · Faser-Detektion + Strahl unterbrochen', 16, 30);
+        ctx.fillText('🚨 ALARM · Sensor erkennt Eindringling', 16, 30);
       } else {
         ctx.fillStyle = '#22c55e';
-        ctx.fillText('● Zaun überwacht · Faseroptik aktiv · MW-Schranke OK', 16, 30);
+        ctx.fillText('● Zaun überwacht · alles ruhig', 16, 30);
       }
     }
     requestAnimationFrame(loop.bind(null, cv, draw));
-    return cv;
+    return { canvas: cv, controls: [
+      { type: 'slider', label: 'Tempo', min: 0.1, max: 3, step: 0.1, value: 0.7, onChange: v => speed = v, unit: '×' },
+      { type: 'toggle', label: 'Faseroptik', value: true, onChange: v => fiberOn = v },
+      { type: 'toggle', label: 'MW-Schranke', value: true, onChange: v => mwOn = v },
+    ]};
   }
 
   /* ============ AUSSENHAUT · Tür + Fenster mit Magnetkontakt & Glasbruch ============ */
@@ -122,7 +148,8 @@ window.TEKANIM = (() => {
     const ctx = cv.getContext('2d');
     let phase = 0;       // 0=ruhe, 1=tür-öffnet, 2=glas-bruch
     let phaseT = 0;
-    setInterval(() => { phase = (phase + 1) % 3; phaseT = 0; }, 4500);
+    let timer = setInterval(() => { phase = (phase + 1) % 3; phaseT = 0; }, 4500);
+    function setPhase(p) { phase = p; phaseT = 0; clearInterval(timer); timer = setInterval(() => { phase = (phase + 1) % 3; phaseT = 0; }, 4500); }
     function draw(t) {
       phaseT += 1/60;
       ctx.clearRect(0, 0, W, H);
@@ -202,7 +229,11 @@ window.TEKANIM = (() => {
       else { ctx.fillStyle = '#22c55e'; ctx.fillText('● Außenhaut OK · Tür zu · Fenster intakt', 16, 24); }
     }
     requestAnimationFrame(loop.bind(null, cv, draw));
-    return cv;
+    return { canvas: cv, controls: [
+      { type: 'button', label: '● Ruhe',       color: '#22c55e', onClick: () => setPhase(0) },
+      { type: 'button', label: '🚪 Tür auf',   color: '#fbbf24', onClick: () => setPhase(1) },
+      { type: 'button', label: '💥 Glasbruch', color: '#ef4444', onClick: () => setPhase(2) },
+    ]};
   }
 
   /* ============ MELDER · PIR-Kegel, MW-Doppler, Dual-Logik ============ */
@@ -210,50 +241,46 @@ window.TEKANIM = (() => {
     const W = 600, H = 220;
     const cv = el('canvas', { class: 'tek-canvas', width: W, height: H });
     const ctx = cv.getContext('2d');
-    let person = 30;
+    let person = 30, speed = 0.6, pirOn = true, mwOn = true, mode = 'dual';
     function draw(t) {
-      person += 0.6; if (person > W - 30) person = 30;
+      person += speed; if (person > W - 30) person = 30;
       ctx.clearRect(0, 0, W, H);
       const g = ctx.createLinearGradient(0, 0, 0, H);
       g.addColorStop(0, '#0b1424'); g.addColorStop(1, '#060a13'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
       ctx.fillStyle = '#1e293b'; ctx.fillRect(0, H - 30, W, 30);
 
-      // PIR-Melder oben links
       const pirX = 80, pirY = 50;
-      drawMelderBox(ctx, pirX, pirY, '#fbbf24', 'PIR');
-      // PIR-Erfassungskegel
-      const cone = ctx.createRadialGradient(pirX, pirY, 5, pirX, pirY, 200);
-      cone.addColorStop(0, 'rgba(251,191,36,.35)'); cone.addColorStop(1, 'rgba(251,191,36,0)');
-      ctx.fillStyle = cone; ctx.beginPath();
-      ctx.moveTo(pirX, pirY); ctx.lineTo(pirX + 200, pirY + 130); ctx.lineTo(pirX - 30, pirY + 130); ctx.closePath(); ctx.fill();
-      // PIR-Fresnel-Streifen (5 Stück)
-      ctx.strokeStyle = 'rgba(251,191,36,.5)'; ctx.lineWidth = 1;
-      for (let i = 1; i <= 5; i++) {
-        ctx.beginPath();
-        const a = -0.4 + i * 0.18;
-        ctx.moveTo(pirX, pirY); ctx.lineTo(pirX + Math.cos(a) * 200, pirY + Math.sin(a + 1) * 130);
-        ctx.stroke();
+      if (pirOn) {
+        drawMelderBox(ctx, pirX, pirY, '#fbbf24', 'PIR');
+        const cone = ctx.createRadialGradient(pirX, pirY, 5, pirX, pirY, 200);
+        cone.addColorStop(0, 'rgba(251,191,36,.35)'); cone.addColorStop(1, 'rgba(251,191,36,0)');
+        ctx.fillStyle = cone; ctx.beginPath();
+        ctx.moveTo(pirX, pirY); ctx.lineTo(pirX + 200, pirY + 130); ctx.lineTo(pirX - 30, pirY + 130); ctx.closePath(); ctx.fill();
+        ctx.strokeStyle = 'rgba(251,191,36,.5)'; ctx.lineWidth = 1;
+        for (let i = 1; i <= 5; i++) {
+          ctx.beginPath();
+          const a = -0.4 + i * 0.18;
+          ctx.moveTo(pirX, pirY); ctx.lineTo(pirX + Math.cos(a) * 200, pirY + Math.sin(a + 1) * 130);
+          ctx.stroke();
+        }
       }
-
-      // MW-Melder oben rechts
       const mwX = W - 100, mwY = 50;
-      drawMelderBox(ctx, mwX, mwY, '#22d3ee', 'MW');
-      // Doppler-Wellen
-      for (let r = 20; r < 180; r += 18) {
-        const a = 1 - r / 200;
-        ctx.strokeStyle = `rgba(34,211,238,${a * 0.55})`; ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.arc(mwX, mwY, r + (t / 80) % 18, Math.PI * 0.3, Math.PI * 0.9); ctx.stroke();
+      if (mwOn) {
+        drawMelderBox(ctx, mwX, mwY, '#22d3ee', 'MW');
+        for (let r = 20; r < 180; r += 18) {
+          const a = 1 - r / 200;
+          ctx.strokeStyle = `rgba(34,211,238,${a * 0.55})`; ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.arc(mwX, mwY, r + (t / 80) % 18, Math.PI * 0.3, Math.PI * 0.9); ctx.stroke();
+        }
       }
 
-      // Person läuft unten
       const py = H - 38;
       ctx.font = '40px sans-serif'; ctx.textAlign = 'center';
       ctx.fillText('🚶', person, py);
 
-      // Erkennungslogik: PIR sieht wenn im Kegel, MW sieht wenn nah
-      const inPir = Math.abs(person - (pirX + 80)) < 110 && true;
-      const inMw  = Math.abs(person - (mwX - 80)) < 110 && true;
+      const inPir = pirOn && Math.abs(person - (pirX + 80)) < 110;
+      const inMw  = mwOn  && Math.abs(person - (mwX - 80))  < 110;
 
       // PIR-LED
       ctx.fillStyle = inPir ? '#ef4444' : '#1e293b';
@@ -264,14 +291,14 @@ window.TEKANIM = (() => {
       if (inMw) { ctx.shadowColor = '#ef4444'; ctx.shadowBlur = 14; }
       ctx.beginPath(); ctx.arc(mwX, mwY + 18, 4, 0, 7); ctx.fill(); ctx.shadowBlur = 0;
 
-      // DUAL-Logik (UND-Verknüpfung)
+      // Logik (UND oder ODER)
       ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'center';
       ctx.fillStyle = '#94a3b8';
-      ctx.fillText('PIR & MW = DUAL', W / 2, H / 2 - 6);
-      const both = inPir && inMw;
-      ctx.fillStyle = both ? '#ef4444' : '#22c55e';
+      ctx.fillText(mode === 'dual' ? 'PIR & MW = DUAL (UND)' : 'PIR ODER MW (mehr Sensibilität)', W / 2, H / 2 - 6);
+      const triggered = mode === 'dual' ? (inPir && inMw) : (inPir || inMw);
+      ctx.fillStyle = triggered ? '#ef4444' : '#22c55e';
       ctx.font = 'bold 13px sans-serif';
-      ctx.fillText(both ? '🚨 ALARM' : '● bereit', W / 2, H / 2 + 14);
+      ctx.fillText(triggered ? '🚨 ALARM' : '● bereit', W / 2, H / 2 + 14);
 
       // Untertitel
       ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'left'; ctx.fillStyle = '#fbbf24';
@@ -286,7 +313,12 @@ window.TEKANIM = (() => {
       ctx.fillText(lbl, x, y + 4);
     }
     requestAnimationFrame(loop.bind(null, cv, draw));
-    return cv;
+    return { canvas: cv, controls: [
+      { type: 'slider', label: 'Geh-Tempo', min: 0.1, max: 2.5, step: 0.1, value: 0.6, onChange: v => speed = v, unit: '×' },
+      { type: 'toggle', label: 'PIR aktiv', value: true, onChange: v => pirOn = v },
+      { type: 'toggle', label: 'MW aktiv',  value: true, onChange: v => mwOn = v },
+      { type: 'button', label: 'Logik: DUAL (UND)', color: '#22d3ee', onClick: btn => { mode = mode === 'dual' ? 'or' : 'dual'; btn.textContent = 'Logik: ' + (mode === 'dual' ? 'DUAL (UND)' : 'ODER'); } },
+    ]};
   }
 
   /* ============ MECHANIK · Tresor mit Riegelwerk ============ */
@@ -294,10 +326,8 @@ window.TEKANIM = (() => {
     const W = 600, H = 220;
     const cv = el('canvas', { class: 'tek-canvas', width: W, height: H });
     const ctx = cv.getContext('2d');
-    let dial = 0, riegel = 0, phase = 0, phaseT = 0;
-    setInterval(() => { phase = (phase + 1) % 3; phaseT = 0; }, 3500);
+    let dial = 0, riegel = 0, locked = true, dialSpeed = 0.04;
     function draw(t) {
-      phaseT += 1/60;
       ctx.clearRect(0, 0, W, H);
       const g = ctx.createLinearGradient(0, 0, 0, H);
       g.addColorStop(0, '#0b1424'); g.addColorStop(1, '#060a13'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
@@ -308,12 +338,11 @@ window.TEKANIM = (() => {
       const sx = cx - sw / 2, sy = cy - sh / 2;
       ctx.fillStyle = '#334155'; ctx.fillRect(sx - 12, sy - 12, sw + 24, sh + 24);
       ctx.fillStyle = '#475569'; ctx.fillRect(sx, sy, sw, sh);
-      // Türrand
       ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 3; ctx.strokeRect(sx + 4, sy + 4, sw - 8, sh - 8);
 
       // Zahlenrad (links)
       const dx = sx + 50, dy = cy;
-      dial += phase === 0 ? 0.04 : 0;
+      dial += dialSpeed;
       ctx.fillStyle = '#0f172a';
       ctx.beginPath(); ctx.arc(dx, dy, 30, 0, 7); ctx.fill();
       ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2; ctx.stroke();
@@ -326,9 +355,8 @@ window.TEKANIM = (() => {
       ctx.beginPath(); ctx.moveTo(dx, dy); ctx.lineTo(dx + Math.cos(-Math.PI/2) * 24, dy + Math.sin(-Math.PI/2) * 24); ctx.stroke();
       ctx.fillStyle = '#22d3ee'; ctx.beginPath(); ctx.arc(dx, dy, 4, 0, 7); ctx.fill();
 
-      // Riegelwerk (4 Bolzen rechts)
-      // riegel: 0 = eingefahren (Tür auf), 1 = ausgefahren (Tür zu)
-      const target = phase === 0 ? 1 : (phase === 1 ? 1 : 0);
+      // Riegelwerk
+      const target = locked ? 1 : 0;
       riegel += (target - riegel) * 0.08;
       const rx = sx + sw - 20;
       for (let i = 0; i < 4; i++) {
@@ -344,12 +372,15 @@ window.TEKANIM = (() => {
       else if (riegel > 0.3) { ctx.fillStyle = '#fbbf24'; ctx.fillText('⚙️ Riegelwerk in Bewegung', 16, 24); }
       else { ctx.fillStyle = '#94a3b8'; ctx.fillText('🔓 entriegelt · Tür kann geöffnet werden', 16, 24); }
 
-      // Logo
       ctx.fillStyle = '#22d3ee'; ctx.font = '10px sans-serif'; ctx.textAlign = 'center';
       ctx.fillText('Wertschutzschrank', cx, sy + sh - 12);
     }
     requestAnimationFrame(loop.bind(null, cv, draw));
-    return cv;
+    return { canvas: cv, controls: [
+      { type: 'button', label: '🔒 Verriegeln',   color: '#22c55e', onClick: () => locked = true },
+      { type: 'button', label: '🔓 Entriegeln',   color: '#fbbf24', onClick: () => locked = false },
+      { type: 'slider', label: 'Rad-Tempo', min: 0, max: 0.15, step: 0.01, value: 0.04, onChange: v => dialSpeed = v, unit: '' },
+    ]};
   }
 
   /* ============ EMA · Zentrale + Bedienteil + Sirene + NSL ============ */
@@ -357,9 +388,10 @@ window.TEKANIM = (() => {
     const W = 600, H = 230;
     const cv = el('canvas', { class: 'tek-canvas', width: W, height: H });
     const ctx = cv.getContext('2d');
-    // Phasen: 0=Standby, 1=Melder löst aus, 2=Zentrale verarbeitet, 3=Sirene+NSL, 4=Quittierung
-    let phase = 0, phaseT = 0;
-    setInterval(() => { phase = (phase + 1) % 5; phaseT = 0; }, 2200);
+    let phase = 0, phaseT = 0, auto = true, period = 2200;
+    let timer = setInterval(() => { if (auto) { phase = (phase + 1) % 5; phaseT = 0; } }, period);
+    function setPhase(p) { phase = p; phaseT = 0; auto = false; }
+    function resumeAuto() { auto = true; }
     function draw(t) {
       phaseT += 1/60;
       ctx.clearRect(0, 0, W, H);
@@ -409,6 +441,10 @@ window.TEKANIM = (() => {
         ['🔐 Quittierung am Bedienteil', '#a855f7'],
       ];
       ctx.fillStyle = labels[phase][1]; ctx.fillText(labels[phase][0], 16, 24);
+      if (auto) {
+        ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'right';
+        ctx.fillStyle = '#4ade80'; ctx.fillText('▶ AUTO', W - 12, 24);
+      }
     }
     function drawWire(ctx, a, b, pulse) {
       ctx.strokeStyle = pulse != null ? '#22d3ee' : '#1e293b'; ctx.lineWidth = 2;
@@ -429,7 +465,14 @@ window.TEKANIM = (() => {
       ctx.fillText(lbl, x, y + 4);
     }
     requestAnimationFrame(loop.bind(null, cv, draw));
-    return cv;
+    return { canvas: cv, controls: [
+      { type: 'button', label: '● Standby',    color: '#22c55e', onClick: () => setPhase(0) },
+      { type: 'button', label: '🚨 Auslösung', color: '#fbbf24', onClick: () => setPhase(1) },
+      { type: 'button', label: '⚙ Zentrale',   color: '#22d3ee', onClick: () => setPhase(2) },
+      { type: 'button', label: '🔊 Sirene/NSL', color: '#ef4444', onClick: () => setPhase(3) },
+      { type: 'button', label: '🔐 Quittierung', color: '#a855f7', onClick: () => setPhase(4) },
+      { type: 'button', label: '▶ Auto',       color: '#4ade80', onClick: () => resumeAuto() },
+    ]};
   }
 
   /* ============ VIDEO · Kamera + IR-LED Nacht-Modus + Recorder ============ */
@@ -437,11 +480,11 @@ window.TEKANIM = (() => {
     const W = 600, H = 220;
     const cv = el('canvas', { class: 'tek-canvas', width: W, height: H });
     const ctx = cv.getContext('2d');
-    let day = true;
-    setInterval(() => { day = !day; }, 4000);
-    let person = 30;
+    let day = true, auto = true;
+    let timer = setInterval(() => { if (auto) day = !day; }, 4000);
+    let person = 30, speed = 0.5, aiOn = true;
     function draw(t) {
-      person += 0.5; if (person > W - 100) person = 30;
+      person += speed; if (person > W - 100) person = 30;
       ctx.clearRect(0, 0, W, H);
       // Hintergrund Tag/Nacht
       const g = ctx.createLinearGradient(0, 0, 0, H);
@@ -485,7 +528,7 @@ window.TEKANIM = (() => {
       ctx.fillStyle = '#fff';
       ctx.fillText('🚶', person, py);
       // Detektions-Box (KI)
-      if (person > cx && person < cx + 280) {
+      if (aiOn && person > cx && person < cx + 280) {
         ctx.strokeStyle = day ? '#22c55e' : '#fbbf24'; ctx.lineWidth = 2;
         ctx.strokeRect(person - 22, py - 36, 44, 44);
         ctx.fillStyle = day ? '#22c55e' : '#fbbf24'; ctx.font = 'bold 10px sans-serif';
@@ -517,7 +560,13 @@ window.TEKANIM = (() => {
       ctx.fillText(day ? '☀ TAG · Farb-Modus' : '🌙 NACHT · IR-Cut deaktiviert · S/W', W - 14, 24);
     }
     requestAnimationFrame(loop.bind(null, cv, draw));
-    return cv;
+    return { canvas: cv, controls: [
+      { type: 'button', label: '☀ Tag',  color: '#fbbf24', onClick: () => { day = true;  auto = false; } },
+      { type: 'button', label: '🌙 Nacht', color: '#ef4444', onClick: () => { day = false; auto = false; } },
+      { type: 'button', label: '▶ Auto', color: '#22c55e', onClick: () => { auto = true; } },
+      { type: 'slider', label: 'Person-Tempo', min: 0.1, max: 2, step: 0.1, value: 0.5, onChange: v => speed = v, unit: '×' },
+      { type: 'toggle', label: 'KI-Detektion', value: true, onChange: v => aiOn = v },
+    ]};
   }
 
   /* ============ Öffentliche Wrapper ============ */
@@ -563,5 +612,9 @@ window.TEKANIM = (() => {
     return el('div');
   }
 
-  return { zone };
+  /* Generischer Wrapper: hängt eine vorhandene Canvas/Control-Karte mit
+     einheitlichem Look um Inhalt anderer Module (Zylinder, HVM, …). */
+  function wrap(opts) { return card(opts); }
+
+  return { zone, card, makeControl };
 })();

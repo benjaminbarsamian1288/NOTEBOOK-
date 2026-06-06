@@ -1,3 +1,29 @@
+/* Alias-Selektoren: andere Module bekommen denselben Look */
+.zyl-anim-card,
+.hvm-anim-card {
+  --c: #fbbf24;
+}
+.zyl-anim-elec { --c: #22d3ee; }
+.hvm-anim-card { --c: #ef4444; }
+.zyl-anim-card,
+.hvm-anim-card {
+  background: linear-gradient(160deg, color-mix(in srgb, var(--c) 14%, var(--surface)), var(--surface) 70%) !important;
+  border: 1px solid color-mix(in srgb, var(--c) 35%, var(--border)) !important;
+  border-left: 4px solid var(--c) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 30px rgba(0,0,0,.3) !important;
+}
+.zyl-anim-head h3 i,
+.hvm-anim-head h3 i { color: var(--c) !important; }
+.zyl-anim-head, .hvm-anim-head { position: relative; }
+.zyl-anim-head::after,
+.hvm-anim-head::after {
+  content: '● LIVE'; position: absolute; top: 0; right: 0;
+  font-size: 10.5px; font-weight: 900; padding: 4px 10px; border-radius: 999px;
+  background: rgba(34,197,94,.18); color: #4ade80; border: 1px solid rgba(34,197,94,.4);
+  letter-spacing: .8px;
+}
+
 /* Technik-Live-Animationskarten – einheitlich für alle Bereiche */
 .tek-card {
   background: linear-gradient(160deg, color-mix(in srgb, var(--c) 14%, var(--surface)), var(--surface) 70%);
@@ -33,4 +59,51 @@
 .tek-legend {
   font-size: 12px; color: var(--text-dim); padding: 8px 12px; border-radius: 10px;
   background: var(--surface-2); border: 1px solid var(--border); line-height: 1.5;
+}
+
+/* Steuerleiste unter Canvas */
+.tek-ctrl {
+  display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+  padding: 10px 12px; border-radius: 12px;
+  background: var(--surface-2); border: 1px solid var(--border);
+}
+.tek-ctrl-item { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+.tek-ctrl-item label { color: var(--text-dim); font-weight: 700; white-space: nowrap; }
+
+/* Slider */
+.tek-ctrl-slider input[type=range] {
+  width: 120px; accent-color: var(--c); height: 4px;
+}
+.tek-ctrl-val {
+  min-width: 38px; text-align: right; font-variant-numeric: tabular-nums;
+  color: var(--c); font-weight: 800; font-size: 12px;
+}
+
+/* Toggle */
+.tek-ctrl-toggle { cursor: pointer; gap: 6px; }
+.tek-ctrl-toggle input[type=checkbox] { display: none; }
+.tek-toggle-slider {
+  position: relative; width: 36px; height: 18px; border-radius: 999px;
+  background: var(--border); transition: background .15s;
+}
+.tek-toggle-slider::after {
+  content: ''; position: absolute; top: 2px; left: 2px;
+  width: 14px; height: 14px; border-radius: 50%; background: #94a3b8;
+  transition: transform .15s, background .15s;
+}
+.tek-ctrl-toggle input:checked + .tek-toggle-slider { background: var(--c); }
+.tek-ctrl-toggle input:checked + .tek-toggle-slider::after { transform: translateX(18px); background: #07101f; }
+.tek-ctrl-lbl { color: var(--text); font-weight: 600; }
+
+/* Button */
+.tek-ctrl-btn {
+  cursor: pointer; padding: 5px 12px; border-radius: 8px; font-weight: 700; font-size: 12px;
+  background: var(--surface); color: var(--bc, var(--c));
+  border: 1px solid var(--bc, var(--c)); transition: all .14s;
+}
+.tek-ctrl-btn:hover { background: var(--bc, var(--c)); color: #07101f; box-shadow: 0 4px 12px color-mix(in srgb, var(--bc, var(--c)) 40%, transparent); }
+.tek-ctrl-btn:active { transform: scale(.96); }
+
+@media (max-width: 520px) {
+  .tek-ctrl-slider input[type=range] { width: 90px; }
 }
