@@ -1,0 +1,36 @@
+/* Technik-Live-Animationskarten – einheitlich für alle Bereiche */
+.tek-card {
+  background: linear-gradient(160deg, color-mix(in srgb, var(--c) 14%, var(--surface)), var(--surface) 70%);
+  border: 1px solid color-mix(in srgb, var(--c) 35%, var(--border));
+  border-left: 4px solid var(--c);
+  border-radius: 16px; padding: 14px;
+  display: flex; flex-direction: column; gap: 10px;
+  box-shadow: 0 8px 30px rgba(0,0,0,.3);
+  margin-bottom: 16px;
+}
+.tek-card-head { display: flex; align-items: center; gap: 12px; }
+.tek-card-ico {
+  width: 40px; height: 40px; flex: 0 0 40px; border-radius: 10px;
+  display: grid; place-items: center; font-size: 17px; color: #07101f;
+  background: var(--c); box-shadow: 0 4px 12px color-mix(in srgb, var(--c) 45%, transparent);
+}
+.tek-card-head h3 { margin: 0; font-size: 16px; }
+.tek-card-head p { margin: 2px 0 0; font-size: 12.5px; color: var(--text-dim); line-height: 1.4; }
+.tek-live {
+  margin-left: auto; font-size: 10.5px; font-weight: 900; padding: 4px 10px; border-radius: 999px;
+  background: rgba(34,197,94,.18); color: #4ade80; border: 1px solid rgba(34,197,94,.4);
+  letter-spacing: .8px; display: inline-flex; align-items: center; gap: 5px;
+}
+.tek-live::before {
+  content: ''; width: 7px; height: 7px; border-radius: 50%; background: #22c55e;
+  box-shadow: 0 0 8px #22c55e; animation: tek-pulse 1.4s infinite;
+}
+@keyframes tek-pulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
+.tek-canvas {
+  display: block; width: 100%; height: auto; max-height: 240px; border-radius: 12px;
+  background: #0b1424; box-shadow: inset 0 0 26px rgba(0,0,0,.4);
+}
+.tek-legend {
+  font-size: 12px; color: var(--text-dim); padding: 8px 12px; border-radius: 10px;
+  background: var(--surface-2); border: 1px solid var(--border); line-height: 1.5;
+}

@@ -447,6 +447,7 @@ window.VIDEOTECH = (() => {
 
   function view() {
     const root = el('div', { class: 'phys-view' });
+    if (window.TEKANIM) root.appendChild(TEKANIM.zone('video'));
     const intro = el('div', { class: 'phys-intro' });
     intro.innerHTML = `<span class="tag">Videotechnik · Deep-Dive</span>
       <h1>Videotechnik – die ganze Bildkette 📹</h1>

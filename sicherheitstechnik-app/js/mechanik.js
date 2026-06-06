@@ -957,6 +957,7 @@ window.MECHANIK = (() => {
 
   function view(d) {
     const root = el('div');
+    if (window.TEKANIM) root.appendChild(TEKANIM.zone('mechanik'));
 
     // Hero
     const hero = el('div', { class:'mech-mainhero' });

@@ -292,8 +292,18 @@ window.V = (() => {
   }
 
   // ---------- PERIMETER ----------
-  function perimeter(d) { return makeCatalogView(d.perimeter, 'Perimeter · Zone 1', 'Zäune, Tore, Schranken, Poller & Sensoren – erste Verteidigungslinie am Grundstücksrand.'); }
-  function aussenhaut(d) { return makeCatalogView(d.aussenhaut, 'Außenhaut · Zone 2', 'Türen, Fenster, Verglasung & Schlösser nach DIN EN 1627–1630 und DIN EN 356.'); }
+  function perimeter(d) {
+    const root = el('div');
+    if (window.TEKANIM) root.appendChild(TEKANIM.zone('perimeter'));
+    root.appendChild(makeCatalogView(d.perimeter, 'Perimeter · Zone 1', 'Zäune, Tore, Schranken, Poller & Sensoren – erste Verteidigungslinie am Grundstücksrand.'));
+    return root;
+  }
+  function aussenhaut(d) {
+    const root = el('div');
+    if (window.TEKANIM) root.appendChild(TEKANIM.zone('aussenhaut'));
+    root.appendChild(makeCatalogView(d.aussenhaut, 'Außenhaut · Zone 2', 'Türen, Fenster, Verglasung & Schlösser nach DIN EN 1627–1630 und DIN EN 356.'));
+    return root;
+  }
   function ema(d) {
     const fake = { intro: d.ema_zka.intro, tables: d.ema_zka.tables };
     // synthesize sub-sections by Kategorie
@@ -308,7 +318,10 @@ window.V = (() => {
       header: t0.header,
       rows: rs
     }));
-    return makeCatalogView(fake, 'EMA · ZKA · NSL', 'Übergeordnete Systeme: Zentralen, Übertragung, NSL-Aufschaltung und Zutrittskontrolle.');
+    const root = el('div');
+    if (window.TEKANIM) root.appendChild(TEKANIM.zone('ema'));
+    root.appendChild(makeCatalogView(fake, 'EMA · ZKA · NSL', 'Übergeordnete Systeme: Zentralen, Übertragung, NSL-Aufschaltung und Zutrittskontrolle.'));
+    return root;
   }
 
   function makeCatalogView(catData, title, sub) {
@@ -406,6 +419,7 @@ window.V = (() => {
       el('h1', { text: 'Melder – Komplettübersicht' }),
       el('p', { text: 'Bewegungs-, Öffnungs-, Glasbruch-, Erschütterungs-, Spezial- und Brandmelder mit VdS-Norm und Detektionsprinzip.' })
     ]));
+    if (window.TEKANIM) root.appendChild(TEKANIM.zone('melder'));
 
     // Detector-card grid above the tables (links into the detail drawers)
     if (d.details) {
