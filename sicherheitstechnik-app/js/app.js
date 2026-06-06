@@ -9,6 +9,7 @@
     klassenlive:  (d) => KLASSEN_LIVE.view(d),
     freqtab:      () => FREQTAB.view(),
     perimeter:    V.perimeter,
+    hvm:          () => HVM.view(),
     aussenhaut:   V.aussenhaut,
     melder:       V.melder,
     mechanik:     (d) => MECHANIK.view(d),
