@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#05080f">
+<title>Sicherheitsmanagement · 3D-Modelle</title>
+<style>
+/* ============ BASIS ============ */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #05080f; --surface: #0d1626; --surface2: #131f35; --border: #1f3358;
+  --text: #e8edf7; --dim: #94a3c4; --mute: #64748b;
+  --cyan: #22d3ee; --green: #22c55e; --yellow: #fbbf24; --red: #ef4444; --purple: #a855f7;
+}
+html, body { height: 100%; }
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background: var(--bg); color: var(--text); overflow-x: hidden;
+}
+#bg { position: fixed; inset: 0; z-index: 0; }
+.wrap { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 20px 16px 60px; }
+
+/* ============ HERO ============ */
+.hero { text-align: center; padding: 34px 10px 26px; position: relative; }
+.hero .shield {
+  width: 86px; height: 86px; margin: 0 auto 14px; border-radius: 24px;
+  display: grid; place-items: center; font-size: 42px;
+  background: linear-gradient(135deg, var(--cyan), var(--purple));
+  box-shadow: 0 0 60px rgba(34,211,238,.55), 0 14px 40px rgba(168,85,247,.4);
+  animation: float 3.4s ease-in-out infinite;
+}
+@keyframes float { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-10px) rotate(2deg); } }
+.hero h1 {
+  font-size: clamp(30px, 6vw, 52px); font-weight: 900; line-height: 1.05;
+  background: linear-gradient(120deg, #fff 10%, var(--cyan) 55%, var(--purple) 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  text-shadow: 0 0 60px rgba(34,211,238,.3);
+}
+.hero p { color: var(--dim); margin-top: 10px; font-size: 15px; max-width: 640px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+.hero .live {
+  display: inline-flex; align-items: center; gap: 8px; margin-top: 14px;
+  font-size: 12px; font-weight: 900; letter-spacing: 1.5px; color: #4ade80;
+  padding: 6px 16px; border-radius: 999px; border: 1px solid rgba(34,197,94,.4);
+  background: rgba(34,197,94,.12);
+}
+.hero .live::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 14px #22c55e; animation: pulse 1.3s infinite; }
+@keyframes pulse { 50% { opacity: .25; transform: scale(1.4); } }
+
+/* ============ MODELL-NAV ============ */
+.nav { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 26px 0; }
+.nav button {
+  position: relative; overflow: hidden; cursor: pointer; text-align: left;
+  padding: 16px; border-radius: 16px; color: var(--text);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--c) 16%, var(--surface)), var(--surface) 70%);
+  border: 1px solid color-mix(in srgb, var(--c) 35%, var(--border));
+  border-top: 4px solid var(--c);
+  transition: transform .18s, box-shadow .18s;
+  font-family: inherit;
+}
+.nav button:hover { transform: translateY(-4px); box-shadow: 0 18px 40px color-mix(in srgb, var(--c) 30%, rgba(0,0,0,.5)); }
+.nav button.on { box-shadow: 0 0 0 2px var(--c), 0 18px 40px color-mix(in srgb, var(--c) 35%, transparent); }
+.nav .ic { font-size: 26px; margin-bottom: 8px; display: block; filter: drop-shadow(0 0 10px var(--c)); }
+.nav strong { display: block; font-size: 15px; }
+.nav span { display: block; font-size: 11.5px; color: var(--dim); margin-top: 3px; line-height: 1.4; }
+@media (max-width: 700px) { .nav { grid-template-columns: 1fr; } }
+
+/* ============ MODELL-PANEL ============ */
+.panel {
+  display: none; border-radius: 20px; padding: 18px;
+  background: linear-gradient(165deg, color-mix(in srgb, var(--c) 10%, var(--surface)), var(--surface) 60%);
+  border: 1px solid color-mix(in srgb, var(--c) 35%, var(--border));
+  box-shadow: 0 20px 60px rgba(0,0,0,.5);
+  animation: rise .45s cubic-bezier(.2,.9,.3,1) both;
+}
+.panel.on { display: block; }
+@keyframes rise { from { opacity: 0; transform: translateY(26px) scale(.98); } to { opacity: 1; transform: none; } }
+.panel h2 { font-size: 22px; margin-bottom: 4px; }
+.panel h2 i { color: var(--c); margin-right: 6px; }
+.panel .sub { color: var(--dim); font-size: 13px; margin-bottom: 12px; line-height: 1.5; }
+.stage { position: relative; border-radius: 14px; overflow: hidden; background: radial-gradient(120% 120% at 50% 0%, #0c1526, #05080f 75%); border: 1px solid var(--border); }
+.stage canvas { display: block; width: 100%; height: auto; cursor: grab; touch-action: none; }
+.stage canvas:active { cursor: grabbing; }
+.hint {
+  position: absolute; bottom: 10px; right: 12px; font-size: 11px; color: var(--mute);
+  background: rgba(5,8,15,.7); padding: 4px 10px; border-radius: 999px; pointer-events: none;
+}
+.ctrl { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 12px;
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; }
+.ctrl label { font-size: 12px; color: var(--dim); font-weight: 700; }
+.ctrl input[type=range] { width: 130px; accent-color: var(--c); }
+.btn {
+  cursor: pointer; padding: 7px 14px; border-radius: 9px; font-size: 12.5px; font-weight: 800;
+  background: var(--surface); color: var(--bc, var(--c)); border: 1px solid var(--bc, var(--c));
+  transition: all .15s; font-family: inherit;
+}
+.btn:hover { background: var(--bc, var(--c)); color: #05080f; box-shadow: 0 0 18px color-mix(in srgb, var(--bc, var(--c)) 55%, transparent); }
+.btn:active { transform: scale(.95); }
+.legend { margin-top: 10px; font-size: 12px; color: var(--dim); line-height: 1.6;
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; }
+.legend b { color: var(--c); }
+.foot { text-align: center; color: var(--mute); font-size: 12px; margin-top: 34px; line-height: 1.7; }
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="shield">🛡️</div>
+    <h1>Sicherheitsmanagement<br>3D-Modelle</h1>
+    <p>Drei interaktive Modelle der Sicherheitstechnik – <b>ziehen zum Drehen</b>, Regler &amp; Knöpfe zum Steuern.
+    Zonen-Schutz · Schließzylinder · Alarm-Kette. Läuft komplett offline per Doppelklick.</p>
+    <span class="live">LIVE · 3 MODELLE</span>
+  </header>
+
+  <nav class="nav">
+    <button class="on" data-m="m1" style="--c:#22c55e">
+      <span class="ic">🏠</span><strong>Modell 1 · Zonen-Festung 3D</strong>
+      <span>4 Schutzzonen als drehbare 3D-Festung. Eindringling bricht Zone für Zone durch.</span>
+    </button>
+    <button data-m="m2" style="--c:#fbbf24">
+      <span class="ic">🔑</span><strong>Modell 2 · Schließzylinder 3D</strong>
+      <span>Stiftzylinder im Querschnitt: Schlüssel rein, Stifte auf Scherlinie, Kern dreht.</span>
+    </button>
+    <button data-m="m3" style="--c:#22d3ee">
+      <span class="ic">📡</span><strong>Modell 3 · Alarm-Netz 3D</strong>
+      <span>Komplette Alarmkette als 3D-Anlage: Sensoren → Zentrale → Sirene + NSL-Uplink.</span>
+    </button>
+  </nav>
+
+  <!-- ============ MODELL 1 ============ -->
+  <section class="panel on" id="m1" style="--c:#22c55e">
+    <h2>🏠 Zonen-Festung 3D</h2>
+    <p class="sub">Das Zwiebelprinzip als 3D-Modell: <b>Zone 1 Perimeter</b> (Zaun) → <b>Zone 2 Außenhaut</b> (Gebäude) →
+    <b>Zone 3 Innenraum</b> → <b>Zone 4 Wertschutz</b> (Tresor). Der Eindringling läuft an – jede durchbrochene Zone blitzt auf.</p>
+    <div class="stage">
+      <canvas id="cv1" width="1040" height="560"></canvas>
+      <span class="hint">🖱️ ziehen = drehen</span>
+    </div>
+    <div class="ctrl">
+      <button class="btn" style="--bc:#ef4444" id="m1-attack">🥷 Angriff starten</button>
+      <button class="btn" style="--bc:#22c55e" id="m1-reset">↺ Zurücksetzen</button>
+      <label>Drehung</label><input type="range" id="m1-spin" min="0" max="2" step="0.1" value="0.4">
+      <label>Zoom</label><input type="range" id="m1-zoom" min="0.6" max="1.6" step="0.05" value="1">
+    </div>
+    <div class="legend"><b>Zonen-Farben:</b> 🟩 Zone 1 Zaun · 🟨 Zone 2 Gebäudehülle · 🟧 Zone 3 Innenraum · 🟥 Zone 4 Tresor.
+    Jede Zone hält den Täter Sekunden auf – zusammen genug Zeit für Alarm + Intervention.</div>
+  </section>
+
+  <!-- ============ MODELL 2 ============ -->
+  <section class="panel" id="m2" style="--c:#fbbf24">
+    <h2>🔑 Schließzylinder 3D</h2>
+    <p class="sub">Profilzylinder im Schnitt mit Tiefen-Effekt: Der Schlüssel hebt 5 federbelastete Stiftpaare exakt auf die
+    <b>Scherlinie</b> – nur dann dreht der Kern. Falscher Schlüssel = Stifte blockieren.</p>
+    <div class="stage">
+      <canvas id="cv2" width="1040" height="540"></canvas>
+      <span class="hint">🖱️ ziehen = kippen</span>
+    </div>
+    <div class="ctrl">
+      <label>Schlüssel</label><input type="range" id="m2-key" min="0" max="100" value="0">
+      <button class="btn" style="--bc:#22c55e" id="m2-good">🔑 Richtiger Schlüssel</button>
+      <button class="btn" style="--bc:#ef4444" id="m2-bad">🪛 Falscher Schlüssel</button>
+      <button class="btn" style="--bc:#22d3ee" id="m2-auto">▶ Auto-Demo</button>
+    </div>
+    <div class="legend"><b>Scherlinie</b> = Trennfuge zwischen Kern und Gehäuse. Stehen alle Stift-Trennstellen exakt darauf,
+    ist der Kern frei. Gehäusestifte (grau) + Kernstifte (gold) + Federn – wie bei ABUS, BKS &amp; Co.</div>
+  </section>
+
+  <!-- ============ MODELL 3 ============ -->
+  <section class="panel" id="m3" style="--c:#22d3ee">
+    <h2>📡 Alarm-Netz 3D</h2>
+    <p class="sub">Eine komplette Anlage in 3D: PIR, Magnetkontakt, Kamera und Zaun-Sensor melden an die <b>EMA-Zentrale</b> –
+    die schaltet <b>Sirene</b> und funkt zur <b>NSL</b> (Leitstelle) über den Satelliten-Uplink.</p>
+    <div class="stage">
+      <canvas id="cv3" width="1040" height="560"></canvas>
+      <span class="hint">🖱️ ziehen = drehen</span>
+    </div>
+    <div class="ctrl">
+      <button class="btn" style="--bc:#fbbf24" id="m3-trig">🚨 Alarm auslösen</button>
+      <button class="btn" style="--bc:#22c55e" id="m3-calm">● Scharf / Ruhe</button>
+      <label>Drehung</label><input type="range" id="m3-spin" min="0" max="2" step="0.1" value="0.35">
+    </div>
+    <div class="legend"><b>Kette:</b> Sensor erkennt → Puls läuft über den BUS zur Zentrale → Zentrale prüft → Sirene heult (Wellen) +
+    Uplink zur NSL ✨ → Leitstelle alarmiert Intervention. Genau so arbeitet eine EMA nach DIN EN 50131.</div>
+  </section>
+
+  <div class="foot">
+    Sicherheitsmanagement · 3 Modelle · läuft offline per Doppelklick<br>
+    Zonen-Festung · Schließzylinder · Alarm-Netz — alle Animationen in Echtzeit (Canvas 2D, 3D-Projektion)
+  </div>
+</div>
+
+<script>
+/* ================= PARTIKEL-HINTERGRUND ================= */
+(() => {
+  const cv = document.getElementById('bg'), ctx = cv.getContext('2d');
+  let W, H, parts = [];
+  function fit() {
+    W = cv.width = innerWidth; H = cv.height = innerHeight;
+    if (!parts.length) parts = Array.from({ length: 70 }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - .5) * .3, vy: (Math.random() - .5) * .3,
+      r: Math.random() * 1.8 + .6,
+      c: ['#22d3ee', '#a855f7', '#22c55e'][Math.random() * 3 | 0]
+    }));
+  }
+  addEventListener('resize', fit); fit();
+  let t = 0;
+  (function draw() {
+    t += .004;
+    ctx.clearRect(0, 0, W, H);
+    // wandernde Glow-Blobs
+    [['#22d3ee', .35, .3, .10], ['#a855f7', .7, .65, .08], ['#22c55e', .2, .8, .06]].forEach(([c, fx, fy, a], i) => {
+      const x = W * (fx + Math.sin(t * (1 + i * .3)) * .12), y = H * (fy + Math.cos(t * (.8 + i * .25)) * .12);
+      const g = ctx.createRadialGradient(x, y, 0, x, y, Math.max(W, H) * .4);
+      g.addColorStop(0, c); g.addColorStop(1, 'transparent');
+      ctx.globalAlpha = a; ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    });
+    ctx.globalAlpha = 1;
+    for (const p of parts) {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > W) p.vx *= -1;
+      if (p.y < 0 || p.y > H) p.vy *= -1;
+      ctx.globalAlpha = .6; ctx.fillStyle = p.c;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 7); ctx.fill();
+    }
+    // Verbindungen
+    ctx.lineWidth = 1;
+    for (let i = 0; i < parts.length; i++) for (let j = i + 1; j < parts.length; j++) {
+      const a = parts[i], b = parts[j], d = Math.hypot(a.x - b.x, a.y - b.y);
+      if (d < 110) { ctx.globalAlpha = .10 * (1 - d / 110); ctx.strokeStyle = a.c; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+    }
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(draw);
+  })();
+})();
+
+/* ================= NAV ================= */
+document.querySelectorAll('.nav button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.nav button').forEach(x => x.classList.toggle('on', x === b));
+    document.querySelectorAll('.panel').forEach(p => p.classList.toggle('on', p.id === b.dataset.m));
+  });
+});
+
+/* ================= 3D-HELFER ================= */
+function makeCam(canvas) {
+  return {
+    rotY: 0.7, rotX: 0.42, zoom: 1, auto: 0.4,
+    project(p, W, H) {
+      // Rotation um Y dann X, simple Perspektive
+      const cy = Math.cos(this.rotY), sy = Math.sin(this.rotY);
+      const cx = Math.cos(this.rotX), sx = Math.sin(this.rotX);
+      let x = p[0] * cy - p[2] * sy;
+      let z = p[0] * sy + p[2] * cy;
+      let y = p[1] * cx - z * sx;
+      z = p[1] * sx + z * cx;
+      const d = 900, s = d / (d + z) * this.zoom;
+      return [W / 2 + x * s, H / 2 + y * s, s, z];
+    },
+    attach(canvas) {
+      let drag = null;
+      const down = e => { const t = e.touches ? e.touches[0] : e; drag = { x: t.clientX, y: t.clientY, ry: this.rotY, rx: this.rotX }; };
+      const move = e => {
+        if (!drag) return;
+        const t = e.touches ? e.touches[0] : e;
+        this.rotY = drag.ry + (t.clientX - drag.x) * .008;
+        this.rotX = Math.max(.1, Math.min(1.2, drag.rx + (t.clientY - drag.y) * .005));
+        if (e.cancelable) e.preventDefault();
+      };
+      const up = () => drag = null;
+      canvas.addEventListener('mousedown', down); addEventListener('mousemove', move); addEventListener('mouseup', up);
+      canvas.addEventListener('touchstart', down, { passive: true });
+      canvas.addEventListener('touchmove', move, { passive: false });
+      canvas.addEventListener('touchend', up);
+      return this;
+    }
+  };
+}
+function line3(ctx, cam, a, b, W, H, color, width, glow) {
+  const p1 = cam.project(a, W, H), p2 = cam.project(b, W, H);
+  ctx.save();
+  if (glow) { ctx.shadowColor = color; ctx.shadowBlur = glow; }
+  ctx.strokeStyle = color; ctx.lineWidth = width || 1.5;
+  ctx.beginPath(); ctx.moveTo(p1[0], p1[1]); ctx.lineTo(p2[0], p2[1]); ctx.stroke();
+  ctx.restore();
+}
+function boxEdges(x, y, z, w, h, d) {
+  // y nach OBEN negativ (Bildschirm-y wächst nach unten)
+  const c = [
+    [x - w/2, y, z - d/2], [x + w/2, y, z - d/2], [x + w/2, y, z + d/2], [x - w/2, y, z + d/2],
+    [x - w/2, y - h, z - d/2], [x + w/2, y - h, z - d/2], [x + w/2, y - h, z + d/2], [x - w/2, y - h, z + d/2],
+  ];
+  return [[c[0],c[1]],[c[1],c[2]],[c[2],c[3]],[c[3],c[0]],
+          [c[4],c[5]],[c[5],c[6]],[c[6],c[7]],[c[7],c[4]],
+          [c[0],c[4]],[c[1],c[5]],[c[2],c[6]],[c[3],c[7]]];
+}
+function dot3(ctx, cam, p, W, H, r, color, glow) {
+  const q = cam.project(p, W, H);
+  ctx.save();
+  if (glow) { ctx.shadowColor = color; ctx.shadowBlur = glow; }
+  ctx.fillStyle = color; ctx.beginPath(); ctx.arc(q[0], q[1], r * q[2], 0, 7); ctx.fill();
+  ctx.restore();
+  return q;
+}
+function label3(ctx, cam, p, W, H, text, color) {
+  const q = cam.project(p, W, H);
+  ctx.fillStyle = color; ctx.font = 'bold ' + Math.max(9, 12 * q[2]) + 'px sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText(text, q[0], q[1]);
+}
+
+/* ================= MODELL 1 · ZONEN-FESTUNG ================= */
+(() => {
+  const cv = document.getElementById('cv1'), ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  const cam = makeCam().attach(cv);
+  document.getElementById('m1-spin').addEventListener('input', e => cam.auto = +e.target.value);
+  document.getElementById('m1-zoom').addEventListener('input', e => cam.zoom = +e.target.value);
+
+  // Eindringling-Status
+  let attack = false, prog = 0, log = [];
+  const zonesR = [330, 210, 130, 55]; // Radien der Zonen (x/z)
+  const zoneCols = ['#22c55e', '#fbbf24', '#f97316', '#ef4444'];
+  const zoneNames = ['Zone 1 · Zaun', 'Zone 2 · Hülle', 'Zone 3 · Innenraum', 'Zone 4 · Tresor'];
+  let flashes = [0, 0, 0, 0];
+
+  document.getElementById('m1-attack').addEventListener('click', () => { attack = true; prog = 0; log = []; flashes = [0,0,0,0]; });
+  document.getElementById('m1-reset').addEventListener('click', () => { attack = false; prog = 0; log = []; flashes = [0,0,0,0]; });
+
+  let t = 0;
+  (function draw() {
+    if (!cv.isConnected) return;
+    t += 1/60;
+    cam.rotY += cam.auto * 0.004;
+    ctx.clearRect(0, 0, W, H);
+
+    // Boden-Grid
+    ctx.globalAlpha = .5;
+    for (let i = -4; i <= 4; i++) {
+      line3(ctx, cam, [i * 100, 0, -400], [i * 100, 0, 400], W, H, 'rgba(34,211,238,.10)', 1);
+      line3(ctx, cam, [-400, 0, i * 100], [400, 0, i * 100], W, H, 'rgba(34,211,238,.10)', 1);
+    }
+    ctx.globalAlpha = 1;
+
+    // Zone 1: Zaun (Pfosten + Ringe)
+    const r1 = zonesR[0];
+    const fencePosts = 28;
+    for (let i = 0; i < fencePosts; i++) {
+      const a = i / fencePosts * Math.PI * 2;
+      const x = Math.cos(a) * r1, z = Math.sin(a) * r1;
+      line3(ctx, cam, [x, 0, z], [x, -46, z], W, H, flashes[0] > 0 ? '#ef4444' : '#22c55e', 1.6, flashes[0] > 0 ? 12 : 5);
+    }
+    // Zaun-Querringe
+    for (const hy of [-14, -30, -46]) {
+      for (let i = 0; i < fencePosts; i++) {
+        const a1 = i / fencePosts * Math.PI * 2, a2 = (i + 1) / fencePosts * Math.PI * 2;
+        line3(ctx, cam, [Math.cos(a1) * r1, hy, Math.sin(a1) * r1], [Math.cos(a2) * r1, hy, Math.sin(a2) * r1], W, H,
+          flashes[0] > 0 ? 'rgba(239,68,68,.7)' : 'rgba(34,197,94,.55)', 1.1);
+      }
+    }
+
+    // Zone 2: Gebäude (Box + pulsierender Rahmen)
+    const pulse2 = 1 + Math.sin(t * 2) * 0.012;
+    boxEdges(0, 0, 0, zonesR[1] * 1.25 * pulse2, 120, zonesR[1] * 1.25 * pulse2).forEach(e =>
+      line3(ctx, cam, e[0], e[1], W, H, flashes[1] > 0 ? '#ef4444' : '#fbbf24', 2, flashes[1] > 0 ? 14 : 7));
+    // Dach (Pyramide)
+    const g2 = zonesR[1] * 1.25 * pulse2 / 2;
+    [[-g2,-120,-g2],[g2,-120,-g2],[g2,-120,g2],[-g2,-120,g2]].forEach(p =>
+      line3(ctx, cam, p, [0, -175, 0], W, H, flashes[1] > 0 ? '#ef4444' : '#f59e0b', 1.6, 5));
+
+    // Zone 3: Innenraum
+    boxEdges(0, 0, 0, zonesR[2] * 1.3, 78, zonesR[2] * 1.3).forEach(e =>
+      line3(ctx, cam, e[0], e[1], W, H, flashes[2] > 0 ? '#ef4444' : '#f97316', 1.7, flashes[2] > 0 ? 14 : 5));
+
+    // Zone 4: Tresor (massiv, doppelt)
+    boxEdges(0, 0, 0, zonesR[3] * 1.6, 52, zonesR[3] * 1.6).forEach(e =>
+      line3(ctx, cam, e[0], e[1], W, H, flashes[3] > 0 ? '#ff6b6b' : '#ef4444', 2.4, 10));
+    boxEdges(0, 0, 0, zonesR[3] * 1.25, 44, zonesR[3] * 1.25).forEach(e =>
+      line3(ctx, cam, e[0], e[1], W, H, 'rgba(239,68,68,.5)', 1.2));
+    label3(ctx, cam, [0, -70, 0], W, H, '💰', '#fff');
+
+    // Zonen-Labels
+    label3(ctx, cam, [zonesR[0], -62, 0], W, H, 'ZONE 1', zoneCols[0]);
+    label3(ctx, cam, [zonesR[1] * .9, -135, 0], W, H, 'ZONE 2', zoneCols[1]);
+    label3(ctx, cam, [zonesR[2] * .9, -92, 0], W, H, 'ZONE 3', zoneCols[2]);
+    label3(ctx, cam, [0, -88, zonesR[3] * 1.4], W, H, 'ZONE 4', zoneCols[3]);
+
+    // Eindringling
+    if (attack) {
+      prog += 0.0024;
+      if (prog >= 1) { attack = false; }
+      const startR = 460;
+      const r = startR - prog * (startR - 10);
+      const a = -0.6;
+      const ix = Math.cos(a) * r, iz = Math.sin(a) * r;
+      // Zonen-Durchbruch prüfen
+      zonesR.forEach((zr, zi) => {
+        if (r < zr && flashes[zi] === 0) {
+          flashes[zi] = 1.6;
+          log.unshift({ txt: '🚨 ' + zoneNames[zi] + ' durchbrochen!', t: t });
+          if (log.length > 4) log.pop();
+        }
+      });
+      // Spur
+      for (let k = 0; k < 8; k++) {
+        const rr = r + k * 9;
+        if (rr < startR) dot3(ctx, cam, [Math.cos(a) * rr, -4, Math.sin(a) * rr], W, H, 2.4 - k * .25, `rgba(239,68,68,${.6 - k * .07})`, 0);
+      }
+      const q = dot3(ctx, cam, [ix, -8, iz], W, H, 7, '#ef4444', 22);
+      ctx.font = 'bold ' + (20 * q[2]) + 'px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('🥷', q[0], q[1] - 12 * q[2]);
+    }
+    flashes = flashes.map(f => Math.max(0, f - 1/60));
+
+    // HUD
+    ctx.font = 'bold 14px sans-serif'; ctx.textAlign = 'left';
+    const breached = flashes.filter(f => f > 0).length || log.length;
+    ctx.fillStyle = attack ? '#ef4444' : '#22c55e';
+    ctx.fillText(attack ? '🚨 ANGRIFF LÄUFT…' : (log.length ? '⚠ Angriff beendet – ' + log.length + ' Zonen durchbrochen' : '● Anlage scharf · 4 Zonen aktiv'), 18, 30);
+    // Log
+    ctx.font = '12px sans-serif';
+    log.forEach((l, i) => {
+      ctx.fillStyle = `rgba(251,191,36,${1 - i * .22})`;
+      ctx.fillText(l.txt, 18, 54 + i * 18);
+    });
+    requestAnimationFrame(draw);
+  })();
+})();
+
+/* ================= MODELL 2 · SCHLIESSZYLINDER ================= */
+(() => {
+  const cv = document.getElementById('cv2'), ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  let tilt = 0.12, drag = null;
+  cv.addEventListener('mousedown', e => drag = { y: e.clientY, t: tilt });
+  addEventListener('mousemove', e => { if (drag) tilt = Math.max(-0.1, Math.min(0.4, drag.t + (e.clientY - drag.y) * .002)); });
+  addEventListener('mouseup', () => drag = null);
+  cv.addEventListener('touchstart', e => drag = { y: e.touches[0].clientY, t: tilt }, { passive: true });
+  cv.addEventListener('touchmove', e => { if (drag) tilt = Math.max(-0.1, Math.min(0.4, drag.t + (e.touches[0].clientY - drag.y) * .002)); }, { passive: true });
+  cv.addEventListener('touchend', () => drag = null);
+
+  let keyPos = 0, keyKind = 'right', rot = 0, auto = true, sparks = [];
+  const keySlider = document.getElementById('m2-key');
+  keySlider.addEventListener('input', () => { keyPos = +keySlider.value / 100; auto = false; });
+  document.getElementById('m2-good').addEventListener('click', () => keyKind = 'right');
+  document.getElementById('m2-bad').addEventListener('click', () => { keyKind = 'wrong'; });
+  document.getElementById('m2-auto').addEventListener('click', () => auto = true);
+
+  const pins = [
+    { cut: 22 }, { cut: 34 }, { cut: 16 }, { cut: 28 }, { cut: 25 },
+  ];
+  const wrongCuts = [30, 18, 28, 14, 33];
+
+  let t = 0;
+  (function draw() {
+    if (!cv.isConnected) return;
+    t += 1/60;
+    if (auto) {
+      const c = (t * .35) % 5;
+      keyPos = c < 1.6 ? c / 1.6 : (c < 2.8 ? 1 : (c < 4.4 ? 1 - (c - 2.8) / 1.6 : 0));
+      keySlider.value = String(Math.round(keyPos * 100));
+    }
+    const targetRot = (keyPos > .96 && keyKind === 'right') ? 1 : 0;
+    rot += (targetRot - rot) * .08;
+    // Funken bei falschem Schlüssel ganz drin
+    if (keyPos > .96 && keyKind === 'wrong' && Math.random() < .3) {
+      sparks.push({ x: W/2 + (Math.random()-.5)*180, y: H/2 - 40 + Math.random()*40, vx: (Math.random()-.5)*3, vy: -Math.random()*2.5, l: 1 });
+    }
+
+    ctx.clearRect(0, 0, W, H);
+    const skew = tilt; // 3D-Kipp-Effekt
+    const cx = W/2, cy = H/2 + 20;
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.transform(1, skew * .4, 0, 1, 0, 0);
+    ctx.translate(-cx, -cy);
+
+    // ===== Gehäuse (Messing, Profilzylinder-Form) =====
+    const bw = 560, bh = 150, bx = cx - bw/2, by = cy - 40 - bh/2;
+    // Tiefe (3D-Seite)
+    const dep = 26 * (1 + skew);
+    ctx.fillStyle = '#7a5b14';
+    ctx.beginPath();
+    ctx.moveTo(bx + bw, by); ctx.lineTo(bx + bw + dep, by - dep * .6);
+    ctx.lineTo(bx + bw + dep, by + bh - dep * .6); ctx.lineTo(bx + bw, by + bh); ctx.fill();
+    ctx.fillStyle = '#8a6a1c';
+    ctx.beginPath();
+    ctx.moveTo(bx, by); ctx.lineTo(bx + dep, by - dep * .6);
+    ctx.lineTo(bx + bw + dep, by - dep * .6); ctx.lineTo(bx + bw, by); ctx.fill();
+    // Front
+    const bodyG = ctx.createLinearGradient(0, by, 0, by + bh);
+    bodyG.addColorStop(0, '#d4af37'); bodyG.addColorStop(.5, '#b8912a'); bodyG.addColorStop(1, '#8a6a1c');
+    ctx.fillStyle = bodyG;
+    ctx.fillRect(bx, by, bw, bh);
+    ctx.strokeStyle = '#5c470f'; ctx.lineWidth = 2; ctx.strokeRect(bx, by, bw, bh);
+    // Profil-Unterteil (Steg)
+    const stw = 120, stx = cx - stw/2, sty = by + bh, sth = 90;
+    const stG = ctx.createLinearGradient(0, sty, 0, sty + sth);
+    stG.addColorStop(0, '#b8912a'); stG.addColorStop(1, '#7a5b14');
+    ctx.fillStyle = stG;
+    ctx.fillRect(stx, sty, stw, sth);
+    ctx.strokeStyle = '#5c470f'; ctx.strokeRect(stx, sty, stw, sth);
+    // Befestigungs-Schraubloch
+    ctx.fillStyle = '#3a2d08';
+    ctx.beginPath(); ctx.arc(cx, sty + sth - 26, 11, 0, 7); ctx.fill();
+    ctx.strokeStyle = '#d4af37'; ctx.lineWidth = 1.5; ctx.stroke();
+
+    // ===== Kern (drehbar) =====
+    const coreR = 52, coreY = by + bh - 36;
+    ctx.save();
+    ctx.translate(cx, coreY);
+    ctx.rotate(rot * Math.PI / 2);
+    const coreG = ctx.createRadialGradient(-12, -12, 0, 0, 0, coreR);
+    coreG.addColorStop(0, '#f1f5f9'); coreG.addColorStop(.55, '#cbd5e1'); coreG.addColorStop(1, '#64748b');
+    ctx.fillStyle = coreG;
+    ctx.beginPath(); ctx.arc(0, 0, coreR, 0, 7); ctx.fill();
+    ctx.strokeStyle = rot > .5 ? '#22c55e' : '#334155'; ctx.lineWidth = 3;
+    if (rot > .5) { ctx.shadowColor = '#22c55e'; ctx.shadowBlur = 24; }
+    ctx.stroke(); ctx.shadowBlur = 0;
+    // Schlüsselkanal
+    ctx.fillStyle = '#0b1424';
+    ctx.fillRect(-coreR + 9, -5, coreR * 2 - 18, 10);
+    ctx.fillRect(-4, -coreR + 10, 8, coreR - 6);
+    ctx.restore();
+
+    // ===== Scherlinie =====
+    const shearY = coreY - coreR;
+    ctx.setLineDash([8, 5]);
+    ctx.strokeStyle = 'rgba(251,191,36,.85)'; ctx.lineWidth = 1.6;
+    ctx.beginPath(); ctx.moveTo(bx + 14, shearY); ctx.lineTo(bx + bw - 14, shearY); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText('SCHERLINIE', bx + 16, shearY - 8);
+
+    // ===== Stifte =====
+    const pinX0 = cx - 100, gap = 50;
+    const lift = Math.max(0, (keyPos - .45) / .55);
+    pins.forEach((p, i) => {
+      const px = pinX0 + i * gap;
+      const cut = keyKind === 'right' ? p.cut : wrongCuts[i];
+      const liftNow = cut * lift * (keyPos > .1 ? 1 : 0);
+      // Bohrung
+      ctx.fillStyle = 'rgba(0,0,0,.25)';
+      ctx.fillRect(px - 8, by + 10, 16, coreY - by - 12);
+      // Feder
+      ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1.4;
+      const springTop = by + 16, springBottom = coreY - coreR - 24 - liftNow + p.cut;
+      ctx.beginPath();
+      let z = 0;
+      for (let y = springTop; y < springBottom; y += 5) { ctx.lineTo(px + (z % 2 ? 6 : -6), y); z++; }
+      ctx.stroke();
+      // Gehäusestift
+      const upLen = 30;
+      const upBottom = shearY - liftNow + cut;
+      const aligned = keyKind === 'right' && Math.abs(upBottom - shearY) < 2 && lift > .92;
+      const ug = ctx.createLinearGradient(px - 7, 0, px + 7, 0);
+      ug.addColorStop(0, '#e2e8f0'); ug.addColorStop(.5, aligned ? '#4ade80' : '#94a3b8'); ug.addColorStop(1, '#64748b');
+      ctx.fillStyle = ug;
+      ctx.fillRect(px - 7, upBottom - upLen, 14, upLen);
+      // Kernstift (gold)
+      const lowLen = cut;
+      const kg = ctx.createLinearGradient(px - 7, 0, px + 7, 0);
+      kg.addColorStop(0, '#fef3c7'); kg.addColorStop(.5, keyKind === 'right' ? '#fbbf24' : '#ef4444'); kg.addColorStop(1, '#b45309');
+      ctx.fillStyle = kg;
+      ctx.fillRect(px - 7, upBottom, 14, lowLen);
+      // Spitze
+      ctx.beginPath();
+      ctx.moveTo(px - 7, upBottom + lowLen); ctx.lineTo(px, upBottom + lowLen + 7); ctx.lineTo(px + 7, upBottom + lowLen);
+      ctx.fill();
+    });
+
+    // ===== Schlüssel =====
+    const keyStartX = bx - 230, keyEndX = cx - coreR + 100;
+    const kx = keyStartX + (keyEndX - keyStartX) * keyPos;
+    const ky = coreY;
+    ctx.save();
+    ctx.translate(kx, ky);
+    ctx.rotate(rot * Math.PI / 2 * (keyPos > .9 ? 1 : 0));
+    // Reide
+    const rG = ctx.createRadialGradient(-160, 0, 4, -160, 0, 34);
+    rG.addColorStop(0, keyKind === 'right' ? '#fef3c7' : '#e2e8f0');
+    rG.addColorStop(.6, keyKind === 'right' ? '#fbbf24' : '#94a3b8');
+    rG.addColorStop(1, keyKind === 'right' ? '#92400e' : '#475569');
+    ctx.fillStyle = rG;
+    ctx.beginPath(); ctx.arc(-160, 0, 32, 0, 7); ctx.fill();
+    ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = '#0b1424';
+    ctx.beginPath(); ctx.arc(-160, 0, 10, 0, 7); ctx.fill();
+    // Schaft mit Zacken
+    ctx.fillStyle = keyKind === 'right' ? '#fbbf24' : '#94a3b8';
+    ctx.beginPath();
+    ctx.moveTo(-130, -6); ctx.lineTo(195, -6);
+    ctx.lineTo(195, 6);
+    const cuts = keyKind === 'right' ? pins.map(p => p.cut) : wrongCuts;
+    for (let i = pins.length - 1; i >= 0; i--) {
+      const zx = 45 + i * 30;
+      ctx.lineTo(zx + 12, 6);
+      ctx.lineTo(zx + 6, 6 + cuts[i] * .45);
+      ctx.lineTo(zx, 6);
+    }
+    ctx.lineTo(-130, 6);
+    ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 1.2; ctx.stroke();
+    ctx.restore();
+
+    ctx.restore(); // Ende Kipp-Transform
+
+    // Funken
+    sparks = sparks.filter(s => s.l > 0);
+    sparks.forEach(s => {
+      s.x += s.vx; s.y += s.vy; s.vy += .15; s.l -= .04;
+      ctx.globalAlpha = s.l;
+      ctx.fillStyle = '#fbbf24';
+      ctx.shadowColor = '#fbbf24'; ctx.shadowBlur = 8;
+      ctx.fillRect(s.x, s.y, 2.5, 2.5);
+      ctx.shadowBlur = 0;
+    });
+    ctx.globalAlpha = 1;
+
+    // HUD
+    ctx.font = 'bold 15px sans-serif'; ctx.textAlign = 'left';
+    if (rot > .6) { ctx.fillStyle = '#22c55e'; ctx.fillText('🔓 KERN DREHT · alle Stifte auf der Scherlinie', 18, 32); }
+    else if (keyPos > .95 && keyKind === 'wrong') { ctx.fillStyle = '#ef4444'; ctx.fillText('🚫 BLOCKIERT · Stifte stehen falsch', 18, 32); }
+    else if (keyPos > .05) { ctx.fillStyle = '#fbbf24'; ctx.fillText('🔑 Schlüssel hebt die Stifte…', 18, 32); }
+    else { ctx.fillStyle = '#94a3c4'; ctx.fillText('Schlüssel einstecken (Slider oder Auto-Demo)', 18, 32); }
+    requestAnimationFrame(draw);
+  })();
+})();
+
+/* ================= MODELL 3 · ALARM-NETZ ================= */
+(() => {
+  const cv = document.getElementById('cv3'), ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  const cam = makeCam().attach(cv);
+  cam.rotX = 0.5;
+  document.getElementById('m3-spin').addEventListener('input', e => cam.auto = +e.target.value);
+
+  // Komponenten im Raum
+  const central = { p: [0, -34, 0], name: 'EMA-Zentrale', col: '#22d3ee', ic: '🏛' };
+  const sensors = [
+    { p: [-260, -30, -160], name: 'PIR', col: '#fbbf24', ic: '👁' },
+    { p: [250, -30, -190], name: 'Kamera', col: '#ef4444', ic: '📹' },
+    { p: [-240, -30, 190], name: 'Magnetkontakt', col: '#22c55e', ic: '🚪' },
+    { p: [260, -30, 180], name: 'Zaun-Sensor', col: '#a855f7', ic: '〰' },
+  ];
+  const sirene = { p: [80, -150, 0], name: 'Sirene', col: '#ef4444', ic: '🔊' };
+  const nsl = { p: [330, -260, -260], name: 'NSL ☁', col: '#22c55e', ic: '📡' };
+
+  let alarm = false, phase = 0, phaseT = 0;
+  document.getElementById('m3-trig').addEventListener('click', () => { alarm = true; phase = 1; phaseT = 0; });
+  document.getElementById('m3-calm').addEventListener('click', () => { alarm = false; phase = 0; phaseT = 0; });
+
+  let t = 0;
+  (function draw() {
+    if (!cv.isConnected) return;
+    t += 1/60; phaseT += 1/60;
+    cam.rotY += cam.auto * 0.004;
+    if (alarm) {
+      if (phase === 1 && phaseT > 1.4) { phase = 2; phaseT = 0; }
+      else if (phase === 2 && phaseT > 1.2) { phase = 3; phaseT = 0; }
+      else if (phase === 3 && phaseT > 3.4) { phase = 1; phaseT = 0; }
+    }
+    ctx.clearRect(0, 0, W, H);
+
+    // Boden-Grid
+    for (let i = -4; i <= 4; i++) {
+      line3(ctx, cam, [i * 100, 0, -400], [i * 100, 0, 400], W, H, 'rgba(34,211,238,.08)', 1);
+      line3(ctx, cam, [-400, 0, i * 100], [400, 0, i * 100], W, H, 'rgba(34,211,238,.08)', 1);
+    }
+    // Perimeter-Rahmen
+    const pr = 340;
+    [[-pr,0,-pr,pr,0,-pr],[pr,0,-pr,pr,0,pr],[pr,0,pr,-pr,0,pr],[-pr,0,pr,-pr,0,-pr]].forEach(s =>
+      line3(ctx, cam, [s[0], -22, s[2]], [s[3], -22, s[5]], W, H, 'rgba(168,85,247,.5)', 1.6, 6));
+
+    // Gebäude-Hülle um Zentrale
+    boxEdges(0, 0, 0, 190, 100, 190).forEach(e =>
+      line3(ctx, cam, e[0], e[1], W, H, 'rgba(251,191,36,.4)', 1.2));
+
+    // BUS-Verbindungen Sensoren → Zentrale
+    sensors.forEach((s, i) => {
+      const active = phase >= 1 && i === 0; // PIR ist der Auslöser
+      line3(ctx, cam, s.p, central.p, W, H, active ? s.col : 'rgba(100,116,139,.45)', active ? 2 : 1.2, active ? 8 : 0);
+      // Signal-Puls
+      if (active && phase === 1) {
+        const k = Math.min(1, phaseT / 1.2);
+        const px = s.p[0] + (central.p[0] - s.p[0]) * k;
+        const py = s.p[1] + (central.p[1] - s.p[1]) * k;
+        const pz = s.p[2] + (central.p[2] - s.p[2]) * k;
+        dot3(ctx, cam, [px, py, pz], W, H, 5.5, '#fff', 22);
+      }
+    });
+    // Zentrale → Sirene
+    line3(ctx, cam, central.p, sirene.p, W, H, phase >= 3 ? '#ef4444' : 'rgba(100,116,139,.45)', phase >= 3 ? 2 : 1.2, phase >= 3 ? 8 : 0);
+    if (phase === 3 && phaseT < 1) {
+      const k = phaseT;
+      dot3(ctx, cam, [central.p[0] + (sirene.p[0]-central.p[0])*k, central.p[1] + (sirene.p[1]-central.p[1])*k, central.p[2] + (sirene.p[2]-central.p[2])*k], W, H, 5, '#ef4444', 18);
+    }
+    // Zentrale → NSL (Uplink, gestrichelt nach oben)
+    if (phase >= 3) {
+      const segs = 14;
+      for (let i = 0; i < segs; i += 2) {
+        const k1 = i / segs, k2 = (i + 1) / segs;
+        const a = [central.p[0] + (nsl.p[0]-central.p[0])*k1, central.p[1] + (nsl.p[1]-central.p[1])*k1, central.p[2] + (nsl.p[2]-central.p[2])*k1];
+        const b = [central.p[0] + (nsl.p[0]-central.p[0])*k2, central.p[1] + (nsl.p[1]-central.p[1])*k2, central.p[2] + (nsl.p[2]-central.p[2])*k2];
+        line3(ctx, cam, a, b, W, H, '#22c55e', 1.8, 8);
+      }
+      // Uplink-Pakete
+      const k = (phaseT * .5) % 1;
+      dot3(ctx, cam, [central.p[0] + (nsl.p[0]-central.p[0])*k, central.p[1] + (nsl.p[1]-central.p[1])*k, central.p[2] + (nsl.p[2]-central.p[2])*k], W, H, 4.5, '#4ade80', 18);
+    }
+
+    // Knoten zeichnen
+    function node(n, active) {
+      const q = dot3(ctx, cam, n.p, W, H, active ? 11 : 8, active ? n.col : 'rgba(148,163,184,.85)', active ? 26 : 6);
+      ctx.font = (16 * q[2]) + 'px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText(n.ic, q[0], q[1] - 14 * q[2]);
+      ctx.fillStyle = active ? n.col : '#94a3c4';
+      ctx.font = 'bold ' + Math.max(8, 11 * q[2]) + 'px sans-serif';
+      ctx.fillText(n.name, q[0], q[1] + 22 * q[2]);
+      return q;
+    }
+    sensors.forEach((s, i) => node(s, phase >= 1 && i === 0));
+    node(central, phase >= 2);
+    const sq = node(sirene, phase >= 3);
+    node(nsl, phase >= 3);
+
+    // Sirenen-Wellen (2D um projizierten Punkt)
+    if (phase === 3) {
+      for (let r = 8; r < 80; r += 14) {
+        const a = 1 - r / 80;
+        ctx.strokeStyle = `rgba(239,68,68,${a})`; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(sq[0], sq[1], (r + (phaseT * 60) % 14) * sq[2], 0, 7); ctx.stroke();
+      }
+    }
+
+    // HUD
+    ctx.font = 'bold 14px sans-serif'; ctx.textAlign = 'left';
+    const states = ['● Anlage scharf · alle Sensoren bereit', '🚨 PIR löst aus → Signal zur Zentrale', '⚙ Zentrale prüft & entscheidet…', '🔊 SIRENE + 📡 NSL-Aufschaltung aktiv'];
+    const cols = ['#22c55e', '#fbbf24', '#22d3ee', '#ef4444'];
+    ctx.fillStyle = cols[phase];
+    ctx.fillText(states[phase], 18, 30);
+    requestAnimationFrame(draw);
+  })();
+})();
+</script>
+</body>
+</html>
