@@ -4,214 +4,503 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#05080f">
-<title>Sicherheitsmanagement · 3D-Modelle</title>
+<title>Sicherheitsmanagement · 3D-Suite</title>
 <style>
-/* ============ BASIS ============ */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
   --bg: #05080f; --surface: #0d1626; --surface2: #131f35; --border: #1f3358;
   --text: #e8edf7; --dim: #94a3c4; --mute: #64748b;
-  --cyan: #22d3ee; --green: #22c55e; --yellow: #fbbf24; --red: #ef4444; --purple: #a855f7;
+  --cyan: #22d3ee; --green: #22c55e; --yellow: #fbbf24; --red: #ef4444; --purple: #a855f7; --orange: #f97316;
 }
 html, body { height: 100%; }
 body {
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
   background: var(--bg); color: var(--text); overflow-x: hidden;
 }
-#bg { position: fixed; inset: 0; z-index: 0; }
-.wrap { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 20px 16px 60px; }
+#bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 
-/* ============ HERO ============ */
-.hero { text-align: center; padding: 34px 10px 26px; position: relative; }
-.hero .shield {
-  width: 86px; height: 86px; margin: 0 auto 14px; border-radius: 24px;
-  display: grid; place-items: center; font-size: 42px;
+/* ========== LAYOUT ========== */
+.app { position: relative; z-index: 1; display: grid; grid-template-columns: 250px 1fr; min-height: 100vh; }
+@media (max-width: 900px) { .app { grid-template-columns: 1fr; } .sidebar { display: none; } .sidebar.open { display: block; position: fixed; inset: 0 auto 0 0; width: 260px; z-index: 100; } }
+
+/* ========== SIDEBAR ========== */
+.sidebar {
+  background: rgba(8, 12, 22, .88); backdrop-filter: blur(14px);
+  border-right: 1px solid var(--border); padding: 18px 12px;
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+}
+.brand {
+  display: flex; align-items: center; gap: 10px; padding: 6px 8px 18px; margin-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.brand .logo {
+  width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; font-size: 20px;
   background: linear-gradient(135deg, var(--cyan), var(--purple));
-  box-shadow: 0 0 60px rgba(34,211,238,.55), 0 14px 40px rgba(168,85,247,.4);
-  animation: float 3.4s ease-in-out infinite;
+  box-shadow: 0 0 28px rgba(34,211,238,.5);
 }
-@keyframes float { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-10px) rotate(2deg); } }
-.hero h1 {
-  font-size: clamp(30px, 6vw, 52px); font-weight: 900; line-height: 1.05;
-  background: linear-gradient(120deg, #fff 10%, var(--cyan) 55%, var(--purple) 100%);
+.brand h1 { font-size: 14px; font-weight: 900; line-height: 1.1; }
+.brand small { font-size: 10.5px; color: var(--dim); letter-spacing: .5px; text-transform: uppercase; font-weight: 700; }
+
+.nav-label { font-size: 10px; font-weight: 800; letter-spacing: 1px; color: var(--mute); padding: 14px 10px 6px; text-transform: uppercase; }
+.nav-btn {
+  display: flex; align-items: center; gap: 10px; width: 100%; cursor: pointer;
+  padding: 9px 12px; border-radius: 9px; background: transparent; border: none; color: var(--text);
+  text-align: left; font-family: inherit; font-size: 13px; font-weight: 600;
+  transition: all .14s;
+}
+.nav-btn:hover { background: var(--surface); color: var(--c, var(--cyan)); }
+.nav-btn.on { background: linear-gradient(120deg, color-mix(in srgb, var(--c) 20%, transparent), transparent); color: var(--c); box-shadow: inset 3px 0 0 var(--c); }
+.nav-btn .em { font-size: 16px; width: 22px; text-align: center; }
+.nav-btn .ct { margin-left: auto; font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 999px; background: rgba(255,255,255,.06); color: var(--dim); }
+
+.menu-toggle {
+  display: none; position: fixed; top: 12px; left: 12px; z-index: 200;
+  width: 44px; height: 44px; border-radius: 12px; background: var(--surface); color: var(--text);
+  border: 1px solid var(--border); cursor: pointer; font-size: 18px;
+}
+@media (max-width: 900px) { .menu-toggle { display: grid; place-items: center; } }
+
+/* ========== MAIN ========== */
+.main { padding: 26px 28px 80px; max-width: 1200px; }
+@media (max-width: 900px) { .main { padding: 70px 14px 60px; } }
+
+.page { display: none; animation: rise .35s cubic-bezier(.2,.9,.3,1) both; }
+.page.on { display: block; }
+@keyframes rise { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+
+.page-h {
+  position: relative; overflow: hidden; padding: 22px 26px; border-radius: 18px; margin-bottom: 18px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--c) 18%, var(--surface)), var(--surface) 70%);
+  border: 1px solid color-mix(in srgb, var(--c) 35%, var(--border));
+}
+.page-h::before {
+  content: ''; position: absolute; top: -50%; left: -20%; width: 60%; height: 200%;
+  background: linear-gradient(60deg, transparent 30%, color-mix(in srgb, var(--c) 18%, transparent) 50%, transparent 70%);
+  animation: shine 7s ease-in-out infinite;
+}
+@keyframes shine { 0%,100% { transform: translateX(-100%); } 50% { transform: translateX(200%); } }
+.page-h .kicker {
+  display: inline-flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 900;
+  color: var(--c); letter-spacing: 1px; text-transform: uppercase;
+}
+.page-h .kicker::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--c); box-shadow: 0 0 12px var(--c); animation: pulse 1.4s infinite; }
+@keyframes pulse { 50% { opacity: .3; transform: scale(1.4); } }
+.page-h h1 {
+  font-size: clamp(24px, 4vw, 38px); font-weight: 900; margin: 6px 0 6px;
+  background: linear-gradient(120deg, #fff 5%, var(--c) 80%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
-  text-shadow: 0 0 60px rgba(34,211,238,.3);
 }
-.hero p { color: var(--dim); margin-top: 10px; font-size: 15px; max-width: 640px; margin-left: auto; margin-right: auto; line-height: 1.6; }
-.hero .live {
-  display: inline-flex; align-items: center; gap: 8px; margin-top: 14px;
-  font-size: 12px; font-weight: 900; letter-spacing: 1.5px; color: #4ade80;
-  padding: 6px 16px; border-radius: 999px; border: 1px solid rgba(34,197,94,.4);
-  background: rgba(34,197,94,.12);
-}
-.hero .live::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 14px #22c55e; animation: pulse 1.3s infinite; }
-@keyframes pulse { 50% { opacity: .25; transform: scale(1.4); } }
+.page-h p { color: var(--dim); font-size: 14px; line-height: 1.55; max-width: 740px; }
 
-/* ============ MODELL-NAV ============ */
-.nav { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 26px 0; }
-.nav button {
-  position: relative; overflow: hidden; cursor: pointer; text-align: left;
-  padding: 16px; border-radius: 16px; color: var(--text);
-  background: linear-gradient(160deg, color-mix(in srgb, var(--c) 16%, var(--surface)), var(--surface) 70%);
-  border: 1px solid color-mix(in srgb, var(--c) 35%, var(--border));
-  border-top: 4px solid var(--c);
-  transition: transform .18s, box-shadow .18s;
-  font-family: inherit;
-}
-.nav button:hover { transform: translateY(-4px); box-shadow: 0 18px 40px color-mix(in srgb, var(--c) 30%, rgba(0,0,0,.5)); }
-.nav button.on { box-shadow: 0 0 0 2px var(--c), 0 18px 40px color-mix(in srgb, var(--c) 35%, transparent); }
-.nav .ic { font-size: 26px; margin-bottom: 8px; display: block; filter: drop-shadow(0 0 10px var(--c)); }
-.nav strong { display: block; font-size: 15px; }
-.nav span { display: block; font-size: 11.5px; color: var(--dim); margin-top: 3px; line-height: 1.4; }
-@media (max-width: 700px) { .nav { grid-template-columns: 1fr; } }
+/* ========== CARDS / STAGES ========== */
+.grid { display: grid; gap: 14px; }
+.grid-2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.grid-3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.grid-4 { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
 
-/* ============ MODELL-PANEL ============ */
-.panel {
-  display: none; border-radius: 20px; padding: 18px;
-  background: linear-gradient(165deg, color-mix(in srgb, var(--c) 10%, var(--surface)), var(--surface) 60%);
-  border: 1px solid color-mix(in srgb, var(--c) 35%, var(--border));
-  box-shadow: 0 20px 60px rgba(0,0,0,.5);
-  animation: rise .45s cubic-bezier(.2,.9,.3,1) both;
+.card {
+  background: linear-gradient(160deg, color-mix(in srgb, var(--c) 12%, var(--surface)), var(--surface) 70%);
+  border: 1px solid color-mix(in srgb, var(--c) 30%, var(--border));
+  border-left: 4px solid var(--c);
+  border-radius: 14px; padding: 14px;
+  transition: transform .15s, box-shadow .15s;
 }
-.panel.on { display: block; }
-@keyframes rise { from { opacity: 0; transform: translateY(26px) scale(.98); } to { opacity: 1; transform: none; } }
-.panel h2 { font-size: 22px; margin-bottom: 4px; }
-.panel h2 i { color: var(--c); margin-right: 6px; }
-.panel .sub { color: var(--dim); font-size: 13px; margin-bottom: 12px; line-height: 1.5; }
-.stage { position: relative; border-radius: 14px; overflow: hidden; background: radial-gradient(120% 120% at 50% 0%, #0c1526, #05080f 75%); border: 1px solid var(--border); }
+.card:hover { transform: translateY(-2px); box-shadow: 0 10px 30px color-mix(in srgb, var(--c) 25%, rgba(0,0,0,.3)); }
+.card h3 { font-size: 15px; margin-bottom: 4px; }
+.card h3 i, .card h3 .em { color: var(--c); margin-right: 6px; }
+.card p { font-size: 12.5px; color: var(--dim); line-height: 1.5; }
+.card .badge { display: inline-block; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 999px;
+  background: color-mix(in srgb, var(--c) 18%, transparent); color: var(--c);
+  border: 1px solid color-mix(in srgb, var(--c) 40%, transparent); margin-top: 6px; }
+
+.stage {
+  position: relative; border-radius: 14px; overflow: hidden; margin-bottom: 12px;
+  background: radial-gradient(120% 120% at 50% 0%, #0c1526, #05080f 75%);
+  border: 1px solid var(--border);
+  box-shadow: 0 14px 40px rgba(0,0,0,.5);
+}
 .stage canvas { display: block; width: 100%; height: auto; cursor: grab; touch-action: none; }
 .stage canvas:active { cursor: grabbing; }
-.hint {
-  position: absolute; bottom: 10px; right: 12px; font-size: 11px; color: var(--mute);
-  background: rgba(5,8,15,.7); padding: 4px 10px; border-radius: 999px; pointer-events: none;
+.stage .live {
+  position: absolute; top: 10px; right: 12px; font-size: 10px; font-weight: 900; letter-spacing: 1px;
+  padding: 4px 10px; border-radius: 999px;
+  background: rgba(34,197,94,.18); color: #4ade80; border: 1px solid rgba(34,197,94,.4);
+  display: flex; align-items: center; gap: 6px;
 }
-.ctrl { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 12px;
+.stage .live::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 8px #22c55e; animation: pulse 1.3s infinite; }
+.stage .hint { position: absolute; bottom: 10px; right: 12px; font-size: 10.5px; color: var(--mute);
+  background: rgba(5,8,15,.7); padding: 3px 10px; border-radius: 999px; pointer-events: none; }
+
+.ctrl { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 12px;
   background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; }
-.ctrl label { font-size: 12px; color: var(--dim); font-weight: 700; }
-.ctrl input[type=range] { width: 130px; accent-color: var(--c); }
+.ctrl label { font-size: 11.5px; color: var(--dim); font-weight: 700; }
+.ctrl input[type=range] { width: 120px; accent-color: var(--c); height: 4px; }
 .btn {
-  cursor: pointer; padding: 7px 14px; border-radius: 9px; font-size: 12.5px; font-weight: 800;
+  cursor: pointer; padding: 7px 13px; border-radius: 9px; font-size: 12.5px; font-weight: 800;
   background: var(--surface); color: var(--bc, var(--c)); border: 1px solid var(--bc, var(--c));
-  transition: all .15s; font-family: inherit;
+  transition: all .14s; font-family: inherit; white-space: nowrap;
 }
-.btn:hover { background: var(--bc, var(--c)); color: #05080f; box-shadow: 0 0 18px color-mix(in srgb, var(--bc, var(--c)) 55%, transparent); }
+.btn:hover { background: var(--bc, var(--c)); color: #05080f; box-shadow: 0 0 16px color-mix(in srgb, var(--bc, var(--c)) 55%, transparent); }
 .btn:active { transform: scale(.95); }
-.legend { margin-top: 10px; font-size: 12px; color: var(--dim); line-height: 1.6;
-  background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; }
-.legend b { color: var(--c); }
-.foot { text-align: center; color: var(--mute); font-size: 12px; margin-top: 34px; line-height: 1.7; }
+
+.legend { font-size: 12px; color: var(--dim); line-height: 1.55;
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 11px 14px; margin-bottom: 14px; }
+.legend b { color: var(--c); font-weight: 800; }
+
+/* Product list */
+.prod-row {
+  display: flex; align-items: center; gap: 12px; padding: 10px 12px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 6px;
+  border-left: 3px solid var(--c);
+}
+.prod-row .em { font-size: 18px; }
+.prod-row strong { font-size: 13px; }
+.prod-row span { font-size: 11.5px; color: var(--dim); margin-left: 4px; }
+.prod-row em { margin-left: auto; font-size: 11px; color: var(--c); font-style: normal; font-weight: 700; white-space: nowrap; }
+
+/* Mini stats */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; margin-bottom: 18px; }
+.stat {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 10px;
+  text-align: center; position: relative; overflow: hidden;
+}
+.stat::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--c), transparent); }
+.stat .em { font-size: 18px; color: var(--c); }
+.stat strong { display: block; font-size: 22px; font-weight: 900; margin-top: 4px; }
+.stat span { font-size: 10.5px; color: var(--dim); text-transform: uppercase; letter-spacing: .5px; font-weight: 700; }
 </style>
 </head>
 <body>
 <canvas id="bg"></canvas>
-<div class="wrap">
+<button class="menu-toggle" id="menuToggle">☰</button>
 
-  <header class="hero">
-    <div class="shield">🛡️</div>
-    <h1>Sicherheitsmanagement<br>3D-Modelle</h1>
-    <p>Drei interaktive Modelle der Sicherheitstechnik – <b>ziehen zum Drehen</b>, Regler &amp; Knöpfe zum Steuern.
-    Zonen-Schutz · Schließzylinder · Alarm-Kette. Läuft komplett offline per Doppelklick.</p>
-    <span class="live">LIVE · 3 MODELLE</span>
-  </header>
+<div class="app">
+  <!-- ========== SIDEBAR ========== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="logo">🛡️</div>
+      <div>
+        <h1>Sicherheits-<br>management</h1>
+        <small>3D-Suite · V2</small>
+      </div>
+    </div>
 
-  <nav class="nav">
-    <button class="on" data-m="m1" style="--c:#22c55e">
-      <span class="ic">🏠</span><strong>Modell 1 · Zonen-Festung 3D</strong>
-      <span>4 Schutzzonen als drehbare 3D-Festung. Eindringling bricht Zone für Zone durch.</span>
-    </button>
-    <button data-m="m2" style="--c:#fbbf24">
-      <span class="ic">🔑</span><strong>Modell 2 · Schließzylinder 3D</strong>
-      <span>Stiftzylinder im Querschnitt: Schlüssel rein, Stifte auf Scherlinie, Kern dreht.</span>
-    </button>
-    <button data-m="m3" style="--c:#22d3ee">
-      <span class="ic">📡</span><strong>Modell 3 · Alarm-Netz 3D</strong>
-      <span>Komplette Alarmkette als 3D-Anlage: Sensoren → Zentrale → Sirene + NSL-Uplink.</span>
-    </button>
-  </nav>
+    <div class="nav-label">Übersicht</div>
+    <button class="nav-btn on" data-p="home" style="--c:#22d3ee"><span class="em">🏠</span> Start</button>
 
-  <!-- ============ MODELL 1 ============ -->
-  <section class="panel on" id="m1" style="--c:#22c55e">
-    <h2>🏠 Zonen-Festung 3D</h2>
-    <p class="sub">Das Zwiebelprinzip als 3D-Modell: <b>Zone 1 Perimeter</b> (Zaun) → <b>Zone 2 Außenhaut</b> (Gebäude) →
-    <b>Zone 3 Innenraum</b> → <b>Zone 4 Wertschutz</b> (Tresor). Der Eindringling läuft an – jede durchbrochene Zone blitzt auf.</p>
-    <div class="stage">
-      <canvas id="cv1" width="1040" height="560"></canvas>
-      <span class="hint">🖱️ ziehen = drehen</span>
-    </div>
-    <div class="ctrl">
-      <button class="btn" style="--bc:#ef4444" id="m1-attack">🥷 Angriff starten</button>
-      <button class="btn" style="--bc:#22c55e" id="m1-reset">↺ Zurücksetzen</button>
-      <label>Drehung</label><input type="range" id="m1-spin" min="0" max="2" step="0.1" value="0.4">
-      <label>Zoom</label><input type="range" id="m1-zoom" min="0.6" max="1.6" step="0.05" value="1">
-    </div>
-    <div class="legend"><b>Zonen-Farben:</b> 🟩 Zone 1 Zaun · 🟨 Zone 2 Gebäudehülle · 🟧 Zone 3 Innenraum · 🟥 Zone 4 Tresor.
-    Jede Zone hält den Täter Sekunden auf – zusammen genug Zeit für Alarm + Intervention.</div>
-  </section>
+    <div class="nav-label">3D-Modelle</div>
+    <button class="nav-btn" data-p="m-festung"  style="--c:#22c55e"><span class="em">🏰</span> Zonen-Festung <span class="ct">3D</span></button>
+    <button class="nav-btn" data-p="m-zylinder" style="--c:#fbbf24"><span class="em">🔑</span> Schließzylinder <span class="ct">3D</span></button>
+    <button class="nav-btn" data-p="m-alarm"    style="--c:#ef4444"><span class="em">📡</span> Alarm-Netz <span class="ct">3D</span></button>
+    <button class="nav-btn" data-p="m-tresor"   style="--c:#a855f7"><span class="em">💎</span> Tresor-Aufbruch <span class="ct">3D</span></button>
+    <button class="nav-btn" data-p="m-kamera"   style="--c:#f97316"><span class="em">📹</span> Dome-Kamera <span class="ct">3D</span></button>
+    <button class="nav-btn" data-p="m-melder"   style="--c:#22d3ee"><span class="em">📍</span> Bewegungsmelder <span class="ct">3D</span></button>
+    <button class="nav-btn" data-p="m-poller"   style="--c:#dc2626"><span class="em">🚧</span> Anti-Terror-Poller <span class="ct">3D</span></button>
 
-  <!-- ============ MODELL 2 ============ -->
-  <section class="panel" id="m2" style="--c:#fbbf24">
-    <h2>🔑 Schließzylinder 3D</h2>
-    <p class="sub">Profilzylinder im Schnitt mit Tiefen-Effekt: Der Schlüssel hebt 5 federbelastete Stiftpaare exakt auf die
-    <b>Scherlinie</b> – nur dann dreht der Kern. Falscher Schlüssel = Stifte blockieren.</p>
-    <div class="stage">
-      <canvas id="cv2" width="1040" height="540"></canvas>
-      <span class="hint">🖱️ ziehen = kippen</span>
-    </div>
-    <div class="ctrl">
-      <label>Schlüssel</label><input type="range" id="m2-key" min="0" max="100" value="0">
-      <button class="btn" style="--bc:#22c55e" id="m2-good">🔑 Richtiger Schlüssel</button>
-      <button class="btn" style="--bc:#ef4444" id="m2-bad">🪛 Falscher Schlüssel</button>
-      <button class="btn" style="--bc:#22d3ee" id="m2-auto">▶ Auto-Demo</button>
-    </div>
-    <div class="legend"><b>Scherlinie</b> = Trennfuge zwischen Kern und Gehäuse. Stehen alle Stift-Trennstellen exakt darauf,
-    ist der Kern frei. Gehäusestifte (grau) + Kernstifte (gold) + Federn – wie bei ABUS, BKS &amp; Co.</div>
-  </section>
+    <div class="nav-label">Technik</div>
+    <button class="nav-btn" data-p="t-melder"   style="--c:#22d3ee"><span class="em">🔔</span> Melder · Sensoren</button>
+    <button class="nav-btn" data-p="t-zylinder" style="--c:#fbbf24"><span class="em">🔐</span> Schließsysteme</button>
+    <button class="nav-btn" data-p="t-video"    style="--c:#f97316"><span class="em">📷</span> Videotechnik</button>
+    <button class="nav-btn" data-p="t-perimeter"style="--c:#22c55e"><span class="em">🌐</span> Perimeter · HVM</button>
+    <button class="nav-btn" data-p="t-tresor"   style="--c:#a855f7"><span class="em">🏦</span> Tresore · Mechanik</button>
 
-  <!-- ============ MODELL 3 ============ -->
-  <section class="panel" id="m3" style="--c:#22d3ee">
-    <h2>📡 Alarm-Netz 3D</h2>
-    <p class="sub">Eine komplette Anlage in 3D: PIR, Magnetkontakt, Kamera und Zaun-Sensor melden an die <b>EMA-Zentrale</b> –
-    die schaltet <b>Sirene</b> und funkt zur <b>NSL</b> (Leitstelle) über den Satelliten-Uplink.</p>
-    <div class="stage">
-      <canvas id="cv3" width="1040" height="560"></canvas>
-      <span class="hint">🖱️ ziehen = drehen</span>
-    </div>
-    <div class="ctrl">
-      <button class="btn" style="--bc:#fbbf24" id="m3-trig">🚨 Alarm auslösen</button>
-      <button class="btn" style="--bc:#22c55e" id="m3-calm">● Scharf / Ruhe</button>
-      <label>Drehung</label><input type="range" id="m3-spin" min="0" max="2" step="0.1" value="0.35">
-    </div>
-    <div class="legend"><b>Kette:</b> Sensor erkennt → Puls läuft über den BUS zur Zentrale → Zentrale prüft → Sirene heult (Wellen) +
-    Uplink zur NSL ✨ → Leitstelle alarmiert Intervention. Genau so arbeitet eine EMA nach DIN EN 50131.</div>
-  </section>
+    <div class="nav-label">Hersteller</div>
+    <button class="nav-btn" data-p="h-all"      style="--c:#a855f7"><span class="em">🏭</span> Alle Hersteller</button>
+  </aside>
 
-  <div class="foot">
-    Sicherheitsmanagement · 3 Modelle · läuft offline per Doppelklick<br>
-    Zonen-Festung · Schließzylinder · Alarm-Netz — alle Animationen in Echtzeit (Canvas 2D, 3D-Projektion)
-  </div>
+  <!-- ========== MAIN ========== -->
+  <main class="main" id="main">
+
+    <!-- ===== HOME ===== -->
+    <section class="page on" id="home" style="--c:#22d3ee">
+      <div class="page-h">
+        <span class="kicker">Sicherheitsmanagement Suite · V2</span>
+        <h1>3D-Modelle &amp; Technik-Übersicht</h1>
+        <p>Sieben interaktive 3D-Modelle der Sicherheitstechnik, kompletter Technik-Katalog und 80+ namhafte Hersteller –
+        alles in einer einzigen Datei, läuft offline per Doppelklick. Wähle links eine Kategorie.</p>
+      </div>
+
+      <div class="stats">
+        <div class="stat" style="--c:#22d3ee"><div class="em">📐</div><strong>7</strong><span>3D-Modelle</span></div>
+        <div class="stat" style="--c:#22c55e"><div class="em">🔔</div><strong>5</strong><span>Melder-Arten</span></div>
+        <div class="stat" style="--c:#fbbf24"><div class="em">🔐</div><strong>15+</strong><span>Schließ-Marken</span></div>
+        <div class="stat" style="--c:#f97316"><div class="em">📹</div><strong>12+</strong><span>Kamera-Marken</span></div>
+        <div class="stat" style="--c:#a855f7"><div class="em">🏭</div><strong>80+</strong><span>Hersteller</span></div>
+        <div class="stat" style="--c:#ef4444"><div class="em">⚖️</div><strong>12</strong><span>Normen</span></div>
+      </div>
+
+      <h2 style="font-size: 18px; margin: 18px 0 10px; color: var(--text);">📐 Direktzugriff · 3D-Modelle</h2>
+      <div class="grid grid-3">
+        <div class="card" style="--c:#22c55e" onclick="go('m-festung')"><h3><span class="em">🏰</span> Zonen-Festung</h3><p>4 Schutzzonen als drehbare 3D-Festung mit Live-Eindringling.</p><span class="badge">Interaktiv</span></div>
+        <div class="card" style="--c:#fbbf24" onclick="go('m-zylinder')"><h3><span class="em">🔑</span> Schließzylinder</h3><p>Stifte heben auf Scherlinie, Kern dreht. Falscher Schlüssel = Funken.</p><span class="badge">5 Stiftpaare</span></div>
+        <div class="card" style="--c:#ef4444" onclick="go('m-alarm')"><h3><span class="em">📡</span> Alarm-Netz</h3><p>Sensoren → Zentrale → Sirene + NSL-Uplink mit Signalpulsen.</p><span class="badge">EMA-Kette</span></div>
+        <div class="card" style="--c:#a855f7" onclick="go('m-tresor')"><h3><span class="em">💎</span> Tresor-Aufbruch</h3><p>3D-Tresor mit Riegelwerk, Bohrer und Werkzeug-Eskalation.</p><span class="badge">Klasse 0–VI</span></div>
+        <div class="card" style="--c:#f97316" onclick="go('m-kamera')"><h3><span class="em">📹</span> Dome-Kamera</h3><p>4K-Dome mit IR-LED-Ring, Sichtkegel und KI-Bounding-Box.</p><span class="badge">Day/Night</span></div>
+        <div class="card" style="--c:#22d3ee" onclick="go('m-melder')"><h3><span class="em">📍</span> Bewegungsmelder</h3><p>PIR + MW Würfel-Modell mit Erfassungskegel und Dopplerwellen.</p><span class="badge">Dual-Logik</span></div>
+        <div class="card" style="--c:#dc2626" onclick="go('m-poller')"><h3><span class="em">🚧</span> Anti-Terror-Poller</h3><p>Crashtest-LKW gegen Hochsicherheits-Poller mit PAS-68-Kraftberechnung.</p><span class="badge">HVM</span></div>
+      </div>
+
+      <h2 style="font-size: 18px; margin: 26px 0 10px;">⚙️ Technik-Bereiche</h2>
+      <div class="grid grid-3">
+        <div class="card" style="--c:#22d3ee" onclick="go('t-melder')"><h3><span class="em">🔔</span> Melder &amp; Sensoren</h3><p>PIR, Mikrowelle, Dual, Glasbruch, Magnetkontakt + Hersteller</p></div>
+        <div class="card" style="--c:#fbbf24" onclick="go('t-zylinder')"><h3><span class="em">🔐</span> Schließsysteme</h3><p>Mechanisch, elektronisch, Hybrid – ABUS, dormakaba, SimonsVoss …</p></div>
+        <div class="card" style="--c:#f97316" onclick="go('t-video')"><h3><span class="em">📷</span> Videotechnik</h3><p>4K-Dome, Bullet, PTZ, NVR – AXIS, Hikvision, Dahua, Bosch …</p></div>
+        <div class="card" style="--c:#22c55e" onclick="go('t-perimeter')"><h3><span class="em">🌐</span> Perimeter &amp; HVM</h3><p>Zäune, Poller, Wedge-Barriers, Crash-Tore – PAS 68 / IWA 14-1</p></div>
+        <div class="card" style="--c:#a855f7" onclick="go('t-tresor')"><h3><span class="em">🏦</span> Tresore &amp; Mechanik</h3><p>Wertheim, BURG-WÄCHTER, Format, Hartmann – Klasse 0 bis VI</p></div>
+        <div class="card" style="--c:#a855f7" onclick="go('h-all')"><h3><span class="em">🏭</span> Alle Hersteller</h3><p>80+ Hersteller im Überblick – nach Bereich gruppiert</p></div>
+      </div>
+    </section>
+
+    <!-- ===== MODELLE ===== -->
+    <section class="page" id="m-festung" style="--c:#22c55e">
+      <div class="page-h"><span class="kicker">3D-Modell · Zonen-Festung</span><h1>🏰 4-Zonen-Festung</h1>
+      <p>Zwiebelprinzip in 3D: Zaun → Gebäudehülle → Innenraum → Tresor. Starte den Angriff und sieh jede durchbrochene Zone aufblitzen.</p></div>
+      <div class="ctrl">
+        <button class="btn" style="--bc:#ef4444" id="m1-attack">🥷 Angriff starten</button>
+        <button class="btn" style="--bc:#22c55e" id="m1-reset">↺ Reset</button>
+        <label>Drehung</label><input type="range" id="m1-spin" min="0" max="2" step="0.1" value="0.4">
+        <label>Zoom</label><input type="range" id="m1-zoom" min="0.6" max="1.6" step="0.05" value="1">
+      </div>
+      <div class="stage"><canvas id="cv1" width="1040" height="540"></canvas><span class="live">LIVE 3D</span><span class="hint">🖱️ ziehen = drehen</span></div>
+      <div class="legend"><b>Zonen:</b> 🟩 Zaun (28 Pfosten) · 🟨 Gebäudehülle mit Pyramidendach · 🟧 Innenraum · 🟥 Tresor mit 💰. Auto-Drehung und Zoom sind unabhängig regelbar.</div>
+    </section>
+
+    <section class="page" id="m-zylinder" style="--c:#fbbf24">
+      <div class="page-h"><span class="kicker">3D-Modell · Schließzylinder</span><h1>🔑 Profilzylinder im Querschnitt</h1>
+      <p>5 Stiftpaare mit Federn, Scherlinie, Schlüssel mit Zacken-Bart. Bei richtigem Schlüssel heben sich alle Trennstellen exakt auf die Scherlinie → Kern dreht.</p></div>
+      <div class="ctrl">
+        <label>Schlüssel</label><input type="range" id="m2-key" min="0" max="100" value="0">
+        <button class="btn" style="--bc:#22c55e" id="m2-good">🔑 Richtig</button>
+        <button class="btn" style="--bc:#ef4444" id="m2-bad">🪛 Falsch</button>
+        <button class="btn" style="--bc:#22d3ee" id="m2-auto">▶ Auto-Demo</button>
+      </div>
+      <div class="stage"><canvas id="cv2" width="1040" height="520"></canvas><span class="live">LIVE 3D</span><span class="hint">🖱️ ziehen = kippen</span></div>
+      <div class="legend"><b>Gehäusestifte</b> (grau, oben) + <b>Kernstifte</b> (gold, unten) + Federn. Trennstelle auf der gestrichelten <b>Scherlinie</b> = Kern frei. Falscher Schlüssel → rote Stifte + Funken-Partikel.</div>
+    </section>
+
+    <section class="page" id="m-alarm" style="--c:#ef4444">
+      <div class="page-h"><span class="kicker">3D-Modell · Alarm-Netz</span><h1>📡 EMA in 3D</h1>
+      <p>Komplette Anlage räumlich: 4 Sensoren, Zentrale, Sirene und NSL-Wolke. Signalpulse fliegen über den BUS in Echtzeit zwischen den Komponenten.</p></div>
+      <div class="ctrl">
+        <button class="btn" style="--bc:#fbbf24" id="m3-trig">🚨 Auslösen</button>
+        <button class="btn" style="--bc:#22c55e" id="m3-calm">● Scharf</button>
+        <label>Drehung</label><input type="range" id="m3-spin" min="0" max="2" step="0.1" value="0.35">
+      </div>
+      <div class="stage"><canvas id="cv3" width="1040" height="540"></canvas><span class="live">LIVE 3D</span><span class="hint">🖱️ ziehen = drehen</span></div>
+      <div class="legend"><b>Phasen:</b> PIR-Auslösung → BUS-Puls zur Zentrale → Zentrale prüft → Sirene 🔊 + NSL-Uplink 📡 mit fliegenden Paketen zur Wolke.</div>
+    </section>
+
+    <section class="page" id="m-tresor" style="--c:#a855f7">
+      <div class="page-h"><span class="kicker">3D-Modell · Tresor-Aufbruch</span><h1>💎 Tresor mit Riegelwerk</h1>
+      <p>3D-Tresor mit Zahlenschloss, Riegelwerk mit 4 Stahlbolzen und Schlüsselrosette. Werkzeug-Eskalation zeigt die Aufbruch-Klasse (0–VI) live.</p></div>
+      <div class="ctrl">
+        <button class="btn" style="--bc:#22c55e" id="m4-lock">🔒 Verriegeln</button>
+        <button class="btn" style="--bc:#fbbf24" id="m4-unlock">🔓 Entriegeln</button>
+        <button class="btn" style="--bc:#ef4444" id="m4-attack">🛠 Aufbruch</button>
+        <label>Klasse</label><input type="range" id="m4-class" min="0" max="6" step="1" value="3">
+      </div>
+      <div class="stage"><canvas id="cv4" width="1040" height="540"></canvas><span class="live">LIVE 3D</span><span class="hint">🖱️ ziehen = drehen</span></div>
+      <div class="legend"><b>Klassen EN 1143-1:</b> 0 (Basis) → I (15.000 €) → II (30.000) → III (60.000) → IV (100.000) → V (200.000) → VI (300.000 €). Höhere Klasse = mehr Schichten + Pulverbeschuss-Schutz.</div>
+    </section>
+
+    <section class="page" id="m-kamera" style="--c:#f97316">
+      <div class="page-h"><span class="kicker">3D-Modell · Dome-Kamera</span><h1>📹 4K-Dome mit IR-Ring</h1>
+      <p>Dome-Kamera mit Halbkugel-Gehäuse, 8 IR-LEDs ringförmig, Sichtkegel und KI-Bounding-Box auf der Person. Wechselt zwischen Tag (Farbe) und Nacht (IR + S/W).</p></div>
+      <div class="ctrl">
+        <button class="btn" style="--bc:#fbbf24" id="m5-day">☀ Tag</button>
+        <button class="btn" style="--bc:#ef4444" id="m5-night">🌙 Nacht</button>
+        <button class="btn" style="--bc:#22c55e" id="m5-auto">▶ Auto</button>
+        <label>Tempo</label><input type="range" id="m5-sp" min="0.1" max="2" step="0.1" value="0.6">
+      </div>
+      <div class="stage"><canvas id="cv5" width="1040" height="520"></canvas><span class="live">LIVE 3D</span><span class="hint">🖱️ ziehen = drehen</span></div>
+      <div class="legend"><b>Komponenten:</b> Halterung · Halbkugel-Dome · Linse (3D-Iris) · 8 IR-LEDs (rot, nachts an) · Sichtkegel · KI-Box mit „Person 92 %".</div>
+    </section>
+
+    <section class="page" id="m-melder" style="--c:#22d3ee">
+      <div class="page-h"><span class="kicker">3D-Modell · Bewegungsmelder</span><h1>📍 PIR + MW Würfel</h1>
+      <p>Decken-Melder als 3D-Würfel mit Fresnel-Linse, Erfassungskegel (PIR) und Dopplerwellen (MW). Person läuft durch beide Bereiche.</p></div>
+      <div class="ctrl">
+        <label>Geh-Tempo</label><input type="range" id="m6-sp" min="0.1" max="2.5" step="0.1" value="0.6">
+        <button class="btn" style="--bc:#fbbf24" id="m6-pir">PIR</button>
+        <button class="btn" style="--bc:#22d3ee" id="m6-mw">MW</button>
+        <button class="btn" style="--bc:#22c55e" id="m6-logic">Logik: DUAL</button>
+      </div>
+      <div class="stage"><canvas id="cv6" width="1040" height="520"></canvas><span class="live">LIVE 3D</span><span class="hint">🖱️ ziehen = drehen</span></div>
+      <div class="legend"><b>PIR</b> (Wärme passiv, Kegel) + <b>MW</b> (Doppler aktiv, Wellen). Dual-Logik = beide müssen gleichzeitig auslösen → praktisch keine Fehlalarme.</div>
+    </section>
+
+    <section class="page" id="m-poller" style="--c:#dc2626">
+      <div class="page-h"><span class="kicker">3D-Modell · HVM</span><h1>🚧 Anti-Terror-Poller Crashtest</h1>
+      <p>LKW fährt auf einen PAS-68-Poller zu. Kinetische Energie E = ½ · m · v² wird live berechnet – Poller hält oder versagt.</p></div>
+      <div class="ctrl">
+        <label>Tempo</label><input type="range" id="m7-sp" min="10" max="100" step="5" value="50"><span id="m7-sp-v" style="font-weight:800;color:#dc2626">50 km/h</span>
+        <label>Masse</label><input type="range" id="m7-m" min="1500" max="20000" step="500" value="7500"><span id="m7-m-v" style="font-weight:800;color:#fbbf24">7.5 t</span>
+        <button class="btn" style="--bc:#ef4444" id="m7-go">💥 Crashtest</button>
+        <button class="btn" style="--bc:#22c55e" id="m7-reset">↺ Reset</button>
+      </div>
+      <div class="stage"><canvas id="cv7" width="1040" height="520"></canvas><span class="live">LIVE 3D</span><span class="hint">🖱️ ziehen = drehen</span></div>
+      <div class="legend"><b>PAS 68 V/7500 [N3]</b> hält 7,5 t bei 80 km/h (≈ 1,85 MJ). Höhere Energie = Poller wird gerissen, niedriger = Fahrzeug zerlegt sich.</div>
+    </section>
+
+    <!-- ===== TECHNIK-SEITEN ===== -->
+    <section class="page" id="t-melder" style="--c:#22d3ee">
+      <div class="page-h"><span class="kicker">Technik · Sensoren</span><h1>🔔 Melder &amp; Sensoren</h1>
+      <p>Alle Detektionsarten der EMA – passiv und aktiv – mit Funktionsprinzip, Norm und namhaften Herstellern.</p></div>
+      <div class="grid grid-2">
+        <div class="card" style="--c:#fbbf24"><h3>👁 PIR · Passiv-Infrarot</h3><p>Erfasst Wärmestrahlung bewegter Körper (8–14 µm). Fresnel-Linse teilt das Bild in Zonen, IC misst Differenzen.</p><span class="badge">DIN EN 50131-2-2</span></div>
+        <div class="card" style="--c:#22d3ee"><h3>📡 Mikrowelle (MW)</h3><p>Aktive Doppler-Erkennung bei 10,5 / 24,125 GHz. Durchdringt dünne Wände, sieht Bewegung.</p><span class="badge">DIN EN 50131-2-3</span></div>
+        <div class="card" style="--c:#22c55e"><h3>🔀 Dual-Melder (PIR + MW)</h3><p>UND-Verknüpfung: Alarm nur wenn beide. Drastisch weniger Fehlalarme.</p><span class="badge">VdS C</span></div>
+        <div class="card" style="--c:#a855f7"><h3>🪟 Glasbruch (akustisch)</h3><p>Auswertet Klirr-Frequenz (3–5 kHz) + Druckwelle. Reichweite ~5 m im Raum.</p><span class="badge">DIN EN 50131-2-7</span></div>
+        <div class="card" style="--c:#ef4444"><h3>🚪 Magnetkontakt (Reed)</h3><p>Reed-Kontakt + Magnet im Flügel. Trennt → Stromkreis öffnet → Alarm.</p><span class="badge">VdS S</span></div>
+        <div class="card" style="--c:#f97316"><h3>💥 Erschütterung / Körperschall</h3><p>Piezo erkennt Bohren, Hebeln, Stemmen am Material. Tresor &amp; Türen.</p><span class="badge">VdS C</span></div>
+        <div class="card" style="--c:#22d3ee"><h3>🌊 Vibrationskabel am Zaun</h3><p>Glasfaser oder Mikrofonkabel detektiert Kletter- und Schneideversuche.</p><span class="badge">VdS 2311</span></div>
+        <div class="card" style="--c:#fbbf24"><h3>🔥 Brandmelder</h3><p>Optisch (Rauchstreuung), thermisch oder Multi-Sensor. Pflicht in WoFlV.</p><span class="badge">DIN EN 54</span></div>
+      </div>
+      <h2 style="font-size:16px;margin:20px 0 10px;">🏭 Namhafte Hersteller</h2>
+      <div class="prod-row" style="--c:#fbbf24"><span class="em">🇩🇪</span><strong>Bosch Security</strong><span>Blue Line PIR, ISM-Serie, OEM</span><em>Top · weltweit</em></div>
+      <div class="prod-row" style="--c:#22d3ee"><span class="em">🇩🇪</span><strong>Telenot</strong><span>compact easy, complex 400H, Funk-Komponenten</span><em>VdS A–C</em></div>
+      <div class="prod-row" style="--c:#22c55e"><span class="em">🇩🇪</span><strong>Honeywell / ESSER</strong><span>EMA-Zentralen + BMA</span><em>Top</em></div>
+      <div class="prod-row" style="--c:#a855f7"><span class="em">🇮🇱</span><strong>RISCO</strong><span>LightSYS, ProSYS Plus, ProSound</span><em>Cloud-fähig</em></div>
+      <div class="prod-row" style="--c:#ef4444"><span class="em">🇫🇷</span><strong>Hager / Daitem</strong><span>Funk-Alarm für EFH</span><em>Smart-Home</em></div>
+      <div class="prod-row" style="--c:#f97316"><span class="em">🇨🇿</span><strong>Jablotron</strong><span>JA-100 BUS &amp; Funk, MyJABLOTRON</span><em>Best in Class</em></div>
+      <div class="prod-row" style="--c:#22d3ee"><span class="em">🇩🇪</span><strong>ABUS Security-Center</strong><span>Secvest Funk-Alarm, Terxon BUS</span><em>EFH</em></div>
+      <div class="prod-row" style="--c:#fbbf24"><span class="em">🇮🇹</span><strong>BENTEL (Tyco)</strong><span>KYO 320, ABSOLUTA</span><em>Profi</em></div>
+    </section>
+
+    <section class="page" id="t-zylinder" style="--c:#fbbf24">
+      <div class="page-h"><span class="kicker">Technik · Schließsysteme</span><h1>🔐 Schließzylinder</h1>
+      <p>Mechanisch, elektronisch, Hybrid – von ABUS bis dormakaba. VdS-Klassen und Norm-Übersicht.</p></div>
+      <div class="grid grid-2">
+        <div class="card" style="--c:#fbbf24"><h3>🔑 Mechanischer Profilzylinder</h3><p>Klassischer Stiftzylinder, 5–6 Stifte, Patentschutz, Bohrschutz-Pins, Sägeschutz.</p><span class="badge">DIN EN 1303 · VdS A–BZ+</span></div>
+        <div class="card" style="--c:#22d3ee"><h3>🔌 Elektronischer Zylinder</h3><p>Batteriebetrieb, RFID/BLE/Mobile, Audit-Trail, Sperren ohne Tausch.</p><span class="badge">EN 15684</span></div>
+        <div class="card" style="--c:#a855f7"><h3>⚙️ Mechatronik / Hybrid</h3><p>Mechanik + Elektronik – passt zur mechanischen Anlage + ID-Prüfung.</p><span class="badge">ASSA CLIQ · KESO dynamic</span></div>
+      </div>
+      <h2 style="font-size:16px;margin:20px 0 10px;">🏭 Mechanisch · Top-Marken</h2>
+      <div class="prod-row" style="--c:#fbbf24"><span class="em">🇩🇪</span><strong>ABUS</strong><span>XP20S, Bravus, Wavy Line</span><em>VdS BZ+</em></div>
+      <div class="prod-row" style="--c:#fbbf24"><span class="em">🇩🇪</span><strong>BKS (Gretsch-Unitas)</strong><span>PZ 88, Janus, Detect3</span><em>Klasse 4</em></div>
+      <div class="prod-row" style="--c:#fbbf24"><span class="em">🇨🇭</span><strong>dormakaba (Kaba)</strong><span>penta, star, expert plus</span><em>BZ+</em></div>
+      <div class="prod-row" style="--c:#a855f7"><span class="em">🇨🇭</span><strong>KESO</strong><span>8000Ω², 4000S Omega</span><em>Highend Klasse 5</em></div>
+      <div class="prod-row" style="--c:#fbbf24"><span class="em">🇦🇹</span><strong>EVVA</strong><span>MCS (Magnet), 4KS, 3KS Plus</span><em>Highend</em></div>
+      <div class="prod-row" style="--c:#fbbf24"><span class="em">🇩🇪</span><strong>Winkhaus</strong><span>blueChip, keyTec X-tra</span><em>BZ+</em></div>
+      <div class="prod-row" style="--c:#fbbf24"><span class="em">🇮🇱</span><strong>Mul-T-Lock (ASSA)</strong><span>Interactive+, MT5+</span><em>Highend Klasse 5</em></div>
+      <h2 style="font-size:16px;margin:20px 0 10px;">🏭 Elektronisch · Top-Marken</h2>
+      <div class="prod-row" style="--c:#22d3ee"><span class="em">🇩🇪</span><strong>SimonsVoss</strong><span>System 3060, MobileKey, AX-Serie</span><em>Marktführer DACH</em></div>
+      <div class="prod-row" style="--c:#22d3ee"><span class="em">🇨🇭</span><strong>dormakaba evolo</strong><span>evolo smart, c-lever</span><em>Top</em></div>
+      <div class="prod-row" style="--c:#22d3ee"><span class="em">🇪🇸</span><strong>Salto Systems</strong><span>XS4, Neo, Aelement Fusion</span><em>Top</em></div>
+      <div class="prod-row" style="--c:#22d3ee"><span class="em">🇸🇪</span><strong>ASSA ABLOY Aperio</strong><span>C100, E100, KS100</span><em>Drahtlos-Add-On</em></div>
+      <div class="prod-row" style="--c:#22d3ee"><span class="em">🇦🇹</span><strong>Nuki</strong><span>Smart Lock 4 Pro, Keypad</span><em>Smartphone</em></div>
+      <div class="prod-row" style="--c:#22d3ee"><span class="em">🇦🇹</span><strong>EVVA Xesar / AirKey</strong><span>Cloud + NFC-Smartphones</span><em>Top</em></div>
+    </section>
+
+    <section class="page" id="t-video" style="--c:#f97316">
+      <div class="page-h"><span class="kicker">Technik · Videotechnik</span><h1>📷 Kameras &amp; Recorder</h1>
+      <p>4K-Dome, Bullet, PTZ, NVR – von AXIS bis Dahua. Mit IR-Reichweite und Aufnahme-Tage.</p></div>
+      <div class="grid grid-2">
+        <div class="card" style="--c:#f97316"><h3>🔵 Dome-Kamera</h3><p>Diskret an der Decke, Vandalismus-geschützt, IR bis 30 m.</p><span class="badge">IK10</span></div>
+        <div class="card" style="--c:#fbbf24"><h3>🟡 Bullet-Kamera</h3><p>Langgezogen, weite Reichweite, IR bis 80 m. Außen-Standard.</p><span class="badge">IP67</span></div>
+        <div class="card" style="--c:#22d3ee"><h3>🔄 PTZ (Pan-Tilt-Zoom)</h3><p>Schwenkbar, Zoom 30–50×, KI-Tracking. Großflächen.</p><span class="badge">Auto-Track</span></div>
+        <div class="card" style="--c:#22c55e"><h3>🔥 Wärmebild</h3><p>LWIR 8–14 µm, sieht Wärme bei Nacht, Nebel, Rauch. Perimeter.</p><span class="badge">Profi</span></div>
+        <div class="card" style="--c:#a855f7"><h3>💾 NVR / VMS</h3><p>16–256 Kanäle, RAID-Festplatten, Web/App, Aufnahme 30+ Tage.</p><span class="badge">PoE+</span></div>
+        <div class="card" style="--c:#ef4444"><h3>🤖 KI-Analyse</h3><p>Person/Fahrzeug/LP-Erkennung, Linien-Überschreitung, Loitering.</p><span class="badge">DeepLearning</span></div>
+      </div>
+      <h2 style="font-size:16px;margin:20px 0 10px;">🏭 Top-Marken</h2>
+      <div class="prod-row" style="--c:#f97316"><span class="em">🇸🇪</span><strong>AXIS Communications</strong><span>Q-Serie, P-Serie, Dome &amp; Bullet</span><em>Premium · Top</em></div>
+      <div class="prod-row" style="--c:#f97316"><span class="em">🇨🇳</span><strong>Hikvision</strong><span>DS-Serie, AcuSense, ColorVu</span><em>Marktführer</em></div>
+      <div class="prod-row" style="--c:#f97316"><span class="em">🇨🇳</span><strong>Dahua</strong><span>WizSense, WizMind, TiOC</span><em>Marktführer</em></div>
+      <div class="prod-row" style="--c:#f97316"><span class="em">🇩🇪</span><strong>Bosch Security</strong><span>FLEXIDOME, AUTODOME, DINION</span><em>Premium</em></div>
+      <div class="prod-row" style="--c:#f97316"><span class="em">🇯🇵</span><strong>Panasonic i-PRO</strong><span>X-Serie, S-Serie</span><em>Premium</em></div>
+      <div class="prod-row" style="--c:#22c55e"><span class="em">🇺🇸</span><strong>FLIR (Teledyne)</strong><span>Wärmebild · Saros, Triton</span><em>Wärme-Spezialist</em></div>
+      <div class="prod-row" style="--c:#a855f7"><span class="em">🇺🇸</span><strong>Avigilon (Motorola)</strong><span>H5A, H5SL, Self-Learning</span><em>KI-Top</em></div>
+      <div class="prod-row" style="--c:#f97316"><span class="em">🇯🇵</span><strong>Sony / Hanwha (Samsung)</strong><span>Wisenet X-Serie, P-Serie</span><em>Profi</em></div>
+      <div class="prod-row" style="--c:#22d3ee"><span class="em">🇩🇪</span><strong>Mobotix</strong><span>M-Serie, S-Serie, dezentral</span><em>Edge-AI</em></div>
+      <div class="prod-row" style="--c:#a855f7"><span class="em">🇺🇸</span><strong>Genetec / Milestone</strong><span>Security Center / XProtect VMS</span><em>VMS-Top</em></div>
+    </section>
+
+    <section class="page" id="t-perimeter" style="--c:#22c55e">
+      <div class="page-h"><span class="kicker">Technik · Perimeter &amp; HVM</span><h1>🌐 Perimeter &amp; Anti-Terror</h1>
+      <p>Zäune, Tore, Crash-Poller, Wedge-Barriers, Crash-Tore und mobile Sperren – nach PAS 68 / IWA 14-1 / ASTM F2656.</p></div>
+      <div class="grid grid-2">
+        <div class="card" style="--c:#22c55e"><h3>🟫 Fester Anti-Ram-Poller</h3><p>Tief gegründeter Stahlpoller (50–150 cm). Stoppt 7,5-t-LKW @ 80 km/h.</p><span class="badge">PAS 68 V/7500</span></div>
+        <div class="card" style="--c:#f97316"><h3>⬇️ Versenkbarer Poller</h3><p>Hydraulisch versenkbar, 1,5–3 s Hochfahrzeit. Fußgängerzone.</p><span class="badge">K12</span></div>
+        <div class="card" style="--c:#a855f7"><h3>🪃 Wedge-Barrier (Sperrkissen)</h3><p>Aufstellbare Stahlplatte, lenkt Fahrzeug nach oben → Achszerstörung.</p><span class="badge">PAS 68 V/7500</span></div>
+        <div class="card" style="--c:#22d3ee"><h3>🚪 Crash-Tor</h3><p>Schwer-Stahltor mit gegründetem Riegel. Kasernen, KRITIS.</p><span class="badge">PAS 68</span></div>
+        <div class="card" style="--c:#fbbf24"><h3>📏 HVM-Schranke</h3><p>Verstärkter Drehbalken mit Stahlseil. Stoppt 2,5-t @ 64 km/h.</p><span class="badge">N1</span></div>
+        <div class="card" style="--c:#dc2626"><h3>⚠️ Reifentöter</h3><p>Aufstellbare Stahlzacken. Werkseinfahrt, Mautstellen.</p><span class="badge">F2656</span></div>
+        <div class="card" style="--c:#22c55e"><h3>📦 Mobiles Sperrkissen</h3><p>800–4.500 kg Stahlblock, temporär für Events.</p><span class="badge">Pitagone P36</span></div>
+        <div class="card" style="--c:#84cc16"><h3>🌳 Pflanzkübel-Sperre</h3><p>Beton + Bepflanzung als urbane Tarnung. Innenstädte.</p><span class="badge">RhinoGuard</span></div>
+      </div>
+      <h2 style="font-size:16px;margin:20px 0 10px;">🏭 Anti-Terror-Hersteller</h2>
+      <div class="prod-row" style="--c:#ef4444"><span class="em">🇬🇧</span><strong>ATG Access</strong><span>SP400, militärisch zugelassen</span><em>Marktführer</em></div>
+      <div class="prod-row" style="--c:#ef4444"><span class="em">🇬🇧</span><strong>Heald</strong><span>FORT/HT2 Wedge, HT1 Mantis</span><em>Highend Custom</em></div>
+      <div class="prod-row" style="--c:#ef4444"><span class="em">🇬🇧</span><strong>Avon Barrier</strong><span>AvonGuard versenkbar</span><em>Highend</em></div>
+      <div class="prod-row" style="--c:#fbbf24"><span class="em">🇬🇧</span><strong>Frontier Pitts</strong><span>Compact Terra Blocker, Truckstopper</span><em>Top</em></div>
+      <div class="prod-row" style="--c:#fbbf24"><span class="em">🇩🇪</span><strong>Hörmann HSE</strong><span>Schiebe-Crash-Tore</span><em>Top</em></div>
+      <div class="prod-row" style="--c:#fbbf24"><span class="em">🇮🇹</span><strong>FAAC J355 HA</strong><span>Hydraulische Poller PAS 68 V/7500</span><em>Top</em></div>
+      <div class="prod-row" style="--c:#22c55e"><span class="em">🇧🇪</span><strong>Pitagone</strong><span>Mobile Event-Sperren</span><em>Mobil-Top</em></div>
+      <div class="prod-row" style="--c:#22c55e"><span class="em">🇬🇧</span><strong>Marshalls RhinoGuard</strong><span>Stadtmöbel mit PAS-68-Kern</span><em>Urbane Tarnung</em></div>
+      <div class="prod-row" style="--c:#22c55e"><span class="em">🇮🇹</span><strong>Pilomat</strong><span>Hochfeste Hydraulikpoller</span><em>Highend</em></div>
+    </section>
+
+    <section class="page" id="t-tresor" style="--c:#a855f7">
+      <div class="page-h"><span class="kicker">Technik · Wertschutz</span><h1>🏦 Tresore &amp; Mechanik</h1>
+      <p>Wertschutzschränke nach EN 1143-1 Klasse 0 bis VI, Tresorraumtüren und Bankdepots.</p></div>
+      <div class="grid grid-2">
+        <div class="card" style="--c:#a855f7"><h3>0️⃣ Klasse 0 (Basis)</h3><p>Versicherung bis 10.000 €. Wohnhaus, kleines Büro.</p><span class="badge">EN 1143-1</span></div>
+        <div class="card" style="--c:#a855f7"><h3>1️⃣ Klasse I</h3><p>Bis 15.000 €. Privatleute mit Schmuck, kleinere Gewerbe.</p><span class="badge">VdS</span></div>
+        <div class="card" style="--c:#a855f7"><h3>2️⃣ Klasse II</h3><p>Bis 30.000 €. Schmuckhändler, Apotheken, Tankstellen.</p><span class="badge">Profi</span></div>
+        <div class="card" style="--c:#fbbf24"><h3>3️⃣ Klasse III</h3><p>Bis 60.000 €. Juweliere, Edelmetall.</p><span class="badge">Top</span></div>
+        <div class="card" style="--c:#fbbf24"><h3>4️⃣ Klasse IV</h3><p>Bis 100.000 €. Bankfilialen, Tresorraumvorbereitung.</p><span class="badge">High</span></div>
+        <div class="card" style="--c:#ef4444"><h3>5️⃣ Klasse V</h3><p>Bis 200.000 €. KRITIS, Goldhändler, Diamanten.</p><span class="badge">Highend</span></div>
+        <div class="card" style="--c:#dc2626"><h3>6️⃣ Klasse VI</h3><p>Bis 300.000 €. Banken-Tresorräume, Kunst, Edelmetalle.</p><span class="badge">Maximum</span></div>
+      </div>
+      <h2 style="font-size:16px;margin:20px 0 10px;">🏭 Top-Hersteller</h2>
+      <div class="prod-row" style="--c:#a855f7"><span class="em">🇦🇹</span><strong>Wertheim</strong><span>AG-Serie, Kompakt, Wertschutzschränke</span><em>Premium</em></div>
+      <div class="prod-row" style="--c:#a855f7"><span class="em">🇩🇪</span><strong>BURG-WÄCHTER</strong><span>Magno, Diplomat, Pointsafe</span><em>Marktführer DE</em></div>
+      <div class="prod-row" style="--c:#a855f7"><span class="em">🇩🇪</span><strong>Format</strong><span>Tresore Klasse 0–VI, BankTresor</span><em>Profi</em></div>
+      <div class="prod-row" style="--c:#a855f7"><span class="em">🇩🇪</span><strong>Hartmann Tresore</strong><span>HT-Serie, Tresorräume</span><em>Top</em></div>
+      <div class="prod-row" style="--c:#a855f7"><span class="em">🇩🇪</span><strong>Müller Safe</strong><span>Wertschutz für Bank &amp; Privat</span><em>Top</em></div>
+      <div class="prod-row" style="--c:#a855f7"><span class="em">🇸🇪</span><strong>Gunnebo</strong><span>BankTresore, ATM-Schutz, Chubbsafes</span><em>Bank-Profi</em></div>
+      <div class="prod-row" style="--c:#a855f7"><span class="em">🇺🇸</span><strong>Liberty Safe</strong><span>Großtresore, Waffenschränke</span><em>USA-Top</em></div>
+    </section>
+
+    <section class="page" id="h-all" style="--c:#a855f7">
+      <div class="page-h"><span class="kicker">Hersteller-Übersicht</span><h1>🏭 80+ Hersteller</h1>
+      <p>Alle namhaften Hersteller der Sicherheitstechnik nach Bereich sortiert. DE/AT/CH/EU/USA/Asien.</p></div>
+      <div class="grid grid-2">
+        <div class="card" style="--c:#22d3ee"><h3>🔔 EMA / Melder</h3><p>Bosch · Telenot · Honeywell ESSER · RISCO · Hager Daitem · Jablotron · ABUS Security-Center · BENTEL · Paradox · DSC</p></div>
+        <div class="card" style="--c:#fbbf24"><h3>🔑 Mechanische Zylinder</h3><p>ABUS · BKS · dormakaba (Kaba) · KESO · EVVA · Winkhaus · CES · IKON · DOM · Mul-T-Lock · Wilka · GeGe · ASSA · Medeco</p></div>
+        <div class="card" style="--c:#22d3ee"><h3>🔌 Elektronische Zylinder</h3><p>SimonsVoss · dormakaba evolo · Salto · ASSA Aperio · Nuki · ABUS wAppLoxx · Winkhaus blueSmart · BKS B-SmartConnect · Iseo · Burg-Wächter secuENTRY · Yale Linus · EVVA Xesar/AirKey · KIWI.KI · Tedee</p></div>
+        <div class="card" style="--c:#f97316"><h3>📷 Videotechnik</h3><p>AXIS · Hikvision · Dahua · Bosch · Panasonic i-PRO · FLIR · Avigilon · Hanwha · Mobotix · Vivotek · Genetec/Milestone (VMS) · Pelco</p></div>
+        <div class="card" style="--c:#22c55e"><h3>🚪 Türen &amp; Fenster</h3><p>Hörmann · Teckentrup · Schörghuber · Pilz · Jeld-Wen · Westag · KSI Köhler · Schüco · Veka · Kömmerling</p></div>
+        <div class="card" style="--c:#ef4444"><h3>🚧 Anti-Terror (HVM)</h3><p>ATG Access · Heald · Avon Barrier · Frontier Pitts · Hörmann HSE · FAAC · Heras · Marshalls · Pitagone · Pilomat · Beckers Bollards · Hardstaff</p></div>
+        <div class="card" style="--c:#a855f7"><h3>🏦 Tresore</h3><p>Wertheim · BURG-WÄCHTER · Format · Hartmann · Müller Safe · Gunnebo · Chubbsafes · Liberty · Phoenix · Salvus</p></div>
+        <div class="card" style="--c:#22c55e"><h3>🌐 Zäune &amp; Perimeter</h3><p>Heras · Procter Cast Iron · Betafence · Zaun- &amp; Tor­technik · Pfeil &amp; Holm · NATO-Wire-Hersteller</p></div>
+      </div>
+    </section>
+    <!--PLACEHOLDER-END-->
+  </main>
 </div>
 
 <script>
-/* ================= PARTIKEL-HINTERGRUND ================= */
+/* ============ BG-PARTIKEL ============ */
 (() => {
   const cv = document.getElementById('bg'), ctx = cv.getContext('2d');
   let W, H, parts = [];
   function fit() {
     W = cv.width = innerWidth; H = cv.height = innerHeight;
-    if (!parts.length) parts = Array.from({ length: 70 }, () => ({
+    if (!parts.length) parts = Array.from({ length: 60 }, () => ({
       x: Math.random() * W, y: Math.random() * H,
-      vx: (Math.random() - .5) * .3, vy: (Math.random() - .5) * .3,
-      r: Math.random() * 1.8 + .6,
+      vx: (Math.random() - .5) * .25, vy: (Math.random() - .5) * .25,
+      r: Math.random() * 1.6 + .5,
       c: ['#22d3ee', '#a855f7', '#22c55e'][Math.random() * 3 | 0]
     }));
   }
   addEventListener('resize', fit); fit();
   let t = 0;
   (function draw() {
-    t += .004;
-    ctx.clearRect(0, 0, W, H);
-    // wandernde Glow-Blobs
-    [['#22d3ee', .35, .3, .10], ['#a855f7', .7, .65, .08], ['#22c55e', .2, .8, .06]].forEach(([c, fx, fy, a], i) => {
+    t += .004; ctx.clearRect(0, 0, W, H);
+    [['#22d3ee', .3, .3, .09], ['#a855f7', .75, .65, .07], ['#22c55e', .2, .85, .05]].forEach(([c, fx, fy, a], i) => {
       const x = W * (fx + Math.sin(t * (1 + i * .3)) * .12), y = H * (fy + Math.cos(t * (.8 + i * .25)) * .12);
       const g = ctx.createRadialGradient(x, y, 0, x, y, Math.max(W, H) * .4);
       g.addColorStop(0, c); g.addColorStop(1, 'transparent');
@@ -222,34 +511,29 @@ body {
       p.x += p.vx; p.y += p.vy;
       if (p.x < 0 || p.x > W) p.vx *= -1;
       if (p.y < 0 || p.y > H) p.vy *= -1;
-      ctx.globalAlpha = .6; ctx.fillStyle = p.c;
+      ctx.globalAlpha = .5; ctx.fillStyle = p.c;
       ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 7); ctx.fill();
-    }
-    // Verbindungen
-    ctx.lineWidth = 1;
-    for (let i = 0; i < parts.length; i++) for (let j = i + 1; j < parts.length; j++) {
-      const a = parts[i], b = parts[j], d = Math.hypot(a.x - b.x, a.y - b.y);
-      if (d < 110) { ctx.globalAlpha = .10 * (1 - d / 110); ctx.strokeStyle = a.c; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
     }
     ctx.globalAlpha = 1;
     requestAnimationFrame(draw);
   })();
 })();
 
-/* ================= NAV ================= */
-document.querySelectorAll('.nav button').forEach(b => {
-  b.addEventListener('click', () => {
-    document.querySelectorAll('.nav button').forEach(x => x.classList.toggle('on', x === b));
-    document.querySelectorAll('.panel').forEach(p => p.classList.toggle('on', p.id === b.dataset.m));
-  });
-});
+/* ============ NAV ============ */
+function go(id) {
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('on', b.dataset.p === id));
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('on', p.id === id));
+  scrollTo({ top: 0, behavior: 'smooth' });
+  document.getElementById('sidebar').classList.remove('open');
+}
+document.querySelectorAll('.nav-btn').forEach(b => b.addEventListener('click', () => go(b.dataset.p)));
+document.getElementById('menuToggle').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('open'));
 
-/* ================= 3D-HELFER ================= */
-function makeCam(canvas) {
+/* ============ 3D-HELFER ============ */
+function makeCam() {
   return {
     rotY: 0.7, rotX: 0.42, zoom: 1, auto: 0.4,
     project(p, W, H) {
-      // Rotation um Y dann X, simple Perspektive
       const cy = Math.cos(this.rotY), sy = Math.sin(this.rotY);
       const cx = Math.cos(this.rotX), sx = Math.sin(this.rotX);
       let x = p[0] * cy - p[2] * sy;
@@ -266,7 +550,7 @@ function makeCam(canvas) {
         if (!drag) return;
         const t = e.touches ? e.touches[0] : e;
         this.rotY = drag.ry + (t.clientX - drag.x) * .008;
-        this.rotX = Math.max(.1, Math.min(1.2, drag.rx + (t.clientY - drag.y) * .005));
+        this.rotX = Math.max(.1, Math.min(1.3, drag.rx + (t.clientY - drag.y) * .005));
         if (e.cancelable) e.preventDefault();
       };
       const up = () => drag = null;
@@ -287,7 +571,6 @@ function line3(ctx, cam, a, b, W, H, color, width, glow) {
   ctx.restore();
 }
 function boxEdges(x, y, z, w, h, d) {
-  // y nach OBEN negativ (Bildschirm-y wächst nach unten)
   const c = [
     [x - w/2, y, z - d/2], [x + w/2, y, z - d/2], [x + w/2, y, z + d/2], [x - w/2, y, z + d/2],
     [x - w/2, y - h, z - d/2], [x + w/2, y - h, z - d/2], [x + w/2, y - h, z + d/2], [x - w/2, y - h, z + d/2],
@@ -304,134 +587,87 @@ function dot3(ctx, cam, p, W, H, r, color, glow) {
   ctx.restore();
   return q;
 }
-function label3(ctx, cam, p, W, H, text, color) {
+function label3(ctx, cam, p, W, H, text, color, size) {
   const q = cam.project(p, W, H);
-  ctx.fillStyle = color; ctx.font = 'bold ' + Math.max(9, 12 * q[2]) + 'px sans-serif'; ctx.textAlign = 'center';
+  ctx.fillStyle = color; ctx.font = 'bold ' + Math.max(9, (size || 12) * q[2]) + 'px sans-serif'; ctx.textAlign = 'center';
   ctx.fillText(text, q[0], q[1]);
+  return q;
 }
 
 /* ================= MODELL 1 · ZONEN-FESTUNG ================= */
 (() => {
-  const cv = document.getElementById('cv1'), ctx = cv.getContext('2d');
-  const W = cv.width, H = cv.height;
+  const cv = document.getElementById('cv1'); if (!cv) return;
+  const ctx = cv.getContext('2d'); const W = cv.width, H = cv.height;
   const cam = makeCam().attach(cv);
   document.getElementById('m1-spin').addEventListener('input', e => cam.auto = +e.target.value);
   document.getElementById('m1-zoom').addEventListener('input', e => cam.zoom = +e.target.value);
-
-  // Eindringling-Status
-  let attack = false, prog = 0, log = [];
-  const zonesR = [330, 210, 130, 55]; // Radien der Zonen (x/z)
+  let attack = false, prog = 0, log = [], flashes = [0, 0, 0, 0];
+  const zonesR = [330, 210, 130, 55];
   const zoneCols = ['#22c55e', '#fbbf24', '#f97316', '#ef4444'];
   const zoneNames = ['Zone 1 · Zaun', 'Zone 2 · Hülle', 'Zone 3 · Innenraum', 'Zone 4 · Tresor'];
-  let flashes = [0, 0, 0, 0];
-
   document.getElementById('m1-attack').addEventListener('click', () => { attack = true; prog = 0; log = []; flashes = [0,0,0,0]; });
   document.getElementById('m1-reset').addEventListener('click', () => { attack = false; prog = 0; log = []; flashes = [0,0,0,0]; });
-
   let t = 0;
   (function draw() {
-    if (!cv.isConnected) return;
-    t += 1/60;
+    if (!cv.isConnected) return; t += 1/60;
     cam.rotY += cam.auto * 0.004;
     ctx.clearRect(0, 0, W, H);
-
-    // Boden-Grid
-    ctx.globalAlpha = .5;
     for (let i = -4; i <= 4; i++) {
       line3(ctx, cam, [i * 100, 0, -400], [i * 100, 0, 400], W, H, 'rgba(34,211,238,.10)', 1);
       line3(ctx, cam, [-400, 0, i * 100], [400, 0, i * 100], W, H, 'rgba(34,211,238,.10)', 1);
     }
-    ctx.globalAlpha = 1;
-
-    // Zone 1: Zaun (Pfosten + Ringe)
-    const r1 = zonesR[0];
-    const fencePosts = 28;
+    const r1 = zonesR[0], fencePosts = 28;
     for (let i = 0; i < fencePosts; i++) {
       const a = i / fencePosts * Math.PI * 2;
       const x = Math.cos(a) * r1, z = Math.sin(a) * r1;
       line3(ctx, cam, [x, 0, z], [x, -46, z], W, H, flashes[0] > 0 ? '#ef4444' : '#22c55e', 1.6, flashes[0] > 0 ? 12 : 5);
     }
-    // Zaun-Querringe
-    for (const hy of [-14, -30, -46]) {
-      for (let i = 0; i < fencePosts; i++) {
-        const a1 = i / fencePosts * Math.PI * 2, a2 = (i + 1) / fencePosts * Math.PI * 2;
-        line3(ctx, cam, [Math.cos(a1) * r1, hy, Math.sin(a1) * r1], [Math.cos(a2) * r1, hy, Math.sin(a2) * r1], W, H,
-          flashes[0] > 0 ? 'rgba(239,68,68,.7)' : 'rgba(34,197,94,.55)', 1.1);
-      }
+    for (const hy of [-14, -30, -46]) for (let i = 0; i < fencePosts; i++) {
+      const a1 = i / fencePosts * Math.PI * 2, a2 = (i + 1) / fencePosts * Math.PI * 2;
+      line3(ctx, cam, [Math.cos(a1) * r1, hy, Math.sin(a1) * r1], [Math.cos(a2) * r1, hy, Math.sin(a2) * r1], W, H,
+        flashes[0] > 0 ? 'rgba(239,68,68,.7)' : 'rgba(34,197,94,.55)', 1.1);
     }
-
-    // Zone 2: Gebäude (Box + pulsierender Rahmen)
     const pulse2 = 1 + Math.sin(t * 2) * 0.012;
     boxEdges(0, 0, 0, zonesR[1] * 1.25 * pulse2, 120, zonesR[1] * 1.25 * pulse2).forEach(e =>
       line3(ctx, cam, e[0], e[1], W, H, flashes[1] > 0 ? '#ef4444' : '#fbbf24', 2, flashes[1] > 0 ? 14 : 7));
-    // Dach (Pyramide)
     const g2 = zonesR[1] * 1.25 * pulse2 / 2;
     [[-g2,-120,-g2],[g2,-120,-g2],[g2,-120,g2],[-g2,-120,g2]].forEach(p =>
       line3(ctx, cam, p, [0, -175, 0], W, H, flashes[1] > 0 ? '#ef4444' : '#f59e0b', 1.6, 5));
-
-    // Zone 3: Innenraum
     boxEdges(0, 0, 0, zonesR[2] * 1.3, 78, zonesR[2] * 1.3).forEach(e =>
       line3(ctx, cam, e[0], e[1], W, H, flashes[2] > 0 ? '#ef4444' : '#f97316', 1.7, flashes[2] > 0 ? 14 : 5));
-
-    // Zone 4: Tresor (massiv, doppelt)
     boxEdges(0, 0, 0, zonesR[3] * 1.6, 52, zonesR[3] * 1.6).forEach(e =>
       line3(ctx, cam, e[0], e[1], W, H, flashes[3] > 0 ? '#ff6b6b' : '#ef4444', 2.4, 10));
     boxEdges(0, 0, 0, zonesR[3] * 1.25, 44, zonesR[3] * 1.25).forEach(e =>
       line3(ctx, cam, e[0], e[1], W, H, 'rgba(239,68,68,.5)', 1.2));
-    label3(ctx, cam, [0, -70, 0], W, H, '💰', '#fff');
-
-    // Zonen-Labels
+    label3(ctx, cam, [0, -70, 0], W, H, '💰', '#fff', 24);
     label3(ctx, cam, [zonesR[0], -62, 0], W, H, 'ZONE 1', zoneCols[0]);
     label3(ctx, cam, [zonesR[1] * .9, -135, 0], W, H, 'ZONE 2', zoneCols[1]);
     label3(ctx, cam, [zonesR[2] * .9, -92, 0], W, H, 'ZONE 3', zoneCols[2]);
     label3(ctx, cam, [0, -88, zonesR[3] * 1.4], W, H, 'ZONE 4', zoneCols[3]);
-
-    // Eindringling
     if (attack) {
-      prog += 0.0024;
-      if (prog >= 1) { attack = false; }
-      const startR = 460;
-      const r = startR - prog * (startR - 10);
-      const a = -0.6;
+      prog += 0.0024; if (prog >= 1) attack = false;
+      const startR = 460, r = startR - prog * (startR - 10), a = -0.6;
       const ix = Math.cos(a) * r, iz = Math.sin(a) * r;
-      // Zonen-Durchbruch prüfen
-      zonesR.forEach((zr, zi) => {
-        if (r < zr && flashes[zi] === 0) {
-          flashes[zi] = 1.6;
-          log.unshift({ txt: '🚨 ' + zoneNames[zi] + ' durchbrochen!', t: t });
-          if (log.length > 4) log.pop();
-        }
-      });
-      // Spur
-      for (let k = 0; k < 8; k++) {
-        const rr = r + k * 9;
-        if (rr < startR) dot3(ctx, cam, [Math.cos(a) * rr, -4, Math.sin(a) * rr], W, H, 2.4 - k * .25, `rgba(239,68,68,${.6 - k * .07})`, 0);
-      }
+      zonesR.forEach((zr, zi) => { if (r < zr && flashes[zi] === 0) { flashes[zi] = 1.6; log.unshift({ txt: '🚨 ' + zoneNames[zi] + ' durchbrochen!' }); if (log.length > 4) log.pop(); } });
+      for (let k = 0; k < 8; k++) { const rr = r + k * 9; if (rr < startR) dot3(ctx, cam, [Math.cos(a) * rr, -4, Math.sin(a) * rr], W, H, 2.4 - k * .25, `rgba(239,68,68,${.6 - k * .07})`, 0); }
       const q = dot3(ctx, cam, [ix, -8, iz], W, H, 7, '#ef4444', 22);
       ctx.font = 'bold ' + (20 * q[2]) + 'px sans-serif'; ctx.textAlign = 'center';
       ctx.fillText('🥷', q[0], q[1] - 12 * q[2]);
     }
     flashes = flashes.map(f => Math.max(0, f - 1/60));
-
-    // HUD
     ctx.font = 'bold 14px sans-serif'; ctx.textAlign = 'left';
-    const breached = flashes.filter(f => f > 0).length || log.length;
     ctx.fillStyle = attack ? '#ef4444' : '#22c55e';
-    ctx.fillText(attack ? '🚨 ANGRIFF LÄUFT…' : (log.length ? '⚠ Angriff beendet – ' + log.length + ' Zonen durchbrochen' : '● Anlage scharf · 4 Zonen aktiv'), 18, 30);
-    // Log
+    ctx.fillText(attack ? '🚨 ANGRIFF LÄUFT…' : (log.length ? '⚠ Angriff beendet · ' + log.length + ' Zonen durchbrochen' : '● Anlage scharf · 4 Zonen aktiv'), 18, 30);
     ctx.font = '12px sans-serif';
-    log.forEach((l, i) => {
-      ctx.fillStyle = `rgba(251,191,36,${1 - i * .22})`;
-      ctx.fillText(l.txt, 18, 54 + i * 18);
-    });
+    log.forEach((l, i) => { ctx.fillStyle = `rgba(251,191,36,${1 - i * .22})`; ctx.fillText(l.txt, 18, 54 + i * 18); });
     requestAnimationFrame(draw);
   })();
 })();
 
 /* ================= MODELL 2 · SCHLIESSZYLINDER ================= */
 (() => {
-  const cv = document.getElementById('cv2'), ctx = cv.getContext('2d');
-  const W = cv.width, H = cv.height;
+  const cv = document.getElementById('cv2'); if (!cv) return;
+  const ctx = cv.getContext('2d'); const W = cv.width, H = cv.height;
   let tilt = 0.12, drag = null;
   cv.addEventListener('mousedown', e => drag = { y: e.clientY, t: tilt });
   addEventListener('mousemove', e => { if (drag) tilt = Math.max(-0.1, Math.min(0.4, drag.t + (e.clientY - drag.y) * .002)); });
@@ -439,23 +675,17 @@ function label3(ctx, cam, p, W, H, text, color) {
   cv.addEventListener('touchstart', e => drag = { y: e.touches[0].clientY, t: tilt }, { passive: true });
   cv.addEventListener('touchmove', e => { if (drag) tilt = Math.max(-0.1, Math.min(0.4, drag.t + (e.touches[0].clientY - drag.y) * .002)); }, { passive: true });
   cv.addEventListener('touchend', () => drag = null);
-
   let keyPos = 0, keyKind = 'right', rot = 0, auto = true, sparks = [];
   const keySlider = document.getElementById('m2-key');
   keySlider.addEventListener('input', () => { keyPos = +keySlider.value / 100; auto = false; });
   document.getElementById('m2-good').addEventListener('click', () => keyKind = 'right');
-  document.getElementById('m2-bad').addEventListener('click', () => { keyKind = 'wrong'; });
+  document.getElementById('m2-bad').addEventListener('click', () => keyKind = 'wrong');
   document.getElementById('m2-auto').addEventListener('click', () => auto = true);
-
-  const pins = [
-    { cut: 22 }, { cut: 34 }, { cut: 16 }, { cut: 28 }, { cut: 25 },
-  ];
+  const pins = [{ cut: 22 }, { cut: 34 }, { cut: 16 }, { cut: 28 }, { cut: 25 }];
   const wrongCuts = [30, 18, 28, 14, 33];
-
   let t = 0;
   (function draw() {
-    if (!cv.isConnected) return;
-    t += 1/60;
+    if (!cv.isConnected) return; t += 1/60;
     if (auto) {
       const c = (t * .35) % 5;
       keyPos = c < 1.6 ? c / 1.6 : (c < 2.8 ? 1 : (c < 4.4 ? 1 - (c - 2.8) / 1.6 : 0));
@@ -463,163 +693,94 @@ function label3(ctx, cam, p, W, H, text, color) {
     }
     const targetRot = (keyPos > .96 && keyKind === 'right') ? 1 : 0;
     rot += (targetRot - rot) * .08;
-    // Funken bei falschem Schlüssel ganz drin
-    if (keyPos > .96 && keyKind === 'wrong' && Math.random() < .3) {
+    if (keyPos > .96 && keyKind === 'wrong' && Math.random() < .3)
       sparks.push({ x: W/2 + (Math.random()-.5)*180, y: H/2 - 40 + Math.random()*40, vx: (Math.random()-.5)*3, vy: -Math.random()*2.5, l: 1 });
-    }
-
     ctx.clearRect(0, 0, W, H);
-    const skew = tilt; // 3D-Kipp-Effekt
-    const cx = W/2, cy = H/2 + 20;
-
-    ctx.save();
-    ctx.translate(cx, cy);
-    ctx.transform(1, skew * .4, 0, 1, 0, 0);
-    ctx.translate(-cx, -cy);
-
-    // ===== Gehäuse (Messing, Profilzylinder-Form) =====
+    const skew = tilt, cx = W/2, cy = H/2 + 20;
+    ctx.save(); ctx.translate(cx, cy); ctx.transform(1, skew * .4, 0, 1, 0, 0); ctx.translate(-cx, -cy);
     const bw = 560, bh = 150, bx = cx - bw/2, by = cy - 40 - bh/2;
-    // Tiefe (3D-Seite)
     const dep = 26 * (1 + skew);
     ctx.fillStyle = '#7a5b14';
-    ctx.beginPath();
-    ctx.moveTo(bx + bw, by); ctx.lineTo(bx + bw + dep, by - dep * .6);
+    ctx.beginPath(); ctx.moveTo(bx + bw, by); ctx.lineTo(bx + bw + dep, by - dep * .6);
     ctx.lineTo(bx + bw + dep, by + bh - dep * .6); ctx.lineTo(bx + bw, by + bh); ctx.fill();
     ctx.fillStyle = '#8a6a1c';
-    ctx.beginPath();
-    ctx.moveTo(bx, by); ctx.lineTo(bx + dep, by - dep * .6);
+    ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(bx + dep, by - dep * .6);
     ctx.lineTo(bx + bw + dep, by - dep * .6); ctx.lineTo(bx + bw, by); ctx.fill();
-    // Front
     const bodyG = ctx.createLinearGradient(0, by, 0, by + bh);
     bodyG.addColorStop(0, '#d4af37'); bodyG.addColorStop(.5, '#b8912a'); bodyG.addColorStop(1, '#8a6a1c');
-    ctx.fillStyle = bodyG;
-    ctx.fillRect(bx, by, bw, bh);
+    ctx.fillStyle = bodyG; ctx.fillRect(bx, by, bw, bh);
     ctx.strokeStyle = '#5c470f'; ctx.lineWidth = 2; ctx.strokeRect(bx, by, bw, bh);
-    // Profil-Unterteil (Steg)
     const stw = 120, stx = cx - stw/2, sty = by + bh, sth = 90;
     const stG = ctx.createLinearGradient(0, sty, 0, sty + sth);
     stG.addColorStop(0, '#b8912a'); stG.addColorStop(1, '#7a5b14');
-    ctx.fillStyle = stG;
-    ctx.fillRect(stx, sty, stw, sth);
+    ctx.fillStyle = stG; ctx.fillRect(stx, sty, stw, sth);
     ctx.strokeStyle = '#5c470f'; ctx.strokeRect(stx, sty, stw, sth);
-    // Befestigungs-Schraubloch
-    ctx.fillStyle = '#3a2d08';
-    ctx.beginPath(); ctx.arc(cx, sty + sth - 26, 11, 0, 7); ctx.fill();
+    ctx.fillStyle = '#3a2d08'; ctx.beginPath(); ctx.arc(cx, sty + sth - 26, 11, 0, 7); ctx.fill();
     ctx.strokeStyle = '#d4af37'; ctx.lineWidth = 1.5; ctx.stroke();
-
-    // ===== Kern (drehbar) =====
     const coreR = 52, coreY = by + bh - 36;
-    ctx.save();
-    ctx.translate(cx, coreY);
-    ctx.rotate(rot * Math.PI / 2);
+    ctx.save(); ctx.translate(cx, coreY); ctx.rotate(rot * Math.PI / 2);
     const coreG = ctx.createRadialGradient(-12, -12, 0, 0, 0, coreR);
     coreG.addColorStop(0, '#f1f5f9'); coreG.addColorStop(.55, '#cbd5e1'); coreG.addColorStop(1, '#64748b');
-    ctx.fillStyle = coreG;
-    ctx.beginPath(); ctx.arc(0, 0, coreR, 0, 7); ctx.fill();
+    ctx.fillStyle = coreG; ctx.beginPath(); ctx.arc(0, 0, coreR, 0, 7); ctx.fill();
     ctx.strokeStyle = rot > .5 ? '#22c55e' : '#334155'; ctx.lineWidth = 3;
     if (rot > .5) { ctx.shadowColor = '#22c55e'; ctx.shadowBlur = 24; }
     ctx.stroke(); ctx.shadowBlur = 0;
-    // Schlüsselkanal
-    ctx.fillStyle = '#0b1424';
-    ctx.fillRect(-coreR + 9, -5, coreR * 2 - 18, 10);
-    ctx.fillRect(-4, -coreR + 10, 8, coreR - 6);
+    ctx.fillStyle = '#0b1424'; ctx.fillRect(-coreR + 9, -5, coreR * 2 - 18, 10); ctx.fillRect(-4, -coreR + 10, 8, coreR - 6);
     ctx.restore();
-
-    // ===== Scherlinie =====
     const shearY = coreY - coreR;
-    ctx.setLineDash([8, 5]);
-    ctx.strokeStyle = 'rgba(251,191,36,.85)'; ctx.lineWidth = 1.6;
+    ctx.setLineDash([8, 5]); ctx.strokeStyle = 'rgba(251,191,36,.85)'; ctx.lineWidth = 1.6;
     ctx.beginPath(); ctx.moveTo(bx + 14, shearY); ctx.lineTo(bx + bw - 14, shearY); ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'left';
+    ctx.setLineDash([]); ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'left';
     ctx.fillText('SCHERLINIE', bx + 16, shearY - 8);
-
-    // ===== Stifte =====
     const pinX0 = cx - 100, gap = 50;
     const lift = Math.max(0, (keyPos - .45) / .55);
     pins.forEach((p, i) => {
       const px = pinX0 + i * gap;
       const cut = keyKind === 'right' ? p.cut : wrongCuts[i];
       const liftNow = cut * lift * (keyPos > .1 ? 1 : 0);
-      // Bohrung
-      ctx.fillStyle = 'rgba(0,0,0,.25)';
-      ctx.fillRect(px - 8, by + 10, 16, coreY - by - 12);
-      // Feder
+      ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.fillRect(px - 8, by + 10, 16, coreY - by - 12);
       ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1.4;
       const springTop = by + 16, springBottom = coreY - coreR - 24 - liftNow + p.cut;
-      ctx.beginPath();
-      let z = 0;
+      ctx.beginPath(); let z = 0;
       for (let y = springTop; y < springBottom; y += 5) { ctx.lineTo(px + (z % 2 ? 6 : -6), y); z++; }
       ctx.stroke();
-      // Gehäusestift
-      const upLen = 30;
-      const upBottom = shearY - liftNow + cut;
+      const upLen = 30, upBottom = shearY - liftNow + cut;
       const aligned = keyKind === 'right' && Math.abs(upBottom - shearY) < 2 && lift > .92;
       const ug = ctx.createLinearGradient(px - 7, 0, px + 7, 0);
       ug.addColorStop(0, '#e2e8f0'); ug.addColorStop(.5, aligned ? '#4ade80' : '#94a3b8'); ug.addColorStop(1, '#64748b');
-      ctx.fillStyle = ug;
-      ctx.fillRect(px - 7, upBottom - upLen, 14, upLen);
-      // Kernstift (gold)
+      ctx.fillStyle = ug; ctx.fillRect(px - 7, upBottom - upLen, 14, upLen);
       const lowLen = cut;
       const kg = ctx.createLinearGradient(px - 7, 0, px + 7, 0);
       kg.addColorStop(0, '#fef3c7'); kg.addColorStop(.5, keyKind === 'right' ? '#fbbf24' : '#ef4444'); kg.addColorStop(1, '#b45309');
-      ctx.fillStyle = kg;
-      ctx.fillRect(px - 7, upBottom, 14, lowLen);
-      // Spitze
-      ctx.beginPath();
-      ctx.moveTo(px - 7, upBottom + lowLen); ctx.lineTo(px, upBottom + lowLen + 7); ctx.lineTo(px + 7, upBottom + lowLen);
-      ctx.fill();
+      ctx.fillStyle = kg; ctx.fillRect(px - 7, upBottom, 14, lowLen);
+      ctx.beginPath(); ctx.moveTo(px - 7, upBottom + lowLen); ctx.lineTo(px, upBottom + lowLen + 7); ctx.lineTo(px + 7, upBottom + lowLen); ctx.fill();
     });
-
-    // ===== Schlüssel =====
     const keyStartX = bx - 230, keyEndX = cx - coreR + 100;
-    const kx = keyStartX + (keyEndX - keyStartX) * keyPos;
-    const ky = coreY;
-    ctx.save();
-    ctx.translate(kx, ky);
-    ctx.rotate(rot * Math.PI / 2 * (keyPos > .9 ? 1 : 0));
-    // Reide
+    const kx = keyStartX + (keyEndX - keyStartX) * keyPos, ky = coreY;
+    ctx.save(); ctx.translate(kx, ky); ctx.rotate(rot * Math.PI / 2 * (keyPos > .9 ? 1 : 0));
     const rG = ctx.createRadialGradient(-160, 0, 4, -160, 0, 34);
     rG.addColorStop(0, keyKind === 'right' ? '#fef3c7' : '#e2e8f0');
     rG.addColorStop(.6, keyKind === 'right' ? '#fbbf24' : '#94a3b8');
     rG.addColorStop(1, keyKind === 'right' ? '#92400e' : '#475569');
-    ctx.fillStyle = rG;
-    ctx.beginPath(); ctx.arc(-160, 0, 32, 0, 7); ctx.fill();
+    ctx.fillStyle = rG; ctx.beginPath(); ctx.arc(-160, 0, 32, 0, 7); ctx.fill();
     ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 2; ctx.stroke();
-    ctx.fillStyle = '#0b1424';
-    ctx.beginPath(); ctx.arc(-160, 0, 10, 0, 7); ctx.fill();
-    // Schaft mit Zacken
+    ctx.fillStyle = '#0b1424'; ctx.beginPath(); ctx.arc(-160, 0, 10, 0, 7); ctx.fill();
     ctx.fillStyle = keyKind === 'right' ? '#fbbf24' : '#94a3b8';
-    ctx.beginPath();
-    ctx.moveTo(-130, -6); ctx.lineTo(195, -6);
-    ctx.lineTo(195, 6);
+    ctx.beginPath(); ctx.moveTo(-130, -6); ctx.lineTo(195, -6); ctx.lineTo(195, 6);
     const cuts = keyKind === 'right' ? pins.map(p => p.cut) : wrongCuts;
     for (let i = pins.length - 1; i >= 0; i--) {
       const zx = 45 + i * 30;
-      ctx.lineTo(zx + 12, 6);
-      ctx.lineTo(zx + 6, 6 + cuts[i] * .45);
-      ctx.lineTo(zx, 6);
+      ctx.lineTo(zx + 12, 6); ctx.lineTo(zx + 6, 6 + cuts[i] * .45); ctx.lineTo(zx, 6);
     }
-    ctx.lineTo(-130, 6);
-    ctx.closePath(); ctx.fill();
+    ctx.lineTo(-130, 6); ctx.closePath(); ctx.fill();
     ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 1.2; ctx.stroke();
-    ctx.restore();
-
-    ctx.restore(); // Ende Kipp-Transform
-
-    // Funken
+    ctx.restore(); ctx.restore();
     sparks = sparks.filter(s => s.l > 0);
-    sparks.forEach(s => {
-      s.x += s.vx; s.y += s.vy; s.vy += .15; s.l -= .04;
-      ctx.globalAlpha = s.l;
-      ctx.fillStyle = '#fbbf24';
+    sparks.forEach(s => { s.x += s.vx; s.y += s.vy; s.vy += .15; s.l -= .04;
+      ctx.globalAlpha = s.l; ctx.fillStyle = '#fbbf24';
       ctx.shadowColor = '#fbbf24'; ctx.shadowBlur = 8;
-      ctx.fillRect(s.x, s.y, 2.5, 2.5);
-      ctx.shadowBlur = 0;
-    });
+      ctx.fillRect(s.x, s.y, 2.5, 2.5); ctx.shadowBlur = 0; });
     ctx.globalAlpha = 1;
-
-    // HUD
     ctx.font = 'bold 15px sans-serif'; ctx.textAlign = 'left';
     if (rot > .6) { ctx.fillStyle = '#22c55e'; ctx.fillText('🔓 KERN DREHT · alle Stifte auf der Scherlinie', 18, 32); }
     else if (keyPos > .95 && keyKind === 'wrong') { ctx.fillStyle = '#ef4444'; ctx.fillText('🚫 BLOCKIERT · Stifte stehen falsch', 18, 32); }
@@ -631,13 +792,10 @@ function label3(ctx, cam, p, W, H, text, color) {
 
 /* ================= MODELL 3 · ALARM-NETZ ================= */
 (() => {
-  const cv = document.getElementById('cv3'), ctx = cv.getContext('2d');
-  const W = cv.width, H = cv.height;
-  const cam = makeCam().attach(cv);
-  cam.rotX = 0.5;
+  const cv = document.getElementById('cv3'); if (!cv) return;
+  const ctx = cv.getContext('2d'); const W = cv.width, H = cv.height;
+  const cam = makeCam().attach(cv); cam.rotX = 0.5;
   document.getElementById('m3-spin').addEventListener('input', e => cam.auto = +e.target.value);
-
-  // Komponenten im Raum
   const central = { p: [0, -34, 0], name: 'EMA-Zentrale', col: '#22d3ee', ic: '🏛' };
   const sensors = [
     { p: [-260, -30, -160], name: 'PIR', col: '#fbbf24', ic: '👁' },
@@ -647,15 +805,12 @@ function label3(ctx, cam, p, W, H, text, color) {
   ];
   const sirene = { p: [80, -150, 0], name: 'Sirene', col: '#ef4444', ic: '🔊' };
   const nsl = { p: [330, -260, -260], name: 'NSL ☁', col: '#22c55e', ic: '📡' };
-
   let alarm = false, phase = 0, phaseT = 0;
   document.getElementById('m3-trig').addEventListener('click', () => { alarm = true; phase = 1; phaseT = 0; });
   document.getElementById('m3-calm').addEventListener('click', () => { alarm = false; phase = 0; phaseT = 0; });
-
   let t = 0;
   (function draw() {
-    if (!cv.isConnected) return;
-    t += 1/60; phaseT += 1/60;
+    if (!cv.isConnected) return; t += 1/60; phaseT += 1/60;
     cam.rotY += cam.auto * 0.004;
     if (alarm) {
       if (phase === 1 && phaseT > 1.4) { phase = 2; phaseT = 0; }
@@ -663,55 +818,39 @@ function label3(ctx, cam, p, W, H, text, color) {
       else if (phase === 3 && phaseT > 3.4) { phase = 1; phaseT = 0; }
     }
     ctx.clearRect(0, 0, W, H);
-
-    // Boden-Grid
     for (let i = -4; i <= 4; i++) {
       line3(ctx, cam, [i * 100, 0, -400], [i * 100, 0, 400], W, H, 'rgba(34,211,238,.08)', 1);
       line3(ctx, cam, [-400, 0, i * 100], [400, 0, i * 100], W, H, 'rgba(34,211,238,.08)', 1);
     }
-    // Perimeter-Rahmen
     const pr = 340;
     [[-pr,0,-pr,pr,0,-pr],[pr,0,-pr,pr,0,pr],[pr,0,pr,-pr,0,pr],[-pr,0,pr,-pr,0,-pr]].forEach(s =>
       line3(ctx, cam, [s[0], -22, s[2]], [s[3], -22, s[5]], W, H, 'rgba(168,85,247,.5)', 1.6, 6));
-
-    // Gebäude-Hülle um Zentrale
     boxEdges(0, 0, 0, 190, 100, 190).forEach(e =>
       line3(ctx, cam, e[0], e[1], W, H, 'rgba(251,191,36,.4)', 1.2));
-
-    // BUS-Verbindungen Sensoren → Zentrale
     sensors.forEach((s, i) => {
-      const active = phase >= 1 && i === 0; // PIR ist der Auslöser
+      const active = phase >= 1 && i === 0;
       line3(ctx, cam, s.p, central.p, W, H, active ? s.col : 'rgba(100,116,139,.45)', active ? 2 : 1.2, active ? 8 : 0);
-      // Signal-Puls
       if (active && phase === 1) {
         const k = Math.min(1, phaseT / 1.2);
-        const px = s.p[0] + (central.p[0] - s.p[0]) * k;
-        const py = s.p[1] + (central.p[1] - s.p[1]) * k;
-        const pz = s.p[2] + (central.p[2] - s.p[2]) * k;
-        dot3(ctx, cam, [px, py, pz], W, H, 5.5, '#fff', 22);
+        dot3(ctx, cam, [s.p[0]+(central.p[0]-s.p[0])*k, s.p[1]+(central.p[1]-s.p[1])*k, s.p[2]+(central.p[2]-s.p[2])*k], W, H, 5.5, '#fff', 22);
       }
     });
-    // Zentrale → Sirene
     line3(ctx, cam, central.p, sirene.p, W, H, phase >= 3 ? '#ef4444' : 'rgba(100,116,139,.45)', phase >= 3 ? 2 : 1.2, phase >= 3 ? 8 : 0);
     if (phase === 3 && phaseT < 1) {
       const k = phaseT;
-      dot3(ctx, cam, [central.p[0] + (sirene.p[0]-central.p[0])*k, central.p[1] + (sirene.p[1]-central.p[1])*k, central.p[2] + (sirene.p[2]-central.p[2])*k], W, H, 5, '#ef4444', 18);
+      dot3(ctx, cam, [central.p[0]+(sirene.p[0]-central.p[0])*k, central.p[1]+(sirene.p[1]-central.p[1])*k, central.p[2]+(sirene.p[2]-central.p[2])*k], W, H, 5, '#ef4444', 18);
     }
-    // Zentrale → NSL (Uplink, gestrichelt nach oben)
     if (phase >= 3) {
       const segs = 14;
       for (let i = 0; i < segs; i += 2) {
         const k1 = i / segs, k2 = (i + 1) / segs;
-        const a = [central.p[0] + (nsl.p[0]-central.p[0])*k1, central.p[1] + (nsl.p[1]-central.p[1])*k1, central.p[2] + (nsl.p[2]-central.p[2])*k1];
-        const b = [central.p[0] + (nsl.p[0]-central.p[0])*k2, central.p[1] + (nsl.p[1]-central.p[1])*k2, central.p[2] + (nsl.p[2]-central.p[2])*k2];
+        const a = [central.p[0]+(nsl.p[0]-central.p[0])*k1, central.p[1]+(nsl.p[1]-central.p[1])*k1, central.p[2]+(nsl.p[2]-central.p[2])*k1];
+        const b = [central.p[0]+(nsl.p[0]-central.p[0])*k2, central.p[1]+(nsl.p[1]-central.p[1])*k2, central.p[2]+(nsl.p[2]-central.p[2])*k2];
         line3(ctx, cam, a, b, W, H, '#22c55e', 1.8, 8);
       }
-      // Uplink-Pakete
       const k = (phaseT * .5) % 1;
-      dot3(ctx, cam, [central.p[0] + (nsl.p[0]-central.p[0])*k, central.p[1] + (nsl.p[1]-central.p[1])*k, central.p[2] + (nsl.p[2]-central.p[2])*k], W, H, 4.5, '#4ade80', 18);
+      dot3(ctx, cam, [central.p[0]+(nsl.p[0]-central.p[0])*k, central.p[1]+(nsl.p[1]-central.p[1])*k, central.p[2]+(nsl.p[2]-central.p[2])*k], W, H, 4.5, '#4ade80', 18);
     }
-
-    // Knoten zeichnen
     function node(n, active) {
       const q = dot3(ctx, cam, n.p, W, H, active ? 11 : 8, active ? n.col : 'rgba(148,163,184,.85)', active ? 26 : 6);
       ctx.font = (16 * q[2]) + 'px sans-serif'; ctx.textAlign = 'center';
@@ -723,24 +862,314 @@ function label3(ctx, cam, p, W, H, text, color) {
     }
     sensors.forEach((s, i) => node(s, phase >= 1 && i === 0));
     node(central, phase >= 2);
-    const sq = node(sirene, phase >= 3);
-    node(nsl, phase >= 3);
+    const sq = node(sirene, phase >= 3); node(nsl, phase >= 3);
+    if (phase === 3) for (let r = 8; r < 80; r += 14) {
+      const a = 1 - r / 80;
+      ctx.strokeStyle = `rgba(239,68,68,${a})`; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(sq[0], sq[1], (r + (phaseT * 60) % 14) * sq[2], 0, 7); ctx.stroke();
+    }
+    ctx.font = 'bold 14px sans-serif'; ctx.textAlign = 'left';
+    const states = ['● Anlage scharf · alle Sensoren bereit', '🚨 PIR löst aus → Signal zur Zentrale', '⚙ Zentrale prüft &amp; entscheidet…', '🔊 SIRENE + 📡 NSL-Aufschaltung aktiv'];
+    const cols = ['#22c55e', '#fbbf24', '#22d3ee', '#ef4444'];
+    ctx.fillStyle = cols[phase]; ctx.fillText(states[phase], 18, 30);
+    requestAnimationFrame(draw);
+  })();
+})();
 
-    // Sirenen-Wellen (2D um projizierten Punkt)
-    if (phase === 3) {
-      for (let r = 8; r < 80; r += 14) {
-        const a = 1 - r / 80;
-        ctx.strokeStyle = `rgba(239,68,68,${a})`; ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.arc(sq[0], sq[1], (r + (phaseT * 60) % 14) * sq[2], 0, 7); ctx.stroke();
+/* ================= MODELL 4 · TRESOR-AUFBRUCH ================= */
+(() => {
+  const cv = document.getElementById('cv4'); if (!cv) return;
+  const ctx = cv.getContext('2d'); const W = cv.width, H = cv.height;
+  const cam = makeCam().attach(cv); cam.rotY = 0.6; cam.rotX = 0.35; cam.auto = 0.3;
+  let locked = true, attacking = false, attackT = 0, kls = 3, riegel = 1;
+  document.getElementById('m4-lock').addEventListener('click', () => { locked = true; attacking = false; });
+  document.getElementById('m4-unlock').addEventListener('click', () => { locked = false; attacking = false; });
+  document.getElementById('m4-attack').addEventListener('click', () => { attacking = true; attackT = 0; });
+  document.getElementById('m4-class').addEventListener('input', e => kls = +e.target.value);
+  const tools = ['👊', '🪛', '🛠', '🪓', '🪚', '⚙', '⚡'];
+  let t = 0;
+  (function draw() {
+    if (!cv.isConnected) return; t += 1/60;
+    cam.rotY += cam.auto * 0.004;
+    riegel += ((locked ? 1 : 0) - riegel) * 0.08;
+    if (attacking) attackT += 1/60;
+    ctx.clearRect(0, 0, W, H);
+    for (let i = -3; i <= 3; i++) {
+      line3(ctx, cam, [i * 80, 0, -300], [i * 80, 0, 300], W, H, 'rgba(168,85,247,.10)', 1);
+      line3(ctx, cam, [-300, 0, i * 80], [300, 0, i * 80], W, H, 'rgba(168,85,247,.10)', 1);
+    }
+    const w = 220, h = 240, d = 180;
+    boxEdges(0, 0, 0, w, h, d).forEach(e =>
+      line3(ctx, cam, e[0], e[1], W, H, '#a855f7', 2.4, 8));
+    boxEdges(0, 0, 0, w * .85, h * .85, d * .85).forEach(e =>
+      line3(ctx, cam, e[0], e[1], W, H, 'rgba(168,85,247,.45)', 1.4));
+    boxEdges(0, 0, 0, w * .65, h * .65, d * .65).forEach(e =>
+      line3(ctx, cam, e[0], e[1], W, H, 'rgba(168,85,247,.3)', 1));
+    const dialP = [-w * .25, -h * .55, d / 2 + 2];
+    const dq = cam.project(dialP, W, H);
+    const dr = 24 * dq[2];
+    const dialG = ctx.createRadialGradient(dq[0] - dr * .3, dq[1] - dr * .3, 0, dq[0], dq[1], dr);
+    dialG.addColorStop(0, '#fef3c7'); dialG.addColorStop(.5, '#fbbf24'); dialG.addColorStop(1, '#92400e');
+    ctx.fillStyle = dialG; ctx.beginPath(); ctx.arc(dq[0], dq[1], dr, 0, 7); ctx.fill();
+    ctx.strokeStyle = '#5c470f'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = '#1e293b'; ctx.beginPath(); ctx.arc(dq[0], dq[1], dr * .35, 0, 7); ctx.fill();
+    ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 1.5;
+    const dialA = t * (locked ? 0.4 : 2);
+    ctx.beginPath(); ctx.moveTo(dq[0], dq[1]); ctx.lineTo(dq[0] + Math.cos(dialA) * dr * .85, dq[1] + Math.sin(dialA) * dr * .85); ctx.stroke();
+    for (let i = 0; i < 12; i++) {
+      const a = i * Math.PI / 6;
+      ctx.fillStyle = '#5c470f'; ctx.font = 'bold ' + (8 * dq[2]) + 'px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText(String(i * 5), dq[0] + Math.cos(a) * dr * .75, dq[1] + Math.sin(a) * dr * .75 + 3);
+    }
+    const handleP = [w * .25, -h * .5, d / 2 + 2];
+    dot3(ctx, cam, handleP, W, H, 14, '#94a3b8', 4);
+    for (let i = 0; i < 4; i++) {
+      const ry = -h * .25 + i * h * .15;
+      const x0 = w / 2, x1 = w / 2 + 35 * riegel;
+      line3(ctx, cam, [x0, ry, 0], [x1, ry, 0], W, H, '#cbd5e1', 5, 0);
+      dot3(ctx, cam, [x1, ry, 0], W, H, 4, '#e2e8f0', 0);
+    }
+    label3(ctx, cam, [0, -h - 18, 0], W, H, 'KLASSE ' + ['0','I','II','III','IV','V','VI'][kls], '#a855f7', 14);
+    label3(ctx, cam, [0, -h - 36, 0], W, H, ['Basis','15k €','30k €','60k €','100k €','200k €','300k € · KRITIS'][kls], '#fbbf24', 11);
+    if (attacking && locked) {
+      const att = (attackT * 1.4) % 2;
+      const tool = tools[Math.min(kls, 6)];
+      const ap = [-w / 2 - 80 + Math.sin(att * Math.PI) * 30, -h * .35, 0];
+      const aq = cam.project(ap, W, H);
+      ctx.font = 'bold ' + (32 * aq[2]) + 'px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('🥷', aq[0] - 20 * aq[2], aq[1]);
+      ctx.fillText(tool, aq[0] + 18 * aq[2], aq[1] + 4 * aq[2]);
+      if (Math.sin(att * Math.PI) > .85) {
+        for (let i = 0; i < 4; i++) {
+          const a = Math.random() * 7;
+          dot3(ctx, cam, [-w / 2, -h * .35 + Math.sin(a) * 20, Math.cos(a) * 20], W, H, 3, '#fbbf24', 12);
+        }
+      }
+      ctx.fillStyle = '#ef4444'; ctx.font = 'bold 14px sans-serif'; ctx.textAlign = 'left';
+      const minutes = Math.round(attackT * 0.5 * 10) / 10;
+      const max = [1, 3, 5, 10, 20, 30, 60][kls];
+      ctx.fillText('⏱ Angriff: ' + minutes + ' / ' + max + ' min', 18, 50);
+    }
+    ctx.font = 'bold 14px sans-serif'; ctx.textAlign = 'left';
+    ctx.fillStyle = locked ? '#22c55e' : '#fbbf24';
+    ctx.fillText(locked ? '🔒 VERRIEGELT · 4 Bolzen ausgefahren' : '🔓 ENTRIEGELT', 18, 30);
+    requestAnimationFrame(draw);
+  })();
+})();
+
+/* ================= MODELL 5 · DOME-KAMERA ================= */
+(() => {
+  const cv = document.getElementById('cv5'); if (!cv) return;
+  const ctx = cv.getContext('2d'); const W = cv.width, H = cv.height;
+  const cam = makeCam().attach(cv); cam.rotY = 0.8; cam.rotX = 0.4; cam.auto = 0.3;
+  let day = true, auto = true, sp = 0.6, person = -250;
+  document.getElementById('m5-day').addEventListener('click', () => { day = true; auto = false; });
+  document.getElementById('m5-night').addEventListener('click', () => { day = false; auto = false; });
+  document.getElementById('m5-auto').addEventListener('click', () => auto = true);
+  document.getElementById('m5-sp').addEventListener('input', e => sp = +e.target.value);
+  let t = 0, ledIdx = 0;
+  (function draw() {
+    if (!cv.isConnected) return; t += 1/60;
+    if (auto && Math.floor(t / 4) % 2 === 0) day = true;
+    else if (auto) day = false;
+    cam.rotY += cam.auto * 0.004;
+    person += sp * 1.4; if (person > 250) person = -250;
+    const bg = ctx.createLinearGradient(0, 0, 0, H);
+    if (day) { bg.addColorStop(0, '#1e3a5f'); bg.addColorStop(1, '#0a1424'); }
+    else { bg.addColorStop(0, '#020617'); bg.addColorStop(1, '#000'); }
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+    if (!day) for (let i = 0; i < 40; i++) {
+      const x = (i * 91) % W, y = (i * 37) % (H / 2);
+      ctx.fillStyle = `rgba(255,255,255,${.3 + Math.sin(t * 2 + i) * .25})`;
+      ctx.fillRect(x, y, 1, 1);
+    }
+    for (let i = -3; i <= 3; i++) {
+      line3(ctx, cam, [i * 80, 0, -300], [i * 80, 0, 300], W, H, day ? 'rgba(255,255,255,.10)' : 'rgba(239,68,68,.1)', 1);
+      line3(ctx, cam, [-300, 0, i * 80], [300, 0, i * 80], W, H, day ? 'rgba(255,255,255,.10)' : 'rgba(239,68,68,.1)', 1);
+    }
+    const camP = [-180, -240, -120];
+    line3(ctx, cam, [-180, 0, -120], camP, W, H, '#94a3b8', 2);
+    const cq = cam.project(camP, W, H);
+    const dr = 28 * cq[2];
+    const domeG = ctx.createRadialGradient(cq[0] - dr * .3, cq[1] - dr * .3, 0, cq[0], cq[1], dr);
+    domeG.addColorStop(0, '#f1f5f9'); domeG.addColorStop(.5, '#cbd5e1'); domeG.addColorStop(1, '#475569');
+    ctx.fillStyle = domeG; ctx.beginPath(); ctx.arc(cq[0], cq[1], dr, Math.PI, 0); ctx.fill();
+    ctx.fillStyle = '#cbd5e1'; ctx.fillRect(cq[0] - dr, cq[1], dr * 2, dr * .3);
+    ctx.fillStyle = '#0b1424';
+    ctx.beginPath(); ctx.arc(cq[0], cq[1], dr * .5, 0, 7); ctx.fill();
+    ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(cq[0], cq[1], dr * .4, 0, 7); ctx.stroke();
+    ctx.beginPath(); ctx.arc(cq[0], cq[1], dr * .3, 0, 7); ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,.3)';
+    ctx.beginPath(); ctx.arc(cq[0] - dr * .15, cq[1] - dr * .15, dr * .1, 0, 7); ctx.fill();
+    for (let i = 0; i < 8; i++) {
+      const a = i * Math.PI / 4, lr = dr * .7;
+      const lx = cq[0] + Math.cos(a) * lr, ly = cq[1] + Math.sin(a) * lr;
+      ctx.save();
+      if (!day) { ctx.shadowColor = '#ef4444'; ctx.shadowBlur = 14; }
+      ctx.fillStyle = !day ? '#ef4444' : '#3a1f1f';
+      ctx.beginPath(); ctx.arc(lx, ly, dr * .07, 0, 7); ctx.fill();
+      ctx.restore();
+    }
+    const cone = [[-180, -240, -120], [-100, 0, -50], [-260, 0, -50]];
+    line3(ctx, cam, cone[0], cone[1], W, H, day ? 'rgba(255,255,255,.2)' : 'rgba(239,68,68,.4)', 1.5);
+    line3(ctx, cam, cone[0], cone[2], W, H, day ? 'rgba(255,255,255,.2)' : 'rgba(239,68,68,.4)', 1.5);
+    line3(ctx, cam, cone[1], cone[2], W, H, day ? 'rgba(255,255,255,.15)' : 'rgba(239,68,68,.3)', 1);
+    const pq = dot3(ctx, cam, [person, -22, -80], W, H, 8, '#22d3ee', 0);
+    ctx.font = (28 * pq[2]) + 'px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillStyle = '#fff'; ctx.fillText('🚶', pq[0], pq[1] - 12 * pq[2]);
+    if (person > -180 && person < -20) {
+      const w = 36 * pq[2], h = 44 * pq[2];
+      ctx.strokeStyle = day ? '#22c55e' : '#fbbf24'; ctx.lineWidth = 2;
+      ctx.setLineDash([4, 3]);
+      ctx.strokeRect(pq[0] - w/2, pq[1] - h, w, h);
+      ctx.setLineDash([]);
+      ctx.fillStyle = day ? 'rgba(34,197,94,.9)' : 'rgba(251,191,36,.9)';
+      ctx.fillRect(pq[0] - w/2, pq[1] - h - 14, 64, 12);
+      ctx.fillStyle = '#0b1424'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'left';
+      ctx.fillText('Person 92%', pq[0] - w/2 + 3, pq[1] - h - 4);
+    }
+    ctx.font = 'bold 14px sans-serif'; ctx.textAlign = 'left';
+    ctx.fillStyle = day ? '#fbbf24' : '#ef4444';
+    ctx.fillText(day ? '☀ TAG · Farb-Modus · 30 fps' : '🌙 NACHT · 8 IR-LEDs · S/W', 18, 30);
+    requestAnimationFrame(draw);
+  })();
+})();
+
+/* ================= MODELL 6 · BEWEGUNGSMELDER ================= */
+(() => {
+  const cv = document.getElementById('cv6'); if (!cv) return;
+  const ctx = cv.getContext('2d'); const W = cv.width, H = cv.height;
+  const cam = makeCam().attach(cv); cam.rotY = 0.5; cam.rotX = 0.4; cam.auto = 0.25;
+  let pirOn = true, mwOn = true, mode = 'dual', sp = 0.6, person = -300;
+  document.getElementById('m6-sp').addEventListener('input', e => sp = +e.target.value);
+  document.getElementById('m6-pir').addEventListener('click', () => pirOn = !pirOn);
+  document.getElementById('m6-mw').addEventListener('click', () => mwOn = !mwOn);
+  const logicBtn = document.getElementById('m6-logic');
+  logicBtn.addEventListener('click', () => { mode = mode === 'dual' ? 'or' : 'dual'; logicBtn.textContent = 'Logik: ' + (mode === 'dual' ? 'DUAL' : 'ODER'); });
+  let t = 0;
+  (function draw() {
+    if (!cv.isConnected) return; t += 1/60;
+    cam.rotY += cam.auto * 0.004;
+    person += sp * 1.5; if (person > 300) person = -300;
+    ctx.clearRect(0, 0, W, H);
+    for (let i = -3; i <= 3; i++) {
+      line3(ctx, cam, [i * 80, 0, -250], [i * 80, 0, 250], W, H, 'rgba(34,211,238,.10)', 1);
+      line3(ctx, cam, [-250, 0, i * 80], [250, 0, i * 80], W, H, 'rgba(34,211,238,.10)', 1);
+    }
+    const mP = [0, -160, 0];
+    const mq = cam.project(mP, W, H);
+    const ms = 50 * mq[2];
+    boxEdges(0, -110, 0, 100, 50, 100).forEach(e =>
+      line3(ctx, cam, e[0], e[1], W, H, '#cbd5e1', 2));
+    const lensP = [0, -110, 0];
+    const lq = cam.project(lensP, W, H);
+    const lr = 30 * lq[2];
+    ctx.fillStyle = '#0b1424'; ctx.beginPath(); ctx.arc(lq[0], lq[1] + 20 * lq[2], lr, 0, 7); ctx.fill();
+    ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 1;
+    for (let i = -3; i <= 3; i++) {
+      ctx.beginPath();
+      ctx.moveTo(lq[0] - lr, lq[1] + 20 * lq[2] + i * lr * .25);
+      ctx.lineTo(lq[0] + lr, lq[1] + 20 * lq[2] + i * lr * .25);
+      ctx.stroke();
+    }
+    const inRange = Math.abs(person) < 160;
+    const pirActive = pirOn && person > -180 && person < 50;
+    const mwActive = mwOn && person > -50 && person < 180;
+    if (pirOn) {
+      const coneA = [[-160, -50, 100], [0, -110, 0], [-160, -50, -100]];
+      coneA.forEach((p, i) => {
+        const next = coneA[(i + 1) % coneA.length];
+        line3(ctx, cam, [0, -110, 0], p, W, H, pirActive ? '#fbbf24' : 'rgba(251,191,36,.3)', pirActive ? 2 : 1, pirActive ? 10 : 0);
+      });
+    }
+    if (mwOn) {
+      for (let r = 30; r < 140; r += 14) {
+        const phase = (t * 0.8 + r * 0.05) % 1;
+        const cur = r + phase * 14;
+        for (let a = 0; a < 7; a += 0.4) {
+          const p1 = [Math.cos(a) * cur, -110, Math.sin(a) * cur];
+          const p2 = [Math.cos(a + 0.4) * cur, -110, Math.sin(a + 0.4) * cur];
+          line3(ctx, cam, p1, p2, W, H, mwActive ? `rgba(34,211,238,${.7 - phase * .6})` : `rgba(34,211,238,${.15 - phase * .1})`, 1.2);
+        }
       }
     }
+    const pq = dot3(ctx, cam, [person, -22, 30], W, H, 8, '#fff', 0);
+    ctx.font = (28 * pq[2]) + 'px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('🚶', pq[0], pq[1] - 14 * pq[2]);
+    const trig = mode === 'dual' ? (pirActive && mwActive) : (pirActive || mwActive);
+    ctx.font = 'bold 15px sans-serif'; ctx.textAlign = 'left';
+    ctx.fillStyle = trig ? '#ef4444' : '#22c55e';
+    ctx.fillText(trig ? '🚨 ALARM · ' + (mode === 'dual' ? 'PIR + MW' : 'PIR oder MW') : '● bereit · ' + (mode === 'dual' ? 'DUAL-Logik' : 'ODER-Logik'), 18, 30);
+    ctx.fillStyle = pirActive ? '#fbbf24' : '#94a3c4'; ctx.fillText('👁 PIR ' + (pirOn ? (pirActive ? '🚨' : '●') : '✕'), 18, 54);
+    ctx.fillStyle = mwActive ? '#22d3ee' : '#94a3c4'; ctx.fillText('📡 MW ' + (mwOn ? (mwActive ? '🚨' : '●') : '✕'), 100, 54);
+    requestAnimationFrame(draw);
+  })();
+})();
 
-    // HUD
+/* ================= MODELL 7 · ANTI-TERROR-POLLER ================= */
+(() => {
+  const cv = document.getElementById('cv7'); if (!cv) return;
+  const ctx = cv.getContext('2d'); const W = cv.width, H = cv.height;
+  const cam = makeCam().attach(cv); cam.rotY = 0.5; cam.rotX = 0.45; cam.auto = 0.15;
+  let speed = 50, mass = 7500, crashing = false, truckX = -400, crashT = 0;
+  const spV = document.getElementById('m7-sp-v'), mV = document.getElementById('m7-m-v');
+  document.getElementById('m7-sp').addEventListener('input', e => { speed = +e.target.value; spV.textContent = speed + ' km/h'; });
+  document.getElementById('m7-m').addEventListener('input', e => { mass = +e.target.value; mV.textContent = (mass/1000).toFixed(1) + ' t'; });
+  document.getElementById('m7-go').addEventListener('click', () => { crashing = true; truckX = -400; crashT = 0; });
+  document.getElementById('m7-reset').addEventListener('click', () => { crashing = false; truckX = -400; crashT = 0; });
+  let t = 0;
+  (function draw() {
+    if (!cv.isConnected) return; t += 1/60;
+    cam.rotY += cam.auto * 0.004;
+    ctx.clearRect(0, 0, W, H);
+    for (let i = -3; i <= 3; i++) {
+      line3(ctx, cam, [i * 100, 0, -200], [i * 100, 0, 200], W, H, 'rgba(220,38,38,.10)', 1);
+      line3(ctx, cam, [-400, 0, i * 100], [400, 0, i * 100], W, H, 'rgba(220,38,38,.10)', 1);
+    }
+    line3(ctx, cam, [-400, 0, -10], [400, 0, -10], W, H, '#fbbf24', 2);
+    line3(ctx, cam, [-400, 0, 10], [400, 0, 10], W, H, '#fbbf24', 2);
+    for (let i = -3; i < 4; i++) {
+      line3(ctx, cam, [i * 80, 0, 0], [i * 80 + 30, 0, 0], W, H, '#fff', 3, 4);
+    }
+    const v = speed / 3.6;
+    const energy = 0.5 * mass * v * v / 1e6;
+    const pasLimit = 1.85;
+    const holds = energy <= pasLimit * 1.1;
+    const pollerKnocked = crashing && !holds && crashT > 1.2;
+    [-60, 0, 60].forEach(px => {
+      const tilt = pollerKnocked && px > -20 ? Math.min(1.2, (crashT - 1.2) * 1.5) : 0;
+      const pollerH = 70;
+      const p1 = [px, 0, 0], p2 = [px + Math.sin(tilt) * pollerH, -pollerH * Math.cos(tilt), 0];
+      line3(ctx, cam, p1, p2, W, H, holds && crashT > 1.2 ? '#22c55e' : '#dc2626', 14, 14);
+      dot3(ctx, cam, p2, W, H, 6, '#fbbf24', 6);
+    });
+    if (crashing) {
+      const targetX = -90 + (pollerKnocked ? (crashT - 1.2) * speed * 4 : 0);
+      truckX = Math.min(targetX, truckX + speed * 0.15);
+      crashT += 1/60;
+    }
+    const truckP = [truckX, -45, 0];
+    const tq = cam.project(truckP, W, H);
+    ctx.font = (60 * tq[2]) + 'px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('🚛', tq[0], tq[1]);
+    if (crashing && crashT > 1.2 && crashT < 2 && holds) {
+      for (let i = 0; i < 8; i++) {
+        const a = Math.random() * 7;
+        dot3(ctx, cam, [-90 + Math.cos(a) * 30, -40 + Math.sin(a) * 30, 0], W, H, 4, '#fbbf24', 12);
+      }
+      const tq2 = cam.project([-50, -60, 0], W, H);
+      ctx.font = 'bold ' + (40 * tq2[2]) + 'px sans-serif'; ctx.fillText('💥', tq2[0], tq2[1]);
+    }
     ctx.font = 'bold 14px sans-serif'; ctx.textAlign = 'left';
-    const states = ['● Anlage scharf · alle Sensoren bereit', '🚨 PIR löst aus → Signal zur Zentrale', '⚙ Zentrale prüft & entscheidet…', '🔊 SIRENE + 📡 NSL-Aufschaltung aktiv'];
-    const cols = ['#22c55e', '#fbbf24', '#22d3ee', '#ef4444'];
-    ctx.fillStyle = cols[phase];
-    ctx.fillText(states[phase], 18, 30);
+    ctx.fillStyle = '#fff'; ctx.fillText('⚡ Energie: ' + energy.toFixed(2) + ' MJ', 18, 30);
+    ctx.fillStyle = '#fbbf24'; ctx.fillText('🛡 PAS 68: ' + pasLimit + ' MJ', 18, 50);
+    if (crashing && crashT > 1.2) {
+      ctx.fillStyle = holds ? '#22c55e' : '#ef4444';
+      ctx.font = 'bold 16px sans-serif';
+      ctx.fillText(holds ? '✅ POLLER HÄLT' : '❌ POLLER VERSAGT', 18, 78);
+    }
     requestAnimationFrame(draw);
   })();
 })();
