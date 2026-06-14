@@ -311,6 +311,52 @@ body {
   z-index: 50;
 }
 .sound-fab.on { background: var(--cyan); color: #05080f; box-shadow: 0 0 22px var(--cyan); }
+
+/* ========== UPDATE-BANNER ========== */
+.update-banner {
+  position: fixed; top: calc(var(--safe-top) + 8px); left: 50%; transform: translateX(-50%) translateY(-200%);
+  z-index: 250; max-width: calc(100% - 28px); min-width: 260px;
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  color: #04130a; border-radius: 14px; padding: 11px 14px;
+  display: flex; align-items: center; gap: 10px;
+  box-shadow: 0 12px 40px rgba(34,197,94,.55), 0 0 0 2px rgba(34,197,94,.3);
+  transition: transform .5s cubic-bezier(.2,.9,.3,1);
+  cursor: pointer; font-family: inherit;
+}
+.update-banner.on { transform: translateX(-50%) translateY(0); }
+.update-banner.checking { background: linear-gradient(135deg, #22d3ee, #0891b2); color: #04111a; }
+.update-banner.error    { background: linear-gradient(135deg, #f97316, #ea580c); color: #1a0a04; }
+.update-banner-em {
+  width: 32px; height: 32px; flex-shrink: 0; border-radius: 9px;
+  background: rgba(0,0,0,.18); display: grid; place-items: center; font-size: 18px;
+  animation: spin 2s ease-in-out infinite;
+}
+@keyframes spin { 50% { transform: rotate(180deg) scale(1.1); } }
+.update-banner-body { flex: 1; min-width: 0; line-height: 1.25; }
+.update-banner-body strong { display: block; font-size: 13px; font-weight: 900; }
+.update-banner-body span { font-size: 11px; opacity: .8; display: block; margin-top: 1px; }
+.update-banner-x {
+  background: rgba(0,0,0,.18); border: none; color: inherit; cursor: pointer;
+  width: 28px; height: 28px; border-radius: 8px; font-size: 14px; font-weight: 800;
+  flex-shrink: 0; font-family: inherit;
+}
+
+/* Update-Tab + Setup */
+.update-row {
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  border-left: 3px solid var(--c); margin-bottom: 8px;
+}
+.update-row .em { font-size: 22px; flex-shrink: 0; }
+.update-row .body { flex: 1; min-width: 0; }
+.update-row .body strong { font-size: 13px; display: block; }
+.update-row .body span { font-size: 11px; color: var(--dim); display: block; margin-top: 2px; }
+.update-row .body .ver { font-family: monospace; font-size: 10px; color: var(--c); font-weight: 700; }
+.update-row .actbtn {
+  cursor: pointer; padding: 7px 12px; border-radius: 8px; font-size: 12px; font-weight: 800;
+  background: var(--c); color: #05080f; border: none; font-family: inherit; flex-shrink: 0;
+}
+.update-row .actbtn:active { transform: scale(.94); }
 </style>
 </head>
 <body>
@@ -649,6 +695,16 @@ body {
 </div>
 
 <button class="sound-fab" id="soundFab" title="Sound an/aus">🔇</button>
+
+<!-- Update-Banner -->
+<div class="update-banner" id="upBanner">
+  <div class="update-banner-em" id="upEm">🔄</div>
+  <div class="update-banner-body">
+    <strong id="upTitle">Prüfe Version…</strong>
+    <span id="upSub">Bitte warten</span>
+  </div>
+  <button class="update-banner-x" id="upX">✕</button>
+</div>
 
 <script>
 /* ============== SOUND-ENGINE (WebAudio) ============== */
@@ -2523,6 +2579,138 @@ function openModal(p) {
 
 renderCatBar();
 renderGal();
+})();
+
+/* ================= AUTO-UPDATE-SYSTEM ================= */
+(() => {
+  // Wenn neuer Build kommt, bumpe diese Zahl. Format: YYYYMMDDHHmm
+  const VERSION    = '202606140820';
+  const VERSION_HR = 'V3.1 · 14.06.2026';
+  // Online-Quelle: Raw-File auf GitHub (immer aktuell)
+  const URL_LATEST = 'https://raw.githubusercontent.com/benjaminbarsamian1288/NOTEBOOK-/claude/build-excel-dual-app-GgnyV/sicherheitsmanagement/Sicherheitsmanagement.html';
+  const URL_VIEW   = 'https://github.com/benjaminbarsamian1288/NOTEBOOK-/blob/claude/build-excel-dual-app-GgnyV/sicherheitsmanagement/Sicherheitsmanagement.html';
+
+  window.__APP_VERSION = VERSION;
+  window.__APP_VERSION_HR = VERSION_HR;
+
+  const banner = document.getElementById('upBanner');
+  const em = document.getElementById('upEm');
+  const ttl = document.getElementById('upTitle');
+  const sub = document.getElementById('upSub');
+  const x = document.getElementById('upX');
+
+  let remoteVer = null, remoteHtml = null;
+
+  function show(cls, emoji, title, subtitle, onClick) {
+    if (!banner) return;
+    banner.className = 'update-banner ' + (cls || '') + ' on';
+    em.textContent = emoji;
+    ttl.textContent = title;
+    sub.textContent = subtitle;
+    banner.onclick = (e) => { if (e.target !== x && onClick) onClick(); };
+  }
+  function hide() { if (banner) banner.classList.remove('on'); }
+
+  x.addEventListener('click', (e) => { e.stopPropagation(); hide(); });
+
+  function fmtVer(v) {
+    if (!v || v.length < 12) return v || '?';
+    return v.slice(6, 8) + '.' + v.slice(4, 6) + '.' + v.slice(0, 4) + ' ' + v.slice(8, 10) + ':' + v.slice(10, 12);
+  }
+
+  async function check(silent) {
+    if (!navigator.onLine) {
+      if (!silent) show('error', '📡', 'Kein Internet', 'Online-Prüfung nicht möglich');
+      return { state: 'offline' };
+    }
+    if (!silent) show('checking', '🔄', 'Prüfe Online…', 'Vergleiche Version mit Repo');
+    try {
+      const url = URL_LATEST + '?t=' + Date.now();
+      const r = await fetch(url, { cache: 'no-store' });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const txt = await r.text();
+      const m = txt.match(/const\s+VERSION\s*=\s*'(\d{12})'/);
+      if (!m) throw new Error('Keine Version in der Remote-Datei gefunden');
+      remoteVer = m[1];
+      remoteHtml = txt;
+      if (remoteVer > VERSION) {
+        // Neue Version verfügbar
+        const hrM = txt.match(/const\s+VERSION_HR\s*=\s*'([^']+)'/);
+        const remoteHR = hrM ? hrM[1] : remoteVer;
+        if (typeof sfx === 'object' && sfx.unlock) sfx.unlock();
+        show('', '✨', 'Neue Version verfügbar', remoteHR + ' · tippen zum Update', () => doUpdate());
+        return { state: 'update', remote: remoteVer, remoteHR };
+      } else {
+        if (!silent) {
+          show('', '✅', 'App ist aktuell', 'Du hast die neueste Version (' + VERSION_HR + ')', () => hide());
+          setTimeout(hide, 4000);
+        }
+        return { state: 'current', remote: remoteVer };
+      }
+    } catch (err) {
+      console.warn('Update-Check Fehler:', err);
+      if (!silent) {
+        show('error', '⚠', 'Update-Check fehlgeschlagen', err.message || 'Netzwerkfehler', () => hide());
+      }
+      return { state: 'error', err };
+    }
+  }
+
+  function doUpdate() {
+    if (!remoteHtml) return;
+    // Variante 1: Direkt-Download im Browser → User speichert über die alte Datei
+    try {
+      const blob = new Blob([remoteHtml], { type: 'text/html' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'Sicherheitsmanagement.html';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+      show('', '💾', 'Neue Version geladen', 'Speichere die Datei über die alte und öffne sie neu', () => hide());
+      if (typeof sfx === 'object' && sfx.boom) sfx.boom();
+    } catch (err) {
+      // Variante 2: Fallback - GitHub-Seite öffnen
+      try { window.open(URL_VIEW, '_blank'); } catch (e) {}
+      show('error', '⚠', 'Download-Fehler', 'Öffne GitHub und lade die Datei manuell herunter', () => window.open(URL_VIEW, '_blank'));
+    }
+  }
+
+  // Manuelle Check-Buttons (in Galerie + Hersteller-Tab)
+  function bindButtons() {
+    document.querySelectorAll('[data-update-check]').forEach(b => {
+      b.addEventListener('click', (e) => { e.stopPropagation(); check(false); });
+    });
+    document.querySelectorAll('[data-update-version]').forEach(el => {
+      el.textContent = VERSION_HR;
+    });
+  }
+  bindButtons();
+
+  // Update-Karte oben in die Galerie einfügen
+  const gal = document.getElementById('gal');
+  if (gal) {
+    const card = document.createElement('div');
+    card.className = 'update-row';
+    card.style.setProperty('--c', '#22c55e');
+    card.innerHTML = `
+      <div class="em">🔄</div>
+      <div class="body">
+        <strong>App-Updates</strong>
+        <span>Diese Version: <span class="ver">${VERSION_HR}</span></span>
+      </div>
+      <button class="actbtn" data-update-check>Jetzt prüfen</button>`;
+    const hero = gal.previousElementSibling; // catBar
+    if (hero && hero.parentNode) hero.parentNode.insertBefore(card, hero);
+    card.querySelector('[data-update-check]').addEventListener('click', (e) => { e.stopPropagation(); check(false); });
+  }
+
+  // Auto-Check beim Start (silent), und alle 30 Min wenn App offen bleibt
+  setTimeout(() => check(true), 2500);
+  setInterval(() => check(true), 30 * 60 * 1000);
+
+  // Bei Online-Werden noch mal prüfen
+  window.addEventListener('online', () => setTimeout(() => check(true), 1500));
 })();
 </script>
 </body>
