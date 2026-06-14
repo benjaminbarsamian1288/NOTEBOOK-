@@ -157,6 +157,96 @@ body {
 }
 .stage .flash.on { opacity: .35; }
 
+/* ========== GALERIE ========== */
+.cat-bar {
+  display: flex; gap: 6px; overflow-x: auto; padding: 4px 14px 10px; margin: -2px -14px 12px;
+  scrollbar-width: none;
+}
+.cat-bar::-webkit-scrollbar { display: none; }
+.cat-chip {
+  cursor: pointer; padding: 8px 13px; border-radius: 999px; font-size: 12px; font-weight: 800;
+  background: var(--surface); color: var(--dim); border: 1px solid var(--border);
+  white-space: nowrap; flex-shrink: 0; font-family: inherit;
+  display: flex; align-items: center; gap: 5px; transition: all .14s;
+}
+.cat-chip:active { transform: scale(.94); }
+.cat-chip.on { background: var(--cc); color: #05080f; border-color: var(--cc); box-shadow: 0 0 14px color-mix(in srgb, var(--cc) 55%, transparent); }
+.cat-chip .ct { font-size: 10px; opacity: .8; }
+
+.gal { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (min-width: 700px) { .gal { grid-template-columns: repeat(3, 1fr); } }
+.gal-card {
+  position: relative; cursor: pointer; padding: 10px;
+  background: linear-gradient(165deg, color-mix(in srgb, var(--c) 18%, var(--surface)), var(--surface) 65%);
+  border: 1px solid color-mix(in srgb, var(--c) 30%, var(--border));
+  border-left: 3px solid var(--c); border-radius: 14px;
+  display: flex; flex-direction: column; gap: 6px;
+  transition: transform .15s; font-family: inherit; text-align: left;
+}
+.gal-card:active { transform: scale(.96); box-shadow: 0 6px 20px color-mix(in srgb, var(--c) 35%, transparent); }
+.gal-card canvas {
+  width: 100%; height: auto; aspect-ratio: 16/10;
+  background: radial-gradient(120% 120% at 50% 30%, #0c1526, #05080f);
+  border-radius: 8px; border: 1px solid rgba(255,255,255,.05);
+}
+.gc-name { font-size: 12.5px; font-weight: 800; line-height: 1.2; color: var(--text); }
+.gc-spec { font-size: 10.5px; color: var(--dim); line-height: 1.3; min-height: 26px; }
+.gc-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 2px; gap: 4px; }
+.gc-price { font-size: 11.5px; font-weight: 800; color: var(--c); white-space: nowrap; }
+.gc-norm { font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px;
+  background: rgba(255,255,255,.05); color: var(--dim); letter-spacing: .3px; }
+
+/* Modal */
+.modal {
+  position: fixed; inset: 0; z-index: 200; display: none;
+  background: rgba(5,8,15,.85); backdrop-filter: blur(12px);
+  padding: 20px 14px; overflow-y: auto;
+  padding-top: calc(20px + var(--safe-top));
+}
+.modal.on { display: block; animation: modal-in .25s cubic-bezier(.2,.9,.3,1) both; }
+@keyframes modal-in { from { opacity: 0; transform: scale(.97); } to { opacity: 1; transform: none; } }
+.modal-card {
+  max-width: 540px; margin: 0 auto; position: relative;
+  background: linear-gradient(165deg, color-mix(in srgb, var(--c) 22%, var(--surface)), var(--surface) 60%);
+  border: 1px solid color-mix(in srgb, var(--c) 40%, var(--border));
+  border-radius: 18px; padding: 16px;
+  box-shadow: 0 30px 80px rgba(0,0,0,.7);
+}
+.modal-x {
+  position: absolute; top: 12px; right: 12px; z-index: 1;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--surface); color: var(--text); border: 1px solid var(--border);
+  cursor: pointer; font-size: 16px; display: grid; place-items: center;
+}
+.modal-card canvas {
+  width: 100%; aspect-ratio: 16/10; border-radius: 12px;
+  background: radial-gradient(120% 120% at 50% 30%, #0c1526, #05080f);
+  border: 1px solid var(--border); margin-bottom: 12px;
+}
+.modal-card h2 { font-size: 18px; margin-bottom: 4px; color: var(--c); padding-right: 40px; }
+.modal-card .mkicker { font-size: 10px; font-weight: 800; color: var(--dim); letter-spacing: 1px; text-transform: uppercase; }
+.modal-card p { font-size: 13px; color: var(--text); line-height: 1.5; margin: 8px 0; }
+.specs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 10px 0; }
+.spec {
+  background: rgba(255,255,255,.04); border: 1px solid var(--border);
+  border-left: 2px solid var(--c); border-radius: 8px; padding: 7px 9px;
+}
+.spec span { display: block; font-size: 9.5px; font-weight: 800; color: var(--mute); letter-spacing: .4px; text-transform: uppercase; }
+.spec strong { font-size: 12.5px; color: var(--text); }
+.pricebar {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
+  padding: 10px 12px; margin-top: 10px;
+}
+.pricebar strong { font-size: 18px; color: var(--c); }
+.pricebar span { font-size: 11px; color: var(--dim); font-weight: 700; }
+.makers { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+.maker {
+  font-size: 11px; font-weight: 700; padding: 4px 9px; border-radius: 999px;
+  background: color-mix(in srgb, var(--c) 18%, transparent); color: var(--c);
+  border: 1px solid color-mix(in srgb, var(--c) 40%, transparent);
+}
+
 /* ========== CONTROL-BAR ========== */
 .ctrl {
   display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px;
@@ -320,18 +410,16 @@ body {
       </div>
     </section>
 
-    <!-- ===== EINSTELLUNGEN ===== -->
-    <section class="page" id="setup" style="--c:#94a3c4">
-      <div class="hero"><span class="kicker">Einstellungen</span><h1>App-Optionen</h1><p>Sound, Animationen, Theme.</p></div>
-      <div class="grid">
-        <button class="tile" style="--c:#22d3ee" id="opt-sound"><div class="em">🔊</div><strong>Sound</strong><span>Töne bei Knöpfen</span></button>
-        <button class="tile" style="--c:#fbbf24"><div class="em">📱</div><strong>Mobile-Optimiert</strong><span>Kein H-Scroll</span></button>
-        <button class="tile" style="--c:#ef4444"><div class="em">📐</div><strong>3D aktiv</strong><span>7 Modelle drehbar</span></button>
-        <button class="tile" style="--c:#22c55e"><div class="em">💾</div><strong>Offline</strong><span>Doppelklick · keine Cloud</span></button>
+    <!-- ===== KOMPONENTEN-GALERIE ===== -->
+    <section class="page" id="galerie" style="--c:#22d3ee">
+      <div class="hero">
+        <span class="kicker">Komponenten-Galerie</span><h1>🎨 Alle Komponenten</h1>
+        <p>Jede Komponente mit Live-Animation, Technik-Specs und Richtpreis – nach Bereich sortiert. Tippe eine Karte für Details.</p>
       </div>
-      <div class="section-h" style="--c:#94a3c4">Info</div>
-      <div class="legend"><b>V3 · Mobile-First.</b> Komplett neu gebaut: Tab-Bar unten, alles in Karten, Sound-Effekte (WebAudio), Camera-Shake bei Alarm, Flash-Overlay, Partikel-Hintergrund. Läuft offline.</div>
+      <div class="cat-bar" id="catBar"></div>
+      <div class="gal" id="gal"></div>
     </section>
+    <div class="modal" id="modal"><div class="modal-card" id="modalCard"></div></div>
 
     <!-- ===== MODELL-SEITEN (m1-m7 + Technik-Detail) ===== -->
     <section class="page" id="m1" style="--c:#22c55e">
@@ -556,7 +644,7 @@ body {
     <button class="tab"    data-tab="modelle"   style="--c:#22c55e"><span class="em">📐</span><span>Modelle</span></button>
     <button class="tab"    data-tab="technik"   style="--c:#fbbf24"><span class="em">⚙️</span><span>Technik</span></button>
     <button class="tab"    data-tab="hersteller"style="--c:#a855f7"><span class="em">🏭</span><span>Marken</span></button>
-    <button class="tab"    data-tab="setup"     style="--c:#94a3c4"><span class="em">⚙</span><span>Setup</span></button>
+    <button class="tab"    data-tab="galerie"   style="--c:#22d3ee"><span class="em">🎨</span><span>Galerie</span></button>
   </nav>
 </div>
 
@@ -1294,6 +1382,1147 @@ function shakeStage(id) {
     }
     requestAnimationFrame(draw);
   })();
+})();
+
+/* ============== KOMPONENTEN-GALERIE ============== */
+(() => {
+
+const KAT = [
+  { id: 'all',       icon: '✦', name: 'Alle',         color: '#22d3ee' },
+  { id: 'perimeter', icon: '🌐', name: 'Perimeter',    color: '#22c55e' },
+  { id: 'aussen',    icon: '🚪', name: 'Außenhaut',    color: '#fbbf24' },
+  { id: 'melder',    icon: '🔔', name: 'Melder',       color: '#22d3ee' },
+  { id: 'video',     icon: '📷', name: 'Video',        color: '#f97316' },
+  { id: 'zylinder',  icon: '🔐', name: 'Schließen',    color: '#fbbf24' },
+  { id: 'ema',       icon: '📡', name: 'EMA',          color: '#ef4444' },
+  { id: 'tresor',    icon: '🏦', name: 'Tresor',       color: '#a855f7' },
+  { id: 'zutritt',   icon: '🆔', name: 'Zutritt',      color: '#22d3ee' },
+];
+
+const PROD = [
+  // ===== PERIMETER =====
+  { kat:'perimeter', n:'Maschendrahtzaun', c:'#22c55e', a:'fence', spec:'Standard-Industriezaun, verzinkt, 1,8-2,4 m hoch.', price:'35-55 €/lfm', norm:'DIN 13241', makers:['Heras','Procter','Betafence'], detail:'Klassischer Maschendrahtzaun aus verzinktem Stahl. Wirtschaftliche Grundsicherung für Industrie- und Lagerflächen. Mit NATO-Draht-Krone deutlich höher einzustufen.', specs:[['Höhe','1,8 - 2,4 m'],['Material','Stahl verz.'],['Aufbau','3 mm'],['Lebensdauer','25+ J.']] },
+  { kat:'perimeter', n:'Stabmattenzaun', c:'#22c55e', a:'doublebar', spec:'Doppelstabmatte 8/6/8, sehr stabil, schwer aufschneidbar.', price:'80-140 €/lfm', norm:'DIN 1722-1', makers:['Heras','Pfeil & Holm'], detail:'Doppelstabmattenzaun für höhere Sicherheitsanforderungen. Pulverbeschichtet, geschweißt, fast biegeresistent. Standard bei Umspannwerken und KRITIS.', specs:[['Stab','8/6/8 mm'],['Höhe','2,0 - 2,5 m'],['Maschenwabe','50x200'],['Klasse','RC3 möglich']] },
+  { kat:'perimeter', n:'NATO-Draht / Concertina', c:'#22c55e', a:'natowire', spec:'Stacheldraht-Spirale mit Rasierklingen, oben aufgesetzt.', price:'15-25 €/lfm', norm:'STANAG', makers:['Various'], detail:'Stacheldraht-Spirale mit Rasierklingen, deutlich abschreckender als gewöhnlicher Stacheldraht. Über Zaun spannen oder als Bodenbarriere.', specs:[['Durchmesser','45-80 cm'],['Klingen','30 mm'],['Material','Edelstahl'],['Verlegung','spiralig']] },
+  { kat:'perimeter', n:'Schiebetor Industrie', c:'#22c55e', a:'gate', spec:'Freitragend, mit Motor, bis 8 m Durchfahrt.', price:'4.500-12.000 €', norm:'EN 13241-1', makers:['Hörmann','Heras','FAAC'], detail:'Freitragendes Industrie-Schiebetor mit Motorantrieb. Keine Bodenschiene, robust bei Schnee/Frost. Anti-Crash-Optionen bis PAS 68.', specs:[['Durchfahrt','bis 8 m'],['Antrieb','230/400V'],['Zyklen','100k/Jahr'],['Auf-Zeit','12-18 s']] },
+  { kat:'perimeter', n:'Anti-Ram-Poller', c:'#22c55e', a:'bollard', spec:'Tief gegründet, stoppt 7,5-t-LKW @ 80 km/h.', price:'3.500-8.000 €/Stk', norm:'PAS 68 V/7500', makers:['ATG Access','Heald','FAAC J355'], detail:'Hochsicherheits-Stahlpoller mit tiefer Gründung. Standardausführung für Fußgängerzonen, Botschaften, Flughäfen. PAS-68 zertifiziert gegen LKW-Anprall.', specs:[['Höhe','110-140 cm'],['Ø','275 mm'],['Fundament','120 cm'],['Klasse','PAS 68 K12']] },
+  { kat:'perimeter', n:'Versenkbarer Poller', c:'#22c55e', a:'bollardret', spec:'Hydraulisch versenkbar, 1,5-3 s Hochfahrzeit.', price:'8.000-18.000 €/Stk', norm:'IWA 14-1', makers:['FAAC','BFT','Pilomat'], detail:'Hydraulischer versenkbarer Poller für temporäre Sperren. Tagsüber Lieferverkehr, nachts Sperre. Mit Ampel-Warnsystem.', specs:[['Höhe (auf)','60-100 cm'],['Zeit (auf)','1,5-3 s'],['Antrieb','Hydraulik'],['Zyklen','500k']] },
+  { kat:'perimeter', n:'Crash-Tor PAS 68', c:'#22c55e', a:'crashgate', spec:'Schwer-Stahltor mit gegründetem Riegel, militärisch.', price:'25.000-60.000 €', norm:'PAS 68 V/7500', makers:['Hörmann HSE','Heras Mistral','Frontier Pitts'], detail:'Hochsicherheits-Crash-Tor für Kasernen, Atomkraftwerke, KRITIS. Stahlrahmen mit tief gegründetem Riegel und PAS-68-Zertifizierung.', specs:[['Durchfahrt','4-8 m'],['Stahlstärke','12 mm'],['Riegel','3 Stk Bolzen'],['Klasse','N3 V/7500']] },
+  { kat:'perimeter', n:'Schranke (HVM)', c:'#22c55e', a:'barrier', spec:'Verstärkter Drehbalken mit Stahlseil-Innenleben.', price:'8.000-22.000 €', norm:'PAS 68 N1', makers:['Came STYLO','Avon','FAAC'], detail:'HVM-Schranke mit Stahlseil im Balken. Stoppt 2,5-t-Fahrzeug bei 64 km/h. Standard an Werkseinfahrten und Parkhäusern.', specs:[['Länge','3-6 m'],['Auf-Zeit','1,5-4 s'],['Klasse','PAS 68 N1'],['Drehmoment','350 Nm']] },
+  { kat:'perimeter', n:'Reifentöter', c:'#22c55e', a:'spike', spec:'Klappdorne im Boden, durchschlagen Reifen+Felgen.', price:'2.500-6.000 €/m', norm:'ASTM F2656', makers:['Heald TPK','Avon','ATG'], detail:'Reifentöter / Spike-Strip im Boden, durchschlägt Reifen und Felgen. Werkseinfahrt-Schutz, Mautstellen, militärische Anwendung.', specs:[['Dorn-Länge','110 mm'],['Material','Edelstahl'],['Manuell/Auto','beides'],['Klasse','M50']] },
+  { kat:'perimeter', n:'Pflanzkübel Anti-Ram', c:'#22c55e', a:'planter', spec:'Beton/Stahl mit Bepflanzung als urbane Tarnung.', price:'4.500-12.000 €', norm:'PAS 68', makers:['Marshalls RhinoGuard','Hardstaff'], detail:'Massiver Beton-/Stahlkern in dekorativer Verkleidung mit Bepflanzung. Anti-Ram-Schutz in Innenstädten ohne sichtbare Sperrwirkung.', specs:[['Gewicht','3.000-6.000 kg'],['Maße','1,5 × 1,5 m'],['Klasse','PAS 68 N2'],['Tarnung','komplett']] },
+  { kat:'perimeter', n:'Mobiles Sperrkissen', c:'#22c55e', a:'mobile', spec:'Pitagone P36 · stapelbar, temporär für Events.', price:'1.800-3.500 €/Modul', norm:'IWA 14-1', makers:['Pitagone','ATG SP400','Heald'], detail:'Modulares mobiles Sperrsystem für Weihnachtsmärkte und Events. Wird zusammengesteckt, keine Gründung nötig. IWA-14-1-zertifiziert.', specs:[['Gewicht','800 kg'],['Aufbau','15 min'],['Modular','ja'],['Klasse','IWA 14-1']] },
+
+  // ===== AUSSENHAUT =====
+  { kat:'aussen', n:'Sicherheitstür RC3', c:'#fbbf24', a:'door3', spec:'Vollblattstahl, 3-fach-Verriegelung, 5 Min Widerstand.', price:'1.500-3.200 €', norm:'DIN EN 1627 RC3', makers:['Hörmann','Pilz','Schörghuber'], detail:'Sicherheitstür Widerstandsklasse RC3 - Stahlblatt mit 3-fach-Verriegelung, Bandseiten-Sicherung und gehärteten Schließblechen. 5 Minuten Widerstand gegen erfahrene Täter.', specs:[['Klasse','RC3'],['Widerstand','5 Min'],['Verriegelung','3-fach'],['Schloss','VdS B']] },
+  { kat:'aussen', n:'Sicherheitstür RC4', c:'#fbbf24', a:'door4', spec:'10 Min Widerstand, Säge+Hammer+Akkubohrer.', price:'3.500-7.500 €', norm:'DIN EN 1627 RC4', makers:['KSI Köhler','Teckentrup','Schörghuber'], detail:'Hochsicherheitstür RC4 für Bankräume und KRITIS. Mehrere Stahlplatten, gehärtete Schließbleche, 10 Minuten Widerstand auch gegen Elektrowerkzeuge.', specs:[['Klasse','RC4'],['Widerstand','10 Min'],['Material','Mehrschicht-Stahl'],['Schloss','VdS C']] },
+  { kat:'aussen', n:'Drehflügeltor', c:'#fbbf24', a:'gate2', spec:'2-flügelig mit Antrieb, Tiefgaragen und Werkseinfahrten.', price:'5.500-14.000 €', norm:'EN 13241', makers:['Hörmann','Came','FAAC','Nice'], detail:'Zweiflügeliges Drehtor für Werkseinfahrten und Tiefgaragen. Bis 4 m Durchfahrt pro Flügel, Antrieb optional. Standard mit Lichtschranke + Blinklicht.', specs:[['Durchfahrt','2× 3-4 m'],['Antrieb','24V Linear'],['Auf-Zeit','15-20 s'],['Zyklen','50k/J']] },
+  { kat:'aussen', n:'Schnelllauftor', c:'#fbbf24', a:'fastdoor', spec:'Industrie-Spiraltor, 1-3 m/s, hohe Zyklusrate.', price:'8.500-22.000 €', norm:'EN 13241-1', makers:['Hörmann HST','Efaflex','ASSA'], detail:'Industrie-Schnelllauftor für Logistik und Reinraum. Spiralwicklung, 1-3 m/s, bis 200.000 Zyklen pro Jahr. Spart Heizenergie an Hochfrequenz-Toren.', specs:[['Geschwindigkeit','1-3 m/s'],['Zyklen','200k/J'],['Antrieb','SoftStart'],['Notabsenkung','Schwerkraft']] },
+  { kat:'aussen', n:'Sicherheitsfenster RC3', c:'#fbbf24', a:'window', spec:'P5A-Glas, Pilzkopfzapfen, abschließbarer Griff.', price:'600-1.200 €/m²', norm:'DIN EN 1627 RC3', makers:['Schüco','Veka','Kömmerling'], detail:'Sicherheitsfenster RC3 mit durchwurfhemmender Verglasung P5A, Pilzkopfzapfen am Rahmen und abschließbarem Griff. Standard für EG-Wohnungen.', specs:[['Klasse','RC3 + P5A'],['Widerstand','5 Min'],['Glas','VSG 8mm'],['Beschlag','Pilzkopf']] },
+  { kat:'aussen', n:'Panzerglas P8B', c:'#fbbf24', a:'pglass', spec:'Mehrschicht-Verbundglas, durchwurfsicher, durchschlagsicher.', price:'2.500-5.500 €/m²', norm:'DIN EN 356 P8B', makers:['SCHOTT','Glasstech','Saint-Gobain'], detail:'Panzerverbundglas P8B - 12+ Schichten Float-Glas mit PVB-Folien. Hält Axt + Hammer, höchste durchwurfhemmende Klasse vor Beschuss-Glas.', specs:[['Klasse','P8B'],['Schichten','5-7'],['Stärke','35-55 mm'],['Gewicht','85 kg/m²']] },
+  { kat:'aussen', n:'Rollladen Sicherheit', c:'#fbbf24', a:'shutter', spec:'Stahllamellen, hochschiebesicher, RC3-fähig.', price:'400-900 €/m²', norm:'DIN EN 1627', makers:['Roma','Warema','Schanz'], detail:'Sicherheits-Rollladen aus doppelwandigen Stahllamellen mit Aufschiebsicherung. Schützt Fenster zusätzlich, vor allem nachts oder im Urlaub.', specs:[['Material','Stahl 1,5 mm'],['Antrieb','24V Funk'],['Klasse','RC3 (mit Fenster)'],['Hochschub','blockiert']] },
+  { kat:'aussen', n:'Magnetkontakt Aufputz', c:'#fbbf24', a:'magnet', spec:'Reed-Schalter im Rahmen, sehr zuverlässig.', price:'25-65 €/Stk', norm:'VdS S/A/B/C', makers:['Bosch','Telenot','ABUS'], detail:'Aufputz-Magnetkontakt für Türen/Fenster. Reed-Schalter im Rahmen, Magnet am Flügel. Trennt sich → Stromkreis offen → Alarm.', specs:[['Klasse','VdS C'],['Abstand','5-15 mm'],['Stromaufnahme','µA'],['Lebensdauer','10 Mio']] },
+  { kat:'aussen', n:'Glasbruchmelder akustisch', c:'#fbbf24', a:'glasbreak', spec:'Erkennt Klirr-Frequenz 3-5 kHz + Druckwelle.', price:'95-180 €/Stk', norm:'EN 50131-2-7', makers:['Bosch','Honeywell','RISCO'], detail:'Akustischer Glasbruchmelder. Mikrofon analysiert Frequenz und Lautstärke - kombiniert mit Druckwellen-Erkennung für sehr niedrige Fehlalarmrate.', specs:[['Reichweite','5-7 m'],['Frequenz','3-5 kHz'],['Klasse','VdS C'],['Glas-Typ','alle']] },
+
+  // ===== MELDER =====
+  { kat:'melder', n:'PIR-Bewegungsmelder', c:'#22d3ee', a:'pir', spec:'Passiv-Infrarot, Fresnellinse, Erfassungskegel 12 m.', price:'45-180 €/Stk', norm:'EN 50131-2-2', makers:['Bosch','Telenot','RISCO','Hager'], detail:'Passiv-Infrarot-Melder. Detektiert Wärmestrahlung bewegter Körper (8-14 µm). Fresnellinse teilt das Sichtfeld in Zonen. IC vergleicht Differenzen → Alarm.', specs:[['Reichweite','12 m'],['Winkel','85°-110°'],['Zonen','24-78'],['Klasse','VdS C']] },
+  { kat:'melder', n:'PIR Vorhang-Optik', c:'#22d3ee', a:'piruh', spec:'Schmaler Erfassungs-Vorhang für Türen/Fenster.', price:'85-220 €/Stk', norm:'EN 50131-2-2', makers:['Telenot','Bosch','Optex'], detail:'PIR mit schmaler Vorhang-Linse für Tür-/Fensteröffnungen. Detektiert nur beim Durchschreiten der Ebene → keine Fehlalarme durch Wärmequellen im Raum.', specs:[['Vorhang','15°'],['Reichweite','8-12 m'],['Höhe','2,5 m'],['Klasse','Grad 3']] },
+  { kat:'melder', n:'Mikrowellen-Melder', c:'#22d3ee', a:'mw', spec:'Aktiver Doppler bei 10,5/24 GHz, durchdringt Wände.', price:'120-280 €/Stk', norm:'EN 50131-2-3', makers:['Bosch','Optex','Honeywell'], detail:'Aktiver Mikrowellen-Melder. Sendet 10,525 GHz, misst Doppler-Frequenzverschiebung. Sieht Bewegung durch dünne Wände, Glas, Möbel. Anfällig für EM-Stör.', specs:[['Frequenz','10,525 GHz'],['Reichweite','15 m'],['Sendeleistung','5 mW'],['Klasse','VdS C']] },
+  { kat:'melder', n:'Dual-Melder PIR+MW', c:'#22d3ee', a:'dual', spec:'UND-Verknüpfung beider Technologien - kaum Fehlalarme.', price:'180-420 €/Stk', norm:'EN 50131-2-4', makers:['Bosch','Telenot','Honeywell','RISCO'], detail:'Dual-Technologie-Melder: PIR + Mikrowelle in einem Gehäuse. Alarm nur wenn BEIDE Sensoren auslösen - drastisch weniger Fehlalarme durch Haustiere/Sonne/EM.', specs:[['Logik','UND'],['Reichweite','15 m'],['Pet-Imm.','bis 25 kg'],['Klasse','VdS C']] },
+  { kat:'melder', n:'Erschütterungsmelder', c:'#22d3ee', a:'shock', spec:'Piezo erkennt Bohren, Hebeln, Stemmen am Material.', price:'85-160 €/Stk', norm:'EN 50131-2-8', makers:['Bosch','VdS','Vanderbilt'], detail:'Piezo-Erschütterungsmelder. Klebt direkt am Tresor/Türrahmen, erkennt Bohrer-Vibrationen (15-25 kHz). Signalprozessor unterscheidet von Hintergrund-Geräuschen.', specs:[['Sensor','Piezo'],['Frequenz','15-25 kHz'],['Reichweite','1-2 m²'],['Klasse','VdS C']] },
+  { kat:'melder', n:'Körperschallmelder', c:'#22d3ee', a:'body', spec:'Tresor-Schutz vor Bohrwerkzeugen und Schweißbrennern.', price:'180-380 €/Stk', norm:'VdS 2110', makers:['VdS','SecuriDoc','Bosch'], detail:'Hochempfindlicher Körperschallmelder direkt am Tresor. Detektiert Hochfrequenz-Vibrationen von Diamantbohrern, Schweißbrennern, Plasma. Pflicht für Klasse V+ Tresore.', specs:[['Sensor','Beschleunigung'],['Frequenz','25-100 kHz'],['Anzahl','min. 2/Tresor'],['Klasse','VdS C']] },
+  { kat:'melder', n:'Linien-Lichtschranke', c:'#22d3ee', a:'beam', spec:'IR-Strahl als unsichtbare Grenze, bis 200 m.', price:'350-1.200 €/Paar', norm:'EN 50131-2-4', makers:['Optex','Takex','Aleph'], detail:'Aktive IR-Lichtschranke für Perimeter. Sender + Empfänger spannen unsichtbare Strahlebene. Bei Unterbrechung Alarm. 2-4 Strahlen mit UND-Logik gegen Vögel.', specs:[['Reichweite','60-200 m'],['Strahlen','2-4'],['Wellenlänge','950 nm'],['Klasse','Grad 3']] },
+  { kat:'melder', n:'Vibrations-Kabel Zaun', c:'#22d3ee', a:'cable', spec:'Mikrofonkabel/Glasfaser am Zaun, ortet Klettern.', price:'180-320 €/lfm + Auswertung', norm:'VdS 2311', makers:['Senstar','Sorhea','Optex'], detail:'Verteilter Sensor am Zaun. Mikrofon-/Triboelektrik-Kabel detektiert Klettern und Schneideversuche, GPS-genaue Ortung der Alarmstelle.', specs:[['Reichweite','bis 500 m'],['Ortung','±3 m'],['Sensor','Piezo/Tribo'],['Klasse','VdS C']] },
+  { kat:'melder', n:'Brandmelder optisch', c:'#22d3ee', a:'smoke', spec:'Streulicht-Rauchmelder, Raumüberwachung.', price:'45-180 €/Stk', norm:'DIN EN 54-7', makers:['Hekatron','Bosch','Esser','Honeywell'], detail:'Optischer Streulicht-Rauchmelder. IR-LED + Fotodiode in dunkler Kammer. Rauch streut Licht zum Sensor → Alarm. Standard für Wohnräume nach DIN 14676.', specs:[['Klasse','EN 54-7'],['Reichweite','60 m²'],['Sensor','Streulicht'],['Tausch','10 J.']] },
+  { kat:'melder', n:'Wärmedifferenzialmelder', c:'#22d3ee', a:'heat', spec:'Erkennt schnellen Temperaturanstieg.', price:'55-140 €/Stk', norm:'DIN EN 54-5', makers:['Bosch','Esser','Hekatron'], detail:'Wärmemelder mit Differenzialauswertung. Alarmiert bei schnellem Temperaturanstieg (>5K/min) oder Maximaltemperatur 65°C. Für Küchen + Industrie wo Rauchmelder gestört.', specs:[['Klasse','EN 54-5'],['Schwelle','64°C'],['ΔT','5K/min'],['Reichweite','30 m²']] },
+
+  // ===== VIDEO =====
+  { kat:'video', n:'Dome-Kamera 4K', c:'#f97316', a:'dome', spec:'Halbkugel, IR-Ring 30m, KI-Personen-Detektion.', price:'350-1.200 €', norm:'IK10 IP67', makers:['AXIS','Hikvision','Dahua','Bosch'], detail:'4K-Dome-Kamera mit IR-LED-Ring für Tag/Nacht. KI-Bordauswertung erkennt Person/Fahrzeug/LP. Vandalismus-geschützt IK10, wettergeschützt IP67.', specs:[['Auflösung','4K · 8 MP'],['IR','30 m'],['Optik','2,8-12 mm'],['KI','Person/Vehicle']] },
+  { kat:'video', n:'Bullet-Kamera IR 80m', c:'#f97316', a:'bullet', spec:'Lange Reichweite, IR bis 80m, Außenstandard.', price:'280-950 €', norm:'IP67', makers:['Hikvision','Dahua','AXIS','Hanwha'], detail:'Bullet-Kamera mit langer IR-Reichweite. Standard für Außenmontage an Wänden und Gebäudeecken. Sonnenschutzdach, robuster Aluminium-Body.', specs:[['Auflösung','4K · 8 MP'],['IR','80 m'],['Optik','3,6-10 mm'],['Schutz','IP67']] },
+  { kat:'video', n:'PTZ-Kamera 30× Zoom', c:'#f97316', a:'ptz', spec:'Schwenkbar 360°, 30-50× Zoom, KI-Auto-Tracking.', price:'1.800-6.500 €', norm:'IP66 IK10', makers:['AXIS Q','Hikvision DS','Dahua','Bosch AUTODOME'], detail:'Pan-Tilt-Zoom-Kamera mit 30-50× optischem Zoom. KI-Auto-Tracking verfolgt Personen automatisch. Standard für Großflächen, Parkplätze, Industriegelände.', specs:[['Zoom','30-50× opt.'],['Schwenk','360° endlos'],['Tilt','-15° bis +90°'],['Tracking','KI-Auto']] },
+  { kat:'video', n:'Fisheye 360° Panorama', c:'#f97316', a:'fisheye', spec:'Eine Kamera für ganzen Raum, Decken-Montage.', price:'650-1.800 €', norm:'IK10', makers:['AXIS','Hikvision','Hanwha','Mobotix'], detail:'Fisheye-Kamera mit 360°-Panorama-Sicht. Eine Kamera deckt ganzen Raum ab. Software entzerrt Bild zu mehreren Standard-Ansichten oder Heatmaps.', specs:[['Sichtfeld','360°'],['Auflösung','12-20 MP'],['Entzerrung','clientseitig'],['Höhe','2,5-5 m']] },
+  { kat:'video', n:'Wärmebildkamera FLIR', c:'#f97316', a:'thermal', spec:'LWIR 8-14µm, sieht Wärme bei Nebel/Rauch/Nacht.', price:'2.500-15.000 €', norm:'FLIR Saros', makers:['FLIR','AXIS Q','Mobotix','Hikvision'], detail:'Wärmebildkamera für Perimeter-Schutz. Detektiert Personen bei Nacht, durch Nebel und Rauch. Zur Detektion verwendet, Sichtkamera zur Identifikation.', specs:[['Sensor','LWIR 8-14 µm'],['Auflösung','640×512'],['Reichweite','bis 1500 m'],['Sensitivität','<50 mK']] },
+  { kat:'video', n:'NVR Recorder 16-Kanal', c:'#f97316', a:'nvr', spec:'RAID-5 mit 4-16 TB, Web/App, 30+ Tage.', price:'650-2.800 €', norm:'PoE+ 802.3at', makers:['Hikvision','Dahua','AXIS','Hanwha'], detail:'Netzwerk-Video-Recorder mit RAID-5 Speicher. 16 Kanäle, PoE+ Switch integriert, Web-Interface und mobile App. Standard für Klein-/Mittelbetriebe.', specs:[['Kanäle','16'],['Speicher','4-16 TB RAID5'],['PoE','16× 802.3at'],['Backup','Cloud-Mirror']] },
+  { kat:'video', n:'VMS Genetec / Milestone', c:'#f97316', a:'vms', spec:'Enterprise Video-Management, 256+ Kanäle.', price:'180-650 €/Kanal', norm:'ONVIF', makers:['Genetec Security Center','Milestone XProtect','Avigilon ACC'], detail:'Enterprise Video-Management-System. Skaliert auf tausende Kameras, Multi-Standort, KI-Plattform, Health-Monitoring. Cloud oder On-Prem.', specs:[['Skalierung','100k+ Kanäle'],['Standorte','Multi-Site'],['KI','Plattform-API'],['Lizenz','Pro Kanal']] },
+
+  // ===== ZYLINDER / SCHLIESSEN =====
+  { kat:'zylinder', n:'Profilzylinder VdS BZ+', c:'#fbbf24', a:'cyl', spec:'5-6 Stifte, Bohr-/Pickschutz, Wendeschlüssel.', price:'95-280 €/Stk', norm:'EN 1303 / VdS BZ+', makers:['ABUS','BKS','dormakaba','EVVA','KESO','Winkhaus'], detail:'Hochsicherer Profilzylinder VdS BZ+. 5-6 Stiftpaare, gehärtete Bohrschutz-Pins, Sägeschutz-Hülse, Picking-resistente Geometrie. Standard für gewerbliche Anlagen.', specs:[['Klasse','VdS BZ+'],['Stifte','5-6'],['Bohrschutz','HM-Pins'],['Patent','bis 2035+']] },
+  { kat:'zylinder', n:'Hochsicherheits-Zylinder', c:'#fbbf24', a:'cylh', spec:'KESO 8000Ω², EVVA MCS - 3 Wirkflächen, Magnet.', price:'280-650 €/Stk', norm:'VdS Klasse 5', makers:['KESO 8000','EVVA MCS','Mul-T-Lock'], detail:'Hochsicherheits-Zylinder mit 3 Wirkflächen oder Magnet-Code. Picking praktisch unmöglich, Sicherheits-Karten-System, Patent bis 2035+. Pflicht für RC4-Anlagen.', specs:[['Klasse','VdS Klasse 5'],['Wirkflächen','3'],['Bohrschutz','HM-Pins'],['Patent','2035+']] },
+  { kat:'zylinder', n:'Elektronischer Zylinder', c:'#fbbf24', a:'ezyl', spec:'Batteriebetrieb, RFID-Transponder, Audit-Trail.', price:'350-680 €/Stk', norm:'EN 15684', makers:['SimonsVoss System 3060','dormakaba evolo','Salto XS4','EVVA Xesar'], detail:'Elektronischer Schließzylinder mit Batterieantrieb. Transponder via RFID/BLE/NFC, Software-Berechtigungen, Audit-Trail. Bei Verlust nur sperren statt tauschen.', specs:[['Klasse','EN 15684 D'],['Batterie','4-8 Jahre'],['Transponder','MIFARE/BLE'],['Audit','tausende Ereignisse']] },
+  { kat:'zylinder', n:'Smart Lock Nuki/Yale', c:'#fbbf24', a:'smart', spec:'Aufsatz-Smart-Lock für vorhandenen Zylinder, App.', price:'180-380 €/Stk', norm:'EN 15684 C', makers:['Nuki Smart Lock 4','Yale Linus','Tedee','Bosch'], detail:'Smart-Lock-Aufsatz auf bestehenden Zylinder. Smartphone-App, Auto-Unlock, Sprachsteuerung, temporäre Zutritte für Gäste. WiFi-Bridge optional für Fernsteuerung.', specs:[['Montage','Aufsatz'],['Akku','6 Monate'],['App','iOS/Android'],['Matter','optional']] },
+  { kat:'zylinder', n:'Mechatronischer Zylinder', c:'#fbbf24', a:'cliq', spec:'Mechanik + Elektronik Hybrid (ASSA CLIQ).', price:'450-850 €/Stk', norm:'EN 15684 + EN 1303', makers:['ASSA CLIQ','KESO dynamic','dormakaba penta+'], detail:'Mechatronik-Zylinder: Schlüssel muss mechanisch passen UND elektronisch berechtigt sein. Bei Verlust nur ID sperren, mechanische Anlage bleibt. Ideal für Migration.', specs:[['Hybrid','Mech + Chip'],['Patent','30+ J'],['Migration','Mech-Anlage'],['Audit','Schlüssel + Zyl.']] },
+  { kat:'zylinder', n:'Schließanlage GMK', c:'#fbbf24', a:'mk', spec:'General-Hauptschlüssel-Anlage mit Hierarchie.', price:'auf Anfrage', norm:'EN 1303', makers:['BKS','ABUS','dormakaba','Winkhaus'], detail:'Mechanische Schließanlage mit Hierarchie: Generalhauptschlüssel öffnet alles, dann Zonenschlüssel, dann Einzelschlüssel. Patent-geschützte Zylinderreihen 25+ Jahre.', specs:[['Hierarchie','3-5 Stufen'],['Zylinder','10-tausende'],['Patent','25+ Jahre'],['Erweiterung','jederzeit']] },
+
+  // ===== EMA =====
+  { kat:'ema', n:'EMA-Zentrale VdS C', c:'#ef4444', a:'central', spec:'Hauptzentrale, BUS/Funk, NSL-Aufschaltung.', price:'850-2.800 €', norm:'EN 50131 Grad 3', makers:['Telenot complex 400H','Honeywell','RISCO','Bosch'], detail:'EMA-Hauptzentrale Klasse VdS C / Grad 3. BUS- und Funk-Komponenten gleichzeitig, NSL-Aufschaltung Dual-Path (IP+GSM), Web-Interface, Smartphone-App.', specs:[['Klasse','VdS C / Grad 3'],['Bereiche','8-32'],['Funk + BUS','beides'],['NSL','Dual-Path']] },
+  { kat:'ema', n:'EMA Funk-Zentrale EFH', c:'#ef4444', a:'wireless', spec:'Funk-Zentrale für EFH, einfache Installation.', price:'450-980 €', norm:'EN 50131 Grad 2', makers:['ABUS Secvest','Hager Daitem','RISCO','Jablotron'], detail:'Funk-Alarmzentrale für Einfamilienhäuser. Keine Verkabelung, alle Melder per 868 MHz Funk, Smartphone-App, GSM-Backup. Standard bei Nachrüstung.', specs:[['Klasse','VdS A / Grad 2'],['Funk','868 MHz'],['Reichweite','120 m'],['Komp.','bis 40']] },
+  { kat:'ema', n:'Bedienteil mit Touch', c:'#ef4444', a:'kp', spec:'7" Touch-Display, RFID-Leser, Sprachausgabe.', price:'180-480 €/Stk', norm:'EN 50131 Grad 3', makers:['Telenot','RISCO','Bosch','Honeywell'], detail:'Touchscreen-Bedienteil für EMA-Zentrale. 7" Farbdisplay, RFID-Leser, Sprachausgabe, Live-Status aller Bereiche. Standard im Hauseingang.', specs:[['Display','7" Touch'],['RFID','MIFARE'],['BUS','BUS-2'],['Sprache','D/E/F/I']] },
+  { kat:'ema', n:'Außensirene mit Blitz', c:'#ef4444', a:'siren', spec:'Hochleistungs-Außensirene 110 dB + LED-Blitz.', price:'180-480 €/Stk', norm:'VdS C / Grad 3', makers:['Telenot','RISCO','Honeywell'], detail:'Außensirene VdS C: 110 dB @ 1m, blauer LED-Blitz, Sabotage- und Aufbruchschutz. Pflicht für VdS-Aufschaltung. Mit eigenem Akku 12h Backup.', specs:[['Lautstärke','110 dB'],['Blitz','LED 0,5 Hz'],['Akku','Backup 12h'],['Klasse','VdS C']] },
+  { kat:'ema', n:'NSL-Aufschaltung Dual-Path', c:'#ef4444', a:'nsl', spec:'IP + GSM/LTE Dual-Path zur Leitstelle (24/7).', price:'45-180 €/Monat + Hardware', norm:'EN 50136-1', makers:['VdS-NSL','Securitas','TÜV NSL','Mecla'], detail:'Notruf-Service-Leitstelle 24/7 mit Dual-Path-Aufschaltung. IP-Verbindung primär, GSM/LTE als Backup. Interventions-Dienst rückt aus, Polizei wird verständigt.', specs:[['Pfad','IP + GSM'],['SLA','24/7'],['Reaktion','<5 Min'],['Intervention','optional']] },
+
+  // ===== TRESOR =====
+  { kat:'tresor', n:'Tresor Klasse 0', c:'#a855f7', a:'safe0', spec:'Basisschutz, Versicherung bis 10.000 €.', price:'350-980 €', norm:'EN 1143-1 Klasse 0', makers:['BURG-WÄCHTER Magno','Format','Hartmann'], detail:'Wertschutzschrank Klasse 0 für Wohnhaus / kleines Büro. Stahlblech-Korpus, Doppelbart-Schloss. Versicherung bis 10.000 € private / 2.500 € gewerblich.', specs:[['Klasse','EN 1143-1 0'],['Versicherung','10k privat'],['Gewicht','40-80 kg'],['Wand','5+3 mm Stahl']] },
+  { kat:'tresor', n:'Tresor Klasse I', c:'#a855f7', a:'safe1', spec:'Bis 15.000 €, Verbundkonstruktion.', price:'650-1.800 €', norm:'EN 1143-1 Klasse I', makers:['BURG-WÄCHTER Diplomat','Format Standard','Wertheim'], detail:'Verbund-Wertschutzschrank Klasse I. Mehrschicht-Stahl mit Beton/Sand-Füllung. Versicherung bis 15.000 € privat / 5.000 € gewerblich.', specs:[['Klasse','EN 1143-1 I'],['Versicherung','15k privat'],['Gewicht','100-200 kg'],['Wand','Verbund 8 mm']] },
+  { kat:'tresor', n:'Tresor Klasse II', c:'#a855f7', a:'safe2', spec:'Bis 30.000 €, Schmuckhändler-Standard.', price:'1.200-3.500 €', norm:'EN 1143-1 Klasse II', makers:['Wertheim AG','Format','Hartmann','BURG'], detail:'Wertschutzschrank Klasse II für Schmuckhändler, Apotheken, Tankstellen. Schwer-Verbund, 4-Bolzen-Riegelwerk. Versicherung bis 30.000 € privat.', specs:[['Klasse','EN 1143-1 II'],['Versicherung','30k privat'],['Gewicht','200-500 kg'],['Riegel','4-fach']] },
+  { kat:'tresor', n:'Tresor Klasse III', c:'#a855f7', a:'safe3', spec:'Bis 60.000 €, Juweliere und Edelmetall.', price:'2.800-7.500 €', norm:'EN 1143-1 Klasse III', makers:['Wertheim','Hartmann','Format','Müller Safe'], detail:'Hochwertiger Wertschutzschrank Klasse III für Juweliere. Hochwertiger Verbund, Pickschutz, Aufbohrschutz. Versicherung bis 60.000 € privat.', specs:[['Klasse','EN 1143-1 III'],['Versicherung','60k privat'],['Gewicht','400-900 kg'],['Bohrschutz','Mantel']] },
+  { kat:'tresor', n:'Tresor Klasse IV', c:'#a855f7', a:'safe4', spec:'Bis 100.000 €, Bankfilialen.', price:'5.500-15.000 €', norm:'EN 1143-1 Klasse IV', makers:['Wertheim','Gunnebo Chubbsafes','Hartmann'], detail:'Hochsicherheits-Tresor Klasse IV für Bankfilialen und Tresorraum-Vorbereitung. Schwer-Verbund mit Pulverbeschuss-Schutz. Versicherung bis 100.000 € privat.', specs:[['Klasse','EN 1143-1 IV'],['Versicherung','100k privat'],['Gewicht','700-1500 kg'],['Pulverbeschuss','geschützt']] },
+  { kat:'tresor', n:'Tresor Klasse V', c:'#a855f7', a:'safe5', spec:'Bis 200.000 €, KRITIS und Edelmetall-Lager.', price:'12.000-35.000 €', norm:'EN 1143-1 Klasse V', makers:['Gunnebo','Wertheim','Hartmann TT'], detail:'Hochsicherheits-Tresor Klasse V für KRITIS, Goldhändler, Diamanten-Lager. Mehrschicht-Verbund, Körperschallmelder Pflicht. Versicherung bis 200.000 € privat.', specs:[['Klasse','EN 1143-1 V'],['Versicherung','200k privat'],['Gewicht','1500-3000 kg'],['Körperschall','Pflicht']] },
+  { kat:'tresor', n:'Tresor Klasse VI', c:'#a855f7', a:'safe6', spec:'Bis 300.000 €, Tresorräume und Kunst.', price:'25.000-80.000 €', norm:'EN 1143-1 Klasse VI', makers:['Gunnebo BankTresor','Wertheim','Hartmann'], detail:'Höchste Tresor-Klasse VI für Bank-Tresorräume, Museen, Edelmetalle. Plasmabrenner- und Sprengstoff-Schutz. Versicherung bis 300.000 € privat.', specs:[['Klasse','EN 1143-1 VI'],['Versicherung','300k privat'],['Gewicht','3000+ kg'],['Plasma','geschützt']] },
+
+  // ===== ZUTRITT =====
+  { kat:'zutritt', n:'RFID-Leser Wand', c:'#22d3ee', a:'rfid', spec:'MIFARE DESFire, vandalismus-geschützt.', price:'180-480 €/Stk', norm:'EN 60839', makers:['HID Global','PCS','Bosch','Salto'], detail:'Wand-RFID-Leser für Zutrittskontrolle. MIFARE DESFire EV2/EV3, AES-verschlüsselt. Vandalismus-geschütztes Aluminium-Gehäuse, OSDP/Wiegand.', specs:[['Standard','DESFire EV3'],['Verschlüsselung','AES-128'],['Reichweite','3-7 cm'],['Schutz','IK10 IP65']] },
+  { kat:'zutritt', n:'Fingerprint-Scanner', c:'#22d3ee', a:'finger', spec:'Optisch/kapazitiv, 1:N Identifikation.', price:'480-1.200 €/Stk', norm:'EN 60839', makers:['IDEMIA','Suprema','PCS','Bosch'], detail:'Biometrischer Fingerprint-Scanner für Hochsicherheits-Zutritt. Optischer oder kapazitiver Sensor mit Lebenderkennung. 1:N-Identifikation bei 50.000 Templates.', specs:[['Sensor','optisch+kap.'],['Templates','50.000'],['FAR','<0,001%'],['Schutz','IP65']] },
+  { kat:'zutritt', n:'Drehkreuz Vereinzelung', c:'#22d3ee', a:'turnstile', spec:'Personen-Vereinzelung mit RFID-Steuerung.', price:'4.500-12.000 €/Stk', norm:'DIN EN ISO 14122-3', makers:['Magnetic','Boon Edam','dormakaba'], detail:'Drehkreuz mit Personen-Vereinzelung für Werkseingänge und Stadien. RFID-gesteuert, Schwenkarme bei Berechtigung. Standard für KRITIS-Eingänge.', specs:[['Durchsatz','25-30 Pers/min'],['Steuerung','RFID/PIN'],['Armrücklauf','automatisch'],['Schutz','IK10 IP54']] },
+  { kat:'zutritt', n:'Schleuse mit Wäge', c:'#22d3ee', a:'mantrap', spec:'Personen-Schleuse mit Gewichtskontrolle.', price:'25.000-80.000 €', norm:'EN 16005', makers:['Kaba','Boon Edam','dormakaba'], detail:'Hochsicherheits-Personen-Schleuse mit Gewichtskontrolle - verhindert Tailgating. Standard in Rechenzentren, Banken, KRITIS. RFID + Fingerprint + Foto-Kontrolle.', specs:[['Durchsatz','6 Pers/min'],['Tailgating','blockiert'],['Wäge','±1 kg'],['Schutz','EN 16005']] },
+];
+
+const cv2d = (el) => {
+  const c = document.createElement('canvas');
+  c.width = 320; c.height = 200;
+  el.appendChild(c);
+  return c.getContext('2d');
+};
+
+const draws = {
+  // ===== PERIMETER =====
+  fence(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#1a2438'; ctx.fillRect(0, H - 18, W, 18);
+    for (let p = 30; p < W; p += 50) {
+      ctx.fillStyle = '#475569'; ctx.fillRect(p - 2, H - 90, 4, 75);
+    }
+    ctx.strokeStyle = '#64748b'; ctx.lineWidth = 0.8;
+    for (let y = H - 80; y < H - 18; y += 8) {
+      ctx.beginPath(); ctx.moveTo(15, y); ctx.lineTo(W - 15, y); ctx.stroke();
+    }
+    for (let x = 15; x < W; x += 8) {
+      ctx.beginPath(); ctx.moveTo(x, H - 80); ctx.lineTo(x, H - 18); ctx.stroke();
+    }
+    ctx.fillStyle = `rgba(34,197,94,${0.6 + Math.sin(t * 2) * 0.3})`;
+    ctx.fillRect(W - 35, 10, 22, 12);
+    ctx.fillStyle = '#fff'; ctx.font = 'bold 7px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('SAFE', W - 24, 19);
+  },
+  doublebar(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#1a2438'; ctx.fillRect(0, H - 18, W, 18);
+    ctx.strokeStyle = '#64748b'; ctx.lineWidth = 1.5;
+    for (let x = 25; x < W; x += 14) {
+      ctx.beginPath(); ctx.moveTo(x, 20); ctx.lineTo(x, H - 20); ctx.stroke();
+    }
+    ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2.5;
+    for (const y of [35, H - 30]) {
+      ctx.beginPath(); ctx.moveTo(15, y); ctx.lineTo(W - 15, y); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(15, y + 3); ctx.lineTo(W - 15, y + 3); ctx.stroke();
+    }
+    ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('8 / 6 / 8 mm', W/2, 16);
+  },
+  natowire(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 2;
+    const cy = H / 2;
+    for (let i = 0; i < 4; i++) {
+      ctx.beginPath();
+      ctx.arc(40 + i * 70, cy, 30, Math.PI, 0);
+      ctx.stroke();
+      for (let a = 0.3; a < Math.PI - 0.3; a += 0.45) {
+        const sx = 40 + i * 70 + Math.cos(a) * 30, sy = cy - Math.sin(a) * 30;
+        ctx.beginPath(); ctx.moveTo(sx, sy);
+        ctx.lineTo(sx + Math.cos(a) * 8, sy - Math.sin(a) * 8); ctx.stroke();
+      }
+    }
+    ctx.fillStyle = '#ef4444'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('⚠ HIGH SECURITY', W/2, H - 12);
+  },
+  gate(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#1a2438'; ctx.fillRect(0, H - 18, W, 18);
+    const open = (Math.sin(t * 0.6) * 0.5 + 0.5) * 0.7;
+    ctx.fillStyle = '#475569'; ctx.fillRect(20, 30, 8, H - 50);
+    ctx.fillStyle = '#cbd5e1';
+    const gateX = 30, gateY = 35, gateW = 200, gateH = H - 60;
+    ctx.save();
+    ctx.translate(gateX + gateW * open, gateY);
+    ctx.fillRect(0, 0, gateW * (1 - open), gateH);
+    ctx.strokeStyle = '#475569'; ctx.lineWidth = 1;
+    for (let x = 0; x < gateW * (1 - open); x += 30) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, gateH); ctx.stroke();
+    }
+    ctx.restore();
+    ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(open > 0.4 ? '🟢 OFFEN' : '🔴 ZU', W/2, H - 25);
+  },
+  bollard(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#1a2438'; ctx.fillRect(0, H - 25, W, 25);
+    for (let i = 0; i < 3; i++) {
+      const cx = 80 + i * 80;
+      ctx.fillStyle = '#475569'; ctx.fillRect(cx - 12, 50, 24, H - 75);
+      ctx.fillStyle = '#fbbf24'; ctx.fillRect(cx - 12, 60, 24, 5);
+      ctx.fillRect(cx - 12, H - 35, 24, 5);
+      ctx.fillStyle = '#94a3b8'; ctx.beginPath();
+      ctx.ellipse(cx, 50, 12, 4, 0, 0, 7); ctx.fill();
+    }
+    ctx.fillStyle = '#ef4444'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('PAS 68 V/7500', W/2, 25);
+  },
+  bollardret(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#1a2438'; ctx.fillRect(0, H - 25, W, 25);
+    const up = (Math.sin(t * 0.8) * 0.5 + 0.5);
+    for (let i = 0; i < 3; i++) {
+      const cx = 80 + i * 80;
+      const h = 20 + up * 60;
+      ctx.fillStyle = '#1e293b'; ctx.fillRect(cx - 14, H - 30, 28, 8);
+      ctx.fillStyle = '#475569'; ctx.fillRect(cx - 10, H - 25 - h, 20, h);
+      ctx.fillStyle = '#fbbf24'; ctx.fillRect(cx - 10, H - 25 - h, 20, 4);
+    }
+    ctx.fillStyle = up > 0.5 ? '#ef4444' : '#22c55e'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(up > 0.5 ? '⬆ HOCH' : '⬇ VERSENKT', W/2, 20);
+  },
+  crashgate(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#1a2438'; ctx.fillRect(0, H - 18, W, 18);
+    ctx.fillStyle = '#475569'; ctx.fillRect(40, 30, 8, H - 50);
+    ctx.fillRect(W - 48, 30, 8, H - 50);
+    ctx.fillStyle = '#64748b';
+    ctx.fillRect(48, 50, W - 96, H - 75);
+    ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 1.5;
+    for (let i = 1; i < 6; i++) {
+      ctx.beginPath(); ctx.moveTo(48, 50 + i * (H - 75) / 6); ctx.lineTo(W - 48, 50 + i * (H - 75) / 6); ctx.stroke();
+    }
+    ctx.fillStyle = '#fbbf24'; ctx.fillRect(48, H - 30, 6, 5); ctx.fillRect(W - 54, H - 30, 6, 5);
+    ctx.fillStyle = '#ef4444'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('PAS 68 V/7500', W/2, 25);
+  },
+  barrier(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#1a2438'; ctx.fillRect(0, H - 18, W, 18);
+    const angle = (Math.sin(t * 0.6) * 0.5 + 0.5) * Math.PI * 0.45;
+    ctx.fillStyle = '#475569'; ctx.fillRect(30, 50, 12, H - 70);
+    ctx.save(); ctx.translate(36, 60);
+    ctx.rotate(-angle);
+    for (let i = 0; i < 12; i++) {
+      ctx.fillStyle = i % 2 ? '#ef4444' : '#f1f5f9';
+      ctx.fillRect(i * 20, -4, 20, 8);
+    }
+    ctx.restore();
+  },
+  spike(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#1a2438'; ctx.fillRect(0, H - 30, W, 30);
+    const up = (Math.sin(t * 1.2) * 0.5 + 0.5);
+    for (let i = 0; i < 9; i++) {
+      const cx = 30 + i * 30;
+      ctx.fillStyle = '#cbd5e1';
+      ctx.beginPath();
+      ctx.moveTo(cx - 6, H - 28); ctx.lineTo(cx, H - 28 - up * 35); ctx.lineTo(cx + 6, H - 28); ctx.fill();
+    }
+    ctx.fillStyle = '#ef4444'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('⚠ TIRE KILLER', W/2, 30);
+  },
+  planter(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#1a2438'; ctx.fillRect(0, H - 18, W, 18);
+    ctx.fillStyle = '#78716c'; ctx.fillRect(60, H - 80, W - 120, 60);
+    ctx.strokeStyle = '#44403c'; ctx.lineWidth = 2; ctx.strokeRect(60, H - 80, W - 120, 60);
+    ctx.fillStyle = '#16a34a';
+    for (let i = 0; i < 8; i++) {
+      const x = 75 + i * (W - 150) / 8;
+      ctx.beginPath(); ctx.arc(x, H - 78 + Math.sin(t * 2 + i) * 1.5, 8 + (i % 2 ? 2 : 0), 0, 7); ctx.fill();
+    }
+    ctx.fillStyle = '#22c55e'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('🌿 ANTI-RAM KERN', W/2, 22);
+  },
+  mobile(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#1a2438'; ctx.fillRect(0, H - 18, W, 18);
+    for (let i = 0; i < 4; i++) {
+      const x = 35 + i * 65;
+      ctx.fillStyle = '#475569'; ctx.fillRect(x, 60, 55, H - 80);
+      ctx.fillStyle = '#fbbf24'; ctx.fillRect(x, 60, 55, 8);
+      ctx.fillRect(x, H - 28, 55, 6);
+      ctx.fillStyle = '#1e293b';
+      for (let k = 0; k < 2; k++) for (let j = 0; j < 2; j++)
+        ctx.fillRect(x + 12 + k * 25, 80 + j * 25, 18, 4);
+    }
+    ctx.fillStyle = '#22c55e'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('🚧 MOBIL · STAPELBAR', W/2, 25);
+  },
+
+  // ===== AUSSENHAUT =====
+  door3(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#1a2438'; ctx.fillRect(0, H - 12, W, 12);
+    ctx.fillStyle = '#4a2818'; ctx.fillRect(100, 20, W - 200, H - 32);
+    ctx.fillStyle = '#7a4a28';
+    ctx.fillRect(110, 30, W - 220, H - 50);
+    ctx.strokeStyle = '#3a1f10'; ctx.lineWidth = 1.5;
+    ctx.strokeRect(120, 45, W - 240, 70);
+    ctx.strokeRect(120, 125, W - 240, 50);
+    ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(W - 130, H / 2 + 10, 5, 0, 7); ctx.fill();
+    for (let i = 0; i < 3; i++) {
+      ctx.fillStyle = '#cbd5e1';
+      ctx.fillRect(W - 122 - i * 6, H / 2, 4, 12);
+    }
+    ctx.fillStyle = '#22c55e'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('🛡 RC 3', W/2, 18);
+  },
+  door4(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#1a2438'; ctx.fillRect(0, H - 12, W, 12);
+    ctx.fillStyle = '#1e293b'; ctx.fillRect(100, 15, W - 200, H - 27);
+    ctx.fillStyle = '#475569'; ctx.fillRect(110, 25, W - 220, H - 45);
+    ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 2;
+    for (let r = 0; r < 4; r++) for (let c = 0; c < 3; c++)
+      ctx.strokeRect(115 + c * (W - 230) / 3, 30 + r * (H - 60) / 4, (W - 230) / 3, (H - 60) / 4);
+    ctx.fillStyle = '#22c55e';
+    for (let i = 0; i < 5; i++) {
+      const py = 40 + i * (H - 60) / 5;
+      ctx.beginPath(); ctx.arc(W - 125, py, 3, 0, 7); ctx.fill();
+    }
+    ctx.fillStyle = '#ef4444'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('🛡 RC 4 · 10 MIN', W/2, 12);
+  },
+  gate2(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#1a2438'; ctx.fillRect(0, H - 18, W, 18);
+    const open = Math.sin(t * 0.7) * 0.5 + 0.5;
+    ctx.fillStyle = '#475569'; ctx.fillRect(20, 40, 6, H - 60);
+    ctx.fillRect(W - 26, 40, 6, H - 60);
+    ctx.save(); ctx.translate(23, 50);
+    ctx.rotate(-open * 0.6);
+    ctx.fillStyle = '#cbd5e1'; ctx.fillRect(0, 0, W/2 - 30, H - 75);
+    ctx.strokeStyle = '#475569'; ctx.strokeRect(0, 0, W/2 - 30, H - 75);
+    ctx.restore();
+    ctx.save(); ctx.translate(W - 23, 50);
+    ctx.rotate(open * 0.6);
+    ctx.fillStyle = '#cbd5e1'; ctx.fillRect(-(W/2 - 30), 0, W/2 - 30, H - 75);
+    ctx.strokeStyle = '#475569'; ctx.strokeRect(-(W/2 - 30), 0, W/2 - 30, H - 75);
+    ctx.restore();
+  },
+  fastdoor(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#1a2438'; ctx.fillRect(0, H - 18, W, 18);
+    ctx.fillStyle = '#475569'; ctx.fillRect(40, 15, 12, H - 35); ctx.fillRect(W - 52, 15, 12, H - 35);
+    const up = (Math.sin(t * 1.2) * 0.5 + 0.5);
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(40, 15, W - 80, 14);
+    ctx.fillStyle = '#94a3b8';
+    const lift = up * (H - 50);
+    for (let y = H - 25 - lift; y < H - 22; y += 4) {
+      ctx.fillRect(52, y, W - 104, 2);
+    }
+    ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('⚡ 1-3 m/s', W/2, H/2);
+  },
+  window(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#475569';
+    ctx.fillRect(40, 25, W - 80, H - 50);
+    ctx.fillStyle = '#0c4a6e';
+    ctx.fillRect(50, 35, W - 100, H - 70);
+    ctx.fillStyle = '#475569'; ctx.fillRect(W/2 - 3, 25, 6, H - 50);
+    ctx.fillRect(40, H/2 - 3, W - 80, 6);
+    ctx.strokeStyle = 'rgba(255,255,255,.25)'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(55, 45); ctx.lineTo(85, 75); ctx.stroke();
+    ctx.fillStyle = '#fbbf24';
+    ctx.beginPath(); ctx.arc(60, 40, 4, 0, 7); ctx.fill();
+    ctx.fillStyle = '#22c55e';
+    for (let i = 0; i < 4; i++) {
+      const x = 80 + i * 60;
+      ctx.fillRect(x, H/2 - 8, 5, 5);
+      ctx.fillRect(x + 8, H/2 - 8, 5, 5);
+    }
+    ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('🛡 P5A · RC 3', W/2, 16);
+  },
+  pglass(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    for (let i = 0; i < 7; i++) {
+      ctx.fillStyle = `rgba(34,211,238,${0.08 + i * 0.04})`;
+      ctx.fillRect(40 + i * 4, 30, W - 80 - i * 8, H - 50);
+    }
+    ctx.strokeStyle = 'rgba(255,255,255,.3)'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(50, 40); ctx.lineTo(100, 90); ctx.stroke();
+    ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('🛡 P8B · 12+ SCHICHTEN', W/2, 18);
+    ctx.font = '9px sans-serif'; ctx.fillStyle = '#94a3c4';
+    ctx.fillText('PVB-Folie · VSG-Verbund', W/2, H - 12);
+  },
+  shutter(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#475569'; ctx.fillRect(30, 20, W - 60, 15);
+    ctx.fillStyle = '#94a3b8';
+    for (let y = 40; y < H - 20; y += 6) {
+      ctx.fillRect(35, y, W - 70, 5);
+      ctx.fillStyle = y % 12 === 0 ? '#cbd5e1' : '#94a3b8';
+    }
+    ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('🛡 RC 3-fähig', W/2, 15);
+  },
+  magnet(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#7a4a28'; ctx.fillRect(40, 20, 80, H - 40);
+    ctx.fillStyle = '#1e293b'; ctx.fillRect(120, 20, 6, H - 40);
+    ctx.fillStyle = '#cbd5e1';
+    ctx.fillRect(W - 100, 50, 35, 18);
+    ctx.fillRect(W - 60, 50, 35, 18);
+    ctx.strokeStyle = '#94a3b8'; ctx.strokeRect(W - 100, 50, 35, 18);
+    ctx.strokeRect(W - 60, 50, 35, 18);
+    const open = Math.sin(t * 0.8) > 0;
+    ctx.fillStyle = open ? '#ef4444' : '#22c55e';
+    ctx.beginPath(); ctx.arc(W - 82, 95, 4, 0, 7); ctx.fill();
+    ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(open ? '🚨 ALARM' : '● OK', W - 60, 100);
+  },
+  glasbreak(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#475569'; ctx.fillRect(25, 30, W - 50, H - 60);
+    ctx.fillStyle = '#0c4a6e'; ctx.fillRect(35, 40, W - 70, H - 80);
+    ctx.fillStyle = '#fbbf24';
+    ctx.beginPath(); ctx.arc(45, 50, 5, 0, 7); ctx.fill();
+    for (let r = 12; r < 60; r += 12) {
+      const a = 1 - r / 60;
+      ctx.strokeStyle = `rgba(251,191,36,${a + Math.sin(t * 4) * 0.2})`;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(45, 50, r, 0, 7); ctx.stroke();
+    }
+    ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('🔊 3-5 kHz', W/2, 18);
+  },
+
+  // ===== MELDER =====
+  pir(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#cbd5e1'; ctx.fillRect(W/2 - 30, 20, 60, 35);
+    ctx.fillStyle = '#0b1424';
+    ctx.beginPath(); ctx.ellipse(W/2, 40, 20, 8, 0, 0, 7); ctx.fill();
+    ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 0.8;
+    for (let i = -3; i <= 3; i++) {
+      ctx.beginPath(); ctx.moveTo(W/2 - 18, 40 + i * 2); ctx.lineTo(W/2 + 18, 40 + i * 2); ctx.stroke();
+    }
+    ctx.fillStyle = `rgba(34,197,94,${0.5 + Math.sin(t * 3) * 0.4})`;
+    ctx.beginPath(); ctx.arc(W/2 + 22, 30, 2.5, 0, 7); ctx.fill();
+    const cone = ctx.createRadialGradient(W/2, 55, 5, W/2, 55, 130);
+    cone.addColorStop(0, 'rgba(251,191,36,.4)');
+    cone.addColorStop(1, 'rgba(251,191,36,0)');
+    ctx.fillStyle = cone;
+    ctx.beginPath();
+    ctx.moveTo(W/2, 55); ctx.lineTo(W/2 + 110, H - 10); ctx.lineTo(W/2 - 110, H - 10); ctx.fill();
+    ctx.strokeStyle = 'rgba(251,191,36,.5)'; ctx.lineWidth = 1;
+    for (let i = -2; i <= 2; i++) {
+      const a = i * 0.3;
+      ctx.beginPath(); ctx.moveTo(W/2, 55);
+      ctx.lineTo(W/2 + Math.sin(a) * 130, 55 + Math.cos(a) * 100); ctx.stroke();
+    }
+  },
+  piruh(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#cbd5e1'; ctx.fillRect(W/2 - 25, 20, 50, 30);
+    ctx.fillStyle = '#fbbf24';
+    ctx.beginPath(); ctx.moveTo(W/2, 50);
+    ctx.lineTo(W/2 - 8, H - 20); ctx.lineTo(W/2 + 8, H - 20); ctx.fill();
+    ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('VORHANG · 15°', W/2, 12);
+  },
+  mw(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#cbd5e1'; ctx.fillRect(W/2 - 28, 20, 56, 32);
+    ctx.fillStyle = '#22d3ee';
+    ctx.beginPath(); ctx.arc(W/2, 40, 8, 0, 7); ctx.fill();
+    for (let r = 20; r < 110; r += 14) {
+      const phase = (t * 0.8 + r * 0.05) % 1;
+      const cur = r + phase * 14;
+      const a = 1 - phase;
+      ctx.strokeStyle = `rgba(34,211,238,${a * 0.7})`; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(W/2, 40, cur, Math.PI * 0.3, Math.PI * 0.7); ctx.stroke();
+    }
+    ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('10,525 GHz', W/2, H - 12);
+  },
+  dual(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#cbd5e1'; ctx.fillRect(W/2 - 30, 20, 60, 38);
+    ctx.fillStyle = '#0b1424';
+    ctx.beginPath(); ctx.ellipse(W/2 - 12, 40, 8, 5, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = '#22d3ee';
+    ctx.beginPath(); ctx.arc(W/2 + 12, 40, 5, 0, 7); ctx.fill();
+    const cone = ctx.createRadialGradient(W/2 - 12, 60, 5, W/2 - 12, 60, 80);
+    cone.addColorStop(0, 'rgba(251,191,36,.3)');
+    cone.addColorStop(1, 'rgba(251,191,36,0)');
+    ctx.fillStyle = cone;
+    ctx.beginPath();
+    ctx.moveTo(W/2 - 12, 60); ctx.lineTo(W/2 + 60, H - 20); ctx.lineTo(W/2 - 80, H - 20); ctx.fill();
+    for (let r = 20; r < 80; r += 12) {
+      const phase = (t * 0.8 + r * 0.04) % 1;
+      ctx.strokeStyle = `rgba(34,211,238,${(1 - phase) * 0.5})`;
+      ctx.beginPath(); ctx.arc(W/2 + 12, 60, r + phase * 12, 0, 7); ctx.stroke();
+    }
+    ctx.fillStyle = '#22c55e'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('PIR + MW = DUAL', W/2, 14);
+  },
+  shock(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#475569'; ctx.fillRect(40, 30, W - 80, H - 60);
+    ctx.fillStyle = '#22d3ee'; ctx.fillRect(W/2 - 12, H/2 - 8, 24, 16);
+    ctx.strokeStyle = '#1e293b'; ctx.strokeRect(W/2 - 12, H/2 - 8, 24, 16);
+    const a = Math.abs(Math.sin(t * 8));
+    for (let i = 1; i < 4; i++) {
+      ctx.strokeStyle = `rgba(239,68,68,${a / i})`; ctx.lineWidth = 1.5;
+      ctx.strokeRect(W/2 - 12 - i * 6, H/2 - 8 - i * 4, 24 + i * 12, 16 + i * 8);
+    }
+    ctx.fillStyle = '#22d3ee'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('PIEZO', W/2, H - 18);
+  },
+  body(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#a855f7'; ctx.fillRect(35, 25, W - 70, H - 50);
+    ctx.fillStyle = '#1e293b'; ctx.fillRect(45, 35, W - 90, H - 70);
+    ctx.fillStyle = '#22d3ee';
+    ctx.fillRect(W/2 - 30, H/2 - 6, 12, 12);
+    ctx.fillRect(W/2 + 18, H/2 - 6, 12, 12);
+    ctx.strokeStyle = `rgba(239,68,68,${Math.abs(Math.sin(t * 12))})`; ctx.lineWidth = 1;
+    for (let i = 0; i < 4; i++) {
+      ctx.beginPath(); ctx.moveTo(W/2 - 18 + i * 4, H/2 - 4); ctx.lineTo(W/2 + 14, H/2 + 4 + Math.sin(t * 6 + i) * 2); ctx.stroke();
+    }
+    ctx.fillStyle = '#a855f7'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('25-100 kHz · KÖRPERSCHALL', W/2, 18);
+  },
+  beam(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#1a2438'; ctx.fillRect(0, H - 18, W, 18);
+    ctx.fillStyle = '#475569'; ctx.fillRect(15, 30, 12, H - 50); ctx.fillRect(W - 27, 30, 12, H - 50);
+    for (const y of [50, 80, H - 50]) {
+      ctx.strokeStyle = `rgba(239,68,68,${0.6 + Math.sin(t * 4) * 0.3})`; ctx.lineWidth = 1.5;
+      ctx.setLineDash([6, 3]);
+      ctx.beginPath(); ctx.moveTo(27, y); ctx.lineTo(W - 27, y); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    ctx.fillStyle = '#22d3ee'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('IR-LICHTSCHRANKE · 60-200 m', W/2, 18);
+  },
+  cable(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#1a2438'; ctx.fillRect(0, H - 18, W, 18);
+    for (let p = 25; p < W; p += 40) {
+      ctx.fillStyle = '#475569'; ctx.fillRect(p, H - 80, 4, 65);
+    }
+    ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 0.7;
+    for (let y = H - 75; y < H - 18; y += 7) {
+      ctx.beginPath(); ctx.moveTo(20, y); ctx.lineTo(W - 20, y); ctx.stroke();
+    }
+    ctx.strokeStyle = '#22d3ee'; ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    for (let x = 20; x <= W - 20; x += 3) {
+      ctx.lineTo(x, H - 78 + Math.sin(t * 3 + x * 0.05) * 3);
+    }
+    ctx.stroke();
+    ctx.fillStyle = '#22d3ee'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('〰 VIBRATIONSKABEL · GPS-ORT', W/2, 16);
+  },
+  smoke(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#1a2438'; ctx.fillRect(0, 0, W, 14);
+    ctx.fillStyle = '#f1f5f9';
+    ctx.beginPath(); ctx.ellipse(W/2, 32, 30, 20, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = '#cbd5e1';
+    ctx.beginPath(); ctx.ellipse(W/2, 32, 24, 14, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = '#0b1424';
+    for (let i = 0; i < 5; i++) {
+      const a = i * Math.PI / 5;
+      ctx.beginPath(); ctx.arc(W/2 + Math.cos(a) * 20, 32 + Math.sin(a) * 12, 3, 0, 7); ctx.fill();
+    }
+    ctx.fillStyle = `rgba(239,68,68,${0.5 + Math.sin(t * 4) * 0.4})`;
+    ctx.beginPath(); ctx.arc(W/2, 32, 4, 0, 7); ctx.fill();
+    ctx.fillStyle = 'rgba(200,200,200,.3)';
+    for (let i = 0; i < 5; i++) {
+      const y = H - 30 - i * 15 - (t * 30) % 80;
+      ctx.beginPath(); ctx.arc(W/2 - 20 + Math.sin(t + i) * 12, y, 12, 0, 7); ctx.fill();
+    }
+    ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('🔥 RAUCH-OPTIK', W/2, H - 8);
+  },
+  heat(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#cbd5e1';
+    ctx.beginPath(); ctx.arc(W/2, 50, 28, 0, 7); ctx.fill();
+    ctx.fillStyle = '#ef4444';
+    const fill = (Math.sin(t * 2) * 0.5 + 0.5);
+    ctx.fillRect(W/2 - 6, 80 - fill * 50, 12, fill * 50);
+    ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2;
+    ctx.strokeRect(W/2 - 6, 30, 12, 50);
+    ctx.fillStyle = '#ef4444';
+    ctx.font = 'bold 14px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(Math.round(fill * 64) + '°C', W/2, H - 30);
+    ctx.font = '9px sans-serif'; ctx.fillStyle = '#fbbf24';
+    ctx.fillText('ΔT 5K/min', W/2, H - 12);
+  },
+
+  // ===== VIDEO =====
+  dome(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    const cx = W/2, cy = 60, dr = 38;
+    const g = ctx.createRadialGradient(cx - dr/3, cy - dr/3, 0, cx, cy, dr);
+    g.addColorStop(0, '#f1f5f9'); g.addColorStop(.5, '#cbd5e1'); g.addColorStop(1, '#475569');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, dr, Math.PI, 0); ctx.fill();
+    ctx.fillStyle = '#cbd5e1'; ctx.fillRect(cx - dr, cy, dr * 2, 8);
+    ctx.fillStyle = '#0b1424';
+    ctx.beginPath(); ctx.arc(cx, cy, dr * .55, 0, 7); ctx.fill();
+    ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.strokeStyle = '#1e293b';
+    ctx.beginPath(); ctx.arc(cx, cy, dr * .4, 0, 7); ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx, cy, dr * .3, 0, 7); ctx.stroke();
+    for (let i = 0; i < 8; i++) {
+      const a = i * Math.PI / 4;
+      const lx = cx + Math.cos(a) * dr * .75, ly = cy + Math.sin(a) * dr * .75;
+      ctx.fillStyle = '#ef4444'; ctx.shadowColor = '#ef4444'; ctx.shadowBlur = 8;
+      ctx.beginPath(); ctx.arc(lx, ly, 2.5, 0, 7); ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+    ctx.fillStyle = 'rgba(255,255,255,.4)';
+    ctx.beginPath(); ctx.arc(cx - dr * .2, cy - dr * .25, dr * .12, 0, 7); ctx.fill();
+    ctx.strokeStyle = 'rgba(34,211,238,.3)'; ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(cx - 60, H - 15); ctx.lineTo(cx, cy + 15); ctx.lineTo(cx + 60, H - 15); ctx.stroke();
+    ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('4K · IR 30m · KI', W/2, H - 4);
+  },
+  bullet(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#475569'; ctx.fillRect(W/2 - 10, 25, 20, 25);
+    ctx.fillStyle = '#cbd5e1';
+    ctx.beginPath();
+    ctx.moveTo(W/2 - 35, 60); ctx.lineTo(W/2 + 60, 60);
+    ctx.lineTo(W/2 + 60, 90); ctx.lineTo(W/2 - 35, 90); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = '#0b1424';
+    ctx.beginPath(); ctx.arc(W/2 + 55, 75, 12, 0, 7); ctx.fill();
+    ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1.5; ctx.stroke();
+    for (let i = 0; i < 6; i++) {
+      const lx = W/2 + 40 + (i % 3) * 8, ly = 67 + ((i / 3) | 0) * 8;
+      ctx.fillStyle = '#ef4444'; ctx.shadowColor = '#ef4444'; ctx.shadowBlur = 6;
+      ctx.beginPath(); ctx.arc(lx, ly, 1.5, 0, 7); ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+    ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('🎯 IR 80 m · IP67', W/2, H - 12);
+  },
+  ptz(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    const cx = W/2, cy = 65;
+    ctx.fillStyle = '#475569'; ctx.fillRect(cx - 22, 25, 44, 20);
+    ctx.save(); ctx.translate(cx, cy);
+    ctx.rotate(Math.sin(t * 0.5) * 0.6);
+    ctx.fillStyle = '#cbd5e1';
+    ctx.beginPath();
+    ctx.arc(0, 0, 30, 0, 7); ctx.fill();
+    ctx.fillStyle = '#0b1424';
+    ctx.beginPath(); ctx.arc(20, 0, 12, 0, 7); ctx.fill();
+    ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,.3)';
+    ctx.beginPath(); ctx.arc(16, -3, 4, 0, 7); ctx.fill();
+    ctx.restore();
+    const angle = Math.sin(t * 0.5) * 0.6;
+    ctx.strokeStyle = 'rgba(34,211,238,.4)'; ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(cx + Math.cos(angle) * 35, cy + Math.sin(angle) * 35);
+    ctx.lineTo(cx + Math.cos(angle - 0.3) * 110, cy + Math.sin(angle - 0.3) * 110);
+    ctx.moveTo(cx + Math.cos(angle) * 35, cy + Math.sin(angle) * 35);
+    ctx.lineTo(cx + Math.cos(angle + 0.3) * 110, cy + Math.sin(angle + 0.3) * 110);
+    ctx.stroke();
+    ctx.fillStyle = '#22c55e'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('🔄 PTZ · 30× ZOOM', W/2, H - 8);
+  },
+  fisheye(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    const cx = W/2, cy = H/2;
+    ctx.fillStyle = '#cbd5e1';
+    ctx.beginPath(); ctx.arc(cx, cy, 55, 0, 7); ctx.fill();
+    const g = ctx.createRadialGradient(cx, cy, 5, cx, cy, 45);
+    g.addColorStop(0, '#0c4a6e'); g.addColorStop(0.6, '#0b1424'); g.addColorStop(1, '#000');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(cx, cy, 45, 0, 7); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,.3)';
+    ctx.beginPath(); ctx.arc(cx - 12, cy - 12, 7, 0, 7); ctx.fill();
+    for (let a = 0; a < 7; a += Math.PI / 4) {
+      ctx.fillStyle = `rgba(34,211,238,${0.3 + Math.sin(t * 3 + a) * 0.3})`;
+      ctx.beginPath(); ctx.arc(cx + Math.cos(a + t * 0.5) * 30, cy + Math.sin(a + t * 0.5) * 30, 1.5, 0, 7); ctx.fill();
+    }
+    ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('🔍 360° PANORAMA', W/2, 16);
+  },
+  thermal(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    for (let y = 30; y < H - 20; y += 6) {
+      for (let x = 30; x < W - 30; x += 6) {
+        const heat = 0.5 + Math.sin((x + y) * 0.05 + t) * 0.3 + (Math.abs(x - W/2) < 30 && Math.abs(y - H/2) < 25 ? 0.5 : 0);
+        const r = heat > 0.7 ? 255 : heat > 0.5 ? 200 : 50;
+        const g = heat > 0.6 ? 100 : 10;
+        const b = heat < 0.4 ? 200 : 30;
+        ctx.fillStyle = `rgb(${r},${g},${b})`;
+        ctx.fillRect(x, y, 5, 5);
+      }
+    }
+    ctx.fillStyle = '#fff'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('🔥 LWIR 8-14 µm', W/2, 18);
+  },
+  nvr(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#1e293b'; ctx.fillRect(40, 40, W - 80, H - 70);
+    ctx.fillStyle = '#0b1424'; ctx.fillRect(50, 50, W - 100, 35);
+    ctx.fillStyle = '#22d3ee'; ctx.font = 'bold 14px monospace'; ctx.textAlign = 'left';
+    ctx.fillText('● REC 16ch', 60, 72);
+    ctx.fillStyle = '#22c55e';
+    ctx.fillRect(50, 95, (W - 100) * 0.85, 6);
+    ctx.fillStyle = '#94a3b8';
+    for (let i = 0; i < 6; i++) {
+      ctx.fillRect(55 + i * 30, H - 35, 20, 8);
+    }
+    ctx.fillStyle = `rgba(239,68,68,${Math.abs(Math.sin(t * 2))})`;
+    ctx.beginPath(); ctx.arc(W - 60, 65, 4, 0, 7); ctx.fill();
+    ctx.fillStyle = '#22d3ee'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('NVR · 16 KANÄLE', W/2, 30);
+  },
+  vms(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    for (let r = 0; r < 3; r++) for (let c = 0; c < 4; c++) {
+      const x = 20 + c * 73, y = 25 + r * 50;
+      ctx.fillStyle = '#1e293b'; ctx.fillRect(x, y, 65, 42);
+      ctx.fillStyle = `rgba(34,211,238,${0.2 + Math.sin(t * 2 + r + c) * 0.2})`;
+      ctx.fillRect(x, y, 65, 42);
+      ctx.fillStyle = `rgba(239,68,68,${Math.abs(Math.sin(t * 3 + c))})`;
+      ctx.beginPath(); ctx.arc(x + 5, y + 5, 2, 0, 7); ctx.fill();
+      ctx.fillStyle = '#94a3b8'; ctx.font = '8px monospace';
+      ctx.fillText('CAM ' + (r * 4 + c + 1), x + 8, y + 12);
+    }
+    ctx.fillStyle = '#a855f7'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('VMS · MULTI-SITE', W/2, 18);
+  },
+
+  // ===== ZYLINDER =====
+  cyl(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    const cy = H/2;
+    const g = ctx.createLinearGradient(0, cy - 25, 0, cy + 25);
+    g.addColorStop(0, '#d4af37'); g.addColorStop(.5, '#b8912a'); g.addColorStop(1, '#8a6a1c');
+    ctx.fillStyle = g;
+    ctx.fillRect(40, cy - 25, W - 80, 50);
+    ctx.fillStyle = '#fef3c7';
+    ctx.beginPath(); ctx.arc(W - 50, cy, 22, 0, 7); ctx.fill();
+    ctx.strokeStyle = '#5c470f'; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.fillStyle = '#0b1424'; ctx.fillRect(W - 60, cy - 3, 25, 6);
+    ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('5 STIFTE · VdS BZ+', W/2, 20);
+    for (let i = 0; i < 5; i++) {
+      ctx.fillStyle = '#cbd5e1'; ctx.fillRect(60 + i * 22, cy - 22, 6, 14);
+      ctx.fillStyle = '#fbbf24'; ctx.fillRect(60 + i * 22, cy - 8, 6, 10);
+    }
+  },
+  cylh(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    const cy = H/2;
+    const g = ctx.createLinearGradient(0, cy - 30, 0, cy + 30);
+    g.addColorStop(0, '#7c3aed'); g.addColorStop(1, '#5b21b6');
+    ctx.fillStyle = g;
+    ctx.fillRect(40, cy - 30, W - 80, 60);
+    ctx.fillStyle = '#fef3c7';
+    ctx.beginPath(); ctx.arc(W - 50, cy, 24, 0, 7); ctx.fill();
+    ctx.strokeStyle = '#a855f7'; ctx.lineWidth = 2; ctx.stroke();
+    for (let i = 0; i < 3; i++) {
+      ctx.fillStyle = '#fbbf24';
+      ctx.beginPath(); ctx.arc(W - 50, cy - 8 + i * 8, 2, 0, 7); ctx.fill();
+    }
+    ctx.fillStyle = '#a855f7'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('3 WIRKFLÄCHEN · VdS 5', W/2, 18);
+  },
+  ezyl(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    const cy = H/2;
+    ctx.fillStyle = '#475569'; ctx.fillRect(40, cy - 26, W - 80, 52);
+    ctx.fillStyle = '#1e293b'; ctx.fillRect(50, cy - 18, W - 100, 36);
+    const ledOn = Math.sin(t * 3) > 0;
+    ctx.fillStyle = ledOn ? '#22c55e' : '#1e293b';
+    if (ledOn) { ctx.shadowColor = '#22c55e'; ctx.shadowBlur = 12; }
+    ctx.beginPath(); ctx.arc(W/2, cy, 4, 0, 7); ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('📡 RFID · BLE · NFC', W/2, 18);
+    ctx.fillStyle = '#22c55e'; ctx.font = '8px sans-serif';
+    ctx.fillText('BATTERIE 4-8 J.', W/2, H - 10);
+  },
+  smart(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#cbd5e1';
+    ctx.fillRect(W/2 - 35, H/2 - 35, 70, 70);
+    ctx.fillStyle = '#0b1424';
+    ctx.beginPath(); ctx.arc(W/2, H/2, 22, 0, 7); ctx.fill();
+    ctx.save(); ctx.translate(W/2, H/2);
+    ctx.rotate(t * 2);
+    ctx.fillStyle = '#fbbf24'; ctx.fillRect(-3, -15, 6, 30);
+    ctx.restore();
+    ctx.fillStyle = '#22d3ee'; ctx.font = '14px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('📱', W - 30, 40);
+    ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 9px sans-serif';
+    ctx.fillText('NUKI · YALE · BOSCH', W/2, H - 12);
+  },
+  cliq(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    const cy = H/2;
+    const g = ctx.createLinearGradient(0, cy - 28, 0, cy + 28);
+    g.addColorStop(0, '#d4af37'); g.addColorStop(.5, '#a855f7'); g.addColorStop(1, '#7c3aed');
+    ctx.fillStyle = g; ctx.fillRect(40, cy - 28, W - 80, 56);
+    ctx.fillStyle = '#fef3c7';
+    ctx.beginPath(); ctx.arc(W - 55, cy, 24, 0, 7); ctx.fill();
+    const led = Math.sin(t * 4) > 0;
+    ctx.fillStyle = led ? '#22c55e' : '#fbbf24';
+    if (led) { ctx.shadowColor = '#22c55e'; ctx.shadowBlur = 10; }
+    ctx.beginPath(); ctx.arc(W - 55, cy + 12, 3, 0, 7); ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('MECH + ELEKTRONIK', W/2, 18);
+  },
+  mk(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#d4af37';
+    ctx.beginPath();
+    ctx.moveTo(W/2, 25);
+    ctx.lineTo(W - 25, H - 20);
+    ctx.lineTo(25, H - 20); ctx.fill();
+    ctx.fillStyle = '#fef3c7'; ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('GMK', W/2, 50);
+    ctx.font = '10px sans-serif';
+    ctx.fillText('Bereich A', W/2 - 35, 80); ctx.fillText('Bereich B', W/2 + 35, 80);
+    ctx.font = '9px sans-serif'; ctx.fillStyle = '#fbbf24';
+    ctx.fillText('Raum 1   Raum 2   Raum 3   Raum 4', W/2, H - 30);
+    ctx.fillStyle = '#a855f7'; ctx.font = 'bold 9px sans-serif';
+    ctx.fillText('GENERAL-HAUPT-SCHLÜSSEL', W/2, H - 10);
+  },
+
+  // ===== EMA =====
+  central(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#1e293b'; ctx.fillRect(40, 30, W - 80, H - 50);
+    ctx.fillStyle = '#0b1424'; ctx.fillRect(50, 40, W - 100, 60);
+    for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) {
+      const blink = Math.sin(t * 2 + r + c) > 0;
+      ctx.fillStyle = blink ? '#22c55e' : '#0a2640';
+      if (blink) { ctx.shadowColor = '#22c55e'; ctx.shadowBlur = 4; }
+      ctx.fillRect(60 + c * (W - 120) / 4, 50 + r * 12, 8, 8);
+      ctx.shadowBlur = 0;
+    }
+    ctx.fillStyle = '#ef4444'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('EMA · VdS C', W/2, 22);
+    ctx.fillStyle = '#22d3ee'; ctx.font = '8px sans-serif';
+    ctx.fillText('NSL IP+GSM Dual-Path', W/2, H - 8);
+  },
+  wireless(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#cbd5e1';
+    ctx.fillRect(W/2 - 50, H/2 - 30, 100, 60);
+    ctx.fillStyle = '#22d3ee';
+    ctx.fillRect(W/2 - 40, H/2 - 20, 80, 25);
+    ctx.fillStyle = '#0b1424'; ctx.font = 'bold 10px monospace'; ctx.textAlign = 'center';
+    ctx.fillText('SCHARF', W/2, H/2 - 4);
+    for (let r = 14; r < 50; r += 10) {
+      const a = 1 - r / 50;
+      ctx.strokeStyle = `rgba(34,211,238,${a + Math.sin(t * 3) * 0.2})`; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(W/2, H/2, r, -Math.PI * 0.7, -Math.PI * 0.3); ctx.stroke();
+    }
+    ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('📡 868 MHz · FUNK', W/2, H - 8);
+  },
+  kp(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(W/2 - 55, 30, 110, H - 60);
+    ctx.fillStyle = '#22d3ee';
+    ctx.fillRect(W/2 - 50, 40, 100, 50);
+    ctx.fillStyle = '#0b1424'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('🛡 SCHARF', W/2, 62);
+    ctx.fillStyle = '#cbd5e1';
+    for (let r = 0; r < 4; r++) for (let c = 0; c < 3; c++) {
+      ctx.fillRect(W/2 - 45 + c * 30, H - 80 + r * 14, 26, 11);
+    }
+  },
+  siren(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#cbd5e1';
+    ctx.fillRect(W/2 - 40, H/2 - 25, 80, 50);
+    ctx.fillStyle = '#ef4444'; ctx.fillRect(W/2 - 35, H/2 - 20, 70, 8);
+    const blink = (t * 2) % 1 > 0.5;
+    if (blink) {
+      ctx.fillStyle = '#3b82f6'; ctx.shadowColor = '#3b82f6'; ctx.shadowBlur = 16;
+      ctx.fillRect(W/2 - 25, H/2 - 6, 50, 14);
+      ctx.shadowBlur = 0;
+    } else {
+      ctx.fillStyle = '#1e293b'; ctx.fillRect(W/2 - 25, H/2 - 6, 50, 14);
+    }
+    for (let r = 30; r < 100; r += 14) {
+      const a = 1 - r / 100;
+      ctx.strokeStyle = `rgba(239,68,68,${a + Math.sin(t * 4) * 0.3})`; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(W/2, H/2, r + (t * 30) % 14, Math.PI * 0.3, Math.PI * 0.7); ctx.stroke();
+    }
+    ctx.fillStyle = '#ef4444'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('🔊 110 dB + LED-BLITZ', W/2, 22);
+  },
+  nsl(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#cbd5e1';
+    ctx.beginPath();
+    ctx.arc(W/2 - 30, 50, 25, 0, 7); ctx.arc(W/2 + 10, 45, 30, 0, 7); ctx.arc(W/2 + 35, 55, 22, 0, 7); ctx.fill();
+    ctx.fillStyle = '#22c55e'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('☁ NSL 24/7', W/2, 50);
+    ctx.fillStyle = '#475569'; ctx.fillRect(50, H - 50, 30, 20);
+    ctx.fillRect(W - 80, H - 50, 30, 20);
+    ctx.strokeStyle = '#22c55e'; ctx.lineWidth = 2;
+    ctx.setLineDash([4, 2]);
+    ctx.beginPath(); ctx.moveTo(65, H - 30); ctx.lineTo(W/2 - 5, 65); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(W - 65, H - 30); ctx.lineTo(W/2 + 25, 70); ctx.stroke();
+    ctx.setLineDash([]);
+    const k = (t * 0.5) % 1;
+    ctx.fillStyle = '#22c55e';
+    ctx.beginPath(); ctx.arc(65 + (W/2 - 70) * k, H - 30 - (H - 95) * k, 3, 0, 7); ctx.fill();
+    ctx.fillStyle = '#22d3ee'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('IP + GSM', W/2, H - 10);
+  },
+
+  // ===== TRESOR =====
+  safe0(ctx, t) { drawSafe(ctx, t, 1, '#94a3c4', '0'); },
+  safe1(ctx, t) { drawSafe(ctx, t, 1, '#a855f7', 'I'); },
+  safe2(ctx, t) { drawSafe(ctx, t, 2, '#a855f7', 'II'); },
+  safe3(ctx, t) { drawSafe(ctx, t, 3, '#fbbf24', 'III'); },
+  safe4(ctx, t) { drawSafe(ctx, t, 4, '#fbbf24', 'IV'); },
+  safe5(ctx, t) { drawSafe(ctx, t, 5, '#ef4444', 'V'); },
+  safe6(ctx, t) { drawSafe(ctx, t, 6, '#dc2626', 'VI'); },
+
+  // ===== ZUTRITT =====
+  rfid(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(W/2 - 35, H/2 - 45, 70, 90);
+    ctx.fillStyle = '#22d3ee';
+    ctx.fillRect(W/2 - 30, H/2 - 40, 60, 30);
+    ctx.fillStyle = '#0b1424'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('READ', W/2, H/2 - 23);
+    const blink = Math.sin(t * 3) > 0;
+    ctx.fillStyle = blink ? '#22c55e' : '#1e293b';
+    if (blink) { ctx.shadowColor = '#22c55e'; ctx.shadowBlur = 8; }
+    ctx.beginPath(); ctx.arc(W/2, H/2 + 15, 5, 0, 7); ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 9px sans-serif';
+    ctx.fillText('MIFARE DESFire EV3', W/2, H - 12);
+  },
+  finger(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(W/2 - 40, H/2 - 45, 80, 90);
+    ctx.fillStyle = '#0b1424';
+    ctx.fillRect(W/2 - 30, H/2 - 35, 60, 50);
+    ctx.strokeStyle = `rgba(34,211,238,${0.5 + Math.sin(t * 4) * 0.4})`; ctx.lineWidth = 1.5;
+    for (let r = 8; r < 25; r += 4) {
+      ctx.beginPath(); ctx.arc(W/2, H/2 - 10, r, 0.3, Math.PI - 0.3); ctx.stroke();
+    }
+    ctx.strokeStyle = '#22c55e'; ctx.lineWidth = 1.5;
+    const sy = H/2 - 35 + ((t * 30) % 50);
+    ctx.beginPath(); ctx.moveTo(W/2 - 25, sy); ctx.lineTo(W/2 + 25, sy); ctx.stroke();
+    ctx.fillStyle = '#22d3ee'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('👆 FINGERPRINT', W/2, H - 12);
+  },
+  turnstile(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#1a2438'; ctx.fillRect(0, H - 18, W, 18);
+    ctx.fillStyle = '#475569'; ctx.fillRect(W/2 - 8, H - 80, 16, 60);
+    ctx.save(); ctx.translate(W/2, H - 55);
+    ctx.rotate(t * 1.5);
+    ctx.fillStyle = '#cbd5e1';
+    for (let i = 0; i < 3; i++) {
+      ctx.save(); ctx.rotate(i * Math.PI * 2 / 3);
+      ctx.fillRect(0, -3, 40, 6);
+      ctx.restore();
+    }
+    ctx.restore();
+    ctx.fillStyle = '#22c55e'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('🔄 VEREINZELUNG', W/2, 20);
+  },
+  mantrap(ctx, t) {
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#1a2438'; ctx.fillRect(0, H - 18, W, 18);
+    ctx.fillStyle = '#475569'; ctx.fillRect(40, 25, 10, H - 45);
+    ctx.fillRect(W/2 - 5, 25, 10, H - 45);
+    ctx.fillRect(W - 50, 25, 10, H - 45);
+    const phase = (t * 0.5) % 4;
+    if (phase < 2) {
+      ctx.fillStyle = '#0c4a6e';
+      ctx.fillRect(50, 35, W/2 - 55, H - 60);
+    } else {
+      ctx.fillStyle = '#0c4a6e';
+      ctx.fillRect(W/2 + 5, 35, W/2 - 55, H - 60);
+    }
+    ctx.fillStyle = '#22c55e'; ctx.font = '16px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('🚶', phase < 2 ? W/2 - 25 : W/2 + 25, H - 25);
+    ctx.fillStyle = '#a855f7'; ctx.font = 'bold 9px sans-serif';
+    ctx.fillText('SCHLEUSE · WÄGE', W/2, 18);
+  },
+};
+
+function drawSafe(ctx, t, kls, col, label) {
+  const W = ctx.canvas.width, H = ctx.canvas.height;
+  ctx.fillStyle = '#0c1828'; ctx.fillRect(0, 0, W, H);
+  for (let i = 0; i < kls + 1; i++) {
+    const off = i * 3;
+    ctx.fillStyle = i === 0 ? '#475569' : `rgba(${kls > 4 ? '239,68,68' : kls > 2 ? '251,191,36' : '168,85,247'},${0.3 + i * 0.1})`;
+    ctx.fillRect(40 - off, 20 - off, W - 80 + off * 2, H - 35 + off * 2);
+  }
+  ctx.fillStyle = '#1e293b'; ctx.fillRect(45, 25, W - 90, H - 45);
+  ctx.fillStyle = '#fbbf24'; ctx.beginPath();
+  ctx.arc(W/2 - 30, H/2, 14, 0, 7); ctx.fill();
+  ctx.strokeStyle = '#5c470f'; ctx.lineWidth = 1.5; ctx.stroke();
+  ctx.save(); ctx.translate(W/2 - 30, H/2);
+  ctx.rotate(t * 0.5);
+  ctx.strokeStyle = '#0b1424'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -10); ctx.stroke();
+  ctx.restore();
+  ctx.fillStyle = '#cbd5e1';
+  ctx.beginPath(); ctx.arc(W/2 + 30, H/2, 10, 0, 7); ctx.fill();
+  for (let i = 0; i < 4; i++) {
+    ctx.fillStyle = '#cbd5e1'; ctx.fillRect(W - 50, 35 + i * 20, 8, 8);
+  }
+  ctx.fillStyle = col; ctx.font = 'bold 18px sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText(label, W/2, 18);
+  ctx.font = '9px sans-serif'; ctx.fillStyle = '#94a3c4';
+  ctx.fillText('EN 1143-1', W/2, H - 8);
+}
+
+// Renderer für Galerie
+let activeKat = 'all', galCanvases = [], galAnimT = 0;
+function renderCatBar() {
+  const bar = document.getElementById('catBar'); if (!bar) return;
+  bar.innerHTML = '';
+  KAT.forEach(k => {
+    const ct = k.id === 'all' ? PROD.length : PROD.filter(p => p.kat === k.id).length;
+    const b = document.createElement('button');
+    b.className = 'cat-chip' + (k.id === activeKat ? ' on' : '');
+    b.style.setProperty('--cc', k.color);
+    b.innerHTML = `<span>${k.icon} ${k.name}</span><span class="ct">${ct}</span>`;
+    b.addEventListener('click', () => { activeKat = k.id; sfx.tap(); renderCatBar(); renderGal(); });
+    bar.appendChild(b);
+  });
+}
+
+function renderGal() {
+  const gal = document.getElementById('gal'); if (!gal) return;
+  gal.innerHTML = ''; galCanvases = [];
+  const list = activeKat === 'all' ? PROD : PROD.filter(p => p.kat === activeKat);
+  list.forEach(p => {
+    const card = document.createElement('button');
+    card.className = 'gal-card';
+    card.style.setProperty('--c', p.c);
+    card.addEventListener('click', () => { sfx.tap(); openModal(p); });
+    const cv = document.createElement('canvas');
+    cv.width = 320; cv.height = 200;
+    card.appendChild(cv);
+    galCanvases.push({ cv, fn: draws[p.a] || draws.cyl });
+    const name = document.createElement('div'); name.className = 'gc-name'; name.textContent = p.n;
+    const spec = document.createElement('div'); spec.className = 'gc-spec'; spec.textContent = p.spec;
+    const foot = document.createElement('div'); foot.className = 'gc-foot';
+    const price = document.createElement('span'); price.className = 'gc-price'; price.textContent = p.price;
+    const norm = document.createElement('span'); norm.className = 'gc-norm'; norm.textContent = p.norm;
+    foot.appendChild(price); foot.appendChild(norm);
+    card.appendChild(name); card.appendChild(spec); card.appendChild(foot);
+    gal.appendChild(card);
+  });
+}
+
+function openModal(p) {
+  const modal = document.getElementById('modal'), card = document.getElementById('modalCard');
+  card.style.setProperty('--c', p.c);
+  card.innerHTML = `
+    <button class="modal-x" onclick="document.getElementById('modal').classList.remove('on')">✕</button>
+    <canvas id="modalCanvas" width="320" height="200"></canvas>
+    <span class="mkicker">${KAT.find(k => k.id === p.kat).name} · ${p.norm}</span>
+    <h2>${p.n}</h2>
+    <p>${p.detail}</p>
+    <div class="specs">
+      ${p.specs.map(s => `<div class="spec"><span>${s[0]}</span><strong>${s[1]}</strong></div>`).join('')}
+    </div>
+    <div class="pricebar"><span>Richtpreis</span><strong>${p.price}</strong></div>
+    <div class="makers">${p.makers.map(m => `<span class="maker">${m}</span>`).join('')}</div>
+  `;
+  modal.classList.add('on');
+  modal.onclick = e => { if (e.target === modal) { modal.classList.remove('on'); sfx.tap(); } };
+  const cv = document.getElementById('modalCanvas');
+  const fn = draws[p.a] || draws.cyl;
+  (function loop() {
+    if (!modal.classList.contains('on')) return;
+    fn(cv.getContext('2d'), galAnimT);
+    requestAnimationFrame(loop);
+  })();
+}
+
+(function galLoop() {
+  galAnimT += 1/60;
+  galCanvases.forEach(({ cv, fn }) => {
+    if (!cv.isConnected) return;
+    try { fn(cv.getContext('2d'), galAnimT); } catch (e) {}
+  });
+  requestAnimationFrame(galLoop);
+})();
+
+renderCatBar();
+renderGal();
 })();
 </script>
 </body>
