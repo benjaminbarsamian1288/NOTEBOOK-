@@ -19,6 +19,14 @@ const Logbook = (() => {
         'Sonstiges'
     ];
 
+    const SEVERITY_LEVELS = [
+        { value: 'info',     label: 'Info',     color: '#3498db' },
+        { value: 'niedrig',  label: 'Niedrig',  color: '#2ecc71' },
+        { value: 'mittel',   label: 'Mittel',   color: '#f39c12' },
+        { value: 'hoch',     label: 'Hoch',     color: '#e67e22' },
+        { value: 'kritisch', label: 'Kritisch', color: '#e74c3c' }
+    ];
+
     let recognition = null;
     let recognitionActive = false;
     let recognitionTarget = null;
@@ -63,8 +71,10 @@ const Logbook = (() => {
             guard: entry.guard || '',
             location: entry.location || '',
             type: entry.type || 'Sonstiges',
+            severity: entry.severity || 'info',
             description: entry.description || '',
             photo: entry.photo || null,
+            gps: entry.gps || null,
             createdAt: new Date().toISOString()
         };
         entries.push(e);
@@ -77,12 +87,70 @@ const Logbook = (() => {
         saveEntries(entries);
     }
 
+    function clearAll() {
+        saveEntries([]);
+    }
+
     // ===== Filtering =====
     function entriesForDate(dateString) {
         const target = dateString || new Date().toISOString().slice(0, 10);
         return getEntries()
             .filter(e => (e.timestamp || '').slice(0, 10) === target)
             .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+    }
+
+    function searchEntries({ query = '', type = '', severity = '', dateFrom = '', dateTo = '' } = {}) {
+        const q = query.trim().toLowerCase();
+        return getEntries().filter(e => {
+            if (type && e.type !== type) return false;
+            if (severity && (e.severity || 'info') !== severity) return false;
+            const day = (e.timestamp || '').slice(0, 10);
+            if (dateFrom && day < dateFrom) return false;
+            if (dateTo && day > dateTo) return false;
+            if (!q) return true;
+            const haystack = [
+                e.guard, e.location, e.type, e.severity, e.description
+            ].join(' ').toLowerCase();
+            return haystack.includes(q);
+        }).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    }
+
+    function shiftStats(dateString) {
+        const entries = entriesForDate(dateString);
+        const byType = {};
+        const bySeverity = {};
+        entries.forEach(e => {
+            byType[e.type] = (byType[e.type] || 0) + 1;
+            const sev = e.severity || 'info';
+            bySeverity[sev] = (bySeverity[sev] || 0) + 1;
+        });
+        return {
+            total: entries.length,
+            firstAt: entries[0] ? entries[0].timestamp : null,
+            lastAt: entries.length ? entries[entries.length - 1].timestamp : null,
+            byType,
+            bySeverity
+        };
+    }
+
+    // ===== GPS =====
+    function captureGPS(timeoutMs = 8000) {
+        return new Promise((resolve) => {
+            if (!navigator.geolocation) {
+                resolve(null);
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(
+                (pos) => resolve({
+                    latitude: pos.coords.latitude,
+                    longitude: pos.coords.longitude,
+                    accuracy: pos.coords.accuracy,
+                    capturedAt: new Date().toISOString()
+                }),
+                () => resolve(null),
+                { enableHighAccuracy: true, timeout: timeoutMs, maximumAge: 30000 }
+            );
+        });
     }
 
     // ===== Speech Recognition (KI-Erkennung) =====
@@ -199,6 +267,15 @@ const Logbook = (() => {
             weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric'
         });
 
+        const sevColor = (s) => {
+            const found = SEVERITY_LEVELS.find(x => x.value === s);
+            return found ? found.color : '#666';
+        };
+        const sevLabel = (s) => {
+            const found = SEVERITY_LEVELS.find(x => x.value === s);
+            return found ? found.label : (s || 'Info');
+        };
+
         const rows = entries.map((e, i) => {
             const time = new Date(e.timestamp).toLocaleTimeString('de-DE', {
                 hour: '2-digit', minute: '2-digit'
@@ -206,13 +283,18 @@ const Logbook = (() => {
             const photo = e.photo
                 ? `<img src="${e.photo}" alt="Foto" />`
                 : '';
+            const sev = e.severity || 'info';
+            const sevTag = `<span class="sev" style="background:${sevColor(sev)}">${escapeHtml(sevLabel(sev))}</span>`;
+            const gps = e.gps
+                ? `<div class="gps">GPS: ${e.gps.latitude.toFixed(5)}, ${e.gps.longitude.toFixed(5)} (&plusmn;${Math.round(e.gps.accuracy)} m)</div>`
+                : '';
             return `<tr>
                 <td>${i + 1}</td>
                 <td>${time}</td>
                 <td>${escapeHtml(e.guard)}</td>
                 <td>${escapeHtml(e.location)}</td>
-                <td><strong>${escapeHtml(e.type)}</strong></td>
-                <td>${escapeHtml(e.description).replace(/\n/g, '<br>')}${photo ? '<div class="photo">' + photo + '</div>' : ''}</td>
+                <td><strong>${escapeHtml(e.type)}</strong><br>${sevTag}</td>
+                <td>${escapeHtml(e.description).replace(/\n/g, '<br>')}${gps}${photo ? '<div class="photo">' + photo + '</div>' : ''}</td>
             </tr>`;
         }).join('');
 
@@ -230,6 +312,8 @@ const Logbook = (() => {
     td:nth-child(3), td:nth-child(4) { width: 110px; }
     td:nth-child(5) { width: 110px; }
     .photo img { max-width: 200px; max-height: 150px; margin-top: 6px; border: 1px solid #999; }
+    .sev { display: inline-block; color: #fff; padding: 1px 6px; border-radius: 8px; font-size: 9pt; font-weight: 600; margin-top: 2px; }
+    .gps { margin-top: 4px; font-size: 9pt; color: #555; font-family: monospace; }
     .signature { margin-top: 40px; display: flex; justify-content: space-between; font-size: 10pt; }
     .signature div { width: 45%; border-top: 1px solid #000; padding-top: 4px; }
     @media print { body { margin: 10mm; } }
@@ -257,11 +341,66 @@ const Logbook = (() => {
         return true;
     }
 
+    // ===== JSON Backup =====
+    function exportJSON() {
+        const data = {
+            app: 'wachbuch',
+            version: 1,
+            exportedAt: new Date().toISOString(),
+            settings: getSettings(),
+            entries: getEntries()
+        };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `wachbuch-backup-${new Date().toISOString().slice(0, 10)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    function importJSON(file, { mode = 'merge' } = {}) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                try {
+                    const data = JSON.parse(reader.result);
+                    if (!data || !Array.isArray(data.entries)) {
+                        reject(new Error('Ungueltiges Backup-Format'));
+                        return;
+                    }
+                    const incoming = data.entries.filter(e => e && e.id && e.timestamp);
+                    let merged;
+                    if (mode === 'replace') {
+                        merged = incoming;
+                    } else {
+                        const existing = getEntries();
+                        const ids = new Set(existing.map(e => e.id));
+                        merged = existing.concat(incoming.filter(e => !ids.has(e.id)));
+                    }
+                    merged.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+                    saveEntries(merged);
+                    if (data.settings && mode === 'replace') saveSettings(data.settings);
+                    resolve({ imported: incoming.length, total: merged.length });
+                } catch (err) {
+                    reject(err);
+                }
+            };
+            reader.onerror = () => reject(new Error('Datei konnte nicht gelesen werden'));
+            reader.readAsText(file);
+        });
+    }
+
     return {
-        EVENT_TYPES,
-        getEntries, addEntry, deleteEntry, entriesForDate,
+        EVENT_TYPES, SEVERITY_LEVELS,
+        getEntries, addEntry, deleteEntry, clearAll, entriesForDate,
+        searchEntries, shiftStats,
         getSettings, saveSettings,
         isSpeechSupported, startSpeech, stopSpeech, isSpeechActive,
-        fileToDataURL, exportShiftPDF
+        fileToDataURL, exportShiftPDF,
+        captureGPS,
+        exportJSON, importJSON
     };
 })();

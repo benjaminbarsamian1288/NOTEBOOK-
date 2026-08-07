@@ -3,23 +3,29 @@
  * Enables offline support, caching, and PWA functionality
  */
 
-const CACHE_NAME = 'voicenote-v1';
+const CACHE_NAME = 'voicenote-v2';
 const ICON_CACHE = 'voicenote-icons-v1';
 
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
+    './wachbuch.html',
     './manifest.json',
     './css/style.css',
     './css/editor.css',
     './css/drawing.css',
     './css/responsive.css',
+    './css/logbook.css',
+    './css/wachbuch.css',
     './js/storage.js',
     './js/recorder.js',
     './js/editor.js',
     './js/drawing.js',
     './js/ui.js',
     './js/app.js',
+    './js/logbook.js',
+    './js/logbook-ui.js',
+    './js/wachbuch-app.js',
     './js/generate-icons.js',
     './icons/icon.svg'
 ];
